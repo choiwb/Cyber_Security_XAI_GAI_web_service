@@ -1,0 +1,28 @@
+
+<html>
+
+    <body bgcolor=#6492E3>
+    
+        <center>
+    
+            <h1>  PREDICTION :  </h1>
+        
+        {%if data[0] == 'O'%}
+        <h1>Attack !!!</h1> 
+        <p>Attack 예측 확률: {{data[2]}}(%), Normal 예측 확률: {{data[1]}}(%)</p> 
+        <img src='static\AI.jpg'>  
+
+        {%else%}
+        <h1>Normal ...</h1>
+        <p>Attack 예측 확률: {{data[2]}}(%), Normal 예측 확률: {{data[1]}}(%)</p> 
+        <img src='static\AI.jpg'>        
+    
+        {%endif%}
+            <br><br>
+        <a href='/'>go back to home page</a>
+    
+        </center>
+    
+    </body>
+    
+    </html>
