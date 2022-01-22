@@ -2,9 +2,10 @@
 
 [IPS (Intrusion Prevention System) Detection - Attack / Normal]
 
-- Data: Ips Payload
+- Data: IPS Payload
 - Feature create: PySpark (Spark SQL)
 - Algorithm: LightGBM
 - Deployment: Flask
 
-- TO DO: Docker application
+
+-- TO DO: Docker application
