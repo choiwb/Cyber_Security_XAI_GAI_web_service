@@ -14,8 +14,8 @@ import os
 from flask import request, Flask
 
 
-app = Flask(__name__)
-app.route('/predict_UI_sql_result', methods = ['POST'])
+# app = Flask(__name__)
+# app.route('/predict_UI_sql_result', methods = ['POST'])
 
 def predict_UI_sql_result():
 
@@ -192,5 +192,5 @@ def predict_UI_sql_result():
     return sql_result_df_result
 
 
-if __name__ == '__main__':
-    app.run(host = SERVER_IP, port = PORT)
+# if __name__ == '__main__':
+#    app.run(host = SERVER_IP, port = PORT)
