@@ -187,10 +187,6 @@ def predict_UI_sql_result():
     print('전처리 데이터 크기: ', sql_result_df_result.shape)
     print('전처리 데이터 샘플: ', sql_result_df_result)
 
-    '''
-    # DS 서버상에, 사용자가 입력한 payload 데이터, 예측 결과, 예측 확률을 DB 상에 저장 필요!!!!!!!!!!!!!!!!!!!!!!!!!
-    user_payload_data_log_save_DB = user_payload_data_log_save_DB.APPEND(sql_result_df_result)
-    '''
 
 
     return sql_result_df_result
