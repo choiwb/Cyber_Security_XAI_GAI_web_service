@@ -5,22 +5,32 @@
     
         <center>
     
-            <h1>  PREDICTION :  </h1>
+            <h1><br>  PREDICTION  </h1></br>
         
         {%if data[0] == 'O'%}
-        <h1>Attack !!!</h1> 
-        <p>Attack 예측 확률: {{data[2]}}(%), Normal 예측 확률: {{data[1]}}(%)</p> 
+        <h1>Attack !!!</h1><br> 
+        <h1> ------------------------- </h1><br>
+        <h4>Attack 예측 확률</h4> 
+        <p>{{data[2]}} %</p>
+        <h4>Normal 예측 확률</h4> 
+        <p>{{data[1]}} %</p> 
+        <br><br>
         <img src='static\AI.jpg'>  
 
         {%else%}
-        <h1>Normal ...</h1>
-        <p>Attack 예측 확률: {{data[2]}}(%), Normal 예측 확률: {{data[1]}}(%)</p> 
-        <img src='static\AI.jpg'>        
+        <h1>Normal ...</h1><br>
+        <h1> ------------------------- </h1><br>
+        <h4>Attack 예측 확률</h4> 
+        <p>{{data[2]}} %</p>
+        <h4>Normal 예측 확률</h4> 
+        <p>{{data[1]}} %</p> 
+        <br><br>
+        <img src='static\AI.jpg'>      
     
         {%endif%}
             <br><br>
         <a href='/'>go back to home page</a>
-    
+            <br><br><br><br><br>
         </center>
     
     </body>

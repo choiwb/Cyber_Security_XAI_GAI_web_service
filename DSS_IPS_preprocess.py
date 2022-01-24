@@ -14,16 +14,23 @@ import os
 from flask import request, Flask
 
 
+# 함수 연산시간 출력
+import cProfile
+
 # app = Flask(__name__)
 # app.route('/predict_UI_sql_result', methods = ['POST'])
 
 def predict_UI_sql_result():
 
+    # Flask Web 연동 시, input 입력 데이터
     raw_data_str = request.form['raw_data_str']
+
+    # cProfile 을 통한 함수 실행 시간 파악하기 위한 테스트 데이터
     # raw_data_str = 'GET /robots.txt HTTP/1.1\r\nUser-Agent: Mozilla/5.0 (compatible; Nmap Scripting Engine'
 
-    java11_location= '/opt/homebrew/opt/openjdk@11'
-    os.environ['JAVA_HOME'] = java11_location
+    # Local 실행 시, java 경로
+    # java11_location= '/opt/homebrew/opt/openjdk@11'
+    # os.environ['JAVA_HOME'] = java11_location
 
 
     conf = pyspark.SparkConf().setAppName('prep_data').setMaster('local')
@@ -192,5 +199,7 @@ def predict_UI_sql_result():
     return sql_result_df_result
 
 
-# if __name__ == '__main__':
-#    app.run(host = SERVER_IP, port = PORT)
+if __name__ == '__main__':
+    cProfile.run('predict_UI_sql_result()')
+    # app.run(host = SERVER_IP, port = PORT, debug = True)
+    # app.run(host = SERVER_IP, debug = True)

@@ -10,7 +10,7 @@ from flask import Flask, render_template
 
 app = Flask(__name__)
 @app.route('/')
-def man():
+def user_input():
     return render_template('user_input.html')
 
 
@@ -23,8 +23,9 @@ def web_UI_preprocess():
 
     return payload_arr
 
+
 @app.route('/web_UI_predict', methods=['POST'])
-def home():
+def web_UI_predict():
 
 
     arr = np.array(web_UI_preprocess())
@@ -34,8 +35,8 @@ def home():
     pred_proba = IPS_model.predict_proba(arr)
     
     # pre_proba = ['O', 'X'] 알파벳에 따른 attack 라벨이 먼저 위치함 !!!!
-    Normal_proba = np.round(pred_proba[:, 1], 2) * 100
-    Attack_proba = np.round(pred_proba[:, 0], 2) * 100
+    Normal_proba = int(np.round(pred_proba[:, 1], 2) * 100)
+    Attack_proba = int(np.round(pred_proba[:, 0], 2) * 100)
 
 
     return render_template('server_output.html', data = [pred, Normal_proba, Attack_proba])
@@ -43,4 +44,5 @@ def home():
 
 
 if __name__ == '__main__':
-   app.run(host = SERVER_IP, port = PORT)
+   app.run(host = SERVER_IP, port = PORT, debug= True )
+   # app.run(host = SERVER_IP, debug= True )
