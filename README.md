@@ -8,5 +8,5 @@
 - Deployment: Flask
 
 
--- TO DO 1: XAI - SHAP (ex, force plot)
-         2: Docker application
+- TO DO 1: XAI - SHAP (ex, force plot)
+- TO DO 2: Docker application
