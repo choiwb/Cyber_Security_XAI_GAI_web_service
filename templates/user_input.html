@@ -14,15 +14,18 @@
         <p> .4 CKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA! </p><br>
 
         <form method="POST", action="{{url_for('web_UI_predict')}}">
-           <h1> Payload :  <input type="text", name='raw_data_str', placeholder="enter 1" 
-                                        style="height:50px;width:1200px;font-size:25px;"> </h1>
-                <h1> <input type="submit" , value='Predict!'
-                                        style="font-size:40px;"> <br><br><br><br></h1>
-
+            <h3> Label & Proba </h3><br>
+            <h1> Payload :  <input type="text", name='raw_data_str', placeholder="enter 1" 
+                                            style="height:50px;width:1200px;font-size:25px;"> </h1>
+                    <h1> <input type="submit" , value='Predict!'
+                                            style="font-size:40px;"> <br><br></h1>
 
         <img src='static\igloo.jpg' alt="igloo">
+        <br><br><br>
+
         
     </center>
 
     </body>
+
 </html>

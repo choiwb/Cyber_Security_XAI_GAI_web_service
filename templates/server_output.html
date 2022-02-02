@@ -7,7 +7,7 @@
     
             <h1><br>  PREDICTION  </h1></br>
         
-        {%if data[0] == 'O'%}
+        {%if data[0] == 1%}
         <h1>Attack !!!</h1><br> 
         <h1> ------------------------- </h1><br>
         <h4>Attack 예측 확률</h4> 
@@ -28,6 +28,14 @@
         <img src='static\AI.jpg'>      
     
         {%endif%}
+
+        <form method="POST", action="{{url_for('XAI_result')}}">
+            <br><br><h3> Predicted data's add description. </h3><br>
+            <h1> Payload :  <input type="text", name='raw_data_str', placeholder="enter 1" 
+                                            style="height:50px;width:1200px;font-size:25px;"> </h1>
+                    <h1> <input type="submit" , value='XAI!'
+                                            style="font-size:40px;"> <br></h1>
+
             <br><br>
         <a href='/'>go back to home page</a>
             <br><br><br><br><br>
