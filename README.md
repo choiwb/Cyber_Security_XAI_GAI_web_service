@@ -10,4 +10,5 @@
 
 
 - TO DO 1: Text CNN modeling & Payload based XAI (SHAP's text plot)
+-- Text CNN modeling referenced by https://github.com/FernandoLpz/Text-Classification-CNN-PyTorch 
 - TO DO 2: Docker application
