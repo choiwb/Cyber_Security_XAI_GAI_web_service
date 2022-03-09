@@ -1,32 +1,7 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>SHAP HTML in Flask</title>
-  </head>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css" />
-
   <style media="screen">
-    html {
-      --bck-color: #FFF;
-      --ft-color: #000;
-      --link-color: blue;
-      --drop-color: #f1f8e9;
-    }
-    html.dark {
-      --bck-color: #000;
-      --ft-color: #FFF;
-      --link-color: #DDD;
-      --drop-color: #768763;
-    }
-    body {
-      font-family: "Lucida Sans Typewriter","Lucida Console",Monaco,"Bitstream Vera Sans Mono",monospace;
-      background: var(--bck-color);
-      color: var(--ft-color);
-      text-align: center;
-    }
     iframe{
-      width: 2000px;
+      width: 1500px;
       height: 200px;
       border: none;
     }
@@ -36,7 +11,5 @@
     <h1> SHAP's force plot </h1><br>
     <iframe srcdoc="{{force_html}}"} ></iframe>
     <br><br>
-
   </body>
-  <script src="{{ url_for('static',filename='darkmode.js') }} "></script>
 </html>
