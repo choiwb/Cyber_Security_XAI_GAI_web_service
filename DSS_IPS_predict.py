@@ -41,7 +41,7 @@ def web_UI_predict():
     # payload 입력
     payload_input = request.form['raw_data_str']
 
-    # oaykiad hash 변환 (ssdeep 이용)
+    # payload hash 변환 (ssdeep 이용)
     payload_hash = ssdeep.hash(payload_input)
 
     # payload 입력 시간
@@ -122,28 +122,46 @@ def web_UI_predict():
 
     # 입력된 payload row 제외 필요!
     similar_df = payload_predict_db[['payload_input', 'payload_hash', 'ai', 'proba']].iloc[0:-1, :]
+    # fuzz.ratio
+    similar_df['fuzz_total'] = 0
     # fuzz.partial_ratio
-    similar_df['fuzz'] = 0
+    similar_df['fuzz_part'] = 0
     # ssdeep.compare
     similar_df['compare'] = 0
 
     # payload DB hash 값 들과 입력된 payload hash 값 비교 및 유사도 측정
-    similar_df['fuzz'] = similar_df.apply(lambda x: fuzz.partial_ratio(payload_hash, x['payload_hash']), axis = 1)
+    similar_df['fuzz_total'] = similar_df.apply(lambda x: fuzz.ratio(payload_hash, x['payload_hash']), axis = 1)
+    similar_df['fuzz_part'] = similar_df.apply(lambda x: fuzz.partial_ratio(payload_hash, x['payload_hash']), axis = 1)
     similar_df['compare'] = similar_df.apply(lambda x: ssdeep.compare(payload_hash, x['payload_hash']), axis = 1)
 
-    # 입력된 payload의 최대 fuzz 유사도
-    max_fuzz = max(similar_df['fuzz'])
-    print("입력된 payload의 최대 fuzz 유사도 : ", max_fuzz)
+    # 입력된 payload의 최대 fuzz total 유사도
+    max_fuzz_total = max(similar_df['fuzz_total'])
+    print("입력된 payload의 최대 fuzz total 유사도 : ", max_fuzz_total)
 
-    # 입력된 payload의 최대 fuzz 유사도 payload db에서 선택
-    max_fuzz_payload_df = similar_df[similar_df['fuzz'] == max_fuzz]
-    max_fuzz_payload_df = max_fuzz_payload_df.drop_duplicates(subset = ['payload_input', 'payload_hash', 'fuzz'])
-    max_fuzz_payload = max_fuzz_payload_df.iloc[0,0]
-    print("입력된 payload의 최대 fuzz 유사도 payload : ", max_fuzz_payload)
-    max_fuzz_payload_ai = max_fuzz_payload_df.iloc[0,2]
-    print("입력된 payload의 최대 fuzz 유사도 payload 예측 라벨 : ", max_fuzz_payload_ai)
-    max_fuzz_payload_proba = max_fuzz_payload_df.iloc[0,3]
-    print("입력된 payload의 최대 fuzz 유사도 payload 예측 확률 : ", max_fuzz_payload_proba)
+    # 입력된 payload의 최대 fuzz total 유사도 payload db에서 선택
+    max_fuzz_total_payload_df = similar_df[similar_df['fuzz_total'] == max_fuzz_total]
+    max_fuzz_total_payload_df = max_fuzz_total_payload_df.drop_duplicates(subset = ['payload_input', 'payload_hash', 'fuzz_total'])
+    max_fuzz_total_payload = max_fuzz_total_payload_df.iloc[0,0]
+    print("입력된 payload의 최대 fuzz total 유사도 payload : ", max_fuzz_total_payload)
+    max_fuzz_total_payload_ai = max_fuzz_total_payload_df.iloc[0,2]
+    print("입력된 payload의 최대 fuzz total 유사도 payload 예측 라벨 : ", max_fuzz_total_payload_ai)
+    max_fuzz_total_payload_proba = max_fuzz_total_payload_df.iloc[0,3]
+    print("입력된 payload의 최대 fuzz total 유사도 payload 예측 확률 : ", max_fuzz_total_payload_proba)
+
+
+    # 입력된 payload의 최대 fuzz part 유사도
+    max_fuzz_part = max(similar_df['fuzz_part'])
+    print("입력된 payload의 최대 fuzz part 유사도 : ", max_fuzz_part)
+
+    # 입력된 payload의 최대 fuzz total 유사도 payload db에서 선택
+    max_fuzz_part_payload_df = similar_df[similar_df['fuzz_part'] == max_fuzz_part]
+    max_fuzz_part_payload_df = max_fuzz_part_payload_df.drop_duplicates(subset = ['payload_input', 'payload_hash', 'fuzz_part'])
+    max_fuzz_part_payload = max_fuzz_part_payload_df.iloc[0,0]
+    print("입력된 payload의 최대 fuzz part 유사도 payload : ", max_fuzz_part_payload)
+    max_fuzz_part_payload_ai = max_fuzz_total_payload_df.iloc[0,2]
+    print("입력된 payload의 최대 fuzz part 유사도 payload 예측 라벨 : ", max_fuzz_part_payload_ai)
+    max_fuzz_part_payload_proba = max_fuzz_total_payload_df.iloc[0,3]
+    print("입력된 payload의 최대 fuzz part 유사도 payload 예측 확률 : ", max_fuzz_part_payload_proba)
 
 
     # 입력된 payload의 최대 compare 유사도
@@ -159,6 +177,17 @@ def web_UI_predict():
     print("입력된 payload의 최대 compare 유사도 payload 예측 라벨 : ", max_compare_payload_ai)
     max_compare_payload_proba = max_compare_payload_df.iloc[0,3]
     print("입력된 payload의 최대 compare 유사도 payload 예측 확률 : ", max_compare_payload_proba)
+
+
+    # 입력된 payload의 유사도 측정 검증 (fuzz_ratio, fuzz_partial_ratio, ssdeep_compare)
+    fuzz_ratio = fuzz.ratio(payload_hash, payload_hash)
+    fuzz_part_ratio = fuzz.partial_ratio(payload_hash, payload_hash)
+    ssdeep_compare = ssdeep.compare(payload_hash, payload_hash)
+
+    if fuzz_ratio == 100 & fuzz_part_ratio == 100 & ssdeep_compare == 100:
+        print('입력된 payload의 자기 유사성이 3가지 유사도 측정 방법 모두 100 임.')
+    else:
+        print('입력된 payload의 자기 유사성이 3가지 유사도 측정 방법 따라 다름 !!!!!!!')
      
 
     return render_template('server_output.html', data = [pred, Normal_proba, Attack_proba])
