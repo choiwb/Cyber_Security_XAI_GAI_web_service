@@ -4,12 +4,11 @@
 
 - Data: IPS Payload
 - Feature create: PySpark (Spark SQL)
-- Algorithm: LightGBM
-- XAI: SHAP's force plot 
+- Algorithm: LightGBM (SQL feature), CatBoost (Text feature)
+- XAI: SHAP's force plot (SQL feature), LIME's TextExplainer (Text feature)
 - Deployment: Flask
 - ssdeep (fuzzy hash similarity measure) based payload calculate & PostgreSQL connect
 
 
-- TO DO 1: Text CNN modeling & Payload based XAI (SHAP's text plot)
--- Text CNN modeling referenced by https://github.com/leohsuofnthu/Pytorch-TextCNN
+- TO DO 1: CatBoost (Text feature) TF-IDF research
 - TO DO 2: Docker application
