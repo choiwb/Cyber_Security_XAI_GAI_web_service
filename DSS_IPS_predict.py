@@ -17,6 +17,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import ssdeep
 from fuzzywuzzy import fuzz
+from lime.lime_text import LimeTextExplainer
 
 
 
@@ -206,20 +207,34 @@ def XAI_result():
     
     expected_value = IPS_explainer.expected_value
     print('SHAP 기댓값: ', expected_value)
-
     # attack : shap_values[1], normal: shap_values[0]
     shap_values = IPS_explainer.shap_values(payload_df)
-    print('입력된 payload의 shap value: ', shap_values)
-
+    
     force_plot = shap.force_plot(expected_value, shap_values[1], payload_df, link = 'logit',
                         matplotlib = False)
 
     force_html = f"<head>{shap.getjs()}</head><body>{force_plot.html()}</body>"
 
-    return render_template('XAI_output.html', payload_raw_data = request.form['raw_data_str'],  
-                                force_html = force_html)
 
-    # return shap_html
+    # payload의 raw data 입력 값!
+    raw_data_str = request.form['raw_data_str']
+
+    #############################################    
+    # LIME TextTabularExplainer
+    # 0: normal, 1: attack
+    class_names = ['Normal', 'Attack']
+    
+    text_explainer = LimeTextExplainer(class_names=class_names)
+
+    pred_explainer = text_explainer.explain_instance(raw_data_str, IPS_text_model.predict_proba,
+                                                num_features=10)
+
+    pred_explainer.show_in_notebook(text=True)
+    lime_text_explainer_html = pred_explainer.as_html()
+
+
+    return render_template('XAI_output.html', payload_raw_data = request.form['raw_data_str'],  
+                                force_html = force_html, lime_text_explainer_html = lime_text_explainer_html)
 
 
 

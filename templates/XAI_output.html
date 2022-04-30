@@ -1,5 +1,8 @@
 <!DOCTYPE html>
   <style media="screen">
+    body {
+      text-align: center;
+    }
     iframe{
       width: 1500px;
       height: 200px;
@@ -9,7 +12,10 @@
   <body>
     <br><br><h4> Payload :  {{payload_raw_data}} <br></h4>
     <h1> SHAP's force plot </h1><br>
-    <iframe srcdoc="{{force_html}}"} ></iframe>
+    <iframe srcdoc="{{force_html}}" ></iframe>
+    <h1> LIME's LimeTextExplainer text plot </h1><br> 
+    <iframe srcdoc="{{lime_text_explainer_html}}" ></iframe>
+
     <br><br>
   </body>
 </html>
