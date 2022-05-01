@@ -1,4 +1,4 @@
-# IPS_model_flask_server_deployment
+# IPS_anomaly_detection_XAI_flask_docker
 
 [IPS (Intrusion Prevention System) Detection - Attack / Normal]
 
