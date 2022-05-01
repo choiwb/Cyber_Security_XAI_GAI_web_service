@@ -198,24 +198,30 @@ def web_UI_predict():
 @app.route('/XAI_result', methods = ['POST'])
 def XAI_result():
 
+   # payload의 raw data 입력 값!
+    raw_data_str = request.form['raw_data_str']
+
     # XAI 실행 시간
     kor_time = datetime.datetime.now()
     xai_event_time = kor_time.strftime("%Y%m%d%H%M")
     
     sql_result_total = web_UI_preprocess()
+
     payload_df = sql_result_total[1]
+    payload_arr = np.array(payload_df)
     
     expected_value_sql = IPS_explainer.expected_value
-    print('SHAP 기댓값: ', expected_value_sql)
-    # attack : shap_values[1], normal: shap_values[0]
-    shap_values_sql = IPS_explainer.shap_values(payload_df)
-    
-    force_plot = shap.force_plot(expected_value_sql[0], shap_values_sql[1], payload_df, link = 'logit',
-                        matplotlib = False)
 
+    # attack : shap_values[1], normal: shap_values[0]
+    shap_values_sql = IPS_explainer.shap_values(payload_arr)
+
+    force_plot = shap.force_plot(expected_value_sql, shap_values_sql, payload_arr, link = 'logit',
+                        feature_names = payload_df.columns,
+                        matplotlib = False)
+            
     force_html = f"<head>{shap.getjs()}</head><body>{force_plot.html()}</body>"
 
-    xai_shap_save_path = 'SHAP의 force plot 저장 경로'
+    xai_shap_save_path = 'SHAP force plot 결과 저장 경로'
     # SHAP's force plot의 html 저장
     # shap.save_html(os.path.join(xai_shap_save_path, 'shap_force_plot_%s.html' %(xai_event_time)), force_plot)
 
@@ -226,8 +232,6 @@ def XAI_result():
     #                        bbox_inches = 'tight', dpi = 700)
 
 
-    # payload의 raw data 입력 값!
-    raw_data_str = request.form['raw_data_str']
 
     #############################################    
     # SHAP's force plot - text feature

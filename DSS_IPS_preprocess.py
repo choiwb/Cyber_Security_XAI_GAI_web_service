@@ -42,7 +42,7 @@ def predict_UI_sql_result():
 
     payload = raw_data_str
 
-    domain_one_row_df = pd.DataFrame(data = [[payload]],
+    domain_one_row_df = pd.DataFrame(data = [payload],
                                     columns = ['payload'])
 
 
