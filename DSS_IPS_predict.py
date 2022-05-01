@@ -205,19 +205,47 @@ def XAI_result():
     sql_result_total = web_UI_preprocess()
     payload_df = sql_result_total[1]
     
-    expected_value = IPS_explainer.expected_value
-    print('SHAP 기댓값: ', expected_value)
+    expected_value_sql = IPS_explainer.expected_value
+    print('SHAP 기댓값: ', expected_value_sql)
     # attack : shap_values[1], normal: shap_values[0]
-    shap_values = IPS_explainer.shap_values(payload_df)
+    shap_values_sql = IPS_explainer.shap_values(payload_df)
     
-    force_plot = shap.force_plot(expected_value, shap_values[1], payload_df, link = 'logit',
+    force_plot = shap.force_plot(expected_value_sql[0], shap_values_sql[1], payload_df, link = 'logit',
                         matplotlib = False)
 
     force_html = f"<head>{shap.getjs()}</head><body>{force_plot.html()}</body>"
 
+    xai_shap_save_path = '/Users/choiwb/Python_projects/이글루시큐리티_DSS_표준모델_Web_API/DSS_IPS_flask_server/xai_shap_save'
+    # SHAP's force plot의 html 저장
+    # shap.save_html(os.path.join(xai_shap_save_path, 'shap_force_plot_%s.html' %(xai_event_time)), force_plot)
+
+    # SHAP's force plot의 이미지 (png) 저장 => link = 'logit' 의 경우 파라미터 적용 안됨 !!!!!
+    # shap.force_plot(expected_value, shap_values[1], payload_df,
+    #                   matplotlib = True, show = False)
+    # plt.savefig(os.path.join(xai_shap_save_path, 'shap_force_plot_%s.png' %(xai_event_time)),
+    #                        bbox_inches = 'tight', dpi = 700)
+
 
     # payload의 raw data 입력 값!
     raw_data_str = request.form['raw_data_str']
+
+    #############################################    
+    # SHAP's force plot - text feature
+
+    payload_str_df = pd.DataFrame([raw_data_str], columns = ['payload'])
+    payload_str = payload_str_df['payload']
+
+    payload_test_tfidf = IPS_text_model['tfidfvectorizer'].transform(payload_str).toarray()
+
+    expected_value_text = IPS_text_explainer.expected_value
+    shap_values_text = IPS_text_explainer.shap_values(payload_test_tfidf)
+
+    text_plot = shap.force_plot(expected_value_text, shap_values_text, link = 'logit',
+                                feature_names = IPS_text_model['tfidfvectorizer'].get_feature_names_out(),
+                                matplotlib = False)
+    text_explainer_html = f"<head>{shap.getjs()}</head><body>{text_plot.html()}</body>"
+    
+
 
     #############################################    
     # LIME TextTabularExplainer
@@ -234,8 +262,9 @@ def XAI_result():
 
 
     return render_template('XAI_output.html', payload_raw_data = request.form['raw_data_str'],  
-                                force_html = force_html, lime_text_explainer_html = lime_text_explainer_html)
-
+                                force_html = force_html,
+                                text_explainer_html = text_explainer_html,
+                                lime_text_explainer_html = lime_text_explainer_html)
 
 
 
