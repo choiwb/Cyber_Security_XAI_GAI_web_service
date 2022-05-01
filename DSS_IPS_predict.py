@@ -215,7 +215,7 @@ def XAI_result():
 
     force_html = f"<head>{shap.getjs()}</head><body>{force_plot.html()}</body>"
 
-    xai_shap_save_path = '/Users/choiwb/Python_projects/이글루시큐리티_DSS_표준모델_Web_API/DSS_IPS_flask_server/xai_shap_save'
+    xai_shap_save_path = 'SHAP의 force plot 저장 경로'
     # SHAP's force plot의 html 저장
     # shap.save_html(os.path.join(xai_shap_save_path, 'shap_force_plot_%s.html' %(xai_event_time)), force_plot)
 
