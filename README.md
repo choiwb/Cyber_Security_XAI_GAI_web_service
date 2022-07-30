@@ -4,11 +4,11 @@
 
 - Data: IPS Payload
 - Feature create: PySpark (Spark SQL)
-- Algorithm: CatBoost (SQL feature), CatBoost (Text feature)
-- XAI: SHAP's force plot (SQL feature, Text feature), LIME's TextExplainer (Text feature)
+- Algorithm: CatBoost (SQL feature), LightGBM (TF-IDF Text feature)
+- XAI: SHAP's force plot (SQL feature, TF-IDF Text feature), LIME's TextExplainer (TF-IDF Text feature)
 - Deployment: Flask
 - ssdeep (fuzzy hash similarity measure) based payload calculate & PostgreSQL connect
 
 
-- TO DO 1: CatBoost (Text feature) TF-IDF research
+- TO DO 1: LightGBM model improving (special character & TF-IDF Text feature)
 - TO DO 2: Docker application
