@@ -1,51 +1,40 @@
 
 
 
-
 from setting import *
 
-import pandas as pd, numpy as np
+import pandas as pd
 import pyspark
 from pyspark.sql import SparkSession
 from pyspark.sql.types import *
-
+from pyspark import SparkConf
 import os
+from sklearn.feature_extraction.text import CountVectorizer
+from flask import request
 
-from flask import request, Flask
-
-
-# 함수 연산시간 출력
-import cProfile
-
-# app = Flask(__name__)
-# app.route('/predict_UI_sql_result', methods = ['POST'])
 
 def predict_UI_sql_result():
 
     # Flask Web 연동 시, input 입력 데이터
     raw_data_str = request.form['raw_data_str']
-
     # cProfile 을 통한 함수 실행 시간 파악하기 위한 테스트 데이터
-    # raw_data_str = 'GET /robots.txt HTTP/1.1\r\nUser-Agent: Mozilla/5.0 (compatible; Nmap Scripting Engine'
+    # raw_data_str = 'GET /robots.txt HTTP/1.1\r\nUser-Agent: Mozilla/5.0 (compatible; Nmap Scripting Engine)'
 
     # Local 실행 시, java 경로
-    # java11_location= '/opt/homebrew/opt/openjdk@11'
-    # os.environ['JAVA_HOME'] = java11_location
-
+    java11_location= 'JAVA PATH !!!!!'
+    os.environ['JAVA_HOME'] = java11_location
 
     conf = pyspark.SparkConf().setAppName('prep_data').setMaster('local')
-    # sc = pyspark.SparkContext(conf=conf)
     sc = pyspark.SparkContext.getOrCreate(conf = conf)
+
+    # pyspark session 정보 확인
+    print(SparkConf().getAll())
 
     # 세션 수행
     session = SparkSession(sc)
 
-    payload = raw_data_str
-
-    domain_one_row_df = pd.DataFrame(data = [payload],
+    domain_one_row_df = pd.DataFrame(data = [raw_data_str],
                                     columns = ['payload'])
-
-
 
     schema = StructType([StructField("payload", StringType(), True)
                     ])
@@ -59,8 +48,8 @@ def predict_UI_sql_result():
     # 데이터 프레임 'table'이라는 이름으로 SQL테이블 생성
     domain_df.createOrReplaceTempView("table") #<=== SparkSQL에 생성된 테이블 이름
 
-
-    query_1 = """
+    # domain 피처
+    sql_query = """
 
             SELECT 
 
@@ -102,16 +91,7 @@ def predict_UI_sql_result():
 
             SIZE(SPLIT(IF(ISNULL(payload), '', payload), '[\\$]'))-1 AS ips_00031_payload_char_dollar_cnt,
 
-            SIZE(SPLIT(IF(ISNULL(payload), '', payload), '[\\.][\\.]'))-1 AS ips_00032_payload_char_double_dot_cnt
-
-            FROM table
-
-    """
-
-
-    query_2 = """
-
-            SELECT
+            SIZE(SPLIT(IF(ISNULL(payload), '', payload), '[\\.][\\.]'))-1 AS ips_00032_payload_char_double_dot_cnt,
 
             IF(AGGREGATE(TRANSFORM(TRANSFORM(ARRAY(' ', CONCAT(CHR(37), '20'), CHR(43)), ch -> CONCAT(ch, 'and', ch)), word -> INT(INSTR(LOWER(IF(ISNULL(payload), '', payload)), word))), 0, (x1, x2) -> x1+x2)>0, 1, 0) AS ips_00033_payload_sql_and_flag,
 
@@ -167,39 +147,38 @@ def predict_UI_sql_result():
 
             IF(AGGREGATE(TRANSFORM(TRANSFORM(ARRAY(' ', CONCAT(CHR(37), '20'), CHR(43)), ch -> CONCAT('rm', ch)), word -> INT(INSTR(LOWER(IF(ISNULL(payload), '', payload)), word))), 0, (x1, x2) -> x1+x2)>0, 1, 0) AS ips_00059_payload_cmd_rm_flag
 
-
             FROM table
-
 
     """
 
+    # 예측 데이터 - TF-IDF 피처 생성
+    
+    # train 셋의 키워드 및 IDF 값 호출
+    train_word_idf = pd.read_csv('train_word_idf.csv')
+    train_word = list(train_word_idf['word'])
+    train_idf = list(train_word_idf['idf'])
+
+    counter = CountVectorizer(lowercase=True, vocabulary = train_word)
+    payload_counter = counter.fit_transform(domain_one_row_df['payload']).toarray()
+
+    valid_count_df = pd.DataFrame(payload_counter, columns=counter.get_feature_names_out())
+    valid_count_df = valid_count_df.rename(columns = lambda x: 'payload_' + x)
+
+    # pandas data frame 형태 예측 데이터 TF-IDF 피처 생성
+    valid_tfidf_df = valid_count_df * train_idf
 
     # 쿼리 실행하고, 결과 데이터 프레임에 저장
-    output_df = session.sql(query_1) #<==== 쿼리를 실행하는 부분
-    output_df_2 = session.sql(query_2) #<==== 쿼리를 실행하는 부분
-
-
-    # 데이터 확인
-    # print(output_df.show(20))
-    # print(output_df_2.show(20))
-
-
+    output_df = session.sql(sql_query) #<==== 쿼리를 실행하는 부분
+    
     sql_result_df = output_df.toPandas()
-    sql_result_df_2 = output_df_2.toPandas()
+    sql_result_df = pd.concat([sql_result_df, valid_tfidf_df], axis = 1)
 
-    sql_result_df_result = pd.concat([sql_result_df, sql_result_df_2], axis = 1)
-
-    sql_result_df_result['ips_00014_payload_logscaled_length_value'] = sql_result_df_result['ips_00014_payload_logscaled_length_value'].astype(int)
-
-    print('전처리 데이터 크기: ', sql_result_df_result.shape)
-    print('전처리 데이터 샘플: ', sql_result_df_result)
-
-
-
-    return sql_result_df_result
+    # CatBoost 모델링 위해 연속형의 경우, str 또는 int 형 변환 필요
+    # sql_result_df_result['ips_00014_payload_logscaled_length_value'] = sql_result_df_result['ips_00014_payload_logscaled_length_value'].astype(int)
+    # LightGBM 및 XGBoost 계열은 연속형 피처도 학습 가능하므로, 형봔한 X
+    
+    print('전처리 데이터 크기: ', sql_result_df.shape)
+    print('전처리 데이터 샘플: ', sql_result_df)
 
 
-if __name__ == '__main__':
-    cProfile.run('predict_UI_sql_result()')
-    # app.run(host = SERVER_IP, port = PORT, debug = True)
-    # app.run(host = SERVER_IP, debug = True)
+    return sql_result_df

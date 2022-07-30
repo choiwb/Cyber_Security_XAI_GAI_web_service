@@ -4,8 +4,6 @@
       text-align: center;
     }
     iframe{
-      width: 1500px;
-      height: 200px;
       border: none;
     }
   </style>
@@ -13,14 +11,15 @@
     <br><br><h4> Payload :  {{payload_raw_data}} <br></h4>
     
     <h1> SHAP's force plot </h1><br>
-    <iframe srcdoc="{{force_html}}" ></iframe>
+    <iframe width = "1500", height = "170" srcdoc="{{force_html}}" ></iframe>
 
+    <!--
     <h1> SHAP's force plot (text feature) </h1><br>
-    <iframe srcdoc="{{text_explainer_html}}" ></iframe>
-  
+    <iframe width = "1500", height = "170" srcdoc="{{text_explainer_html}}" ></iframe>
+    -->
+    
     <h1> LIME's LimeTextExplainer text plot </h1><br> 
-    <iframe srcdoc="{{lime_text_explainer_html}}" ></iframe>
-
+    <iframe width = "1500", height = "500" srcdoc="{{lime_text_explainer_html}}" ></iframe>
     <br><br>
   </body>
 </html>

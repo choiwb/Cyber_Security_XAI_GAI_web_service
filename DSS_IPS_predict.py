@@ -194,6 +194,12 @@ def web_UI_predict():
     return render_template('server_output.html', data = [pred, Normal_proba, Attack_proba])
 
 
+############################################
+# logit (log odds) 형태를 확률로 변환
+def shap_logit(x):
+    logit_result = 1 / (1 + np.exp(-x))
+    return logit_result
+
 
 @app.route('/XAI_result', methods = ['POST'])
 def XAI_result():
@@ -210,10 +216,16 @@ def XAI_result():
     payload_df = sql_result_total[1]
     payload_arr = np.array(payload_df)
     
-    expected_value_sql = IPS_explainer.expected_value
+    expected_value_sql = IPS_total_explainer.expected_value
+    expected_value_sql = np.array(expected_value_sql)
+    expected_value_sql_logit = shap_logit(expected_value_sql)
+    print('sql SHAP 기댓값 (logit 적용 함): ', expected_value_sql_logit)
 
-    # attack : shap_values[1], normal: shap_values[0]
-    shap_values_sql = IPS_explainer.shap_values(payload_arr)
+    # anomalies : shap_values[1], normal: shap_values[0]
+    shap_values_sql = IPS_total_explainer.shap_values(payload_arr)
+    shap_values_sql = np.array(shap_values_sql)
+    shap_values_sql_logit = shap_logit(shap_values_sql)
+    print('sql SHAP values (logit 적용 함): ', shap_values_sql_logit)
 
     force_plot = shap.force_plot(expected_value_sql, shap_values_sql, payload_arr, link = 'logit',
                         feature_names = payload_df.columns,
@@ -234,27 +246,9 @@ def XAI_result():
 
 
     #############################################    
-    # SHAP's force plot - text feature
-
-    payload_str_df = pd.DataFrame([raw_data_str], columns = ['payload'])
-    payload_str = payload_str_df['payload']
-
-    payload_test_tfidf = IPS_text_model['tfidfvectorizer'].transform(payload_str).toarray()
-
-    expected_value_text = IPS_text_explainer.expected_value
-    shap_values_text = IPS_text_explainer.shap_values(payload_test_tfidf)
-
-    text_plot = shap.force_plot(expected_value_text, shap_values_text, link = 'logit',
-                                feature_names = IPS_text_model['tfidfvectorizer'].get_feature_names_out(),
-                                matplotlib = False)
-    text_explainer_html = f"<head>{shap.getjs()}</head><body>{text_plot.html()}</body>"
-    
-
-
-    #############################################    
     # LIME TextTabularExplainer
-    # 0: normal, 1: attack
-    class_names = ['Normal', 'Attack']
+    # 0: normal, 1: anomalies
+    class_names = ['normal', 'anomalies']
     
     text_explainer = LimeTextExplainer(class_names=class_names)
 
@@ -267,7 +261,7 @@ def XAI_result():
 
     return render_template('XAI_output.html', payload_raw_data = request.form['raw_data_str'],  
                                 force_html = force_html,
-                                text_explainer_html = text_explainer_html,
+                                # text_explainer_html = text_explainer_html,
                                 lime_text_explainer_html = lime_text_explainer_html)
 
 

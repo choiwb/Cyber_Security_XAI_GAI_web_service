@@ -8,9 +8,9 @@
             <h1><br>  PREDICTION  </h1></br>
         
         {%if data[0] == 1%}
-        <h1>Attack !!!</h1><br> 
+        <h1>Anomalies !!!</h1><br> 
         <h1> ------------------------- </h1><br>
-        <h4>Attack 예측 확률</h4> 
+        <h4>Anomalies 예측 확률</h4> 
         <p>{{data[2]}} %</p>
         <h4>Normal 예측 확률</h4> 
         <p>{{data[1]}} %</p> 
@@ -20,7 +20,7 @@
         {%else%}
         <h1>Normal ...</h1><br>
         <h1> ------------------------- </h1><br>
-        <h4>Attack 예측 확률</h4> 
+        <h4>Anomalies 예측 확률</h4> 
         <p>{{data[2]}} %</p>
         <h4>Normal 예측 확률</h4> 
         <p>{{data[1]}} %</p> 
