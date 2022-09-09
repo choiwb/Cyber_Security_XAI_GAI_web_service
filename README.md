@@ -10,5 +10,5 @@
 - ssdeep (fuzzy hash similarity measure) based payload calculate & PostgreSQL connect
 
 
-- TO DO 1: TF-IDF feature extract by PySpark
+- TO DO 1: BERT based SHAP's text plot
 - TO DO 2: Docker application
