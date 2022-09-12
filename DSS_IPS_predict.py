@@ -1,6 +1,7 @@
 
 
 import os
+import re
 import time
 from DSS_IPS_preprocess import *
 from setting import *
@@ -200,6 +201,13 @@ def shap_logit(x):
     logit_result = 1 / (1 + np.exp(-x))
     return logit_result
 
+# 텍스트 전처리
+def text_prep(x):
+    x = x.lower()
+    x = re.sub(r'[^a-z]+', ' ', x)
+    return x
+
+
 
 @app.route('/XAI_result', methods = ['POST'])
 def XAI_result():
@@ -258,11 +266,27 @@ def XAI_result():
     pred_explainer.show_in_notebook(text=True)
     lime_text_explainer_html = pred_explainer.as_html()
 
+    #############################################
+    # PyTorch BERT explainer
+
+    # raw_data_str_prep = text_prep(raw_data_str)
+    # print('전처리된 payload: ', raw_data_str_prep)
+
+    payload_test_df = pd.DataFrame([raw_data_str], columns = ['payload'])
+    bert_payload = payload_test_df['payload'].sample(1)
+
+    '''BERT 모델 호출 후 예측 속도 향상 필요!!!!!!!!!!!!!! CPU => MPS 또는 GPU'''
+    bert_shap_values = IPS_pytorch_bert_explainer(bert_payload, fixed_context=1, batch_size=1)
+
+    text_html = shap.text_plot(bert_shap_values, display = False)
+    # text_html = f"<head>{shap.getjs()}</head><body>{text_plot.html()}</body>"
+
 
     return render_template('XAI_output.html', payload_raw_data = request.form['raw_data_str'],  
                                 force_html = force_html,
                                 # text_explainer_html = text_explainer_html,
-                                lime_text_explainer_html = lime_text_explainer_html)
+                                lime_text_explainer_html = lime_text_explainer_html,
+                                text_html = text_html)
 
 
 
