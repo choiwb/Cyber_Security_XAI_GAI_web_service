@@ -208,6 +208,45 @@ def text_prep(x):
     return x
 
 
+###############################################
+
+signature_list = ['/etc/passwd', 'password=admin']
+method_list = ['IGLOO-UD-File Downloading Vulnerability-1(/etc/passwd)', 'IGLOO-UD-WeakIDPasswd-1(password=admin)']
+
+# 시그니처 패턴 및 AI 피처 하이라이트 처리 위한 리스트
+ai_list = ['select', 'from', 'cmd', 'wget', 'password', 'from(.*?)group(.*?)by']
+
+
+def highlight_text(text, signature, ai_field):
+    # background yellow - 시그니처 패턴
+    replacement = "\033[103m" + "\\1" + "\033[49m"
+    # foreground red - AI 생성 필드
+    replacement_2 = "\033[91m" + "\\1" + "\033[39m"
+
+    # 시그니처 패턴 또는 AI 생성 필드 인 경우, highlight 처리
+    text = re.sub("(" + "|".join(map(re.escape, signature)) + ")", replacement, text, flags=re.I)
+    text = re.sub("(" + "|".join(map(re.escape, ai_field)) + ")", replacement_2, text, flags=re.I)
+
+    regex = re.compile('\x1b\[103m(.*?)\x1b\[49m')
+
+    matches = [regex.match(text[i:]) for i in range(len(text))] 
+    sig_pattern_prep = [m.group(0) for m in matches if m] 
+
+    sig_pattern = [re.sub(r'\x1b\[103m|\x1b\[49m', '', i) for i in sig_pattern_prep]
+    sig_pattern = [re.sub(r'\x1b\[91m|\x1b\[39m', '', i) for i in sig_pattern]
+
+    sig_pattern_df = pd.DataFrame(columns = ['탐지 순서', '공격 명'])
+    count = 0
+    for i in sig_pattern:
+        count = count + 1
+
+        if i in signature_list:
+            j = signature_list.index(i)
+            # print('%d 번째 시그니처 패턴 공격명: %s' %(count, method_list[j]))
+            one_row_df = pd.DataFrame([[count, method_list[j]]], columns = ['탐지 순서', '공격 명'])
+            sig_pattern_df = pd.concat([sig_pattern_df, one_row_df], axis = 0)
+
+    return text, sig_pattern_df
 
 @app.route('/XAI_result', methods = ['POST'])
 def XAI_result():
@@ -235,6 +274,17 @@ def XAI_result():
     shap_values_sql_logit = shap_logit(shap_values_sql)
     print('sql SHAP values (logit 적용 함): ', shap_values_sql_logit)
 
+    shap_mean_values = np.abs(shap_values_sql[1]).mean(0)
+    mean_shap_feature_values = pd.DataFrame(list(zip(payload_df.columns, shap_mean_values)), 
+            columns=['feature_names', 'shap_values'])
+    mean_shap_feature_values.sort_values(by=['shap_values'],ascending=False,inplace=True)
+
+    top10_shap_values = mean_shap_feature_values.iloc[0:10, :]
+    print(top10_shap_values)
+    '''logit 변환 고려 !!!!!!!!!!!!!!!!!!!'''
+    # top10_shap_values to html
+    top10_shap_values_html = top10_shap_values.to_html(index=False, justify='center')
+
     force_plot = shap.force_plot(expected_value_sql, shap_values_sql, payload_arr, link = 'logit',
                         feature_names = payload_df.columns,
                         matplotlib = False)
@@ -251,6 +301,33 @@ def XAI_result():
     # plt.savefig(os.path.join(xai_shap_save_path, 'shap_force_plot_%s.png' %(xai_event_time)),
     #                        bbox_inches = 'tight', dpi = 700)
 
+
+    #############################################    
+    # SHAP's force plot - text feature
+
+    payload_str_df = pd.DataFrame([raw_data_str], columns = ['payload'])
+    payload_str = payload_str_df['payload']
+
+    payload_test_tfidf = IPS_text_model['tfidfvectorizer'].transform(payload_str).toarray()
+    
+    IPS_text_explainer = shap.TreeExplainer(IPS_text_model['lgbmclassifier'],
+                   feature_names=IPS_text_model['tfidfvectorizer'].get_feature_names_out())
+    
+    
+    expected_value_text = IPS_text_explainer.expected_value
+    expected_value_text = np.array(expected_value_text)
+    expected_value_text_logit = shap_logit(expected_value_text)
+    print('text SHAP 기댓값 (logit 적용 함): ', expected_value_text_logit)
+
+    shap_values_text = IPS_text_explainer.shap_values(payload_test_tfidf)
+    shap_values_text = np.array(shap_values_text)
+    shap_values_text_logit = shap_logit(shap_values_text)
+    print('text SHAP values (logit 적용 함): ', shap_values_text_logit)
+
+    text_plot = shap.force_plot(expected_value_text, shap_values_text[1], link = 'logit',
+                                feature_names = IPS_text_model['tfidfvectorizer'].get_feature_names_out(),
+                                matplotlib = False)
+    text_explainer_html = f"<head>{shap.getjs()}</head><body>{text_plot.html()}</body>"
 
 
     #############################################    
@@ -281,12 +358,36 @@ def XAI_result():
     text_html = shap.text_plot(bert_shap_values, display = False)
     # text_html = f"<head>{shap.getjs()}</head><body>{text_plot.html()}</body>"
 
+    # 보안 시그니처 패턴 리스트 highlight
+    # sig_pattern, sig_df = highlight_text(raw_data_str, signature_list)
+    sig_ai_pattern, sig_df = highlight_text(raw_data_str, signature_list, ai_list)
+
+    print(sig_ai_pattern)
+    print(sig_df)
+
+    # sig_pattern (specific word) in text to html
+    sig_ai_pattern = re.sub(r'\x1b\[103m', r'<mark>', sig_ai_pattern)
+    sig_ai_pattern = re.sub(r'\x1b\[49m', r'</mark>', sig_ai_pattern)
+
+    sig_ai_pattern = re.sub(r'\x1b\[91m', r'<span style = "color:red;">', sig_ai_pattern)
+    sig_ai_pattern = re.sub(r'\x1b\[39m', r'</span>', sig_ai_pattern)
+
+    # sig_pattern = sig_pattern.replace('\x1b\[103m', '<mark>').replace('\x1b\[49m', '</mark>')
+    sig_pattern_html = f"<head>{sig_ai_pattern}</head>"
+    
+    sig_df_html = sig_df.to_html(index=False, justify='center')
 
     return render_template('XAI_output.html', payload_raw_data = request.form['raw_data_str'],  
                                 force_html = force_html,
-                                # text_explainer_html = text_explainer_html,
-                                lime_text_explainer_html = lime_text_explainer_html,
-                                text_html = text_html)
+                                # waterfall_html = waterfall_html,
+                                text_explainer_html = text_explainer_html,
+                                lime_text_explainer_html = lime_text_explainer_html, 
+                                text_html = text_html,
+                                top10_shap_values_html = top10_shap_values_html,
+                                sig_pattern_html = sig_pattern_html,
+                                sig_df_html = sig_df_html,
+                                # summary_html = summary_html
+                                )
 
 
 
