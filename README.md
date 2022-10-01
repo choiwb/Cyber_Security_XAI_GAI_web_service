@@ -9,6 +9,6 @@
 - Deployment: Flask
 - ssdeep (fuzzy hash similarity measure) based payload calculate & PostgreSQL connect
 
-- TO DO 1: Domain Signature pattern highlightingand method matching
+- TO DO 1: Domain Signature pattern highlighting and method matching
 - TO DO 2: BERT based Transfer Learning using IPS paylaod
 - TO DO 3: Docker application
