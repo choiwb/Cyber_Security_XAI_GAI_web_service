@@ -211,10 +211,13 @@ def text_prep(x):
 ###############################################
 
 signature_list = ['/etc/passwd', 'password=admin']
+# 탐지 패턴 소문자화
+signature_list = [x.lower() for x in signature_list]
+
 method_list = ['IGLOO-UD-File Downloading Vulnerability-1(/etc/passwd)', 'IGLOO-UD-WeakIDPasswd-1(password=admin)']
 
 # 시그니처 패턴 및 AI 피처 하이라이트 처리 위한 리스트
-ai_list = ['select', 'from', 'cmd', 'wget', 'password', 'from(.*?)group(.*?)by']
+ai_field = ['select(.*?)from', 'cmd', 'wget', 'password', 'from(.*?)group(.*?)by']
 
 
 def highlight_text(text, signature, ai_field):
@@ -224,8 +227,9 @@ def highlight_text(text, signature, ai_field):
     replacement_2 = "\033[91m" + "\\1" + "\033[39m"
 
     # 시그니처 패턴 또는 AI 생성 필드 인 경우, highlight 처리
+    # re.escape() : 특수문자를 이스케이프 처리
     text = re.sub("(" + "|".join(map(re.escape, signature)) + ")", replacement, text, flags=re.I)
-    text = re.sub("(" + "|".join(map(re.escape, ai_field)) + ")", replacement_2, text, flags=re.I)
+    text = re.sub("(" + "|".join(ai_field) + ")", replacement_2, text, flags=re.I)
 
     regex = re.compile('\x1b\[103m(.*?)\x1b\[49m')
 
@@ -235,15 +239,17 @@ def highlight_text(text, signature, ai_field):
     sig_pattern = [re.sub(r'\x1b\[103m|\x1b\[49m', '', i) for i in sig_pattern_prep]
     sig_pattern = [re.sub(r'\x1b\[91m|\x1b\[39m', '', i) for i in sig_pattern]
 
-    sig_pattern_df = pd.DataFrame(columns = ['탐지 순서', '공격 명'])
+    sig_pattern_df = pd.DataFrame(columns = ['탐지 순서', '탐지 명'])
     count = 0
     for i in sig_pattern:
+        # 탐지 패턴 소문자화
+        i = i.lower()
         count = count + 1
 
         if i in signature_list:
             j = signature_list.index(i)
             # print('%d 번째 시그니처 패턴 공격명: %s' %(count, method_list[j]))
-            one_row_df = pd.DataFrame([[count, method_list[j]]], columns = ['탐지 순서', '공격 명'])
+            one_row_df = pd.DataFrame([[count, method_list[j]]], columns = ['탐지 순서', '탐지 명'])
             sig_pattern_df = pd.concat([sig_pattern_df, one_row_df], axis = 0)
 
     return text, sig_pattern_df
@@ -360,7 +366,7 @@ def XAI_result():
 
     # 보안 시그니처 패턴 리스트 highlight
     # sig_pattern, sig_df = highlight_text(raw_data_str, signature_list)
-    sig_ai_pattern, sig_df = highlight_text(raw_data_str, signature_list, ai_list)
+    sig_ai_pattern, sig_df = highlight_text(raw_data_str, signature_list, ai_field)
 
     print(sig_ai_pattern)
     print(sig_df)
