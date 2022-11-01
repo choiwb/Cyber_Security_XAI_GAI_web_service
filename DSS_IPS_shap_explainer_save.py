@@ -31,7 +31,7 @@ tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
 
 # define a prediction function
 def bert_predict(x):
-    tv = torch.tensor([tokenizer.encode(v, padding='max_length', max_length=250, truncation=True) for v in x]).to(device)
+    tv = torch.tensor([tokenizer.encode(v, padding='max_length', max_length=256, truncation=True) for v in x]).to(device)
 
     # outputs = model(tv)[0].detach().cpu().numpy()
     outputs = load_model(tv)[0].detach().cpu().numpy()
