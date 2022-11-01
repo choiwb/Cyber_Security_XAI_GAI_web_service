@@ -5,6 +5,7 @@ import re
 import time
 from DSS_IPS_preprocess import *
 from setting import *
+from DSS_IPS_shap_explainer_save import *
 
 from flask import Flask, render_template, request
 import numpy as np
@@ -352,6 +353,26 @@ def XAI_result():
     #############################################
     # PyTorch BERT explainer
 
+    # transformers == 4.21.3 에서만 동작 (4.23.1 에서는 에러) => 20221101 rlwns
+    # BERT 예측 라벨
+    print('BERT 파이프라인 device: ', bert_pipe.device)
+    # 하나의 dimension에 token 이 512개 까지만 연산 가능 512개 초과하는 경우, tensor size 에러 나므로, 알고리즘 수정 필요!
+    # 입력 payload 최대 900글자 제한
+    raw_data_str_short = raw_data_str[0:900]
+    bert_pipe_result = bert_pipe(raw_data_str_short)
+
+    bert_label = bert_pipe_result[0]['label']
+    if bert_label == 'POSITIVE':
+        bert_label = 'anomalies'
+    else:
+        bert_label = 'mormal'
+
+    bert_score = bert_pipe_result[0]['score']
+    bert_score = np.round(bert_score, 4)
+
+    print('BERT 예측 라벨:' , bert_label)
+    print('BERT 예측 스코어: ', bert_score)
+
     # raw_data_str_prep = text_prep(raw_data_str)
     # print('전처리된 payload: ', raw_data_str_prep)
 
@@ -389,6 +410,8 @@ def XAI_result():
                                 text_explainer_html = text_explainer_html,
                                 lime_text_explainer_html = lime_text_explainer_html, 
                                 text_html = text_html,
+                                bert_label = bert_label,
+                                bert_score = bert_score,
                                 top10_shap_values_html = top10_shap_values_html,
                                 sig_pattern_html = sig_pattern_html,
                                 sig_df_html = sig_df_html,

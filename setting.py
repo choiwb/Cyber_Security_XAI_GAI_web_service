@@ -3,7 +3,10 @@
 import pickle
 import psycopg2 as pg2
 from DSS_IPS_shap_explainer_save import bert_predict
-
+import torch
+from transformers import AutoTokenizer, BertTokenizer, pipeline
+import numpy as np
+import scipy as sp
 
 SERVER_IP = '127.0.0.1'
 PORT = 17171 
@@ -27,6 +30,7 @@ IPS_pytorch_bert_explainer_path = ''
 
 IPS_pytorch_bert_model = pickle.load(open(IPS_pytorch_bert_model_path, 'rb'))
 IPS_pytorch_bert_explainer = pickle.load(open(IPS_pytorch_bert_explainer_path, 'rb'))
+
 
 # PostgreSQL - Payload 예측 DB 연동
 conn = pg2.connect('''host = ??  

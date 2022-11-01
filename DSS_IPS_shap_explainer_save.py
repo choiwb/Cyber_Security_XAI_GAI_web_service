@@ -3,9 +3,7 @@ import pickle
 import shap
 from setting import *
 import torch
-import transformers
 from transformers import AutoTokenizer
-
 import numpy as np
 import scipy as sp
 
@@ -18,15 +16,21 @@ text_explainer = shap.TreeExplainer(IPS_text_model['catboostclassifier'],
 pickle.dump(sql_explainer, open(os.path.join(explainer_save_path, 'DSS_IPS_shap_explainer.pkl'), 'wb'))
 pickle.dump(text_explainer, open(os.path.join(explainer_save_path, 'DSS_IPS_text_shap_explainer.pkl'), 'wb'))
 
+
 device = torch.device('mps')
-
-
-IPS_pytorch_bert_model_path = 'BERT transfer model dir !!!'
-load_model = torch.load(IPS_pytorch_bert_model_path)
-print('BERT 전이학습 모델 평가: ', load_model.eval())
 
 model_checkpoint = "distilbert-base-uncased-finetuned-sst-2-english"
 tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
+
+# IPS_pytorch_bert_model_path = '/Users/choiwb/Python_projects/이글루시큐리티_DSS_표준모델_Web_API/DSS_IPS_flask_server/saved_model/DSS_IPS_bert_model.pkl'
+IPS_pytorch_bert_model_path = '/Users/choiwb/Python_projects/이글루시큐리티_DSS_표준모델_Web_API/DSS_IPS_flask_server/BERT_transfer_checkpoint/BERT_transfer_model.pt'
+bert_model = torch.load(IPS_pytorch_bert_model_path)
+print('BERT 전이학습 모델 평가: ', bert_model.eval())
+
+bert_pipe = pipeline(task = "text-classification",
+                model = bert_model,
+                tokenizer = tokenizer,
+                device = device)
 
 
 # define a prediction function
@@ -34,7 +38,7 @@ def bert_predict(x):
     tv = torch.tensor([tokenizer.encode(v, padding='max_length', max_length=256, truncation=True) for v in x]).to(device)
 
     # outputs = model(tv)[0].detach().cpu().numpy()
-    outputs = load_model(tv)[0].detach().cpu().numpy()
+    outputs = bert_model(tv)[0].detach().cpu().numpy()
 
     scores = (np.exp(outputs).T / np.exp(outputs).sum(-1)).T
     val = sp.special.logit(scores[:,1]) # use one vs rest logit units
