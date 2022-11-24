@@ -22,8 +22,7 @@ device = torch.device('mps')
 model_checkpoint = "distilbert-base-uncased-finetuned-sst-2-english"
 tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
 
-# IPS_pytorch_bert_model_path = '/Users/choiwb/Python_projects/이글루시큐리티_DSS_표준모델_Web_API/DSS_IPS_flask_server/saved_model/DSS_IPS_bert_model.pkl'
-IPS_pytorch_bert_model_path = '/Users/choiwb/Python_projects/이글루시큐리티_DSS_표준모델_Web_API/DSS_IPS_flask_server/BERT_transfer_checkpoint/BERT_transfer_model.pt'
+IPS_pytorch_bert_model_path = 'BERT transfer learning model PATH !!!!!!!'
 bert_model = torch.load(IPS_pytorch_bert_model_path)
 print('BERT 전이학습 모델 평가: ', bert_model.eval())
 
