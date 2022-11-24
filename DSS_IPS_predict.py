@@ -217,9 +217,23 @@ signature_list = [x.lower() for x in signature_list]
 
 method_list = ['IGLOO-UD-File Downloading Vulnerability-1(/etc/passwd)', 'IGLOO-UD-WeakIDPasswd-1(password=admin)']
 
-# 시그니처 패턴 및 AI 피처 하이라이트 처리 위한 리스트
-ai_field = ['select(.*?)from', 'cmd', 'wget', 'password', 'from(.*?)group(.*?)by']
-
+# AI 생성 필드 리스트 (domain 기반 표준피처) - 단, 화이트리스트 피처 및 base64 관련 피처는 제외
+ai_field = ['select(.*?)from', 'select(.*?)count', 'select(.*?)distinct', 'union(.*?)select', 'select(.*?)extractvalue(.*?)xmltype',
+           'from(.*?)generate(.*?)series', 'from(.*?)group(.*?)by', 'case(.*?)when', 'then(.*?)else', 'waitfor(.*?)delay', 'db(.*?)sql(.*?)server',
+           'cast(.*?)chr', 'like', 'upper(.*?)xmltype', 'script(.*?)alert', 'wget(.*?)ttp', 'chmod(.*?)777', 'rm(.*?)rf', 'cd(.*?)tmp',
+           'jndi(.*?)dap', 'jndi(.*?)dns', 'etc(.*?)passwd', 'document(.*?)createelement', 'cgi(.*?)bin', 'document(.*?)forms', 'document(.*?)location',
+           'fckeditor(.*?)filemanager', 'manager(.*?)html', 'current_config(.*?)passwd', 'currentsetting(.*?)htm', 'well(.*?)known',
+           'bash(.*?)history', 'apache(.*?)struts', 'document(.*?)open', 'backup(.*?)sql', 'robots(.*?)txt', 'sqlexec(.*?)php',
+           'exec', 'htaccess', 'htpasswd', 'cgi(.*?)cgi', 'api(.*?)ping', 'aaaaaaaaaa', 'cacacacaca', 'mozi',
+           'bingbot', 'md5', 'jpg(.*?)http(.*?)1.1', 'count(.*?)cgi(.*?)http', 'this(.*?)program(.*?)can', 'sleep(.*?)sleep', 'and(.*?)sleep',
+           'delete', 'get(.*?)ping', 'msadc(.*?)dll(.*?)http', 'filename(.*?)asp', 'filename(.*?)jsp',
+           'wp(.*?)login', 'wp(.*?)content', 'wp(.*?)include', 'wp(.*?)config', 'cmd(.*?)open', 'echo(.*?)shellshock', 'php(.*?)echo',
+           'echo', 'admin(.*?)php', 'script(.*?)setup(.*?)php', 'phpinfo', 'adminostrator', 'phpmyadmin', 'access', 'passwd', 'eval', 'php', 'cmd', 'mdb',
+           'wise(.*?)survey(.*?)admin', 'admin(.*?)serv(.*?)admpw', 'php(.*?)create(.*?)function',
+           'user-agent(.*?)zgrab', 'user-agent(.*?)nmap', 'user-agent(.*?)dirbuster', 'user-agent(.*?)ahrefsbot',
+           'user-agent(.*?)baiduspider', 'user-agent(.*?)mj12bot', 'user-agent(.*?)petalbot',
+           'user-agent(.*?)semrushbot', 'user-agent(.*?)curl', 'user-agent(.*?)masscan', 'user-agent(.*?)sqlmap',
+           'user-agent(.*?)urlgrabber(.*?)yum']
 
 def highlight_text(text, signature, ai_field):
     # background yellow - 시그니처 패턴
