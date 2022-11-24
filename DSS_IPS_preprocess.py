@@ -150,6 +150,159 @@ def predict_UI_sql_result():
             FROM table
 
     """
+    
+    # IPS 신규 표준 피처 기반 모델 단, payload 이외 필드 참조하는 피처 3개 제외 
+    # (ips_00001_attack_ip_method, ips_00001_count_value ips_00001_count_value)
+    new_sql_query = """
+    
+    SELECT
+   
+        IF(INT(RLIKE(payload, 'VCAvY2dpLWJpbi9waHA0') )>0
+        OR INT(RLIKE(payload, 'L2NnaS1iaW4v') )>0
+        OR INT(RLIKE(payload, 'IC9jZ2ktYmlu') )>0
+        OR INT(RLIKE(payload, 'UE9TVCAvY2dpLWJpbi9waHA/') )>0
+        OR INT(RLIKE(payload, 'VCAvY2dpLWJpbi9w') )>0
+        OR INT(RLIKE(payload, 'ZGllKEBtZDU=') )>0
+        OR INT(RLIKE(payload, 'L2FueWZvcm0yL3VwZGF0ZS9hbnlmb3JtMi5pbmk=') )>0
+        OR INT(RLIKE(payload, 'Ly5iYXNoX2hpc3Rvcnk=') )>0
+        OR INT(RLIKE(payload, 'L2V0Yy9wYXNzd2Q=') )>0
+        OR INT(RLIKE(payload, 'QUFBQUFBQUFBQQ==') )>0
+        OR INT(RLIKE(payload, 'IG1hc3NjYW4vMS4w') )>0
+        OR INT(RLIKE(payload, 'd2dldA==') )>0
+        OR INT(RLIKE(payload, 'MjB3YWl0Zm9yJTIwZGVsYXklMjAn') )>0
+        OR INT(RLIKE(payload, 'V0FJVEZPUiBERUxBWQ==') )>0
+        OR INT(RLIKE(payload, 'ZXhlYw==') )>0
+        OR INT(RLIKE(payload, 'Tm9uZQ==') )>0
+        OR INT(RLIKE(payload, 'OyB3Z2V0') )>0
+        OR INT(RLIKE(payload, 'VXNlci1BZ2VudDogRGlyQnVzdGVy') )>0
+        OR INT(RLIKE(payload, 'cGhwIGRpZShAbWQ1') )>0
+        OR INT(RLIKE(payload, 'JTI4U0VMRUNUJTIw') )>0
+                ,1, 0) AS ips_00001_payload_base64,
+
+        IF(INT(RLIKE(LOWER(payload), CONCAT('select', '(.*?)', 'from')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('select', '(.*?)', 'count')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('select', '(.*?)', 'distinct')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('union', '(.*?)', 'select')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('select', '(.*?)', 'extractvalue', '(.*?)', 'xmltype')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('from', '(.*?)', 'generate', '(.*?)', 'series')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('from', '(.*?)', 'group', '(.*?)', 'by')) )>0
+                ,1, 0) AS ips_00001_payload_sql_comb_01,
+
+        IF(INT(RLIKE(LOWER(payload), CONCAT('case', '(.*?)', 'when')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('then', '(.*?)', 'else')) )>0
+                ,1, 0) AS ips_00001_payload_sql_comb_02,
+
+        IF(INT(RLIKE(LOWER(payload), CONCAT('waitfor', '(.*?)', 'delay')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('db', '(.*?)', 'sql', '(.*?)', 'server')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('cast', '(.*?)', 'chr')) )>0
+        OR INT(RLIKE(LOWER(payload), 'like') )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('upper', '(.*?)', 'xmltype')) )>0
+                ,1, 0) AS ips_00001_payload_sql_comb_03,
+
+        IF(INT(RLIKE(LOWER(payload), CONCAT('script', '(.*?)', 'alert')) )>0
+                ,1, 0) AS ips_00001_payload_xss_comb_01,
+
+        IF(INT(RLIKE(LOWER(payload), CONCAT('wget', '(.*?)', 'ttp')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('chmod', '(.*?)', '777')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('rm', '(.*?)', 'rf')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('cd', '(.*?)', 'tmp')) )>0
+                ,1, 0) AS ips_00001_payload_cmd_comb_01,
+
+        IF(INT(RLIKE(LOWER(payload), CONCAT('jndi', '(.*?)', 'dap')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('jndi', '(.*?)', 'dns')) )>0
+                ,1, 0) AS ips_00001_payload_log4j_comb_01,
+
+        IF(INT(RLIKE(LOWER(payload), CONCAT('etc', '(.*?)', 'passwd')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('document', '(.*?)', 'createelement')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('cgi', '(.*?)', 'bin')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('document', '(.*?)', 'forms')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('document', '(.*?)', 'location')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('fckeditor', '(.*?)', 'filemanager')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('manager', '(.*?)', 'html')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('current_config', '(.*?)', 'passwd')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('currentsetting', '(.*?)', 'htm')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('well', '(.*?)', 'known')) )>0
+                ,1, 0) AS ips_00001_payload_word_comb_01,
+
+        IF(INT(RLIKE(LOWER(payload), CONCAT('bash', '(.*?)', 'history')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('apache', '(.*?)', 'struts')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('document', '(.*?)', 'open')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('backup', '(.*?)', 'sql')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('robots', '(.*?)', 'txt')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('sqlexec', '(.*?)', 'php')) )>0
+        OR INT(RLIKE(LOWER(payload), 'exec') )>0
+        OR INT(RLIKE(LOWER(payload), 'htaccess') )>0
+        OR INT(RLIKE(LOWER(payload), 'htpasswd') )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('cgi', '(.*?)', 'cgi')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('api', '(.*?)', 'ping')) )>0
+                ,1, 0) AS ips_00001_payload_word_comb_02,
+
+        IF(INT(RLIKE(LOWER(payload), 'aaaaaaaaaa') )>0
+        OR INT(RLIKE(LOWER(payload), 'cacacacaca') )>0
+        OR INT(RLIKE(LOWER(payload), 'mozi') )>0
+        OR INT(RLIKE(LOWER(payload), 'bingbot') )>0
+        OR INT(RLIKE(LOWER(payload), 'md5') )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('jpg', '(.*?)', 'http', '(.*?)', '1.1')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('count', '(.*?)', 'cgi', '(.*?)', 'http')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('this', '(.*?)', 'program', '(.*?)', 'can')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('sleep', '(.*?)', 'sleep')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('and', '(.*?)', 'sleep')) )>0
+        OR INT(RLIKE(LOWER(payload), 'delete'))>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('get', '(.*?)', 'ping')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('msadc', '(.*?)', 'dll', '(.*?)', 'http')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('filename', '(.*?)', 'asp')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('filename', '(.*?)', 'jsp')) )>0
+                ,1, 0) AS ips_00001_payload_word_comb_03,
+
+        IF(INT(RLIKE(LOWER(payload), CONCAT('wp', '(.*?)', 'login')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('wp', '(.*?)', 'content')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('wp', '(.*?)', 'include')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('wp', '(.*?)', 'config')) )>0
+                ,1, 0) AS ips_00001_payload_wp_comb_01,
+
+        IF(INT(RLIKE(LOWER(payload), CONCAT('cmd', '(.*?)', 'open')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('echo', '(.*?)', 'shellshock')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('php', '(.*?)', 'echo')) )>0
+        OR INT(RLIKE(LOWER(payload), 'echo') )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('admin', '(.*?)', 'php')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('script', '(.*?)', 'setup', '(.*?)', 'php')) )>0
+        OR INT(RLIKE(LOWER(payload), 'phpinfo') )>0
+        OR INT(RLIKE(LOWER(payload), 'administrator') )>0
+        OR INT(RLIKE(LOWER(payload), 'phpmyadmin') )>0
+        OR INT(RLIKE(LOWER(payload), 'access') )>0
+        OR INT(RLIKE(LOWER(payload), 'passwd') )>0
+        OR INT(RLIKE(LOWER(payload), 'eval') )>0
+        OR INT(RLIKE(LOWER(payload), 'php') )>0
+        OR INT(RLIKE(LOWER(payload), 'cmd') )>0
+        OR INT(RLIKE(LOWER(payload), 'mdb') )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('wise', '(.*?)', 'survey', '(.*?)', 'admin')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('admin', '(.*?)', 'serv', '(.*?)', 'admpw')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('php', '(.*?)', 'create', '(.*?)', 'function')) )>0
+                ,1, 0) AS ips_00001_payload_word_comb_04,
+
+        IF(INT(RLIKE(LOWER(payload), CONCAT('user', '-', 'agent', '(.*?)', 'zgrab')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('user', '-', 'agent', '(.*?)', 'nmap')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('user', '-', 'agent', '(.*?)', 'dirbuster')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('user', '-', 'agent', '(.*?)', 'ahrefsbot')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('user', '-', 'agent', '(.*?)', 'baiduspider')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('user', '-', 'agent', '(.*?)', 'mj12bot')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('user', '-', 'agent', '(.*?)', 'petalbot')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('user', '-', 'agent', '(.*?)', 'semrushbot')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('user', '-', 'agent', '(.*?)', 'curl/')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('user', '-', 'agent', '(.*?)', 'masscan')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('user', '-', 'agent', '(.*?)', 'sqlmap')) )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('user', '-', 'agent', '(.*?)', 'urlgrabber', '(.*?)', 'yum')) )>0
+                ,1, 0) AS ips_00001_payload_useragent_comb,
+
+        (SIZE(SPLIT(LOWER(payload), CONCAT('get', '(.*?)', 'http/1.'))) -1)
+            + (SIZE(SPLIT(LOWER(payload), CONCAT('post', '(.*?)', 'http/1.'))) -1)
+        + (SIZE(SPLIT(LOWER(payload), CONCAT('head', '(.*?)', 'http/1.'))) -1)
+        + (SIZE(SPLIT(LOWER(payload), CONCAT('option', '(.*?)', 'http/1.'))) -1)
+        AS ips_00001_payload_whitelist
+
+    FROM table
+    
+    """
 
     # 예측 데이터 - TF-IDF 피처 생성
     
@@ -168,7 +321,9 @@ def predict_UI_sql_result():
     valid_tfidf_df = valid_count_df * train_idf
 
     # 쿼리 실행하고, 결과 데이터 프레임에 저장
-    output_df = session.sql(sql_query) #<==== 쿼리를 실행하는 부분
+    # output_df = session.sql(sql_query) #<==== 쿼리를 실행하는 부분
+    output_df = session.sql(new_sql_query) #<==== 쿼리를 실행하는 부분
+
     
     sql_result_df = output_df.toPandas()
     sql_result_df = pd.concat([sql_result_df, valid_tfidf_df], axis = 1)
