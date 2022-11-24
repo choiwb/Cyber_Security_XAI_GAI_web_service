@@ -10,7 +10,7 @@ import scipy as sp
 explainer_save_path = 'SHAP explainer save path !!!'
 
 sql_explainer = shap.TreeExplainer(IPS_model)
-text_explainer = shap.TreeExplainer(IPS_text_model['catboostclassifier'],
+text_explainer = shap.TreeExplainer(IPS_text_model['lightgbmclassifier'],
                 feature_names=IPS_text_model['tfidfvectorizer'].get_feature_names_out())
 
 pickle.dump(sql_explainer, open(os.path.join(explainer_save_path, 'DSS_IPS_shap_explainer.pkl'), 'wb'))
