@@ -386,6 +386,7 @@ def XAI_result():
     print('BERT 예측 라벨:' , bert_label)
     print('BERT 예측 스코어: ', bert_score)
 
+
     # raw_data_str_prep = text_prep(raw_data_str)
     # print('전처리된 payload: ', raw_data_str_prep)
 
@@ -393,7 +394,12 @@ def XAI_result():
     bert_payload = payload_test_df['payload'].sample(1)
 
     '''BERT 모델 호출 후 예측 속도 향상 필요!!!!!!!!!!!!!! CPU => MPS 또는 GPU'''
+    bert_shap_start = time.time()
     bert_shap_values = IPS_pytorch_bert_explainer(bert_payload, fixed_context=1, batch_size=1)
+    bert_shap_end = time.time()
+    dur_bert_shap = bert_shap_end - bert_shap_start
+    # cpu 연산 시간: 11.23 초, mps 연산 시간: 7.46 초
+    print('mps 연산 시간: %.2f (초)' %(dur_bert_shap))
 
     text_html = shap.text_plot(bert_shap_values, display = False)
     # text_html = f"<head>{shap.getjs()}</head><body>{text_plot.html()}</body>"
