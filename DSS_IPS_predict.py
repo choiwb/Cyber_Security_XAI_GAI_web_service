@@ -367,7 +367,7 @@ def XAI_result():
     #############################################
     # PyTorch BERT explainer
 
-    # transformers == 4.21.3 에서만 동작 (4.23.1 에서는 에러) => 20221101 rlwns
+    # transformers == 4.21.3 에서만 동작 (4.23.1 에서는 에러) => 20221101 기준
     # BERT 예측 라벨
     print('BERT 파이프라인 device: ', bert_pipe.device)
     # 하나의 dimension에 token 이 512개 까지만 연산 가능 512개 초과하는 경우, tensor size 에러 나므로, 알고리즘 수정 필요!
