@@ -10,7 +10,6 @@ import os
 explainer_save_path = 'YOUR SHAP EXPLAINER SAVE DIR !!!!!!!'
 
 sql_explainer = shap.TreeExplainer(IPS_model)
-text_explainer = shap.Explainer(IPS_model, train_payload_tfidf, feature_names=vectorizer.get_feature_names())
 text_explainer = shap.TreeExplainer(IPS_text_model['lgbmclassifier'],
              feature_names=IPS_text_model['tfidfvectorizer'].get_feature_names_out())
 total_explainer = shap.TreeExplainer(IPS_total_model)
