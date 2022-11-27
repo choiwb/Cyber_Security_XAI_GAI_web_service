@@ -2,7 +2,7 @@
 
 import re
 import numpy as np
-from DSS_IPS_preprocess_sql_tfidf import *
+from DSS_IPS_preprocess import *
 from setting import *
 
 from flask import Flask, render_template, request
