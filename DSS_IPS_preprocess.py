@@ -195,7 +195,7 @@ def predict_UI_sql_result():
         IF(INT(RLIKE(LOWER(payload), CONCAT('waitfor', '(.*?)', 'delay')) )>0
         OR INT(RLIKE(LOWER(payload), CONCAT('db', '(.*?)', 'sql', '(.*?)', 'server')) )>0
         OR INT(RLIKE(LOWER(payload), CONCAT('cast', '(.*?)', 'chr')) )>0
-        OR INT(RLIKE(LOWER(payload), 'like') )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('like', '(.*?)', 'http/1.')) )>0
         OR INT(RLIKE(LOWER(payload), CONCAT('upper', '(.*?)', 'xmltype')) )>0
                 ,1, 0) AS ips_00001_payload_sql_comb_03,
 
@@ -239,7 +239,7 @@ def predict_UI_sql_result():
 
         IF(INT(RLIKE(LOWER(payload), 'aaaaaaaaaa') )>0
         OR INT(RLIKE(LOWER(payload), 'cacacacaca') )>0
-        OR INT(RLIKE(LOWER(payload), 'mozi') )>0
+        OR INT(RLIKE(LOWER(payload), CONCAT('mozi', '[\\.]')) )>0        
         OR INT(RLIKE(LOWER(payload), 'bingbot') )>0
         OR INT(RLIKE(LOWER(payload), 'md5') )>0
         OR INT(RLIKE(LOWER(payload), CONCAT('jpg', '(.*?)', 'http', '(.*?)', '1.1')) )>0
