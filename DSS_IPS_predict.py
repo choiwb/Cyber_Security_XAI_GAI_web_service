@@ -517,6 +517,10 @@ def WAF_payload_parsing():
         df_nm = df_nm.drop(['payload', 'uri'], axis = 1)
         df_nm['http_version'] = '-'
         df_nm = df_nm[['http_method', 'http_url', 'http_query', 'http_version', 'http_body']]
+        
+        # http_query 필드의 첫 글자가 '?' 인 경우, '' 처리
+        if df_nm.iloc[0,2].startswith('?') == True:
+            df_nm['http_query'] = df_nm['http_query'].str[1:]
 
         # FLASK 적용
         flask_html = df_nm.to_html(index = False, justify = 'center')
