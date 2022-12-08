@@ -31,7 +31,12 @@ IPS_total_model = pickle.load(open(IPS_total_model_path, 'rb'))
 IPS_text_explainer = pickle.load(open(IPS_text_explainer_path, 'rb'))
 IPS_total_explainer = pickle.load(open(IPS_total_explainer_path, 'rb'))
 
-IPS_pytorch_bert_model = torch.load(IPS_pytorch_bert_model_path)
+
+# device = torch.device('mps')
+# device = torch.device('cpu')
+device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+
+IPS_pytorch_bert_model = torch.load(IPS_pytorch_bert_model_path, map_location = device)
 # IPS_pytorch_bert_explainer = torch.load(IPS_pytorch_bert_explainer_path)
 
 model_checkpoint = "distilbert-base-uncased-finetuned-sst-2-english"
@@ -40,8 +45,6 @@ tokenizer = AutoTokenizer.from_pretrained(model_checkpoint)
 print('BERT 전이학습 모델 평가: ', IPS_pytorch_bert_model.eval())
 
 
-device = torch.device('mps')
-# device = torch.device('cpu')
 
 # define a prediction function
 def bert_predict(x):
