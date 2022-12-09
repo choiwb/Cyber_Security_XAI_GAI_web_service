@@ -234,6 +234,25 @@ ai_field = ['select(.*?)from', 'select(.*?)count', 'select(.*?)distinct', 'union
            'user-agent(.*?)semrushbot', 'user-agent(.*?)curl', 'user-agent(.*?)masscan', 'user-agent(.*?)sqlmap',
            'user-agent(.*?)urlgrabber(.*?)yum']
 
+# IPS & WAF 피처 설명 테이블 생성
+ips_feature_df = pd.DataFrame([['ips_00001_payload_base64', 'payload에 공격관련 키워드(base64)가 포함되는 경우에 대한 표현'],
+                                ['ips_00001_payload_cmd_comb_01', 'payload에 cmd 관련 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['ips_00001_payload_log4j_comb_01', 'payload에 log4j 관련 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['ips_00001_payload_sql_comb_01', 'payload에 SQL-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['ips_00001_payload_sql_comb_02', 'payload에 SQL-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['ips_00001_payload_sql_comb_03', 'payload에 SQL-I 관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['ips_00001_payload_useragent_comb', 'payload에 악성 user_agent가 포함되는 경우에 대한 표현'],
+                                ['ips_00001_payload_word_comb_01', 'payload에 공격관련 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['ips_00001_payload_word_comb_02', 'payload에 공격관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['ips_00001_payload_word_comb_03', 'payload에 공격관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['ips_00001_payload_word_comb_04', 'payload에 공격관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['ips_00001_payload_wp_comb_01', 'payload에 wp 관련 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['ips_00001_payload_xss_comb_01', 'payload에 XSS 관련 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['ips_00001_payload_whitelist', 'payload에 공격과 관련없이 로그전송 이벤트인 경우에 대한 표현']
+                              ]
+                                , columns=['피처 명', '피처 설명'])
+
+
 def highlight_text(text, signature, ai_field):
     # background yellow - 시그니처 패턴
     replacement = "\033[103m" + "\\1" + "\033[49m"
@@ -295,13 +314,23 @@ def XAI_result():
     print('sql SHAP values (logit 적용 함): ', shap_values_sql_logit)
 
     shap_mean_values = np.abs(shap_values_sql[1]).mean(0)
-    mean_shap_feature_values = pd.DataFrame(list(zip(payload_df.columns, shap_mean_values)), 
-            columns=['feature_names', 'shap_values'])
-    mean_shap_feature_values.sort_values(by=['shap_values'],ascending=False,inplace=True)
+    mean_shap_value_df = pd.DataFrame(list(zip(payload_df.columns, mean_shap_values)),
+                                    columns=['피처 명','피처 중요도'])
+    mean_shap_value_df.sort_values(by=['피처 중요도'],
+                                ascending=False, inplace=True)
+    
+    top10_shap_values = mean_shap_value_df.iloc[0:10, :]
+    top10_shap_values = top10_shap_values.reset_index(drop = True)
 
-    top10_shap_values = mean_shap_feature_values.iloc[0:10, :]
+    top10_shap_values.index = top10_shap_values.index + 1
+    top10_shap_values = top10_shap_values.reset_index(drop = False)
+    top10_shap_values = top10_shap_values.rename(columns = {'index': '순위'})
     print(top10_shap_values)
-    '''logit 변환 고려 !!!!!!!!!!!!!!!!!!!'''
+
+    # 피처 설명 테이블과 join
+    top10_shap_values = pd.merge(top10_shap_values, ips_feature_df, how = 'left', on = '피처 명')
+    top10_shap_values = top10_shap_values[['순위', '피처 명', '피처 설명', '피처 중요도']]
+    
     # top10_shap_values to html
     top10_shap_values_html = top10_shap_values.to_html(index=False, justify='center')
 
