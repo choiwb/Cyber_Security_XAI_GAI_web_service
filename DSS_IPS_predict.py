@@ -339,7 +339,7 @@ def XAI_result():
     # payload_df_t에 피처 명 컬럼 추가
     payload_df_t['피처 명'] = payload_df_t.index
     top10_shap_values = pd.merge(top10_shap_values, payload_df_t, how = 'left', on = '피처 명')
-    top10_shap_values = top10_shap_values[['순위', '피처 명', '피처 값', '피처 설명', '피처 중요도']]
+    top10_shap_values = top10_shap_values[['순위', '피처 명', '피처 설명', '피처 값', '피처 중요도']]
 
     # 소수점 4째 자리까지 표현
     top10_shap_values['피처 중요도'] = top10_shap_values['피처 중요도'].apply(lambda x: round(x, 4))
