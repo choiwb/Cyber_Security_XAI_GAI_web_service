@@ -326,10 +326,24 @@ def XAI_result():
     top10_shap_values = top10_shap_values.reset_index(drop = False)
     top10_shap_values = top10_shap_values.rename(columns = {'index': '순위'})
     print(top10_shap_values)
-
+    
     # 피처 설명 테이블과 join
     top10_shap_values = pd.merge(top10_shap_values, ips_feature_df, how = 'left', on = '피처 명')
     top10_shap_values = top10_shap_values[['순위', '피처 명', '피처 설명', '피처 중요도']]
+
+    # '피처 설명' 필드에서 결측치는 TF-IDF 자동 생성 피처이므로, 해당 설명 추가
+    top10_shap_values['피처 설명'] = top10_shap_values['피처 설명'].fillna('payload에서 TF-IDF 기반 추출된 키워드에 대한 표현')
+
+    payload_df_t = payload_df.T
+    payload_df_t.columns = ['피처 값']
+    # payload_df_t에 피처 명 컬럼 추가
+    payload_df_t['피처 명'] = payload_df_t.index
+    top10_shap_values = pd.merge(top10_shap_values, payload_df_t, how = 'left', on = '피처 명')
+    top10_shap_values = top10_shap_values[['순위', '피처 명', '피처 값', '피처 설명', '피처 중요도']]
+
+    # 소수점 4째 자리까지 표현
+    top10_shap_values['피처 중요도'] = top10_shap_values['피처 중요도'].apply(lambda x: round(x, 4))
+    top10_shap_values['피처 값'] = top10_shap_values['피처 값'].apply(lambda x: round(x, 4))
     
     # top10_shap_values to html
     top10_shap_values_html = top10_shap_values.to_html(index=False, justify='center')
