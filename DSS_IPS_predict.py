@@ -452,41 +452,19 @@ def XAI_result():
     sig_ai_pattern, sig_df = highlight_text(raw_data_str, signature_list, ai_field)
 
     print(sig_ai_pattern)
-    print(sig_df)
+    # print(sig_df)
 
     # HTML 형태 payload 의 경우, 소괄호 치환 필요
     sig_ai_pattern = re.sub(r'[\\<]', r'&lt;', sig_ai_pattern)
     sig_ai_pattern = re.sub(r'[\\<>]', r'&gt;', sig_ai_pattern)
 
-    # 시그니처 패턴 & AI 필드 겹치는 경우, background yellow 및 foreground red 동시 적용
-    # 103m ~ 49m: background yellow
-    # 91m ~ 39m: foreground red
-    
-    # 1. 91m ~ 103m ~ 49m ~ 39m 인 경우
-    first_regex = r'\x1b\[91m(.*?)\x1b\[103m(.*?)\x1b\[49m(.*?)\x1b\[39m'
-    # first regex 가 sig_pattern 에 존재하는 경우
-    if re.search(first_regex, sig_ai_pattern):
-        # 103m ~ 49m 까지의 문자열을 background yellow 및 foreground red 동시 적용
-        first_change_regex = r'\x1b\[103m(.*?)\x1b\[49m'
-        # 즉, 위 first_change_regex 가 sig_ai_pattern에 존재하는 경우, background yellow 및 foreground red 동시 적용
-        sig_ai_pattern = re.sub(first_change_regex, r'<mark style = "background:yellow;"><span style = "color:red;">\1</span></mark>', sig_ai_pattern)    
-
     foreground_regex = r'\x1b\[91m(.*?)\x1b\[39m'
     background_regex = r'\x1b\[103m(.*?)\x1b\[49m'
-
-    sig_ai_pattern = re.sub(foreground_regex, r'<span style = "color:red;">\1</span>', sig_ai_pattern)
-    sig_ai_pattern = re.sub(background_regex, r'<mark style = "background-color:yellow;">\1</mark>', sig_ai_pattern)
-
-    sig_pattern_html = f"<head>{sig_ai_pattern}</head>"
-    print(sig_pattern_html)
-
-    test_regex = r'</mark>(.*?)</span>' 
-    # => foreground red 처리
-    # sig_ai_pattern에 test_regex가 존재하는 경우
-    if re.search(test_regex, sig_pattern_html):
-        # 해당 문자열들을 foreground red 처리
-        sig_pattern_html = re.sub(test_regex, r'</mark><span style = "color:red;">\1</span>', sig_pattern_html)
     
+    sig_ai_pattern = re.sub(foreground_regex, r'<font color = "red">\1</font>', sig_ai_pattern)
+    sig_ai_pattern = re.sub(background_regex, r'<mark style = "background-color:yellow;">\1</mark>', sig_ai_pattern)
+    
+    sig_pattern_html = f"<head>{sig_ai_pattern}</head>"        
     sig_df_html = sig_df.to_html(index=False, justify='center')
 
     return render_template('XAI_output.html', payload_raw_data = request.form['raw_data_str'],  
