@@ -462,7 +462,7 @@ def XAI_result():
     background_regex = r'\x1b\[103m(.*?)\x1b\[49m'
     
     sig_ai_pattern = re.sub(foreground_regex, r'<font color = "red">\1</font>', sig_ai_pattern)
-    sig_ai_pattern = re.sub(background_regex, r'<mark style = "background-color:yellow;">\1</mark>', sig_ai_pattern)
+    sig_ai_pattern = re.sub(background_regex, r'<span style = "background-color:yellow;">\1</span>', sig_ai_pattern)
     
     sig_pattern_html = f"<head>{sig_ai_pattern}</head>"        
     sig_df_html = sig_df.to_html(index=False, justify='center')
