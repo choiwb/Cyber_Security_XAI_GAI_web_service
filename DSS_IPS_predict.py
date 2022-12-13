@@ -456,7 +456,7 @@ def XAI_result():
 
     # HTML 형태 payload 의 경우, 소괄호 치환 필요
     sig_ai_pattern = re.sub(r'[\\<]', r'&lt;', sig_ai_pattern)
-    sig_ai_pattern = re.sub(r'[\\<>]', r'&gt;', sig_ai_pattern)
+    sig_ai_pattern = re.sub(r'[\\>]', r'&gt;', sig_ai_pattern)
 
     foreground_regex = r'\x1b\[91m(.*?)\x1b\[39m'
     background_regex = r'\x1b\[103m(.*?)\x1b\[49m'
