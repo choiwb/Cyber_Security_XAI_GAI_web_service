@@ -66,8 +66,7 @@ bert_pipe = pipeline(task = "text-classification",
 bert_pipe.device = device
 bert_pipe.model.to(device)
 
-# build an explainer using a token masker
-IPS_pytorch_bert_explainer = shap.Explainer(bert_predict, tokenizer)
+
 
 
 
