@@ -592,6 +592,9 @@ def WAF_payload_parsing():
     else:
         # http_version => HTTP/1.1 OR HTTP/1.0 OR HTTP/2.0
         df_res['http_version'] = '-'
+        # df_res.iloc[0,4]) ' '  로 시작하는 경우 '' 처리
+        if df_res.iloc[0,4].startswith(' ') == True:
+            df_res['http_body'] = df_res['http_body'].str[1:]
 
         if df_res.iloc[0,4].lower().startswith('http/') == True:
             df_res['http_version'][0:1] = df_res['http_body'][0:1].str[0:8]
