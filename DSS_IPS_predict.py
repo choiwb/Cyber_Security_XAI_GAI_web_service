@@ -313,11 +313,26 @@ def XAI_result():
     shap_values_sql_logit = shap_logit(shap_values_sql)
     print('sql SHAP values (logit 적용 함): ', shap_values_sql_logit)
 
-    shap_mean_values = np.abs(shap_values_sql[1]).mean(0)
+    # mean_shap_values = np.abs(shap_values).mean(0)
+    # mean_shap_values = np.abs(shap_values[1]).mean(0)
+    mean_shap_values = np.abs(shap_values_logit).mean(0)
+    # 예측 데이터는 1건이므로, 반드시 평균을 구할 필요가 없음 !!!!!
+
     mean_shap_value_df = pd.DataFrame(list(zip(payload_df.columns, mean_shap_values)),
-                                    columns=['피처 명','피처 중요도'])
-    mean_shap_value_df.sort_values(by=['피처 중요도'],
-                                ascending=False, inplace=True)
+                                   columns=['피처 명','피처 중요도'])
+
+    pred = IPS_model.predict(payload_arr)
+    if pred == 1:
+        db_ai = 'anomalies'
+    else:
+        db_ai = 'normal'
+    
+    if db_ai == 'anomalies':
+        mean_shap_value_df.sort_values(by=['피처 중요도'],
+                                    ascending=False, inplace=True)
+    else:
+        mean_shap_value_df.sort_values(by=['피처 중요도'],
+                                    ascending=True, inplace=True)
     
     top10_shap_values = mean_shap_value_df.iloc[0:10, :]
     top10_shap_values = top10_shap_values.reset_index(drop = True)
@@ -325,14 +340,11 @@ def XAI_result():
     top10_shap_values.index = top10_shap_values.index + 1
     top10_shap_values = top10_shap_values.reset_index(drop = False)
     top10_shap_values = top10_shap_values.rename(columns = {'index': '순위'})
-    print(top10_shap_values)
-    
+    # print(top10_shap_values)
+
     # 피처 설명 테이블과 join
     top10_shap_values = pd.merge(top10_shap_values, ips_feature_df, how = 'left', on = '피처 명')
     top10_shap_values = top10_shap_values[['순위', '피처 명', '피처 설명', '피처 중요도']]
-
-    # '피처 설명' 필드에서 결측치는 TF-IDF 자동 생성 피처이므로, 해당 설명 추가
-    top10_shap_values['피처 설명'] = top10_shap_values['피처 설명'].fillna('payload에서 TF-IDF 기반 추출된 키워드에 대한 표현')
 
     payload_df_t = payload_df.T
     payload_df_t.columns = ['피처 값']
@@ -343,7 +355,6 @@ def XAI_result():
 
     # 소수점 4째 자리까지 표현
     top10_shap_values['피처 중요도'] = top10_shap_values['피처 중요도'].apply(lambda x: round(x, 4))
-    top10_shap_values['피처 값'] = top10_shap_values['피처 값'].apply(lambda x: round(x, 4))
     
     # top10_shap_values to html
     top10_shap_values_html = top10_shap_values.to_html(index=False, justify='center')
