@@ -28,7 +28,7 @@ IPS_pytorch_bert_model_path = 'MODEL DIR !!!!!!!'
 IPS_text_model = pickle.load(open(IPS_text_model_path, 'rb'))
 IPS_total_model = pickle.load(open(IPS_total_model_path, 'rb'))
 
-IPS_text_explainer = pickle.load(open(IPS_text_explainer_path, 'rb'))
+# IPS_text_explainer = pickle.load(open(IPS_text_explainer_path, 'rb'))
 
 
 # device = torch.device('mps')
