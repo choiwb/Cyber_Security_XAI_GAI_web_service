@@ -302,6 +302,7 @@ def XAI_result():
     payload_df = sql_result_total[1]
     payload_arr = np.array(payload_df)
     
+    IPS_total_explainer = pickle.load(open(IPS_total_explainer_path, 'rb'))
     expected_value_sql = IPS_total_explainer.expected_value
     expected_value_sql = np.array(expected_value_sql)
     expected_value_sql_logit = shap_logit(expected_value_sql)
