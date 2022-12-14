@@ -450,6 +450,8 @@ def XAI_result():
 
     '''BERT 모델 호출 후 예측 속도 향상 필요!!!!!!!!!!!!!! CPU => MPS 또는 GPU'''
     bert_shap_start = time.time()
+    # build an explainer using a token masker
+    IPS_pytorch_bert_explainer = shap.Explainer(bert_predict, tokenizer)
     bert_shap_values = IPS_pytorch_bert_explainer(bert_payload, fixed_context=1, batch_size=1)
     bert_shap_end = time.time()
     dur_bert_shap = bert_shap_end - bert_shap_start
