@@ -30,6 +30,8 @@ IPS_total_model = pickle.load(open(IPS_total_model_path, 'rb'))
 
 # IPS_text_explainer = pickle.load(open(IPS_text_explainer_path, 'rb'))
 
+# 학습데이터 경로
+ips_training_data = 'TRAINING DATA DIR !!!!!'
 
 # device = torch.device('mps')
 # device = torch.device('cpu')
