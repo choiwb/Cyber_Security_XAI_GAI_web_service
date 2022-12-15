@@ -9,6 +9,7 @@
 - Deployment: Flask
 - ssdeep (fuzzy hash similarity measure) based payload calculate & PostgreSQL connect
 - Domain Signature pattern and AI feature highlighting after pattern method matching
+- Feature importance Summary about predict data using training data
 - WAF & WEB LOG (APACHE or NGINX or IIS) Parsing
 
 - TO DO 1: BERT based Tokenizer R&D (NOT AutoTokenizer & BertTokenizer)
