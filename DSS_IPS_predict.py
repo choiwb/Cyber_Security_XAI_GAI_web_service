@@ -357,6 +357,65 @@ def XAI_result():
     # 소수점 4째 자리까지 표현
     top10_shap_values['피처 중요도'] = top10_shap_values['피처 중요도'].apply(lambda x: round(x, 4))
     
+    ##################################################
+    # 학습 데이터 기반 피처 중요도 요약 (상위 3개 피처)
+    ##################################################
+    first_feature = top10_shap_values.iloc[0, 1]
+    first_fv = top10_shap_values.iloc[0, 3]
+    second_feature = top10_shap_values.iloc[1, 1]
+    second_fv = top10_shap_values.iloc[1, 3]
+    third_feature = top10_shap_values.iloc[2, 1]
+    third_fv = top10_shap_values.iloc[2, 3]
+
+    if first_feature != 'ips_00001_payload_whitelist':
+        if first_fv == 1:
+            first_fv_result = '공격 탐지'
+        else:
+            first_fv_result = '정상 인식'
+
+        first_fv_df = ips_training_data[ips_training_data[first_feature] == first_fv]
+        first_fv_df_anomalies = first_fv_df[first_fv_df['label'] == 'anomalies']
+        first_fv_df_anomalies_ratio = first_fv_df_anomalies.shape[0] / first_fv_df.shape[0]
+        first_fv_df_anomalies_ratio = round(first_fv_df_anomalies_ratio * 100, 2)
+        first_fv_df_normal_ratio = 100 - first_fv_df_anomalies_ratio
+
+        first_statement = '%s 가 %s 하였고, 헉숩 데이터에서 해당 피처 값은 정탐: %.2f%% 오탐: %.2f%% 입니다.' %(first_feature, first_fv_result, first_fv_df_anomalies_ratio, first_fv_df_normal_ratio)
+    else:
+        first_statement = '로그 전송 이벤트가 %d건 입니다.' % first_fv
+
+    if second_feature != 'ips_00001_payload_whitelist':
+        if second_fv == 1:
+            second_fv_result = '공격 탐지'
+        else:
+            second_fv_result = '정상 인식'
+        second_fv_df = ips_training_data[ips_training_data[second_feature] == second_fv]
+        second_fv_df_anomalies = second_fv_df[second_fv_df['label'] == 'anomalies']
+        second_fv_df_anomalies_ratio = second_fv_df_anomalies.shape[0] / second_fv_df.shape[0]
+        second_fv_df_anomalies_ratio = round(second_fv_df_anomalies_ratio * 100, 2)
+        second_fv_df_normal_ratio = 100 - second_fv_df_anomalies_ratio
+
+        second_statement = '%s 가 %s 하였고, 헉숩 데이터에서 해당 피처 값은 정탐: %.2f%% 오탐: %.2f%% 입니다.' %(second_feature, second_fv_result, second_fv_df_anomalies_ratio, second_fv_df_normal_ratio)
+    else:
+        second_statement = '로그 전송 이벤트가 %d건 입니다.' % second_fv
+
+    if third_feature != 'ips_00001_payload_whitelist':
+        if third_fv == 1:
+            third_fv_result = '공격 탐지'
+        else:
+            third_fv_result = '정상 인식'
+        third_fv_df = ips_training_data[ips_training_data[third_feature] == third_fv]
+        third_fv_df_anomalies = third_fv_df[third_fv_df['label'] == 'anomalies']
+        third_fv_df_anomalies_ratio = third_fv_df_anomalies.shape[0] / third_fv_df.shape[0]
+        third_fv_df_anomalies_ratio = round(third_fv_df_anomalies_ratio * 100, 2)
+        third_fv_df_normal_ratio = 100 - third_fv_df_anomalies_ratio
+
+        third_statement = '%s 가 %s 하였고, 헉숩 데이터에서 해당 피처 값은 정탐: %.2f%% 오탐: %.2f%% 입니다.' %(third_feature, third_fv_result, third_fv_df_anomalies_ratio, third_fv_df_normal_ratio)
+    else:
+        third_statement = '로그 전송 이벤트가 %d건 입니다.' % third_fv
+
+    
+    
+    
     # top10_shap_values to html
     top10_shap_values_html = top10_shap_values.to_html(index=False, justify='center')
 
