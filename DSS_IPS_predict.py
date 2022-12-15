@@ -549,6 +549,9 @@ def XAI_result():
                                 bert_label = bert_label,
                                 bert_score = bert_score,
                                 top10_shap_values_html = top10_shap_values_html,
+                                first_statement = first_statement,
+                                second_statement = second_statement,
+                                third_statement = third_statement,
                                 sig_pattern_html = sig_pattern_html,
                                 sig_df_html = sig_df_html,
                                 # summary_html = summary_html
