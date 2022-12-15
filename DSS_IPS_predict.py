@@ -398,7 +398,7 @@ def XAI_result():
             first_fv_df_anomalies_ratio = round(first_fv_df_anomalies_ratio * 100, 2)
             first_fv_df_normal_ratio = 100 - first_fv_df_anomalies_ratio
 
-            first_statement = '%s 키워드가 1번 이상 등장하였고, 헉숩 데이터에서 해당 피처가 1번 이상 등장한 경우, 정탐: %.2f%% 오탐: %.2f%% 입니다.' %(first_word, first_fv_df_anomalies_ratio, first_fv_df_normal_ratio)
+            first_statement = '%s 키워드가 1번 이상 등장하였고, 헉숩 데이터에서 해당 키워드가 1번 이상 등장한 경우, 정탐: %.2f%% 오탐: %.2f%% 입니다.' %(first_word, first_fv_df_anomalies_ratio, first_fv_df_normal_ratio)
         else:
             first_word = first_feature[8:]
             first_fv_df = ips_training_data[ips_training_data[first_feature] == 0]
@@ -435,7 +435,7 @@ def XAI_result():
             second_fv_df_anomalies_ratio = round(second_fv_df_anomalies_ratio * 100, 2)
             second_fv_df_normal_ratio = 100 - second_fv_df_anomalies_ratio
 
-            second_statement = '%s 키워드가 1번 이상 등장하였고, 헉숩 데이터에서 해당 피처가 1번 이상 등장한 경우, 정탐: %.2f%% 오탐: %.2f%% 입니다.' %(second_word, second_fv_df_anomalies_ratio, second_fv_df_normal_ratio)
+            second_statement = '%s 키워드가 1번 이상 등장하였고, 헉숩 데이터에서 해당 키워드가 1번 이상 등장한 경우, 정탐: %.2f%% 오탐: %.2f%% 입니다.' %(second_word, second_fv_df_anomalies_ratio, second_fv_df_normal_ratio)
         else:
             second_word = second_feature[8:]
             second_fv_df = ips_training_data[ips_training_data[second_feature] == 0]
@@ -471,7 +471,7 @@ def XAI_result():
             third_fv_df_anomalies_ratio = round(third_fv_df_anomalies_ratio * 100, 2)
             third_fv_df_normal_ratio = 100 - third_fv_df_anomalies_ratio
 
-            third_statement = '%s 키워드가 1번 이상 등장하였고, 헉숩 데이터에서 해당 피처가 1번 이상 등장한 경우, 정탐: %.2f%% 오탐: %.2f%% 입니다.' %(third_word, third_fv_df_anomalies_ratio, third_fv_df_normal_ratio)
+            third_statement = '%s 키워드가 1번 이상 등장하였고, 헉숩 데이터에서 해당 키워드가 1번 이상 등장한 경우, 정탐: %.2f%% 오탐: %.2f%% 입니다.' %(third_word, third_fv_df_anomalies_ratio, third_fv_df_normal_ratio)
         else:
             third_word = third_feature[8:]
             third_fv_df = ips_training_data[ips_training_data[third_feature] == 0]
