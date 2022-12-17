@@ -354,10 +354,7 @@ def XAI_result():
     top10_shap_values = pd.merge(top10_shap_values, payload_df_t, how = 'left', on = '피처 명')
     top10_shap_values = top10_shap_values[['순위', '피처 명', '피처 설명', '피처 값', '피처 중요도']]
 
-    # 소수점 4째 자리까지 표현
-    top10_shap_values['피처 중요도'] = top10_shap_values['피처 중요도'].apply(lambda x: round(x, 4))
     top10_shap_values['피처 설명'] = top10_shap_values['피처 설명'].fillna('payload에서 TF-IDF 기반 추출된 키워드에 대한 표현')
-
     
     ##################################################
     # 학습 데이터 기반 피처 중요도 요약 (상위 3개 피처)
@@ -484,6 +481,18 @@ def XAI_result():
 
     
     
+    # 소수점 4째 자리까지 표현
+    top10_shap_values['피처 중요도'] = top10_shap_values['피처 중요도'].apply(lambda x: round(x, 4))
+    top10_shap_values['피처 값'] = top10_shap_values['피처 값'].apply(lambda x: round(x, 4))
+
+    top10_shap_values['피처 값'] = top10_shap_values['피처 값'].astype(str)
+    print(top10_shap_values['피처 값'] )
+
+    # 피처 명이 ips_로 시작하는 경우 또는 피처 값이 0인 경우, 피처 값은 정수로 표현
+    top10_shap_values['피처 값'] = top10_shap_values.apply(lambda x: x['피처 값'].split('.')[0]
+                                    if x['피처 명'].startswith('ips_') or x['피처 값'] == '0.0'
+                                    else x['피처 값'], 
+                                    axis = 1)
     
     # top10_shap_values to html
     top10_shap_values_html = top10_shap_values.to_html(index=False, justify='center')
