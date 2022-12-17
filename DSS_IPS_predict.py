@@ -287,6 +287,11 @@ def highlight_text(text, signature, ai_field):
 
     return text, sig_pattern_df
 
+
+# 학습 데이터 TF-IDF 호출
+train_word_idf = pd.read_csv('train_word_idf.csv')
+
+
 @app.route('/XAI_result', methods = ['POST'])
 def XAI_result():
 
@@ -359,9 +364,7 @@ def XAI_result():
     ##################################################
     # 학습 데이터 기반 피처 중요도 요약 (상위 3개 피처)
     ##################################################
-    
-    # TF-IDF 피처에 대한 설명 필요 !!!!!!!!!!!!!!!!
-    
+        
     first_feature = top10_shap_values.iloc[0, 1]
     first_fv = top10_shap_values.iloc[0, 3]
     second_feature = top10_shap_values.iloc[1, 1]
@@ -389,14 +392,29 @@ def XAI_result():
     else:
         if first_fv >  0:
             first_word = first_feature[8:]
+
+            ################################
+            first_idf = train_word_idf[train_word_idf['word'] == first_word]
+            first_idf_value = first_idf.iloc[0,2]
+            first_order = first_idf.iloc[0,0]
+            first_predict_tf = first_fv / first_idf_value
+            first_predict_tf = round(first_predict_tf)
+            ################################
+
             first_fv_df = ips_training_data[ips_training_data[first_feature] > 0]
             first_fv_df_anomalies = first_fv_df[first_fv_df['label'] == 1]
             first_fv_df_anomalies_ratio = first_fv_df_anomalies.shape[0] / first_fv_df.shape[0]
             first_fv_df_anomalies_ratio = round(first_fv_df_anomalies_ratio * 100, 2)
             first_fv_df_normal_ratio = 100 - first_fv_df_anomalies_ratio
 
-            first_statement = '%s 키워드가 1번 이상 등장하였고, 학습 데이터에서 해당 키워드가 1번 이상 등장한 경우, 정탐: %.2f%% 오탐: %.2f%% 입니다.' %(first_word, first_fv_df_anomalies_ratio, first_fv_df_normal_ratio)
+            first_statement = '%s 키워드가 %d번 등장하였고, 학습 데이터에서 170개 키워드 중에 %s 번째로 IDF 값이 높았으며, 해당 키워드가 1번 이상 등장한 경우, 정탐: %.2f%% 오탐: %.2f%% 입니다.' %(first_word, first_predict_tf, first_order, first_fv_df_anomalies_ratio, first_fv_df_normal_ratio)
         else:
+            
+            ################################
+            first_idf = train_word_idf[train_word_idf['word'] == first_word]
+            first_order = first_idf.iloc[0,0]
+            ################################
+
             first_word = first_feature[8:]
             first_fv_df = ips_training_data[ips_training_data[first_feature] == 0]
             first_fv_df_anomalies = first_fv_df[first_fv_df['label'] == 1]
@@ -404,7 +422,7 @@ def XAI_result():
             first_fv_df_anomalies_ratio = round(first_fv_df_anomalies_ratio * 100, 2)
             first_fv_df_normal_ratio = 100 - first_fv_df_anomalies_ratio
             
-            first_statement = '%s 키워드가 등장하지 않았고, 학습 데이터에서 해당 키워드가 등장하지 않은 경우, 정탐: %.2f%% 오탐: %.2f%% 입니다.' %(first_word, first_fv_df_anomalies_ratio, first_fv_df_normal_ratio)
+            first_statement = '%s 키워드가 등장하지 않았고, 학습 데이터에서 170개 키워드 중에 %s 번째로 IDF 값이 높았으며, 해당 키워드가 등장하지 않은 경우, 정탐: %.2f%% 오탐: %.2f%% 입니다.' %(first_word, first_order, first_fv_df_anomalies_ratio, first_fv_df_normal_ratio)
 
 
     if second_feature.startswith('ips_'):
@@ -426,22 +444,37 @@ def XAI_result():
     else:
         if second_fv > 0:
             second_word = second_feature[8:]
+
+            ################################
+            second_idf = train_word_idf[train_word_idf['word'] == second_word]
+            second_idf_value = second_idf.iloc[0,2]
+            second_order = second_idf.iloc[0,0]
+            second_predict_tf = second_fv / second_idf_value
+            second_predict_tf = round(second_predict_tf)
+            ################################
+
             second_fv_df = ips_training_data[ips_training_data[second_feature] > 0]
             second_fv_df_anomalies = second_fv_df[second_fv_df['label'] == 1]
             second_fv_df_anomalies_ratio = second_fv_df_anomalies.shape[0] / second_fv_df.shape[0]
             second_fv_df_anomalies_ratio = round(second_fv_df_anomalies_ratio * 100, 2)
             second_fv_df_normal_ratio = 100 - second_fv_df_anomalies_ratio
 
-            second_statement = '%s 키워드가 1번 이상 등장하였고, 학습 데이터에서 해당 키워드가 1번 이상 등장한 경우, 정탐: %.2f%% 오탐: %.2f%% 입니다.' %(second_word, second_fv_df_anomalies_ratio, second_fv_df_normal_ratio)
+            second_statement = '%s 키워드가 %d번 등장하였고, 학습 데이터에서 170개 키워드 중에 %s 번째로 IDF 값이 높았으며, 해당 키워드가 1번 이상 등장한 경우, 정탐: %.2f%% 오탐: %.2f%% 입니다.' %(second_word, second_predict_tf, second_order, second_fv_df_anomalies_ratio, second_fv_df_normal_ratio)
         else:
             second_word = second_feature[8:]
+            
+            ################################
+            second_idf = train_word_idf[train_word_idf['word'] == second_word]
+            second_order = second_idf.iloc[0,0]
+            ################################
+
             second_fv_df = ips_training_data[ips_training_data[second_feature] == 0]
             second_fv_df_anomalies = second_fv_df[second_fv_df['label'] == 1]
             second_fv_df_anomalies_ratio = second_fv_df_anomalies.shape[0] / second_fv_df.shape[0]
             second_fv_df_anomalies_ratio = round(second_fv_df_anomalies_ratio * 100, 2)
             second_fv_df_normal_ratio = 100 - second_fv_df_anomalies_ratio
             
-            second_statement = '%s 키워드가 등장하지 않았고, 학습 데이터에서 해당 키워드가 등장하지 않은 경우, 정탐: %.2f%% 오탐: %.2f%% 입니다.' %(second_word, second_fv_df_anomalies_ratio, second_fv_df_normal_ratio)
+            second_statement = '%s 키워드가 등장하지 않았고, 학습 데이터에서 170개 키워드 중에 %s 번째로 IDF 값이 높았으며, 해당 키워드가 등장하지 않은 경우, 정탐: %.2f%% 오탐: %.2f%% 입니다.' %(second_word, second_order, second_fv_df_anomalies_ratio, second_fv_df_normal_ratio)
 
 
     if third_feature.startswith('ips_'):
@@ -462,22 +495,37 @@ def XAI_result():
     else:
         if third_fv > 0:
             third_word = third_feature[8:]
+            
+            ################################
+            third_idf = train_word_idf[train_word_idf['word'] == third_word]
+            third_idf_value = third_idf.iloc[0,2]
+            third_order = third_idf.iloc[0,0]
+            third_predict_tf = third_fv / third_idf_value
+            third_predict_tf = round(third_predict_tf)
+            ################################
+
             third_fv_df = ips_training_data[ips_training_data[third_feature] > 0]
             third_fv_df_anomalies = third_fv_df[third_fv_df['label'] == 1]
             third_fv_df_anomalies_ratio = third_fv_df_anomalies.shape[0] / third_fv_df.shape[0]
             third_fv_df_anomalies_ratio = round(third_fv_df_anomalies_ratio * 100, 2)
             third_fv_df_normal_ratio = 100 - third_fv_df_anomalies_ratio
 
-            third_statement = '%s 키워드가 1번 이상 등장하였고, 학습 데이터에서 해당 키워드가 1번 이상 등장한 경우, 정탐: %.2f%% 오탐: %.2f%% 입니다.' %(third_word, third_fv_df_anomalies_ratio, third_fv_df_normal_ratio)
+            third_statement = '%s 키워드가 %d번 등장하였고, 학습 데이터에서 170개 키워드 중에 %s 번째로 IDF 값이 높았으며, 해당 키워드가 1번 이상 등장한 경우, 정탐: %.2f%% 오탐: %.2f%% 입니다.' %(third_word, third_predict_tf, third_order, third_fv_df_anomalies_ratio, third_fv_df_normal_ratio)
         else:
             third_word = third_feature[8:]
+
+            ################################
+            third_idf = train_word_idf[train_word_idf['word'] == third_word]
+            third_order = third_idf.iloc[0,0]
+            ################################
+
             third_fv_df = ips_training_data[ips_training_data[third_feature] == 0]
             third_fv_df_anomalies = third_fv_df[third_fv_df['label'] == 1]
             third_fv_df_anomalies_ratio = third_fv_df_anomalies.shape[0] / third_fv_df.shape[0]
             third_fv_df_anomalies_ratio = round(third_fv_df_anomalies_ratio * 100, 2)
             third_fv_df_normal_ratio = 100 - third_fv_df_anomalies_ratio
 
-            third_statement = '%s 키워드가 등장하지 않았고, 학습 데이터에서 해당 키워드가 등장하지 않은 경우, 정탐: %.2f%% 오탐: %.2f%% 입니다.' %(third_word, third_fv_df_anomalies_ratio, third_fv_df_normal_ratio)
+            third_statement = '%s 키워드가 등장하지 않았고, 학습 데이터에서 170개 키워드 중에 %s 번째로 IDF 값이 높았으며, 해당 키워드가 등장하지 않은 경우, 정탐: %.2f%% 오탐: %.2f%% 입니다.' %(third_word, third_order, third_fv_df_anomalies_ratio, third_fv_df_normal_ratio)
 
     
     
