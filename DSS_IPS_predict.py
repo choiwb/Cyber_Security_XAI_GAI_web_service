@@ -386,9 +386,13 @@ def XAI_result():
             first_fv_df_anomalies_ratio = round(first_fv_df_anomalies_ratio * 100, 2)
             first_fv_df_normal_ratio = 100 - first_fv_df_anomalies_ratio
 
-            first_statement = '%s 가 %s 하였고, 학습 데이터에서 해당 피처 값은 정탐: %.2f%% 오탐: %.2f%% 입니다.' %(first_feature, first_fv_result, first_fv_df_anomalies_ratio, first_fv_df_normal_ratio)
+            first_statement = '%s 가 %s 하였고, 학습 데이터에서 해당 피처 값의 라벨 비율은 정탐: %.2f%% 오탐: %.2f%% 입니다.' %(first_feature, first_fv_result, first_fv_df_anomalies_ratio, first_fv_df_normal_ratio)
         else:
-            first_statement = '로그 전송 이벤트가 %d건 입니다.' % first_fv
+            if first_fv >= 2:
+                first_statement = '로그 전송 이벤트가 %d건 이므로, 2건 이상 이어서 오탐 입니다.' % first_fv
+            else:
+                first_statement = '로그 전송 이벤트가 %d건 입니다.' % first_fv            
+            
     else:
         if first_fv >  0:
             first_word = first_feature[8:]
@@ -438,9 +442,13 @@ def XAI_result():
             second_fv_df_anomalies_ratio = round(second_fv_df_anomalies_ratio * 100, 2)
             second_fv_df_normal_ratio = 100 - second_fv_df_anomalies_ratio
 
-            second_statement = '%s 가 %s 하였고, 학습 데이터에서 해당 피처 값은 정탐: %.2f%% 오탐: %.2f%% 입니다.' %(second_feature, second_fv_result, second_fv_df_anomalies_ratio, second_fv_df_normal_ratio)
+            second_statement = '%s 가 %s 하였고, 학습 데이터에서 해당 피처 값의 라벨 비율은 정탐: %.2f%% 오탐: %.2f%% 입니다.' %(second_feature, second_fv_result, second_fv_df_anomalies_ratio, second_fv_df_normal_ratio)
         else:
-            second_statement = '로그 전송 이벤트가 %d건 입니다.' % second_fv
+            if second_fv >= 2:
+                second_statement = '로그 전송 이벤트가 %d건 이므로, 2건 이상 이어서 오탐 입니다.' % second_fv
+            else:
+                second_statement = '로그 전송 이벤트가 %d건 입니다.' % second_fv            
+            
     else:
         if second_fv > 0:
             second_word = second_feature[8:]
@@ -489,9 +497,14 @@ def XAI_result():
             third_fv_df_anomalies_ratio = round(third_fv_df_anomalies_ratio * 100, 2)
             third_fv_df_normal_ratio = 100 - third_fv_df_anomalies_ratio
 
-            third_statement = '%s 가 %s 하였고, 학습 데이터에서 해당 피처 값은 정탐: %.2f%% 오탐: %.2f%% 입니다.' %(third_feature, third_fv_result, third_fv_df_anomalies_ratio, third_fv_df_normal_ratio)
+            third_statement = '%s 가 %s 하였고, 학습 데이터에서 해당 피처 값의 라벨 비율은 정탐: %.2f%% 오탐: %.2f%% 입니다.' %(third_feature, third_fv_result, third_fv_df_anomalies_ratio, third_fv_df_normal_ratio)
         else:
-            third_statement = '로그 전송 이벤트가 %d건 입니다.' % third_fv
+            if third_fv >= 2:
+                third_statement = '로그 전송 이벤트가 %d건 이므로, 2건 이상 이어서 오탐 입니다.' % third_fv
+            else:
+                third_statement = '로그 전송 이벤트가 %d건 입니다.' % third_fv            
+            
+            
     else:
         if third_fv > 0:
             third_word = third_feature[8:]
