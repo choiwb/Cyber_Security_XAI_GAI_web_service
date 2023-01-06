@@ -12,5 +12,7 @@
 - Feature importance Summary about predict data using training data
 - WAF & WEB LOG (APACHE or NGINX or IIS) Parsing
 
-- TO DO 1: BERT based Tokenizer R&D (NOT AutoTokenizer & BertTokenizer)
+- TO DO 1: Optimize for domain based SHAP & feature importance 
 - TO DO 2: Docker application
+- TO DO 3: BERT based Tokenizer R&D (NOT AutoTokenizer & BertTokenizer)
+
