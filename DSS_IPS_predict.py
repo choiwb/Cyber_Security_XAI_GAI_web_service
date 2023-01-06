@@ -413,6 +413,7 @@ def XAI_result():
 
             first_statement = '%s 키워드가 %d번 등장하였고, 학습 데이터에서 170개 키워드 중에 %s 번째로 IDF 값이 높았으며, 해당 키워드가 1번 이상 등장한 경우, 정탐: %.2f%% 오탐: %.2f%% 입니다.' %(first_word, first_predict_tf, first_order, first_fv_df_anomalies_ratio, first_fv_df_normal_ratio)
         else:
+            first_word = first_feature[8:]
             
             ################################
             first_idf = train_word_idf[train_word_idf['word'] == first_word]
