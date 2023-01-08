@@ -526,7 +526,7 @@ def XAI_result():
             third_fv_df_anomalies_ratio = round(third_fv_df_anomalies_ratio * 100, 2)
             third_fv_df_normal_ratio = 100 - third_fv_df_anomalies_ratio
 
-            third_statement = '%s 키워드가 %d번 등장하였고, 학습 데이터에서 170개 키워드 중에 %s 번째로 IDF 값이 높았으며, 해당 키워드가 1번 이상 등장한 경우, 공격: %.2f%% 오탐: %.2f%% 입니다.' %(third_word, third_predict_tf, third_order, third_fv_df_anomalies_ratio, third_fv_df_normal_ratio)
+            third_statement = '%s 키워드가 %d번 등장하였고, 학습 데이터에서 170개 키워드 중에 %s 번째로 IDF 값이 높았으며, 해당 키워드가 1번 이상 등장한 경우, 공격: %.2f%% 정상: %.2f%% 입니다.' %(third_word, third_predict_tf, third_order, third_fv_df_anomalies_ratio, third_fv_df_normal_ratio)
         else:
             third_word = third_feature[8:]
 
@@ -541,7 +541,7 @@ def XAI_result():
             third_fv_df_anomalies_ratio = round(third_fv_df_anomalies_ratio * 100, 2)
             third_fv_df_normal_ratio = 100 - third_fv_df_anomalies_ratio
 
-            third_statement = '%s 키워드가 등장하지 않았고, 학습 데이터에서 170개 키워드 중에 %s 번째로 IDF 값이 높았으며, 해당 키워드가 등장하지 않은 경우, 공격: %.2f%% 오탐: %.2f%% 입니다.' %(third_word, third_order, third_fv_df_anomalies_ratio, third_fv_df_normal_ratio)
+            third_statement = '%s 키워드가 등장하지 않았고, 학습 데이터에서 170개 키워드 중에 %s 번째로 IDF 값이 높았으며, 해당 키워드가 등장하지 않은 경우, 공격: %.2f%% 정상: %.2f%% 입니다.' %(third_word, third_order, third_fv_df_anomalies_ratio, third_fv_df_normal_ratio)
 
     
     
