@@ -14,6 +14,8 @@ import pandas.io.sql as psql
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+import plotly.express as px
+
 import ssdeep
 import tlsh
 from fuzzywuzzy import fuzz
@@ -558,6 +560,30 @@ def XAI_result():
     
     # top10_shap_values to html
     top10_shap_values_html = top10_shap_values.to_html(index=False, justify='center')
+    
+    # top10_shap_values to plotly 
+    # 피처 중요도가 0.5 이상인 경우, red, 미만인 경우, green
+    # 피처 중요도에 커서 올리면 피처 설명 나오도록 표시
+    # background color = white
+
+    summary_plot = px.bar(top10_shap_values, x="피처 중요도", y="피처 명", 
+                color='피처 중요도', color_continuous_scale=['green', 'red'], range_color = [0, 1],
+                text = '피처 값', orientation='h', hover_data = {'피처 명': False, '피처 설명': True, '피처 값': False, '피처 중요도': True},
+                template = 'plotly_white',
+                )
+
+    # sort reberse !!!!!
+    summary_plot.update_layout(yaxis=dict(autorange="reversed"),
+                            title_text='정탐/오탐 예측 상위 10개 피처 중요도', title_x=0.5,
+                            yaxis_title = None)
+    
+    # plotly to html and all config false
+    summary_html = summary_plot.to_html(full_html=False, include_plotlyjs='cdn',
+                                config = {'displaylogo': False,
+                                'modeBarButtonsToRemove': ['zoom', 'pan', 'zoomin', 'zoomout', 'autoscale', 'select2d', 'lasso2d',
+                                'resetScale2d', 'toImage']
+                                }
+                                )
 
     force_plot = shap.force_plot(expected_value_sql, shap_values_sql, payload_arr, link = 'logit',
                         feature_names = payload_df.columns,
@@ -681,7 +707,8 @@ def XAI_result():
     sig_df_html = sig_df.to_html(index=False, justify='center')
 
     return render_template('XAI_output.html', payload_raw_data = request.form['raw_data_str'],  
-                                force_html = force_html,
+                                # force_html = force_html,
+                                summary_html = summary_html,
                                 # waterfall_html = waterfall_html,
                                 text_explainer_html = text_explainer_html,
                                 lime_text_explainer_html = lime_text_explainer_html, 
