@@ -566,8 +566,12 @@ def XAI_result():
     # 피처 중요도에 커서 올리면 피처 설명 나오도록 표시
     # background color = white
 
+    # top10_shap_values['피처 명'] 에서 'ips_00001_' 제거
+    top10_shap_values['피처 명'] = top10_shap_values['피처 명'].apply(lambda x: x[10:] if x.startswith('ips_00001_') else x)
+
+
     summary_plot = px.bar(top10_shap_values, x="피처 중요도", y="피처 명", 
-                color='피처 중요도', color_continuous_scale=['green', 'red'], range_color = [0, 1],
+                color='피처 중요도', color_continuous_scale=['#009900', '#FF0033'], range_color = [0, 1],
                 text = '피처 값', orientation='h', hover_data = {'피처 명': False, '피처 설명': True, '피처 값': False, '피처 중요도': True},
                 template = 'plotly_white',
                 )
@@ -585,9 +589,17 @@ def XAI_result():
                                 }
                                 )
 
-    force_plot = shap.force_plot(expected_value_sql, shap_values_sql, payload_arr, link = 'logit',
-                        feature_names = payload_df.columns,
-                        matplotlib = False)
+    # higher: red, lower: green
+    shap_cols = payload_df.columns.tolist()
+    # payload_df.columns startswith 'ips_00001' 인 경우, ''로 변경
+    shap_cols = [x.replace('ips_00001_', '') for x in shap_cols]
+
+    # force_plot = plt.figure()
+    force_plot = shap.force_plot(expected_value_sql[0], shap_values_sql[1], payload_arr, link = 'logit',
+                        plot_cmap = ['#FF0033', '#009900'],
+                        feature_names = shap_cols,
+                        out_names = '정탐',
+                        matplotlib = False))
             
     force_html = f"<head>{shap.getjs()}</head><body>{force_plot.html()}</body>"
 
@@ -707,7 +719,7 @@ def XAI_result():
     sig_df_html = sig_df.to_html(index=False, justify='center')
 
     return render_template('XAI_output.html', payload_raw_data = request.form['raw_data_str'],  
-                                # force_html = force_html,
+                                force_html = force_html,
                                 summary_html = summary_html,
                                 # waterfall_html = waterfall_html,
                                 text_explainer_html = text_explainer_html,
