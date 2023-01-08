@@ -388,10 +388,10 @@ def XAI_result():
             first_fv_df_anomalies_ratio = round(first_fv_df_anomalies_ratio * 100, 2)
             first_fv_df_normal_ratio = 100 - first_fv_df_anomalies_ratio
 
-            first_statement = '%s 가 %s 하였고, 학습 데이터에서 해당 피처 값의 라벨 비율은 공격: %.2f%% 오탐: %.2f%% 입니다.' %(first_feature, first_fv_result, first_fv_df_anomalies_ratio, first_fv_df_normal_ratio)
+            first_statement = '%s 가 %s 하였고, 학습 데이터에서 해당 피처 값의 라벨 비율은 공격: %.2f%% 정상: %.2f%% 입니다.' %(first_feature, first_fv_result, first_fv_df_anomalies_ratio, first_fv_df_normal_ratio)
         else:
             if first_fv >= 2:
-                first_statement = '로그 전송 이벤트가 %d건 이므로, 2건 이상 이어서 오탐 입니다.' % first_fv
+                first_statement = '로그 전송 이벤트가 %d건 이므로, 2건 이상 이어서 정상 입니다.' % first_fv
             else:
                 first_statement = '로그 전송 이벤트가 %d건 입니다.' % first_fv            
             
@@ -413,7 +413,7 @@ def XAI_result():
             first_fv_df_anomalies_ratio = round(first_fv_df_anomalies_ratio * 100, 2)
             first_fv_df_normal_ratio = 100 - first_fv_df_anomalies_ratio
 
-            first_statement = '%s 키워드가 %d번 등장하였고, 학습 데이터에서 170개 키워드 중에 %s 번째로 IDF 값이 높았으며, 해당 키워드가 1번 이상 등장한 경우, 공격: %.2f%% 오탐: %.2f%% 입니다.' %(first_word, first_predict_tf, first_order, first_fv_df_anomalies_ratio, first_fv_df_normal_ratio)
+            first_statement = '%s 키워드가 %d번 등장하였고, 학습 데이터에서 170개 키워드 중에 %s 번째로 IDF 값이 높았으며, 해당 키워드가 1번 이상 등장한 경우, 공격: %.2f%% 정상: %.2f%% 입니다.' %(first_word, first_predict_tf, first_order, first_fv_df_anomalies_ratio, first_fv_df_normal_ratio)
         else:
             first_word = first_feature[8:]
             
@@ -429,7 +429,7 @@ def XAI_result():
             first_fv_df_anomalies_ratio = round(first_fv_df_anomalies_ratio * 100, 2)
             first_fv_df_normal_ratio = 100 - first_fv_df_anomalies_ratio
             
-            first_statement = '%s 키워드가 등장하지 않았고, 학습 데이터에서 170개 키워드 중에 %s 번째로 IDF 값이 높았으며, 해당 키워드가 등장하지 않은 경우, 공격: %.2f%% 오탐: %.2f%% 입니다.' %(first_word, first_order, first_fv_df_anomalies_ratio, first_fv_df_normal_ratio)
+            first_statement = '%s 키워드가 등장하지 않았고, 학습 데이터에서 170개 키워드 중에 %s 번째로 IDF 값이 높았으며, 해당 키워드가 등장하지 않은 경우, 공격: %.2f%% 정상: %.2f%% 입니다.' %(first_word, first_order, first_fv_df_anomalies_ratio, first_fv_df_normal_ratio)
 
 
     if second_feature.startswith('ips_'):
@@ -445,10 +445,10 @@ def XAI_result():
             second_fv_df_anomalies_ratio = round(second_fv_df_anomalies_ratio * 100, 2)
             second_fv_df_normal_ratio = 100 - second_fv_df_anomalies_ratio
 
-            second_statement = '%s 가 %s 하였고, 학습 데이터에서 해당 피처 값의 라벨 비율은 공격: %.2f%% 오탐: %.2f%% 입니다.' %(second_feature, second_fv_result, second_fv_df_anomalies_ratio, second_fv_df_normal_ratio)
+            second_statement = '%s 가 %s 하였고, 학습 데이터에서 해당 피처 값의 라벨 비율은 공격: %.2f%% 정상: %.2f%% 입니다.' %(second_feature, second_fv_result, second_fv_df_anomalies_ratio, second_fv_df_normal_ratio)
         else:
             if second_fv >= 2:
-                second_statement = '로그 전송 이벤트가 %d건 이므로, 2건 이상 이어서 오탐 입니다.' % second_fv
+                second_statement = '로그 전송 이벤트가 %d건 이므로, 2건 이상 이어서 정상 입니다.' % second_fv
             else:
                 second_statement = '로그 전송 이벤트가 %d건 입니다.' % second_fv            
             
@@ -470,7 +470,7 @@ def XAI_result():
             second_fv_df_anomalies_ratio = round(second_fv_df_anomalies_ratio * 100, 2)
             second_fv_df_normal_ratio = 100 - second_fv_df_anomalies_ratio
 
-            second_statement = '%s 키워드가 %d번 등장하였고, 학습 데이터에서 170개 키워드 중에 %s 번째로 IDF 값이 높았으며, 해당 키워드가 1번 이상 등장한 경우, 공격: %.2f%% 오탐: %.2f%% 입니다.' %(second_word, second_predict_tf, second_order, second_fv_df_anomalies_ratio, second_fv_df_normal_ratio)
+            second_statement = '%s 키워드가 %d번 등장하였고, 학습 데이터에서 170개 키워드 중에 %s 번째로 IDF 값이 높았으며, 해당 키워드가 1번 이상 등장한 경우, 공격: %.2f%% 정상: %.2f%% 입니다.' %(second_word, second_predict_tf, second_order, second_fv_df_anomalies_ratio, second_fv_df_normal_ratio)
         else:
             second_word = second_feature[8:]
             
@@ -485,7 +485,7 @@ def XAI_result():
             second_fv_df_anomalies_ratio = round(second_fv_df_anomalies_ratio * 100, 2)
             second_fv_df_normal_ratio = 100 - second_fv_df_anomalies_ratio
             
-            second_statement = '%s 키워드가 등장하지 않았고, 학습 데이터에서 170개 키워드 중에 %s 번째로 IDF 값이 높았으며, 해당 키워드가 등장하지 않은 경우, 공격: %.2f%% 오탐: %.2f%% 입니다.' %(second_word, second_order, second_fv_df_anomalies_ratio, second_fv_df_normal_ratio)
+            second_statement = '%s 키워드가 등장하지 않았고, 학습 데이터에서 170개 키워드 중에 %s 번째로 IDF 값이 높았으며, 해당 키워드가 등장하지 않은 경우, 공격: %.2f%% 정상: %.2f%% 입니다.' %(second_word, second_order, second_fv_df_anomalies_ratio, second_fv_df_normal_ratio)
 
 
     if third_feature.startswith('ips_'):
@@ -500,7 +500,7 @@ def XAI_result():
             third_fv_df_anomalies_ratio = round(third_fv_df_anomalies_ratio * 100, 2)
             third_fv_df_normal_ratio = 100 - third_fv_df_anomalies_ratio
 
-            third_statement = '%s 가 %s 하였고, 학습 데이터에서 해당 피처 값의 라벨 비율은 정탐: %.2f%% 오탐: %.2f%% 입니다.' %(third_feature, third_fv_result, third_fv_df_anomalies_ratio, third_fv_df_normal_ratio)
+            third_statement = '%s 가 %s 하였고, 학습 데이터에서 해당 피처 값의 라벨 비율은 공격: %.2f%% 정상: %.2f%% 입니다.' %(third_feature, third_fv_result, third_fv_df_anomalies_ratio, third_fv_df_normal_ratio)
         else:
             if third_fv >= 2:
                 third_statement = '로그 전송 이벤트가 %d건 이므로, 2건 이상 이어서 오탐 입니다.' % third_fv
