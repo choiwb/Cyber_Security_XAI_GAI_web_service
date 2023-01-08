@@ -13,5 +13,5 @@
 - WAF & WEB LOG (APACHE or NGINX or IIS) Parsing
 - Docker application
 
-- TO DO 3: BERT based Tokenizer R&D (NOT AutoTokenizer & BertTokenizer)
+- TO DO: BERT based Tokenizer R&D (NOT AutoTokenizer & BertTokenizer)
 
