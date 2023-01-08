@@ -578,7 +578,7 @@ def XAI_result():
 
     # sort reberse !!!!!
     summary_plot.update_layout(yaxis=dict(autorange="reversed"),
-                            title_text='공격/ 예측 상위 10개 피처 중요도', title_x=0.5,
+                            title_text='공격/정상 예측 상위 10개 피처 중요도', title_x=0.5,
                             yaxis_title = None)
     
     # plotly to html and all config false
