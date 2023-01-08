@@ -503,7 +503,7 @@ def XAI_result():
             third_statement = '%s 가 %s 하였고, 학습 데이터에서 해당 피처 값의 라벨 비율은 공격: %.2f%% 정상: %.2f%% 입니다.' %(third_feature, third_fv_result, third_fv_df_anomalies_ratio, third_fv_df_normal_ratio)
         else:
             if third_fv >= 2:
-                third_statement = '로그 전송 이벤트가 %d건 이므로, 2건 이상 이어서 오탐 입니다.' % third_fv
+                third_statement = '로그 전송 이벤트가 %d건 이므로, 2건 이상 이어서 정상 입니다.' % third_fv
             else:
                 third_statement = '로그 전송 이벤트가 %d건 입니다.' % third_fv            
             
