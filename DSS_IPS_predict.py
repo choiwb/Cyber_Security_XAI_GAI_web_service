@@ -570,16 +570,22 @@ def XAI_result():
     top10_shap_values['피처 명'] = top10_shap_values['피처 명'].apply(lambda x: x[10:] if x.startswith('ips_00001_') else x)
 
 
+    # top10_shap_values to plotly 
+    # 피처 중요도에 커서 올리면 피처 설명 나오도록 표시
+    # background color = white
+    # 피처 중요도 기준 0.5 이상은 '공격' 미만은 '정상'
+    top10_shap_values['AI 예측 방향'] = ['공격' if x >= 0.5 else '정상' for x in top10_shap_values['피처 중요도']]
+
     summary_plot = px.bar(top10_shap_values, x="피처 중요도", y="피처 명", 
-                color='피처 중요도', color_continuous_scale=['#00FF00', '#FF0000'], range_color = [0, 1],
-                text = '피처 값', orientation='h', hover_data = {'피처 명': False, '피처 설명': True, '피처 값': False, '피처 중요도': True},
+                color = 'AI 예측 방향', color_discrete_map = {'공격': '#FF0000', '정상': '#00FF00'},
+                text = '피처 값', orientation='h', hover_data = {'피처 명': False, '피처 설명': True, '피처 값': False, '피처 중요도': True, 'AI 예측 방향': False},
                 template = 'plotly_white',
                 )
 
     # 피처 중요도에 따른 sort reverse !!!!!
     summary_plot.update_layout(xaxis_fixedrange=True, yaxis_fixedrange=True,
                             yaxis = dict(autorange="reversed"),
-                            title_text='공격/정상 예측 상위 10개 피처 중요도', title_x=0.5,
+                            title_text='AI 예측 상위 10개 피처 중요도', title_x=0.5,
                             yaxis_title = None
                             )
     
