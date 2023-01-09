@@ -599,7 +599,7 @@ def XAI_result():
                         plot_cmap = ['#FF0033', '#009900'],
                         feature_names = shap_cols,
                         out_names = '공격',
-                        matplotlib = False))
+                        matplotlib = False)
             
     force_html = f"<head>{shap.getjs()}</head><body>{force_plot.html()}</body>"
 
