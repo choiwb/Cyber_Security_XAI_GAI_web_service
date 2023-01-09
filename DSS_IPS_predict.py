@@ -585,6 +585,7 @@ def XAI_result():
     # 피처 중요도에 따른 sort reverse !!!!!
     summary_plot.update_layout(xaxis_fixedrange=True, yaxis_fixedrange=True,
                             yaxis = dict(autorange="reversed"),
+                           legend_itemclick = False, legend_itemdoubleclick = False,
                             title_text='AI 예측 상위 10개 피처 중요도', title_x=0.5,
                             yaxis_title = None
                             )
