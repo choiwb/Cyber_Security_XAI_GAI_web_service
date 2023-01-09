@@ -571,15 +571,17 @@ def XAI_result():
 
 
     summary_plot = px.bar(top10_shap_values, x="피처 중요도", y="피처 명", 
-                color='피처 중요도', color_continuous_scale=['#009900', '#FF0033'], range_color = [0, 1],
+                color='피처 중요도', color_continuous_scale=['#00FF00', '#FF0000'], range_color = [0, 1],
                 text = '피처 값', orientation='h', hover_data = {'피처 명': False, '피처 설명': True, '피처 값': False, '피처 중요도': True},
                 template = 'plotly_white',
                 )
 
-    # sort reberse !!!!!
-    summary_plot.update_layout(yaxis=dict(autorange="reversed"),
+    # 피처 중요도에 따른 sort reverse !!!!!
+    summary_plot.update_layout(xaxis_fixedrange=True, yaxis_fixedrange=True,
+                            yaxis = dict(autorange="reversed"),
                             title_text='공격/정상 예측 상위 10개 피처 중요도', title_x=0.5,
-                            yaxis_title = None)
+                            yaxis_title = None
+                            )
     
     # plotly to html and all config false
     summary_html = summary_plot.to_html(full_html=False, include_plotlyjs='cdn',
@@ -595,8 +597,8 @@ def XAI_result():
     shap_cols = [x.replace('ips_00001_', '') for x in shap_cols]
 
     # force_plot = plt.figure()
-    force_plot = shap.force_plot(expected_value_sql[0], shap_values_sql[1], payload_arr, link = 'logit',
-                        plot_cmap = ['#FF0033', '#009900'],
+    force_plot = shap.force_plot(shap_expected_value[0], shap_values[1], payload_df, link = 'logit',
+                        plot_cmap = ['#FF0000', '#00FF00'],
                         feature_names = shap_cols,
                         out_names = '공격',
                         matplotlib = False)
