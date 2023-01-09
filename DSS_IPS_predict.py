@@ -560,11 +560,6 @@ def XAI_result():
     
     # top10_shap_values to html
     top10_shap_values_html = top10_shap_values.to_html(index=False, justify='center')
-    
-    # top10_shap_values to plotly 
-    # 피처 중요도가 0.5 이상인 경우, red, 미만인 경우, green
-    # 피처 중요도에 커서 올리면 피처 설명 나오도록 표시
-    # background color = white
 
     # top10_shap_values['피처 명'] 에서 'ips_00001_' 제거
     top10_shap_values['피처 명'] = top10_shap_values['피처 명'].apply(lambda x: x[10:] if x.startswith('ips_00001_') else x)
