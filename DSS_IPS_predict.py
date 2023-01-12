@@ -586,7 +586,7 @@ def XAI_result():
                             )
     
     # plotly to html and all config false
-    summary_html = summary_plot.to_html(full_html=False, include_plotlyjs='cdn',
+    summary_html = summary_plot.to_html(full_html=False, include_plotlyjs=True,
                                 config = {'displaylogo': False,
                                 'modeBarButtonsToRemove': ['zoom', 'pan', 'zoomin', 'zoomout', 'autoscale', 'select2d', 'lasso2d',
                                 'resetScale2d', 'toImage']
