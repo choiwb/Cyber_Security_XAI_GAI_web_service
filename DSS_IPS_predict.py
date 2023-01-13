@@ -236,6 +236,24 @@ ai_field = ['select(.*?)from', 'select(.*?)count', 'select(.*?)distinct', 'union
            'user-agent(.*?)semrushbot', 'user-agent(.*?)curl', 'user-agent(.*?)masscan', 'user-agent(.*?)sqlmap',
            'user-agent(.*?)urlgrabber(.*?)yum']
 
+# ai_list에 element 안에 '(.*?)'가 포함되어 있는 경우, '(.*?)' 기준으로 split 후, 리스트에 추가
+first_ai_list = [x.split('(.*?)')[0] for x in ai_list if '(.*?)' in x]
+end_ai_list = [x.split('(.*?)')[1] for x in ai_list if '(.*?)' in x]
+except_ai_list = [x.replace('[\\.]', '.') for x in ai_list]
+# ai_list의 element 안에 ('*?)' 가 2번 포함되어 있는 경우, 2번째 '(.*?)' 기준으로 split 후, 리스트에 추가
+two_ai_list = [x.split('(.*?)')[2] for x in ai_list if x.count('(.*?)') == 2]
+ai_list_split = first_ai_list + end_ai_list + ai_list + except_ai_list
+
+# ai_list_split 안에 중복되는 element 가 있는 경우, 단일 처리
+ai_list_split = list(set(ai_list_split))
+
+# ai_list_split 안에 '(.*?' 나, '[\\.]' 가 포함되어 있는 경우, 제거
+ai_list_split = [x for x in ai_list_split if '(.*?)' not in x]
+ai_list_split = [x for x in ai_list_split if '[\\.]' not in x]
+
+print(ai_list_split)
+print(len(ai_list_split))
+
 # IPS & WAF 피처 설명 테이블 생성
 ips_feature_df = pd.DataFrame([['ips_00001_payload_base64', 'payload에 공격관련 키워드(base64)가 포함되는 경우에 대한 표현'],
                                 ['ips_00001_payload_cmd_comb_01', 'payload에 cmd 관련 키워드 조합이 포함되는 경우에 대한 표현'],
