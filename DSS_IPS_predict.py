@@ -237,12 +237,12 @@ ai_field = ['select(.*?)from', 'select(.*?)count', 'select(.*?)distinct', 'union
            'user-agent(.*?)urlgrabber(.*?)yum']
 
 # ai_list에 element 안에 '(.*?)'가 포함되어 있는 경우, '(.*?)' 기준으로 split 후, 리스트에 추가
-first_ai_list = [x.split('(.*?)')[0] for x in ai_list if '(.*?)' in x]
-end_ai_list = [x.split('(.*?)')[1] for x in ai_list if '(.*?)' in x]
-except_ai_list = [x.replace('[\\.]', '.') for x in ai_list]
+first_ai_list = [x.split('(.*?)')[0] for x in ai_field if '(.*?)' in x]
+end_ai_list = [x.split('(.*?)')[1] for x in ai_field if '(.*?)' in x]
+except_ai_list = [x.replace('[\\.]', '.') for x in ai_field]
 # ai_list의 element 안에 ('*?)' 가 2번 포함되어 있는 경우, 2번째 '(.*?)' 기준으로 split 후, 리스트에 추가
-two_ai_list = [x.split('(.*?)')[2] for x in ai_list if x.count('(.*?)') == 2]
-ai_list_split = first_ai_list + end_ai_list + ai_list + except_ai_list
+two_ai_list = [x.split('(.*?)')[2] for x in ai_field if x.count('(.*?)') == 2]
+ai_list_split = first_ai_list + end_ai_list + ai_field + except_ai_list
 
 # ai_list_split 안에 중복되는 element 가 있는 경우, 단일 처리
 ai_list_split = list(set(ai_list_split))
