@@ -745,7 +745,7 @@ def XAI_result():
                             annotations = [dict(text = '위험도: %d%%<br>%s' %(attack_proba, db_ai),
                             x = 0.5, y = 0.5, 
                             font_color = '#FF0000' if db_ai == '공격' else '#00FF00',
-                            font_size = 14, showarrow = False)]
+                            font_size = 12, showarrow = False)]
                             )
 
     pie_plot.update(layout_showlegend=True)
