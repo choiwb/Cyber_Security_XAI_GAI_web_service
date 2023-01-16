@@ -39,9 +39,8 @@ def user_input():
 def web_UI_preprocess():
     
     payload_df = predict_UI_sql_result()
-    payload_arr = np.array(payload_df)
 
-    return payload_arr, payload_df
+    return payload_df
 
 
 @app.route('/web_UI_predict', methods=['POST'])
