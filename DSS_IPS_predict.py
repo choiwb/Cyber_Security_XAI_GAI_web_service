@@ -376,9 +376,7 @@ def XAI_result():
     kor_time = datetime.datetime.now()
     xai_event_time = kor_time.strftime("%Y%m%d%H%M")
     
-    sql_result_total = web_UI_preprocess()
-
-    payload_df = sql_result_total[1]
+    payload_df = web_UI_preprocess()
     payload_arr = np.array(payload_df)
 
     IPS_total_explainer = pickle.load(open(IPS_total_explainer_path, 'rb'))
@@ -389,6 +387,8 @@ def XAI_result():
     expected_value_sql = np.array(expected_value_sql)
     expected_value_sql_logit = shap_logit(expected_value_sql)
     print('sql SHAP 기댓값 (logit 적용 함): ', expected_value_sql_logit)
+    expected_value_sql_logit = expected_value_sql_logit[0]
+    expected_value_sql_logit = np.round(expected_value_sql_logit, 4) * 100
 
     # anomalies : shap_values[1], normal: shap_values[0]
     shap_values_sql = IPS_total_explainer.shap_values(payload_arr)
@@ -904,6 +904,7 @@ def XAI_result():
 
 
     return render_template('XAI_output.html', payload_raw_data = request.form['raw_data_str'],  
+                                expected_value_sql_logit = expected_value_sql_logit,
                                 force_html = force_html,
                                 summary_html = summary_html,
                                 pie_html = pie_html,
