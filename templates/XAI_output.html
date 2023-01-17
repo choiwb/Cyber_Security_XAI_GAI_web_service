@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <style media="screen">
   body {
@@ -13,6 +12,7 @@
   <h3> XAI 리포트 <br></h3>
   <iframe width = "1000", height = "170" srcdoc="{{force_html}}" ></iframe>
   <h4> 학습 데이터 평균 위험도: {{expected_value_sql_logit}} %</h4>
+  <iframe width = "1000", height = "500" srcdoc="{{train_mean_proba_html}}" ></iframe>
   <iframe width = "1000", height = "500" srcdoc="{{summary_html}}" ></iframe>
   <h3> 피처 중요도 요약 <br></h3>
   <h5> 1. {{first_statement}}</h5>
