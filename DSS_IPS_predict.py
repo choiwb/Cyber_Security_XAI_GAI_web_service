@@ -388,6 +388,33 @@ def XAI_result():
     print('sql SHAP 기댓값 (logit 적용 함): ', expected_value_sql_logit)
     expected_value_sql_logit = expected_value_sql_logit[0]
     expected_value_sql_logit = np.round(expected_value_sql_logit, 4) * 100
+    
+    train_mean_df = pd.DataFrame([['공격', expected_value_sql_logit]], 
+                        columns = ['AI 예측 방향', '위험도(%)'])
+
+    ################################################################
+    # expected_value_sql_logit 기반 plotly bar chart 생성 !!!! (기준 100%)
+    train_mean_proba_plot = px.bar(train_mean_df, x = '위험도(%)', y = 'AI 예측 방향', orientation = 'h',
+                                        text = '위험도(%)', 
+                                        color = 'AI 예측 방향', 
+                                        color_discrete_map = {'공격': '#FF0000'},
+                                        template = 'plotly_white')
+
+    train_mean_proba_plot.update_layout(xaxis_fixedrange=True, yaxis_fixedrange=True,
+                        legend_itemclick = False, legend_itemdoubleclick = False,
+                        showlegend = False,
+                        title_text='학습 데이터 평균 위험도', title_x=0.5,
+                        yaxis_title = None,
+                        width = 1000,
+                        height = 300,
+                        )
+    
+    train_mean_proba_html = train_mean_proba_plot.to_html(full_html=False, include_plotlyjs=True,
+                            config = {'displaylogo': False,
+                            'modeBarButtonsToRemove': ['zoom', 'pan', 'zoomin', 'zoomout', 'autoscale', 'select2d', 'lasso2d',
+                            'resetScale2d', 'toImage']
+                            }
+                            )
 
     # anomalies : shap_values[1], normal: shap_values[0]
     shap_values_sql = IPS_total_explainer.shap_values(payload_arr)
@@ -904,6 +931,7 @@ def XAI_result():
 
     return render_template('XAI_output.html', payload_raw_data = request.form['raw_data_str'],  
                                 expected_value_sql_logit = expected_value_sql_logit,
+                                train_mean_proba_html = train_mean_proba_html,
                                 force_html = force_html,
                                 summary_html = summary_html,
                                 pie_html = pie_html,
