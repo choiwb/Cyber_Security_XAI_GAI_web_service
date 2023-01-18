@@ -389,33 +389,6 @@ def XAI_result():
     expected_value_sql_logit = expected_value_sql_logit[0]
     expected_value_sql_logit = np.round(expected_value_sql_logit, 4) * 100
     
-    train_mean_df = pd.DataFrame([['공격', expected_value_sql_logit]], 
-                        columns = ['AI 예측 방향', '위험도(%)'])
-
-    ################################################################
-    # expected_value_sql_logit 기반 plotly bar chart 생성 !!!! (기준 100%)
-    train_mean_proba_plot = px.bar(train_mean_df, x = '위험도(%)', y = 'AI 예측 방향', orientation = 'h',
-                                        text = '위험도(%)', 
-                                        color = 'AI 예측 방향', 
-                                        color_discrete_map = {'공격': '#FF0000'},
-                                        template = 'plotly_white')
-
-    train_mean_proba_plot.update_layout(xaxis_fixedrange=True, yaxis_fixedrange=True,
-                        legend_itemclick = False, legend_itemdoubleclick = False,
-                        showlegend = False,
-                        title_text='학습 데이터 평균 위험도', title_x=0.5,
-                        yaxis_title = None,
-                        width = 1000,
-                        height = 300,
-                        )
-    
-    train_mean_proba_html = train_mean_proba_plot.to_html(full_html=False, include_plotlyjs=True,
-                            config = {'displaylogo': False,
-                            'modeBarButtonsToRemove': ['zoom', 'pan', 'zoomin', 'zoomout', 'autoscale', 'select2d', 'lasso2d',
-                            'resetScale2d', 'toImage']
-                            }
-                            )
-
     # anomalies : shap_values[1], normal: shap_values[0]
     shap_values_sql = IPS_total_explainer.shap_values(payload_arr)
     shap_values_sql = np.array(shap_values_sql)
@@ -466,6 +439,50 @@ def XAI_result():
 
     proba = IPS_total_model.predict_proba(payload_arr)
     attack_proba = int(np.round(proba[:, 1], 2) * 100)
+    
+    train_mean_df = pd.DataFrame([['학습 데이터 평균', expected_value_sql_logit, '기준'], ['예측', attack_proba, attack_proba - expected_value_sql_logit]], 
+                        columns = ['학습/예측', '위험도(%)', '위험도(%) 증감'])
+    train_mean_df['위험도(%) 증감'][1] = np.round(train_mean_df['위험도(%) 증감'][1], 2)
+
+    if train_mean_df['위험도(%) 증감'][1] < 0:
+        train_mean_df['위험도(%) 증감'][1] = train_mean_df['위험도(%) 증감'][1]
+    else:
+        train_mean_df['위험도(%) 증감'] = train_mean_df['위험도(%) 증감'].astype(str)
+        train_mean_df['위험도(%) 증감'][1] = '+' +  train_mean_df['위험도(%) 증감'][1]
+   
+
+   ################################################################
+    # expected_value_sql_logit 기반 plotly bar chart 생성 !!!! (기준 100%)
+    
+    train_mean_proba_plot = px.bar(train_mean_df, x = '위험도(%)',  y = '학습/예측',  
+                                        orientation = 'h',
+                                        text = '위험도(%)',
+                                        hover_data = {'학습/예측': True, '위험도(%)': True, '위험도(%) 증감': True},
+                                        color = '학습/예측', 
+                                        color_discrete_map = {'학습 데이터 평균': '#0000FF', '예측': '#FF0000'},
+                                        template = 'plotly_white')
+
+    train_mean_proba_plot.update_layout(xaxis_fixedrange=True, yaxis_fixedrange=True,   
+                        legend_itemclick = False, legend_itemdoubleclick = False,
+                        showlegend = False,
+                        title_text='학습/예측 위험도', title_x=0.5,
+                        yaxis_title = None,
+                        # xaxis_title = None,
+                        width = 900,
+                        height = 250
+                        )
+    
+    train_mean_proba_html = train_mean_proba_plot.to_html(full_html=False, include_plotlyjs=True,
+                            config = {'displaylogo': False,
+                            'modeBarButtonsToRemove': ['zoom', 'pan', 'zoomin', 'zoomout', 'autoscale', 'select2d', 'lasso2d',
+                            'resetScale2d', 'toImage']
+                            }
+                            )
+    
+    if attack_proba >= expected_value_sql_logit:
+        train_mean_pred_comment = '예측 위험도는 학습 데이터 평균에 비해 %.2f%% 왜 증가하였는가?' %(attack_proba - expected_value_sql_logit)
+    else:
+        train_mean_pred_comment = '예측 위험도는 학습 데이터 평균에 비해 %.2f%% 왜 감소하였는가?' %(expected_value_sql_logit - attack_proba)
 
     
     '''
@@ -932,6 +949,7 @@ def XAI_result():
     return render_template('XAI_output.html', payload_raw_data = request.form['raw_data_str'],  
                                 expected_value_sql_logit = expected_value_sql_logit,
                                 train_mean_proba_html = train_mean_proba_html,
+                                train_mean_pred_comment = train_mean_pred_comment,
                                 force_html = force_html,
                                 summary_html = summary_html,
                                 pie_html = pie_html,
