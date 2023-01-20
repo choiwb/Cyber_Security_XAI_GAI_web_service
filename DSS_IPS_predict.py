@@ -507,9 +507,9 @@ def XAI_result():
                             )
     
     if attack_proba >= expected_value_sql_logit:
-        train_mean_pred_comment = '예측 위험도는 학습 데이터 평균에 비해 %.2f%% 왜 증가하였는가?' %(attack_proba - expected_value_sql_logit)
+        train_mean_pred_comment = '예측 위험도는 모델 평균에 비해 %.2f%% 왜 증가하였는가?' %(attack_proba - expected_value_sql_logit)
     else:
-        train_mean_pred_comment = '예측 위험도는 학습 데이터 평균에 비해 %.2f%% 왜 감소하였는가?' %(expected_value_sql_logit - attack_proba)
+        train_mean_pred_comment = '예측 위험도는  평균에 비해 %.2f%% 왜 감소하였는가?' %(expected_value_sql_logit - attack_proba)
 
     
     '''
