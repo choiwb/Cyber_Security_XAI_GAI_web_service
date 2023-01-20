@@ -467,8 +467,8 @@ def XAI_result():
     proba = IPS_total_model.predict_proba(payload_arr)
     attack_proba = int(np.round(proba[:, 1], 2) * 100)
     
-    train_mean_df = pd.DataFrame([['학습 데이터 평균', expected_value_sql_logit, '기준'], ['예측', attack_proba, attack_proba - expected_value_sql_logit]], 
-                        columns = ['학습/예측', '위험도(%)', '위험도(%) 증감'])
+    train_mean_df = pd.DataFrame([['모델 평균', expected_value_sql_logit, '기준'], ['예측', attack_proba, attack_proba - expected_value_sql_logit]], 
+                        columns = ['모델 평균/예측', '위험도(%)', '위험도(%) 증감'])
     train_mean_df['위험도(%) 증감'][1] = np.round(train_mean_df['위험도(%) 증감'][1], 2)
 
     if train_mean_df['위험도(%) 증감'][1] < 0:
@@ -481,18 +481,18 @@ def XAI_result():
    ################################################################
     # expected_value_sql_logit 기반 plotly bar chart 생성 !!!! (기준 100%)
     
-    train_mean_proba_plot = px.bar(train_mean_df, x = '위험도(%)',  y = '학습/예측',  
+    train_mean_proba_plot = px.bar(train_mean_df, x = '위험도(%)',  y = '모델 평균/예측',  
                                         orientation = 'h',
                                         text = '위험도(%)',
-                                        hover_data = {'학습/예측': True, '위험도(%)': True, '위험도(%) 증감': True},
-                                        color = '학습/예측', 
-                                        color_discrete_map = {'학습 데이터 평균': '#0000FF', '예측': '#FF0000'},
+                                        hover_data = {'모델 평균/예측': True, '위험도(%)': True, '위험도(%) 증감': True},
+                                        color = '모델 평균/예측', 
+                                        color_discrete_map = {'모델 평균': '#0000FF', '예측': '#FF0000'},
                                         template = 'plotly_white')
 
     train_mean_proba_plot.update_layout(xaxis_fixedrange=True, yaxis_fixedrange=True,   
                         legend_itemclick = False, legend_itemdoubleclick = False,
                         showlegend = False,
-                        title_text='학습/예측 위험도', title_x=0.5,
+                        title_text='모델 /예측 위험도', title_x=0.5,
                         yaxis_title = None,
                         # xaxis_title = None,
                         width = 900,
