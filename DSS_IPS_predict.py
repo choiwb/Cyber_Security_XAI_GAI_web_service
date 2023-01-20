@@ -266,9 +266,36 @@ ai_field = ['select(.*?)from', 'select(.*?)count', 'select(.*?)distinct', 'union
            'bingbot', 'md5', 'jpg(.*?)http(.*?)1.1', 'count(.*?)cgi(.*?)http', 'this(.*?)program(.*?)can', 'sleep(.*?)sleep', 'and(.*?)sleep',
            'delete', 'get(.*?)ping', 'msadc(.*?)dll(.*?)http', 'filename(.*?)asp', 'filename(.*?)jsp',
            'wp(.*?)login', 'wp(.*?)content', 'wp(.*?)include', 'wp(.*?)config', 'cmd(.*?)open', 'echo(.*?)shellshock', 'php(.*?)echo',
-           'echo', 'admin(.*?)php', 'script(.*?)setup(.*?)php', 'phpinfo', 'adminostrator', 'phpmyadmin', 'access', 'passwd', 'eval', 'php', 'cmd', 'mdb',
+           'admin(.*?)php', 'script(.*?)setup(.*?)php', 'phpinfo', 'adminostrator', 'phpmyadmin', 'access', 'eval', 'mdb',
            'wise(.*?)survey(.*?)admin', 'admin(.*?)serv(.*?)admpw', 'php(.*?)create(.*?)function',
            'user-agent(.*?)zgrab', 'user-agent(.*?)nmap', 'user-agent(.*?)dirbuster', 'user-agent(.*?)ahrefsbot',
+           'user-agent(.*?)baiduspider', 'user-agent(.*?)mj12bot', 'user-agent(.*?)petalbot',
+           'user-agent(.*?)semrushbot', 'user-agent(.*?)curl', 'user-agent(.*?)masscan', 'user-agent(.*?)sqlmap',
+           'user-agent(.*?)urlgrabber(.*?)yum', '[\\.]env', 'powershell']
+
+
+
+# 각 피처 별, ai_list 생성 (ips/waf 공통)
+sql_1 = ['select(.*?)from', 'select(.*?)count', 'select(.*?)distinct', 'union(.*?)select', 'select(.*?)extractvalue(.*?)xmltype',
+           'from(.*?)generate(.*?)series', 'from(.*?)group(.*?)by']
+sql_2 = [ 'case(.*?)when', 'then(.*?)else']
+sql_3 = ['waitfor(.*?)delay', 'db(.*?)sql(.*?)server',
+           'cast(.*?)chr', 'like(.*?)http/1.', 'upper(.*?)xmltype']
+cmd = ['wget(.*?)ttp', 'chmod(.*?)777', 'rm(.*?)rf', 'cd(.*?)tmp']
+log4j = ['jndi(.*?)dap', 'jndi(.*?)dns']
+xss = ['script(.*?)alert']
+word_1 = ['etc(.*?)passwd', 'document(.*?)createelement', 'cgi(.*?)bin', 'document(.*?)forms', 'document(.*?)location',
+           'fckeditor(.*?)filemanager', 'manager(.*?)html', 'current_config(.*?)passwd', 'currentsetting(.*?)htm', 'well(.*?)known']
+word_2 = ['bash(.*?)history', 'apache(.*?)struts', 'document(.*?)open', 'backup(.*?)sql', 'robots(.*?)txt', 'sqlexec(.*?)php',
+           'exec', 'htaccess', 'htpasswd', 'cgi(.*?)cgi', 'api(.*?)ping']
+word_3 = ['aaaaaaaaaa', 'cacacacaca', 'mozi[\\.]',
+           'bingbot', 'md5', 'jpg(.*?)http(.*?)1.1', 'count(.*?)cgi(.*?)http', 'this(.*?)program(.*?)can', 'sleep(.*?)sleep', 'and(.*?)sleep',
+           'delete', 'get(.*?)ping', 'msadc(.*?)dll(.*?)http', 'filename(.*?)asp', 'filename(.*?)jsp', '[\\.]env', 'powershell']
+word_4 = ['cmd(.*?)open', 'echo(.*?)shellshock', 'php(.*?)echo',
+           'admin(.*?)php', 'script(.*?)setup(.*?)php', 'phpinfo', 'adminostrator', 'phpmyadmin', 'access', 'eval', 'mdb',
+           'wise(.*?)survey(.*?)admin', 'admin(.*?)serv(.*?)admpw', 'php(.*?)create(.*?)function']
+wp = ['wp(.*?)login', 'wp(.*?)content', 'wp(.*?)include', 'wp(.*?)config']
+user_agent = ['user-agent(.*?)zgrab', 'user-agent(.*?)nmap', 'user-agent(.*?)dirbuster', 'user-agent(.*?)ahrefsbot',
            'user-agent(.*?)baiduspider', 'user-agent(.*?)mj12bot', 'user-agent(.*?)petalbot',
            'user-agent(.*?)semrushbot', 'user-agent(.*?)curl', 'user-agent(.*?)masscan', 'user-agent(.*?)sqlmap',
            'user-agent(.*?)urlgrabber(.*?)yum']
@@ -525,7 +552,7 @@ def XAI_result():
     third_feature = top10_shap_values.iloc[2, 1]
     third_fv = top10_shap_values.iloc[2, 3]
 
-
+    '''
     if first_feature.startswith('ips_'):
         if first_feature != 'ips_00001_payload_whitelist':
             if first_fv == 1:
@@ -692,7 +719,7 @@ def XAI_result():
             third_fv_df_normal_ratio = 100 - third_fv_df_anomalies_ratio
 
             third_statement = '%s 키워드가 등장하지 않았고, 학습 데이터에서 170개 키워드 중에 %s 번째로 IDF 값이 높았으며, 해당 키워드가 등장하지 않은 경우, 공격: %.2f%% 정상: %.2f%% 입니다.' %(third_word, third_order, third_fv_df_anomalies_ratio, third_fv_df_normal_ratio)
-
+    '''
 
 
     # 소수점 4째 자리까지 표현
@@ -724,8 +751,130 @@ def XAI_result():
     top10_shap_values  = top10_shap_values[['순위', '피처 명', '피처 설명', '피처 값', '피처 중요도', 'AI 예측 방향']]
     top10_shap_values['피처 중요도'] = top10_shap_values['피처 중요도'].apply(lambda x: round(x, 4))
 
-    print(top10_shap_values)
+    # 보안 시그니처 패턴 리스트 highlight
+    sig_ai_pattern, sig_df = highlight_text(raw_data_str, signature_list, ai_list)
+    # print(sig_ai_pattern)
 
+    # 위 12개 피처가 payload의 AI 탐지되면 추출 !!!!!!!
+    # sig_ai_pattern 에서 추출 및 상위 10개 피처에 대해서만 적용
+    # sig_ai_pattern에서 \033[91m ~ \033[39m 사이 키워드 추출
+    ai_detect_regex = r'\x1b\[91m(.*?)\x1b\[39m'
+    ai_detect_list = re.findall(ai_detect_regex, sig_ai_pattern)
+
+    ai_feature_list = []
+    for x in ai_detect_list:
+        x = x.lower()
+        for y in sql_1:
+            if re.findall(y, x):
+                ai_feature_list.append('payload_sql_comb_01')
+        for y in sql_2:
+            if re.findall(y, x):
+                ai_feature_list.append('payload_sql_comb_02')
+        for y in sql_3:
+            if re.findall(y, x):
+                ai_feature_list.append('payload_sql_comb_03')
+        for y in log4j:
+            if re.findall(y, x):
+                ai_feature_list.append('payload_log4j_comb_01')
+        for y in xss:
+            if re.findall(y, x):
+                ai_feature_list.append('payload_xss_comb_01')
+        for y in wp:
+            if re.findall(y, x):
+                ai_feature_list.append('payload_wp_comb_01')
+        for y in wp:
+            if re.findall(y, x):
+                ai_feature_list.append('payload_wp_comb_01')
+        for y in word_1:
+            if re.findall(y, x):
+                ai_feature_list.append('payload_word_comb_01')
+        for y in word_2:
+            if re.findall(y, x):
+                ai_feature_list.append('payload_word_comb_02')
+        for y in word_3:
+            if re.findall(y, x):
+                ai_feature_list.append('payload_word_comb_03')
+        for y in word_4:
+            if re.findall(y, x):
+                ai_feature_list.append('payload_word_comb_04')
+        for y in user_agent:
+            if re.findall(y, x):
+                ai_feature_list.append('payload_useragent_comb')
+    
+
+
+    # ai_feature_list, ai_detect_list 를 이용하여 2개 컬럼 기반 data frame 생성
+    print(ai_detect_list)
+    print(ai_feature_list)
+    ai_feature_df = pd.DataFrame({'피처 명': ai_feature_list, 'AI 공격 탐지 키워드': ai_detect_list})
+
+    # ai_feature_df['피처 명'] 중복된 행이 있다면, ',' 기준 concat
+    ai_feature_df = ai_feature_df.groupby('피처 명')['AI 공격 탐지 키워드'].apply(','.join).reset_index()
+
+
+    # print(ai_feature_df)
+    top10_shap_values = top10_shap_values.merge(ai_feature_df, how='left', on='피처 명')
+    top10_shap_values['AI 공격 탐지 키워드'] = top10_shap_values['AI 공격 탐지 키워드'].fillna('-')
+
+    top10_shap_values['피처 중요도'] = np.round(top10_shap_values['피처 중요도'] * 100, 2)
+    top10_shap_values = top10_shap_values.rename(columns = {'피처 중요도': '피처 중요도(%)'})
+
+    # top10_shap_values의 피처 중요도 합계 
+    top10_shap_values_sum = top10_shap_values['피처 중요도(%)'].sum()
+    # top10_shap_values_sum_etc = 1 - top10_shap_values_sum
+    # etc_df = pd.DataFrame([['기타', '상위 10개 이외 피처', '-', top10_shap_values_sum_etc, '기타']], columns = ['피처 명', '피처 설명', '피처 값', '피처 중요도', 'AI 예측 방향'])
+    # top10_shap_values = pd.concat([top10_shap_values, etc_df], axis=0)
+    # top10_shap_values = top10_shap_values.sort_values(by='피처 중요도', ascending=False)
+    # top10_shap_values = top10_shap_values.reset_index(drop = True)
+
+
+    ##################################################
+    # 학습 데이터 기반 피처 중요도 요약 (상위 3개 피처)
+    ##################################################
+
+    first_feature = top10_shap_values.iloc[0, 1]
+    first_fv = top10_shap_values.iloc[0, 3]
+    first_word = top10_shap_values.iloc[0,-1]
+    second_feature = top10_shap_values.iloc[1, 1]
+    second_fv = top10_shap_values.iloc[1, 3]
+    second_word = top10_shap_values.iloc[1,-1]
+    third_feature = top10_shap_values.iloc[2, 1]
+    third_fv = top10_shap_values.iloc[2, 3]
+    third_word = top10_shap_values.iloc[2,-1]
+
+
+    
+    if first_feature != 'payload_whitelist':
+        if first_fv == 1:
+            first_fv_result = '공격 탐지'
+            first_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(first_feature, first_fv_result, first_word)
+        else:
+            first_fv_result = '정상 인식'
+            first_statement = '%s 가 %s 하였습니다.' %(first_feature, first_fv_result)
+    else:
+        first_statement = '로그 전송이 총 %s건 입니다.' % first_fv       
+
+
+    if second_feature != 'payload_whitelist':
+        if second_fv == 1:
+            second_fv_result = '공격 탐지'
+            second_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(second_feature, second_fv_result, second_word)
+        else:
+            second_fv_result = '정상 인식'
+            second_statement = '%s 가 %s 하였습니다.' %(second_feature, second_fv_result)
+    else:
+        second_statement = '로그 전송이 총 %s건 입니다.' % second_fv       
+
+
+    if third_feature != 'payload_whitelist':
+        if third_fv == 1:
+            third_fv_result = '공격 탐지'
+            third_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(third_feature, third_fv_result, third_word)
+        else:
+            third_fv_result = '정상 인식'
+            third_statement = '%s 가 %s 하였습니다.' %(third_feature, third_fv_result)
+    else:
+        third_statement = '로그 전송이 총 %s건 입니다.' % third_fv       
     # top10_shap_values to html
     top10_shap_values_html = top10_shap_values.to_html(index=False, justify='center')
 
@@ -736,9 +885,10 @@ def XAI_result():
     # 피처 중요도 기준 0.5 이상은 '공격' 미만은 '정상'
     # top10_shap_values['AI 예측 방향'] = ['공격' if x >= 0.5 else '정상' for x in top10_shap_values['피처 중요도']]
 
-    summary_plot = px.bar(top10_shap_values, x="피처 중요도", y="피처 명", 
+    summary_plot = px.bar(top10_shap_values, x="피처 중요도(%)", y="피처 명", 
                 color = 'AI 예측 방향', color_discrete_map = {'공격': '#FF0000', '정상': '#00FF00', '기타': '#0000FF'},
-                text = '피처 중요도', orientation='h', hover_data = {'피처 명': False, '피처 설명': True, '피처 값': True, '피처 중요도': False, 'AI 예측 방향': False},
+                text = '피처 중요도(%)', orientation='h', hover_data = {'피처 명': False, '피처 설명': True, '피처 값': True, '피처 중요도(%)': False, 'AI 예측 방향': False,
+                                                                    'AI 공격 탐지 키워드': True},
                 template = 'plotly_white',
                 )
     
@@ -926,12 +1076,6 @@ def XAI_result():
 
     text_html = shap.text_plot(bert_shap_values, display = False)
 
-    # 보안 시그니처 패턴 리스트 highlight
-    sig_ai_pattern, sig_df = highlight_text(raw_data_str, signature_list, ai_field)
-
-    print(sig_ai_pattern)
-    # print(sig_df)
-
     # HTML 형태 payload 의 경우, 소괄호 치환 필요
     sig_ai_pattern = re.sub(r'[\\<]', r'&lt;', sig_ai_pattern)
     sig_ai_pattern = re.sub(r'[\\>]', r'&gt;', sig_ai_pattern)
@@ -947,12 +1091,12 @@ def XAI_result():
 
 
     return render_template('XAI_output.html', payload_raw_data = request.form['raw_data_str'],  
-                                expected_value_sql_logit = expected_value_sql_logit,
+                                # expected_value_sql_logit = expected_value_sql_logit,
                                 train_mean_proba_html = train_mean_proba_html,
-                                train_mean_pred_comment = train_mean_pred_comment,
+                                # train_mean_pred_comment = train_mean_pred_comment,
                                 force_html = force_html,
                                 summary_html = summary_html,
-                                pie_html = pie_html,
+                                # pie_html = pie_html,
                                 text_explainer_html = text_explainer_html,
                                 lime_text_explainer_html = lime_text_explainer_html, 
                                 text_html = text_html,
@@ -962,8 +1106,8 @@ def XAI_result():
                                 first_statement = first_statement,
                                 second_statement = second_statement,
                                 third_statement = third_statement,
-                                pie_statement_1 = pie_statement_1,
-                                pie_statement_2 = pie_statement_2,
+                                summary_statement_1 = summary_statement_1,
+                                summary_statement_2 = summary_statement_2,
                                 sig_pattern_html = sig_pattern_html,
                                 sig_df_html = sig_df_html,
                                 # summary_html = summary_html
