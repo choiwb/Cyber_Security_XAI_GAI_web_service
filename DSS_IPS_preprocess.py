@@ -270,10 +270,7 @@ def predict_UI_sql_result():
         OR INT(RLIKE(LOWER(payload), 'administrator') )>0
         OR INT(RLIKE(LOWER(payload), 'phpmyadmin') )>0
         OR INT(RLIKE(LOWER(payload), 'access') )>0
-        OR INT(RLIKE(LOWER(payload), 'passwd') )>0
         OR INT(RLIKE(LOWER(payload), 'eval') )>0
-        OR INT(RLIKE(LOWER(payload), 'php') )>0
-        OR INT(RLIKE(LOWER(payload), 'cmd') )>0
         OR INT(RLIKE(LOWER(payload), 'mdb') )>0
         OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload),  '\\n|\\r|\\t', ' '), CONCAT('wise', '(.*?)', 'survey', '(.*?)', 'admin')) )>0
         OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload),  '\\n|\\r|\\t', ' '), CONCAT('admin', '(.*?)', 'serv', '(.*?)', 'admpw')) )>0
