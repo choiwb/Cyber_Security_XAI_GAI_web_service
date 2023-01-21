@@ -705,7 +705,7 @@ def XAI_result():
     top10_shap_values['피처 중요도'] = top10_shap_values['피처 중요도'].apply(lambda x: round(x, 4))
 
     # 보안 시그니처 패턴 리스트 highlight
-    sig_ai_pattern, sig_df = highlight_text(raw_data_str, signature_list, ai_list)
+    sig_ai_pattern, sig_df = highlight_text(raw_data_str, signature_list, ai_field)
     # print(sig_ai_pattern)
 
     # 위 12개 피처가 payload의 AI 탐지되면 추출 !!!!!!!
