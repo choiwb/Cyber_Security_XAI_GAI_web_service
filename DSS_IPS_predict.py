@@ -254,53 +254,6 @@ signature_list = [x.lower() for x in signature_list]
 
 method_list = ['IGLOO-UD-File Downloading Vulnerability-1(/etc/passwd)', 'IGLOO-UD-WeakIDPasswd-1(password=admin)', 'IGLOO information_schema', 'IGLOO xp_cmdshell', 'IGLOO script']
 
-# 시그니처 패턴 및 AI 피처 하이라이트 처리 위한 리스트
-# AI 생성 필드 리스트 (domain 기반 표준피처) - 단, 화이트리스트 피처 및 base64 관련 피처는 제외
-ai_field = ['select(.*?)from', 'select(.*?)count', 'select(.*?)distinct', 'union(.*?)select', 'select(.*?)extractvalue(.*?)xmltype',
-           'from(.*?)generate(.*?)series', 'from(.*?)group(.*?)by', 'case(.*?)when', 'then(.*?)else', 'waitfor(.*?)delay', 'db(.*?)sql(.*?)server',
-           'cast(.*?)chr', 'like(.*?)http/1.', 'upper(.*?)xmltype', 'script(.*?)alert', 'wget(.*?)ttp', 'chmod(.*?)777', 'rm(.*?)rf', 'cd(.*?)tmp',
-           'jndi(.*?)dap', 'jndi(.*?)dns', 'etc(.*?)passwd', 'document(.*?)createelement', 'cgi(.*?)bin', 'document(.*?)forms', 'document(.*?)location',
-           'fckeditor(.*?)filemanager', 'manager(.*?)html', 'current_config(.*?)passwd', 'currentsetting(.*?)htm', 'well(.*?)known',
-           'bash(.*?)history', 'apache(.*?)struts', 'document(.*?)open', 'backup(.*?)sql', 'robots(.*?)txt', 'sqlexec(.*?)php',
-           'exec', 'htaccess', 'htpasswd', 'cgi(.*?)cgi', 'api(.*?)ping', 'aaaaaaaaaa', 'cacacacaca', 'mozi[\\.]',
-           'bingbot', 'md5', 'jpg(.*?)http(.*?)1.1', 'count(.*?)cgi(.*?)http', 'this(.*?)program(.*?)can', 'sleep(.*?)sleep', 'and(.*?)sleep',
-           'delete', 'get(.*?)ping', 'msadc(.*?)dll(.*?)http', 'filename(.*?)asp', 'filename(.*?)jsp',
-           'wp(.*?)login', 'wp(.*?)content', 'wp(.*?)include', 'wp(.*?)config', 'cmd(.*?)open', 'echo(.*?)shellshock', 'php(.*?)echo',
-           'admin(.*?)php', 'script(.*?)setup(.*?)php', 'phpinfo', 'adminostrator', 'phpmyadmin', 'access', 'eval', 'mdb',
-           'wise(.*?)survey(.*?)admin', 'admin(.*?)serv(.*?)admpw', 'php(.*?)create(.*?)function',
-           'user-agent(.*?)zgrab', 'user-agent(.*?)nmap', 'user-agent(.*?)dirbuster', 'user-agent(.*?)ahrefsbot',
-           'user-agent(.*?)baiduspider', 'user-agent(.*?)mj12bot', 'user-agent(.*?)petalbot',
-           'user-agent(.*?)semrushbot', 'user-agent(.*?)curl', 'user-agent(.*?)masscan', 'user-agent(.*?)sqlmap',
-           'user-agent(.*?)urlgrabber(.*?)yum', '[\\.]env', 'powershell']
-
-
-
-# 각 피처 별, ai_list 생성 (ips/waf 공통)
-sql_1 = ['select(.*?)from', 'select(.*?)count', 'select(.*?)distinct', 'union(.*?)select', 'select(.*?)extractvalue(.*?)xmltype',
-           'from(.*?)generate(.*?)series', 'from(.*?)group(.*?)by']
-sql_2 = [ 'case(.*?)when', 'then(.*?)else']
-sql_3 = ['waitfor(.*?)delay', 'db(.*?)sql(.*?)server',
-           'cast(.*?)chr', 'like(.*?)http/1.', 'upper(.*?)xmltype']
-cmd = ['wget(.*?)ttp', 'chmod(.*?)777', 'rm(.*?)rf', 'cd(.*?)tmp']
-log4j = ['jndi(.*?)dap', 'jndi(.*?)dns']
-xss = ['script(.*?)alert']
-word_1 = ['etc(.*?)passwd', 'document(.*?)createelement', 'cgi(.*?)bin', 'document(.*?)forms', 'document(.*?)location',
-           'fckeditor(.*?)filemanager', 'manager(.*?)html', 'current_config(.*?)passwd', 'currentsetting(.*?)htm', 'well(.*?)known']
-word_2 = ['bash(.*?)history', 'apache(.*?)struts', 'document(.*?)open', 'backup(.*?)sql', 'robots(.*?)txt', 'sqlexec(.*?)php',
-           'exec', 'htaccess', 'htpasswd', 'cgi(.*?)cgi', 'api(.*?)ping']
-word_3 = ['aaaaaaaaaa', 'cacacacaca', 'mozi[\\.]',
-           'bingbot', 'md5', 'jpg(.*?)http(.*?)1.1', 'count(.*?)cgi(.*?)http', 'this(.*?)program(.*?)can', 'sleep(.*?)sleep', 'and(.*?)sleep',
-           'delete', 'get(.*?)ping', 'msadc(.*?)dll(.*?)http', 'filename(.*?)asp', 'filename(.*?)jsp', '[\\.]env', 'powershell']
-word_4 = ['cmd(.*?)open', 'echo(.*?)shellshock', 'php(.*?)echo',
-           'admin(.*?)php', 'script(.*?)setup(.*?)php', 'phpinfo', 'adminostrator', 'phpmyadmin', 'access', 'eval', 'mdb',
-           'wise(.*?)survey(.*?)admin', 'admin(.*?)serv(.*?)admpw', 'php(.*?)create(.*?)function']
-wp = ['wp(.*?)login', 'wp(.*?)content', 'wp(.*?)include', 'wp(.*?)config']
-user_agent = ['user-agent(.*?)zgrab', 'user-agent(.*?)nmap', 'user-agent(.*?)dirbuster', 'user-agent(.*?)ahrefsbot',
-           'user-agent(.*?)baiduspider', 'user-agent(.*?)mj12bot', 'user-agent(.*?)petalbot',
-           'user-agent(.*?)semrushbot', 'user-agent(.*?)curl', 'user-agent(.*?)masscan', 'user-agent(.*?)sqlmap',
-           'user-agent(.*?)urlgrabber(.*?)yum']
-
-
 # ai_list에 element 안에 '(.*?)'가 포함되어 있는 경우, '(.*?)' 기준으로 split 후, 리스트에 추가
 first_ai_list = [x.split('(.*?)')[0] for x in ai_field if '(.*?)' in x]
 end_ai_list = [x.split('(.*?)')[1] for x in ai_field if '(.*?)' in x]
