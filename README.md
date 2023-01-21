@@ -4,7 +4,7 @@
 
 - Data: IPS Payload
 - Feature create: PySpark (Spark SQL)
-- Algorithm: LightGBM ((SQL feature, TF-IDF Text feature)
+- Algorithm: LightGBM (SQL feature, TF-IDF Text feature)
 - XAI: SHAP's force plot (SQL feature, TF-IDF Text feature), LIME's TextExplainer (TF-IDF Text feature), SHAP's text plot (BERT based Transfer Learning using IPS paylaod)
 - Deployment: Flask
 - ssdeep (fuzzy hash similarity measure) based payload calculate & PostgreSQL connect
