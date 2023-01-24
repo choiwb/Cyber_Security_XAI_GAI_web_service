@@ -715,43 +715,45 @@ def XAI_result():
     ai_detect_list = re.findall(ai_detect_regex, sig_ai_pattern)
 
     ai_feature_list = []
-    for x in ai_detect_list:
-        x = x.lower()
-        for y in sql_1:
-            if re.findall(y, x):
+    for i in ai_detect_list:
+        i = i.lower()
+        # i가 sql_1 리스트 안에, regex 형태로 조회하였을 때, 있는 경우, 피처 명 추가 !!!!
+
+        for j in sql_1:
+            if re.findall(j, i):
                 ai_feature_list.append('payload_sql_comb_01')
-        for y in sql_2:
-            if re.findall(y, x):
+        for j in sql_2:
+            if re.findall(j, i):
                 ai_feature_list.append('payload_sql_comb_02')
-        for y in sql_3:
-            if re.findall(y, x):
+        for j in sql_3:
+            if re.findall(j, i):
                 ai_feature_list.append('payload_sql_comb_03')
-        for y in log4j:
-            if re.findall(y, x):
-                ai_feature_list.append('payload_log4j_comb_01')
-        for y in xss:
-            if re.findall(y, x):
+        for j in xss:
+            if re.findall(j, i):
                 ai_feature_list.append('payload_xss_comb_01')
-        for y in wp:
-            if re.findall(y, x):
-                ai_feature_list.append('payload_wp_comb_01')
-        for y in wp:
-            if re.findall(y, x):
-                ai_feature_list.append('payload_wp_comb_01')
-        for y in word_1:
-            if re.findall(y, x):
+        for j in cmd:
+            if re.findall(j, i):
+                ai_feature_list.append('payload_cmd_comb_01')
+        for j in log4j:
+            if re.findall(j, i):
+                ai_feature_list.append('payload_log4j_comb_01')
+        for j in word_1:
+            if re.findall(j, i):
                 ai_feature_list.append('payload_word_comb_01')
-        for y in word_2:
-            if re.findall(y, x):
+        for j in word_2:
+            if re.findall(j, i):
                 ai_feature_list.append('payload_word_comb_02')
-        for y in word_3:
-            if re.findall(y, x):
+        for j in word_3:
+            if re.findall(j, i):
                 ai_feature_list.append('payload_word_comb_03')
-        for y in word_4:
-            if re.findall(y, x):
+        for j in word_4:
+            if re.findall(j, i):
                 ai_feature_list.append('payload_word_comb_04')
-        for y in user_agent:
-            if re.findall(y, x):
+        for j in wp:
+            if re.findall(j, i):
+                ai_feature_list.append('payload_wp_comb_01')
+        for j in user_agent:
+            if re.findall(j, i):
                 ai_feature_list.append('payload_useragent_comb')
     
 
