@@ -59,62 +59,62 @@ new_sql_query = """
         OR INT(RLIKE(payload, 'JTI4U0VMRUNUJTIw') )>0
                 ,1, 0) AS ips_00001_payload_base64,
 
-        IF(INT(RLIKE(LOWER(payload), 'select(.*?)from') )>0
-        OR INT(RLIKE(LOWER(payload), 'select(.*?)count') )>0
-        OR INT(RLIKE(LOWER(payload), 'select(.*?)distinct') )>0
-        OR INT(RLIKE(LOWER(payload), 'union(.*?)select') )>0
-        OR INT(RLIKE(LOWER(payload), 'select(.*?)extractvalue(.*?)xmltype') )>0
-        OR INT(RLIKE(LOWER(payload), 'from(.*?)generate(.*?)series') )>0
-        OR INT(RLIKE(LOWER(payload), 'from(.*?)group(.*?)by') )>0
+        IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'select(.*?)from') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'select(.*?)count') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'select(.*?)distinct') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'union(.*?)select') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'select(.*?)extractvalue(.*?)xmltype') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'from(.*?)generate(.*?)series') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'from(.*?)group(.*?)by') )>0
                 ,1, 0) AS ips_00001_payload_sql_comb_01,
 
-        IF(INT(RLIKE(LOWER(payload), 'case(.*?)when') )>0
-        OR INT(RLIKE(LOWER(payload), 'then(.*?)else') )>0
+        IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'case(.*?)when') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'then(.*?)else') )>0
                 ,1, 0) AS ips_00001_payload_sql_comb_02,
 
-        IF(INT(RLIKE(LOWER(payload), 'waitfor(.*?)delay') )>0
-        OR INT(RLIKE(LOWER(payload), 'db(.*?)sql(.*?)server') )>0
-        OR INT(RLIKE(LOWER(payload), 'cast(.*?)chr') )>0
-        OR INT(RLIKE(LOWER(payload), 'like(.*?)http/1.') )>0
-        OR INT(RLIKE(LOWER(payload), 'upper(.*?)xmltype') )>0
+        IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'waitfor(.*?)delay') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'db(.*?)sql(.*?)server') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cast(.*?)chr') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'like(.*?)http/1.') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'upper(.*?)xmltype') )>0
                 ,1, 0) AS ips_00001_payload_sql_comb_03,
 
-        IF(INT(RLIKE(LOWER(payload), 'script(.*?)alert') )>0
+        IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'script(.*?)alert') )>0
                 ,1, 0) AS ips_00001_payload_xss_comb_01,
 
-        IF(INT(RLIKE(LOWER(payload), 'wget(.*?)ttp') )>0
-        OR INT(RLIKE(LOWER(payload), 'chmod(.*?)777') )>0
-        OR INT(RLIKE(LOWER(payload), 'rm(.*?)rf') )>0
-        OR INT(RLIKE(LOWER(payload), 'cd(.*?)tmp') )>0
+        IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'wget(.*?)ttp') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'chmod(.*?)777') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'rm(.*?)rf') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cd(.*?)tmp') )>0
                 ,1, 0) AS ips_00001_payload_cmd_comb_01,
 
-        IF(INT(RLIKE(LOWER(payload), 'jndi(.*?)dap') )>0
-        OR INT(RLIKE(LOWER(payload),'jndi(.*?)dns') )>0
+        IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'jndi(.*?)dap') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),'jndi(.*?)dns') )>0
                 ,1, 0) AS ips_00001_payload_log4j_comb_01,
 
-        IF(INT(RLIKE(LOWER(payload), 'etc(.*?)passwd') )>0
-        OR INT(RLIKE(LOWER(payload), 'document(.*?)createelement') )>0
-        OR INT(RLIKE(LOWER(payload), 'cgi(.*?)bin') )>0
-        OR INT(RLIKE(LOWER(payload), 'document(.*?)forms') )>0
-        OR INT(RLIKE(LOWER(payload), 'document(.*?)location') )>0
-        OR INT(RLIKE(LOWER(payload), 'fckeditor(.*?)filemanager') )>0
-        OR INT(RLIKE(LOWER(payload), 'manager(.*?)html') )>0
-        OR INT(RLIKE(LOWER(payload), 'current_config(.*?)passwd') )>0
-        OR INT(RLIKE(LOWER(payload), 'currentsetting(.*?)htm') )>0
-        OR INT(RLIKE(LOWER(payload), 'well(.*?)known') )>0
+        IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'etc(.*?)passwd') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'document(.*?)createelement') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cgi(.*?)bin') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'document(.*?)forms') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'document(.*?)location') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'fckeditor(.*?)filemanager') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'manager(.*?)html') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'current_config(.*?)passwd') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'currentsetting(.*?)htm') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'well(.*?)known') )>0
                 ,1, 0) AS ips_00001_payload_word_comb_01,
 
-        IF(INT(RLIKE(LOWER(payload), 'bash(.*?)history') )>0
-        OR INT(RLIKE(LOWER(payload), 'apache(.*?)struts') )>0
-        OR INT(RLIKE(LOWER(payload), 'document(.*?)open') )>0
-        OR INT(RLIKE(LOWER(payload), 'backup(.*?)sql') )>0
-        OR INT(RLIKE(LOWER(payload), 'robots(.*?)txt') )>0
-        OR INT(RLIKE(LOWER(payload), 'sqlexec(.*?)php') )>0
+        IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'bash(.*?)history') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'apache(.*?)struts') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'document(.*?)open') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'backup(.*?)sql') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'robots(.*?)txt') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'sqlexec(.*?)php') )>0
         OR INT(RLIKE(LOWER(payload), 'exec') )>0
         OR INT(RLIKE(LOWER(payload), 'htaccess') )>0
         OR INT(RLIKE(LOWER(payload), 'htpasswd') )>0
-        OR INT(RLIKE(LOWER(payload), 'cgi(.*?)cgi') )>0
-        OR INT(RLIKE(LOWER(payload), 'api(.*?)ping') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cgi(.*?)cgi') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'api(.*?)ping') )>0
                 ,1, 0) AS ips_00001_payload_word_comb_02,
 
         IF(INT(RLIKE(LOWER(payload), 'aaaaaaaaaa') )>0
@@ -122,70 +122,77 @@ new_sql_query = """
         OR INT(RLIKE(LOWER(payload), 'mozi[\\.]') )>0
         OR INT(RLIKE(LOWER(payload), 'bingbot') )>0
         OR INT(RLIKE(LOWER(payload), 'md5') )>0
-        OR INT(RLIKE(LOWER(payload), 'jpg(.*?)http(.*?)1.1') )>0
-        OR INT(RLIKE(LOWER(payload), 'count(.*?)cgi(.*?)http') )>0
-        OR INT(RLIKE(LOWER(payload), 'this(.*?)program(.*?)can') )>0
-        OR INT(RLIKE(LOWER(payload), 'sleep(.*?)sleep') )>0
-        OR INT(RLIKE(LOWER(payload), 'and(.*?)sleep') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'jpg(.*?)http(.*?)1.1') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'count(.*?)cgi(.*?)http') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'this(.*?)program(.*?)can') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'sleep(.*?)sleep') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'and(.*?)sleep') )>0
         OR INT(RLIKE(LOWER(payload), 'delete'))>0
-        OR INT(RLIKE(LOWER(payload), 'get(.*?)ping') )>0
-        OR INT(RLIKE(LOWER(payload), 'msadc(.*?)dll(.*?)http') )>0
-        OR INT(RLIKE(LOWER(payload), 'filename(.*?)asp') )>0
-        OR INT(RLIKE(LOWER(payload), 'filename(.*?)jsp') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'get(.*?)ping') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'msadc(.*?)dll(.*?)http') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'filename(.*?)asp') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'filename(.*?)jsp') )>0
+        OR INT(RLIKE(LOWER(payload), 'powershell'))>0
+        OR INT(RLIKE(LOWER(payload), '[\\.]env'))>0
                 ,1, 0) AS ips_00001_payload_word_comb_03,
 
-        IF(INT(RLIKE(LOWER(payload), 'wp(.*?)login') )>0
-        OR INT(RLIKE(LOWER(payload), 'wp(.*?)content') )>0
-        OR INT(RLIKE(LOWER(payload), 'wp(.*?)include') )>0
-        OR INT(RLIKE(LOWER(payload), 'wp(.*?)config') )>0
+        IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'wp(.*?)login') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'wp(.*?)content') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'wp(.*?)include') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'wp(.*?)config') )>0
                 ,1, 0) AS ips_00001_payload_wp_comb_01,
 
-        IF(INT(RLIKE(LOWER(payload), 'cmd(.*?)open') )>0
-        OR INT(RLIKE(LOWER(payload), 'echo(.*?)shellshock') )>0
-        OR INT(RLIKE(LOWER(payload), 'php(.*?)echo') )>0
-        OR INT(RLIKE(LOWER(payload), 'admin(.*?)php') )>0
-        OR INT(RLIKE(LOWER(payload), 'script(.*?)setup(.*?)php') )>0
+        IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cmd(.*?)open') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'echo(.*?)shellshock') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'php(.*?)echo') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'admin(.*?)php') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'script(.*?)setup(.*?)php') )>0
         OR INT(RLIKE(LOWER(payload), 'phpinfo') )>0
         OR INT(RLIKE(LOWER(payload), 'administrator') )>0
         OR INT(RLIKE(LOWER(payload), 'phpmyadmin') )>0
         OR INT(RLIKE(LOWER(payload), 'access') )>0
         OR INT(RLIKE(LOWER(payload), 'eval') )>0
         OR INT(RLIKE(LOWER(payload), 'mdb') )>0
-        OR INT(RLIKE(LOWER(payload), 'wise(.*?)survey(.*?)admin') )>0
-        OR INT(RLIKE(LOWER(payload), 'admin(.*?)serv(.*?)admpw') )>0
-        OR INT(RLIKE(LOWER(payload), 'php(.*?)create(.*?)function') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'wise(.*?)survey(.*?)admin') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'admin(.*?)serv(.*?)admpw') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'php(.*?)create(.*?)function') )>0
                 ,1, 0) AS ips_00001_payload_word_comb_04,
 
-        IF(INT(RLIKE(LOWER(payload), 'user-agent(.*?)zgrab') )>0
-        OR INT(RLIKE(LOWER(payload), 'user-agent(.*?)nmap') )>0
-        OR INT(RLIKE(LOWER(payload), 'user-agent(.*?)dirbuster') )>0
-        OR INT(RLIKE(LOWER(payload), 'user-agent(.*?)ahrefsbot') )>0
-        OR INT(RLIKE(LOWER(payload), 'user-agent(.*?)baiduspider') )>0
-        OR INT(RLIKE(LOWER(payload), 'user-agent(.*?)mj12bot') )>0
-        OR INT(RLIKE(LOWER(payload), 'user-agent(.*?)petalbot') )>0
-        OR INT(RLIKE(LOWER(payload), 'user-agent(.*?)semrushbot') )>0
-        OR INT(RLIKE(LOWER(payload), 'user-agent(.*?)curl/') )>0
-        OR INT(RLIKE(LOWER(payload), 'user-agent(.*?)masscan') )>0
-        OR INT(RLIKE(LOWER(payload), 'user-agent(.*?)sqlmap') )>0
-        OR INT(RLIKE(LOWER(payload), 'user-agent(.*?)urlgrabber(.*?)yum') )>0
+        IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'user-agent(.*?)zgrab') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'user-agent(.*?)nmap') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'user-agent(.*?)dirbuster') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'user-agent(.*?)ahrefsbot') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'user-agent(.*?)baiduspider') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'user-agent(.*?)mj12bot') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'user-agent(.*?)petalbot') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'user-agent(.*?)semrushbot') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'user-agent(.*?)curl/') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'user-agent(.*?)masscan') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'user-agent(.*?)sqlmap') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'user-agent(.*?)urlgrabber(.*?)yum') )>0
                 ,1, 0) AS ips_00001_payload_useragent_comb,
                 
-        (SIZE(SPLIT(LOWER(payload), 'get(.*?)http/1.')) -1)
-            + (SIZE(SPLIT(LOWER(payload), 'post(.*?)http/1.')) -1)
-        + (SIZE(SPLIT(LOWER(payload), 'head(.*?)http/1.')) -1)
-        + (SIZE(SPLIT(LOWER(payload), 'option(.*?)http/1.')) -1)
+        (SIZE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'get(.*?)http/1.')) -1)
+            + (SIZE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'post(.*?)http/1.')) -1)
+        + (SIZE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'head(.*?)http/1.')) -1)
+        + (SIZE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'option(.*?)http/1.')) -1)
         AS ips_00001_payload_whitelist
     FROM table
     
 """
 
+
+
 # new_sql_query의 ips_00001_payload_base64 부터 ips_00001_payload_useragent_comb 까지 추출
 # re.S의 경우, 줄바꿈 문자열 까지 매치 !!!!!!!
 attack_new_sql_query = re.findall(r'ips_00001_payload_base64.*?ips_00001_payload_useragent_comb', new_sql_query, re.S)[0]
-
+# attack_new_sql_query '\\n|\\r|\\t', ' ' 는 제거, 단 regex = False
+attack_new_sql_query = attack_new_sql_query.replace('\\n|\\r|\\t', 'remove_string').replace(' ', 'remove_string')
 
 # new_sql_query의 '' 안에 있는 문자열들을 추출하여 리스트 생성, 
 ai_field = re.findall(r'\'(.*?)\'', attack_new_sql_query)
+# ai_field에서 'remove_string' 는 제거
+ai_field = [x for x in ai_field if x != 'remove_string']
 
            
 # attack_new_sql_query 에서 'AS' 를 기준으로 분할
