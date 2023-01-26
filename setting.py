@@ -187,14 +187,14 @@ new_sql_query = """
 # re.S의 경우, 줄바꿈 문자열 까지 매치 !!!!!!!
 attack_new_sql_query = re.findall(r'ips_00001_payload_base64.*?ips_00001_payload_useragent_comb', new_sql_query, re.S)[0]
 # attack_new_sql_query '\\n|\\r|\\t', ' ' 는 제거, 단 regex = False
-attack_new_sql_query = attack_new_sql_query.replace('\\n|\\r|\\t', 'remove_string').replace(' ', 'remove_string')
+attack_new_sql_query = attack_new_sql_query.replace('\\n|\\r|\\t', '').replace(' ', '')
 
 # new_sql_query의 '' 안에 있는 문자열들을 추출하여 리스트 생성, 
 ai_field = re.findall(r'\'(.*?)\'', attack_new_sql_query)
 # ai_field에서 'remove_string' 는 제거
-ai_field = [x for x in ai_field if x != 'remove_string']
+ai_field = [x for x in ai_field if x != '']
 
-           
+
 # attack_new_sql_query 에서 'AS' 를 기준으로 분할
 attack_new_sql_query_split = attack_new_sql_query.split('AS')
 
@@ -212,17 +212,40 @@ word_4 = attack_new_sql_query_split[10]
 user_agent = attack_new_sql_query_split[11]
 
 sql_1 = re.findall(r'\'(.*?)\'', sql_1)
+sql_1 = [x for x in sql_1 if x != '']
+
 sql_2 = re.findall(r'\'(.*?)\'', sql_2)
+sql_2 = [x for x in sql_2 if x != '']
+
 sql_3 = re.findall(r'\'(.*?)\'', sql_3)
+sql_3 = [x for x in sql_3 if x != '']
+
 xss = re.findall(r'\'(.*?)\'', xss)
+xss = [x for x in xss if x != '']
+
 cmd = re.findall(r'\'(.*?)\'', cmd)
+cmd = [x for x in cmd if x != '']
+
 log4j = re.findall(r'\'(.*?)\'', log4j)
+log4j = [x for x in log4j if x != '']
+
 word_1 = re.findall(r'\'(.*?)\'', word_1)
+word_1 = [x for x in word_1 if x != '']
+
 word_2 = re.findall(r'\'(.*?)\'', word_2)
+word_2 = [x for x in word_2 if x != '']
+
 word_3 = re.findall(r'\'(.*?)\'', word_3)
+word_3 = [x for x in word_3 if x != '']
+
 wp = re.findall(r'\'(.*?)\'', wp)
+wp = [x for x in wp if x != '']
+
 word_4 = re.findall(r'\'(.*?)\'', word_4)
+word_4 = [x for x in word_4 if x != '']
+
 user_agent = re.findall(r'\'(.*?)\'', user_agent)
+user_agent = [x for x in user_agent if x != '']
 
 # device = torch.device('mps')
 # device = torch.device('cpu')
