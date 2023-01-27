@@ -198,54 +198,11 @@ ai_field = [x for x in ai_field if x != '']
 # attack_new_sql_query 에서 'AS' 를 기준으로 분할
 attack_new_sql_query_split = attack_new_sql_query.split('AS')
 
-sql_1 = attack_new_sql_query_split[0]
-sql_2 = attack_new_sql_query_split[1]
-sql_3 = attack_new_sql_query_split[2]
-xss = attack_new_sql_query_split[3]
-cmd = attack_new_sql_query_split[4]
-log4j = attack_new_sql_query_split[5]
-word_1 = attack_new_sql_query_split[6]
-word_2 = attack_new_sql_query_split[7]
-word_3 = attack_new_sql_query_split[8]
-wp = attack_new_sql_query_split[9]
-word_4 = attack_new_sql_query_split[10]
-user_agent = attack_new_sql_query_split[11]
-
-sql_1 = re.findall(r'\'(.*?)\'', sql_1)
-sql_1 = [x for x in sql_1 if x != '']
-
-sql_2 = re.findall(r'\'(.*?)\'', sql_2)
-sql_2 = [x for x in sql_2 if x != '']
-
-sql_3 = re.findall(r'\'(.*?)\'', sql_3)
-sql_3 = [x for x in sql_3 if x != '']
-
-xss = re.findall(r'\'(.*?)\'', xss)
-xss = [x for x in xss if x != '']
-
-cmd = re.findall(r'\'(.*?)\'', cmd)
-cmd = [x for x in cmd if x != '']
-
-log4j = re.findall(r'\'(.*?)\'', log4j)
-log4j = [x for x in log4j if x != '']
-
-word_1 = re.findall(r'\'(.*?)\'', word_1)
-word_1 = [x for x in word_1 if x != '']
-
-word_2 = re.findall(r'\'(.*?)\'', word_2)
-word_2 = [x for x in word_2 if x != '']
-
-word_3 = re.findall(r'\'(.*?)\'', word_3)
-word_3 = [x for x in word_3 if x != '']
-
-wp = re.findall(r'\'(.*?)\'', wp)
-wp = [x for x in wp if x != '']
-
-word_4 = re.findall(r'\'(.*?)\'', word_4)
-word_4 = [x for x in word_4 if x != '']
-
-user_agent = re.findall(r'\'(.*?)\'', user_agent)
-user_agent = [x for x in user_agent if x != '']
+sql_1, sql_2, sql_3, xss, cmd, log4j, word_1, word_2, word_3, wp, word_4, user_agent = attack_new_sql_query_split[:12]
+sql_1, sql_2, sql_3, xss, cmd, log4j, word_1, word_2, word_3, wp, word_4, user_agent = list(map(lambda x: re.findall(r'\'(.*?)\'', x), 
+                                                                        [sql_1, sql_2, sql_3, xss, cmd, log4j, word_1, word_2, word_3, wp, word_4, user_agent]))
+sql_1, sql_2, sql_3, xss, cmd, log4j, word_1, word_2, word_3, wp, word_4, user_agent = list(map(lambda x: [y for y in x if y != ''],
+                                                                        [sql_1, sql_2, sql_3, xss, cmd, log4j, word_1, word_2, word_3, wp, word_4, user_agent])) 
 
 # device = torch.device('mps')
 # device = torch.device('cpu')
