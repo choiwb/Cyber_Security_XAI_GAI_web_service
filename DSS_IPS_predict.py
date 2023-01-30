@@ -722,12 +722,14 @@ def XAI_result():
     ai_feature_list.append(['payload_xss_comb_01' for x in ai_detect_list for y in xss if re.findall(y, x.lower())])
     ai_feature_list.append(['payload_cmd_comb_01' for x in ai_detect_list for y in cmd if re.findall(y, x.lower())])
     ai_feature_list.append(['payload_wp_comb_01' for x in ai_detect_list for y in wp if re.findall(y, x.lower())])
-    ai_feature_list.append(['paylaod_word_comb_01' for x in ai_detect_list for y in word_1 if re.findall(y, x.lower())])
-    ai_feature_list.append(['paylaod_word_comb_02' for x in ai_detect_list for y in word_2 if re.findall(y, x.lower())])
-    ai_feature_list.append(['paylaod_word_comb_03' for x in ai_detect_list for y in word_3 if re.findall(y, x.lower())])
-    ai_feature_list.append(['paylaod_word_comb_04' for x in ai_detect_list for y in word_4 if re.findall(y, x.lower())])
+    ai_feature_list.append(['payload_word_comb_01' for x in ai_detect_list for y in word_1 if re.findall(y, x.lower())])
+    ai_feature_list.append(['payload_word_comb_02' for x in ai_detect_list for y in word_2 if re.findall(y, x.lower())])
+    ai_feature_list.append(['payload_word_comb_03' for x in ai_detect_list for y in word_3 if re.findall(y, x.lower())])
+    ai_feature_list.append(['payload_word_comb_04' for x in ai_detect_list for y in word_4 if re.findall(y, x.lower())])
     ai_feature_list.append(['payload_useragent_comb' for x in ai_detect_list for y in user_agent if re.findall(y, x.lower())])
-    ai_feature_list = itertools.chain(*ai_feature_list)
+    ai_feature_list = [x for x in ai_feature_list if x != []]
+    ai_feature_list = list(itertools.chain(*ai_feature_list))
+    
     
 
 
