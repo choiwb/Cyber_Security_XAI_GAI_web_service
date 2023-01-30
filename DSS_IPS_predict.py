@@ -23,7 +23,7 @@ import tlsh
 from fuzzywuzzy import fuzz
 from lime.lime_text import LimeTextExplainer
 import time
-from itertools import chain
+import itertools
 
 # 함수 연산시간 출력
 # import cProfile
@@ -715,19 +715,19 @@ def XAI_result():
     ai_detect_list = re.findall(ai_detect_regex, sig_ai_pattern)
 
     ai_feature_list = []
-    ai_feature_list.append('payload_sql_comb_01' if any(list(map(lambda x: any(list(map(lambda y: re.findall(y, x.lower()), sql_1))), ai_detect_list))) else '')
-    ai_feature_list.append('payload_sql_comb_02' if any(list(map(lambda x: any(list(map(lambda y: re.findall(y, x.lower()), sql_2))), ai_detect_list))) else '')
-    ai_feature_list.append('payload_sql_comb_03' if any(list(map(lambda x: any(list(map(lambda y: re.findall(y, x.lower()), sql_3))), ai_detect_list))) else '')
-    ai_feature_list.append('payload_log4j_comb_01' if any(list(map(lambda x: any(list(map(lambda y: re.findall(y, x.lower()), log4j))), ai_detect_list))) else '')
-    ai_feature_list.append('payload_xss_comb_01' if any(list(map(lambda x: any(list(map(lambda y: re.findall(y, x.lower()), xss))), ai_detect_list))) else '')
-    ai_feature_list.append('payload_wp_comb_01' if any(list(map(lambda x: any(list(map(lambda y: re.findall(y, x.lower()), wp))), ai_detect_list))) else '')
-    ai_feature_list.append('payload_cmd_comb_01' if any(list(map(lambda x: any(list(map(lambda y: re.findall(y, x.lower()), cmd))), ai_detect_list))) else '')
-    ai_feature_list.append('payload_word_comb_01' if any(list(map(lambda x: any(list(map(lambda y: re.findall(y, x.lower()), word_1))), ai_detect_list))) else '')
-    ai_feature_list.append('payload_word_comb_02' if any(list(map(lambda x: any(list(map(lambda y: re.findall(y, x.lower()), word_2))), ai_detect_list))) else '')
-    ai_feature_list.append('payload_word_comb_03' if any(list(map(lambda x: any(list(map(lambda y: re.findall(y, x.lower()), word_3))), ai_detect_list))) else '')
-    ai_feature_list.append('payload_word_comb_04' if any(list(map(lambda x: any(list(map(lambda y: re.findall(y, x.lower()), word_4))), ai_detect_list))) else '')
-    ai_feature_list.append('payload_useragent_comb' if any(list(map(lambda x: any(list(map(lambda y: re.findall(y, x.lower()), user_agent))), ai_detect_list))) else '')
-    ai_feature_list = [x for x in ai_feature_list if x != '']
+    ai_feature_list.append(['payload_sql_comb_01' for x in ai_detect_list for y in sql_1 if re.findall(y, x.lower())])
+    ai_feature_list.append(['payload_sql_comb_02' for x in ai_detect_list for y in sql_2 if re.findall(y, x.lower())])
+    ai_feature_list.append(['payload_sql_comb_03' for x in ai_detect_list for y in sql_3 if re.findall(y, x.lower())])
+    ai_feature_list.append(['payload_log4j_comb_01' for x in ai_detect_list for y in log4j if re.findall(y, x.lower())])
+    ai_feature_list.append(['payload_xss_comb_01' for x in ai_detect_list for y in xss if re.findall(y, x.lower())])
+    ai_feature_list.append(['payload_cmd_comb_01' for x in ai_detect_list for y in cmd if re.findall(y, x.lower())])
+    ai_feature_list.append(['payload_wp_comb_01' for x in ai_detect_list for y in wp if re.findall(y, x.lower())])
+    ai_feature_list.append(['paylaod_word_comb_01' for x in ai_detect_list for y in word_1 if re.findall(y, x.lower())])
+    ai_feature_list.append(['paylaod_word_comb_02' for x in ai_detect_list for y in word_2 if re.findall(y, x.lower())])
+    ai_feature_list.append(['paylaod_word_comb_03' for x in ai_detect_list for y in word_3 if re.findall(y, x.lower())])
+    ai_feature_list.append(['paylaod_word_comb_04' for x in ai_detect_list for y in word_4 if re.findall(y, x.lower())])
+    ai_feature_list.append(['payload_useragent_comb' for x in ai_detect_list for y in user_agent if re.findall(y, x.lower())])
+    ai_feature_list = itertools.chain(*ai_feature_list)
     
 
 
