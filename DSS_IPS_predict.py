@@ -459,11 +459,7 @@ def XAI_result():
                             }
                             )
     
-    if attack_proba >= expected_value_sql_logit:
-        train_mean_pred_comment = '예측 위험도는 모델 평균에 비해 %.2f%% 왜 증가하였는가?' %(attack_proba - expected_value_sql_logit)
-    else:
-        train_mean_pred_comment = '예측 위험도는  평균에 비해 %.2f%% 왜 감소하였는가?' %(expected_value_sql_logit - attack_proba)
-
+    train_mean_pred_comment = 'AI 예측 위험도는 모델 평균 (%.2f%%)에 비해 %s%%인 %d%%로 %s 예측 합니다.' % (expected_value_sql_logit, train_mean_df['위험도(%) 증감'][1], attack_proba, db_ai)
     
     '''
     if db_ai == '공격':
@@ -1023,7 +1019,7 @@ def XAI_result():
     return render_template('XAI_output.html', payload_raw_data = request.form['raw_data_str'],  
                                 # expected_value_sql_logit = expected_value_sql_logit,
                                 train_mean_proba_html = train_mean_proba_html,
-                                # train_mean_pred_comment = train_mean_pred_comment,
+                                train_mean_pred_comment = train_mean_pred_comment,
                                 force_html = force_html,
                                 summary_html = summary_html,
                                 # pie_html = pie_html,
