@@ -302,7 +302,14 @@ def highlight_text(text, signature, ai_field):
     # 시그니처 패턴 또는 AI 생성 필드 인 경우, highlight 처리
     # re.escape() : 특수문자를 이스케이프 처리
     text = re.sub("(" + "|".join(map(re.escape, signature)) + ")", replacement, text, flags=re.I)
-    text = re.sub("(" + "|".join(ai_field) + ")", replacement_2, text, flags=re.I)
+    # text = re.sub("(" + "|".join(ai_field) + ")", replacement_2, text, flags=re.I)
+
+    # ai_field에서 cmd 제외
+    not_cmd_field = [i for i in ai_field if i not in cmd]
+    text = re.sub("(" + "|".join(not_cmd_field) + ")", replacement_2, text, flags=re.I)
+
+    # test.split('HTTP/1.')[0]에 cmd가 있는 경우, highlight 처리
+    text = re.sub("(" + "|".join(cmd) + ")", replacement_2, text.split('HTTP/1.')[0], flags=re.I) + 'HTTP/1.' + text.split('HTTP/1.')[1]
 
     regex = re.compile('\x1b\[103m(.*?)\x1b\[49m')
     # regex_2 = re.compile('\x1b\[91m(.*?)\x1b\[39m')
@@ -711,20 +718,84 @@ def XAI_result():
     ai_detect_list = re.findall(ai_detect_regex, sig_ai_pattern)
 
     ai_feature_list = []
-    ai_feature_list.append(['payload_sql_comb_01' for x in ai_detect_list for y in sql_1 if re.findall(y, x.lower())])
-    ai_feature_list.append(['payload_sql_comb_02' for x in ai_detect_list for y in sql_2 if re.findall(y, x.lower())])
-    ai_feature_list.append(['payload_sql_comb_03' for x in ai_detect_list for y in sql_3 if re.findall(y, x.lower())])
-    ai_feature_list.append(['payload_log4j_comb_01' for x in ai_detect_list for y in log4j if re.findall(y, x.lower())])
-    ai_feature_list.append(['payload_xss_comb_01' for x in ai_detect_list for y in xss if re.findall(y, x.lower())])
-    ai_feature_list.append(['payload_cmd_comb_01' for x in ai_detect_list for y in cmd if re.findall(y, x.lower())])
-    ai_feature_list.append(['payload_wp_comb_01' for x in ai_detect_list for y in wp if re.findall(y, x.lower())])
-    ai_feature_list.append(['payload_word_comb_01' for x in ai_detect_list for y in word_1 if re.findall(y, x.lower())])
-    ai_feature_list.append(['payload_word_comb_02' for x in ai_detect_list for y in word_2 if re.findall(y, x.lower())])
-    ai_feature_list.append(['payload_word_comb_03' for x in ai_detect_list for y in word_3 if re.findall(y, x.lower())])
-    ai_feature_list.append(['payload_word_comb_04' for x in ai_detect_list for y in word_4 if re.findall(y, x.lower())])
-    ai_feature_list.append(['payload_useragent_comb' for x in ai_detect_list for y in user_agent if re.findall(y, x.lower())])
-    ai_feature_list = [x for x in ai_feature_list if x != []]
-    ai_feature_list = list(itertools.chain(*ai_feature_list))
+    '''
+    ai_feature_list.append(['payload_sql_comb_01' for x in ai_detect_list for y in sql_1 if re.search(y, x.lower())])
+    ai_feature_list.append(['payload_sql_comb_02' for x in ai_detect_list for y in sql_2 if re.search(y, x.lower())])
+    ai_feature_list.append(['payload_sql_comb_03' for x in ai_detect_list for y in sql_3 if re.search(y, x.lower())])
+    ai_feature_list.append(['payload_log4j_comb_01' for x in ai_detect_list for y in log4j if re.search(y, x.lower())])
+    ai_feature_list.append(['payload_xss_comb_01' for x in ai_detect_list for y in xss if re.search(y, x.lower())])
+    ai_feature_list.append(['payload_cmd_comb_01' for x in ai_detect_list for y in cmd if re.search(y, x.lower())])
+    ai_feature_list.append(['payload_wp_comb_01' for x in ai_detect_list for y in wp if re.search(y, x.lower())])
+    ai_feature_list.append(['payload_word_comb_01' for x in ai_detect_list for y in word_1 if re.search(y, x.lower())])
+    ai_feature_list.append(['payload_word_comb_02' for x in ai_detect_list for y in word_2 if re.search(y, x.lower())])
+    ai_feature_list.append(['payload_word_comb_03' for x in ai_detect_list for y in word_3 if re.search(y, x.lower())])
+    ai_feature_list.append(['payload_word_comb_04' for x in ai_detect_list for y in word_4 if re.search(y, x.lower())])
+    ai_feature_list.append(['payload_useragent_comb' for x in ai_detect_list for y in user_agent if re.search(y, x.lower())])
+    '''
+    for x in ai_detect_list:
+        for y in sql_1:
+            if re.search(y, x.lower()):
+                ai_feature_list.append(['payload_sql_comb_01'])
+                break
+    for x in ai_detect_list:
+        for y in sql_2:
+            if re.search(y, x.lower()):
+                ai_feature_list.append(['payload_sql_comb_02'])
+                break
+    for x in ai_detect_list:
+        for y in sql_3:
+            if re.search(y, x.lower()):
+                ai_feature_list.append(['payload_sql_comb_03'])
+                break
+    for x in ai_detect_list:
+        for y in log4j:
+            if re.search(y, x.lower()):
+                ai_feature_list.append(['payload_log4j_comb_01'])
+                break
+    for x in ai_detect_list:
+        for y in xss:
+            if re.search(y, x.lower()):
+                ai_feature_list.append(['payload_xss_comb_01'])
+                break
+    for x in ai_detect_list:
+        for y in cmd:
+            if re.search(y, x.lower()):
+                ai_feature_list.append(['payload_cmd_comb_01'])
+                break
+    for x in ai_detect_list:
+        for y in wp:
+            if re.search(y, x.lower()):
+                ai_feature_list.append(['payload_wp_comb_01'])
+                break
+    for x in ai_detect_list:
+        for y in word_1:
+            if re.search(y, x.lower()):
+                ai_feature_list.append(['payload_word_comb_01'])
+                break
+    for x in ai_detect_list:
+        for y in word_2:
+            if re.search(y, x.lower()):
+                ai_feature_list.append(['payload_word_comb_02'])
+                break
+    for x in ai_detect_list:
+        for y in word_3:
+            if re.search(y, x.lower()):
+                ai_feature_list.append(['payload_word_comb_03'])
+                break
+    for x in ai_detect_list:
+        for y in word_4:
+            if re.search(y, x.lower()):
+                ai_feature_list.append(['payload_word_comb_04'])
+                break
+    for x in ai_detect_list:
+        for y in user_agent:
+            if re.search(y, x.lower()):
+                ai_feature_list.append(['payload_useragent_comb'])
+                break
+
+    
+    # ai_feature_list = [x for x in ai_feature_list if x != []]
+    ai_feature_list = list(itertools.chain(*ai_feature_list))e_list))
     
     
 
