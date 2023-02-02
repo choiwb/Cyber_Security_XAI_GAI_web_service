@@ -309,7 +309,8 @@ def highlight_text(text, signature, ai_field):
     text = re.sub("(" + "|".join(not_cmd_field) + ")", replacement_2, text, flags=re.I)
 
     # test.split('HTTP/1.')[0]에 cmd가 있는 경우, highlight 처리
-    text = re.sub("(" + "|".join(cmd) + ")", replacement_2, text.split('HTTP/1.')[0], flags=re.I) + 'HTTP/1.' + text.split('HTTP/1.')[1]
+    if 'HTTP/1.' in text and text.count('HTTP/1.') == 1:
+        text = re.sub("(" + "|".join(cmd) + ")", replacement_2, text.split('HTTP/1.')[0], flags=re.I) + 'HTTP/1.' + text.split('HTTP/1.')[1]
 
     regex = re.compile('\x1b\[103m(.*?)\x1b\[49m')
     # regex_2 = re.compile('\x1b\[91m(.*?)\x1b\[39m')
