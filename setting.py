@@ -82,10 +82,10 @@ new_sql_query = """
         IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'script(.*?)alert') )>0
                 ,1, 0) AS ips_00001_payload_xss_comb_01,
 
-        IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'wget(.*?)ttp') )>0
-        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'chmod(.*?)777') )>0
-        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'rm(.*?)rf') )>0
-        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cd(.*?)tmp') )>0
+        IF(INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0], 'wget(.*?)ttp') )>0
+        OR INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0], 'chmod(.*?)777') )>0
+        OR INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0], 'rm(.*?)rf') )>0
+        OR INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0] 'cd(.*?)tmp') )>0
                 ,1, 0) AS ips_00001_payload_cmd_comb_01,
 
         IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'jndi(.*?)dap') )>0
@@ -110,7 +110,6 @@ new_sql_query = """
         OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'backup(.*?)sql') )>0
         OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'robots(.*?)txt') )>0
         OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'sqlexec(.*?)php') )>0
-        OR INT(RLIKE(LOWER(payload), 'exec') )>0
         OR INT(RLIKE(LOWER(payload), 'htaccess') )>0
         OR INT(RLIKE(LOWER(payload), 'htpasswd') )>0
         OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cgi(.*?)cgi') )>0
@@ -132,8 +131,6 @@ new_sql_query = """
         OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'msadc(.*?)dll(.*?)http') )>0
         OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'filename(.*?)asp') )>0
         OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'filename(.*?)jsp') )>0
-        OR INT(RLIKE(LOWER(payload), 'powershell'))>0
-        OR INT(RLIKE(LOWER(payload), '[\\.]env'))>0
                 ,1, 0) AS ips_00001_payload_word_comb_03,
 
         IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'wp(.*?)login') )>0
@@ -187,7 +184,8 @@ new_sql_query = """
 # re.S의 경우, 줄바꿈 문자열 까지 매치 !!!!!!!
 attack_new_sql_query = re.findall(r'ips_00001_payload_base64.*?ips_00001_payload_useragent_comb', new_sql_query, re.S)[0]
 # attack_new_sql_query '\\n|\\r|\\t', ' ' 는 제거, 단 regex = False
-attack_new_sql_query = attack_new_sql_query.replace('\\n|\\r|\\t', '').replace(' ', '')
+attack_new_sql_query = attack_new_sql_query.replace('\\n|\\r|\\t', '').replace(' ', '').replace("'http/1.', 2", '')
+
 
 # new_sql_query의 '' 안에 있는 문자열들을 추출하여 리스트 생성, 
 ai_field = re.findall(r'\'(.*?)\'', attack_new_sql_query)
