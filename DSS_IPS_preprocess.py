@@ -202,10 +202,10 @@ def predict_UI_sql_result():
         IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  CONCAT('script', '(.*?)', 'alert')) )>0
                 ,1, 0) AS ips_00001_payload_xss_comb_01,
 
-        IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  CONCAT('wget', '(.*?)', 'ttp')) )>0
-        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  CONCAT('chmod', '(.*?)', '777')) )>0
-        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  CONCAT('rm', '(.*?)', 'rf')) )>0
-        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  CONCAT('cd', '(.*?)', 'tmp')) )>0
+        IF(INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  CONCAT('wget', '(.*?)', 'ttp')) )>0
+        OR INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  CONCAT('chmod', '(.*?)', '777')) )>0
+        OR INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  CONCAT('rm', '(.*?)', 'rf')) )>0
+        OR INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  CONCAT('cd', '(.*?)', 'tmp')) )>0
                 ,1, 0) AS ips_00001_payload_cmd_comb_01,
 
         IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  CONCAT('jndi', '(.*?)', 'dap')) )>0
@@ -230,7 +230,6 @@ def predict_UI_sql_result():
         OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload),  '\\n|\\r|\\t', ' '), CONCAT('backup', '(.*?)', 'sql')) )>0
         OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload),  '\\n|\\r|\\t', ' '), CONCAT('robots', '(.*?)', 'txt')) )>0
         OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload),  '\\n|\\r|\\t', ' '), CONCAT('sqlexec', '(.*?)', 'php')) )>0
-        OR INT(RLIKE(LOWER(payload), 'exec') )>0
         OR INT(RLIKE(LOWER(payload), 'htaccess') )>0
         OR INT(RLIKE(LOWER(payload), 'htpasswd') )>0
         OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload),  '\\n|\\r|\\t', ' '), CONCAT('cgi', '(.*?)', 'cgi')) )>0
@@ -263,7 +262,6 @@ def predict_UI_sql_result():
         IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload),  '\\n|\\r|\\t', ' '), CONCAT('cmd', '(.*?)', 'open')) )>0
         OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload),  '\\n|\\r|\\t', ' '), CONCAT('echo', '(.*?)', 'shellshock')) )>0
         OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload),  '\\n|\\r|\\t', ' '), CONCAT('php', '(.*?)', 'echo')) )>0
-        OR INT(RLIKE(LOWER(payload), 'echo') )>0
         OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload),  '\\n|\\r|\\t', ' '), CONCAT('admin', '(.*?)', 'php')) )>0
         OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), CONCAT('script', '(.*?)', 'setup', '(.*?)', 'php')) )>0
         OR INT(RLIKE(LOWER(payload), 'phpinfo') )>0
@@ -296,7 +294,6 @@ def predict_UI_sql_result():
         + (SIZE(SPLIT(REGEXP_REPLACE(LOWER(payload),  '\\n|\\r|\\t', ' '), CONCAT('head', '(.*?)', 'http/1.'))) -1)
         + (SIZE(SPLIT(REGEXP_REPLACE(LOWER(payload),  '\\n|\\r|\\t', ' '), CONCAT('option', '(.*?)', 'http/1.'))) -1)
         AS ips_00001_payload_whitelist
-
     FROM table
     
     """
