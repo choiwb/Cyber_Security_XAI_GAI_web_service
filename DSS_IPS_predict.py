@@ -796,7 +796,7 @@ def XAI_result():
 
     
     # ai_feature_list = [x for x in ai_feature_list if x != []]
-    ai_feature_list = list(itertools.chain(*ai_feature_list))e_list))
+    ai_feature_list = list(itertools.chain(*ai_feature_list))
     
     
 
