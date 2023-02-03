@@ -717,6 +717,8 @@ def XAI_result():
     # sig_ai_pattern에서 \033[91m ~ \033[39m 사이 키워드 추출
     ai_detect_regex = r'\x1b\[91m(.*?)\x1b\[39m'
     ai_detect_list = re.findall(ai_detect_regex, sig_ai_pattern)
+    ai_detect_list = [re.sub(r'\x1b\[103m|\x1b\[49m', '', x) for x in ai_detect_list]
+
 
     ai_feature_list = []
     '''
