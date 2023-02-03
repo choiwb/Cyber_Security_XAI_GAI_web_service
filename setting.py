@@ -80,12 +80,13 @@ new_sql_query = """
                 ,1, 0) AS ips_00001_payload_sql_comb_03,
 
         IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'script(.*?)alert') )>0
+        OR INT(RLIKE(LOWER(payload), 'eval') )>0
                 ,1, 0) AS ips_00001_payload_xss_comb_01,
 
-        IF(INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0], 'wget(.*?)ttp') )>0
-        OR INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0], 'chmod(.*?)777') )>0
-        OR INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0], 'rm(.*?)rf') )>0
-        OR INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0] 'cd(.*?)tmp') )>0
+        IF(INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  CONCAT('wget(.*?)ttp')) )>0
+        OR INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  CONCAT('chmod(.*?)777')) )>0
+        OR INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  CONCAT('rm(.*?)rf')) )>0
+        OR INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  CONCAT('cd(.*?)tmp')) )>0
                 ,1, 0) AS ips_00001_payload_cmd_comb_01,
 
         IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'jndi(.*?)dap') )>0
@@ -131,6 +132,8 @@ new_sql_query = """
         OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'msadc(.*?)dll(.*?)http') )>0
         OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'filename(.*?)asp') )>0
         OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'filename(.*?)jsp') )>0
+        OR INT(RLIKE(LOWER(payload), 'powershell'))>0
+        OR INT(RLIKE(LOWER(payload), '[\\.]env'))>0
                 ,1, 0) AS ips_00001_payload_word_comb_03,
 
         IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'wp(.*?)login') )>0
@@ -148,7 +151,6 @@ new_sql_query = """
         OR INT(RLIKE(LOWER(payload), 'administrator') )>0
         OR INT(RLIKE(LOWER(payload), 'phpmyadmin') )>0
         OR INT(RLIKE(LOWER(payload), 'access') )>0
-        OR INT(RLIKE(LOWER(payload), 'eval') )>0
         OR INT(RLIKE(LOWER(payload), 'mdb') )>0
         OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'wise(.*?)survey(.*?)admin') )>0
         OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'admin(.*?)serv(.*?)admpw') )>0
