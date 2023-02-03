@@ -185,14 +185,12 @@ new_sql_query = """
 # new_sql_query의 ips_00001_payload_base64 부터 ips_00001_payload_useragent_comb 까지 추출
 # re.S의 경우, 줄바꿈 문자열 까지 매치 !!!!!!!
 attack_new_sql_query = re.findall(r'ips_00001_payload_base64.*?ips_00001_payload_useragent_comb', new_sql_query, re.S)[0]
-# attack_new_sql_query '\\n|\\r|\\t', ' ' 는 제거, 단 regex = False
-attack_new_sql_query = attack_new_sql_query.replace('\\n|\\r|\\t', '').replace(' ', '').replace("'http/1.', 2", '')
-
-
+# attack_new_sql_query '\\n|\\r|\\t', 'http/1.', 2 는 제거, 단 regex = False
+attack_new_sql_query = attack_new_sql_query.replace('\\n|\\r|\\t', '').replace("'http/1.', 2", '')
 # new_sql_query의 '' 안에 있는 문자열들을 추출하여 리스트 생성, 
 ai_field = re.findall(r'\'(.*?)\'', attack_new_sql_query)
 # ai_field에서 'remove_string' 는 제거
-ai_field = [x for x in ai_field if x != '']
+ai_field = [x for x in ai_field if x != '' and x != ' ']
 
 
 # attack_new_sql_query 에서 'AS' 를 기준으로 분할
@@ -201,7 +199,7 @@ attack_new_sql_query_split = attack_new_sql_query.split('AS')
 sql_1, sql_2, sql_3, xss, cmd, log4j, word_1, word_2, word_3, wp, word_4, user_agent = attack_new_sql_query_split[:12]
 sql_1, sql_2, sql_3, xss, cmd, log4j, word_1, word_2, word_3, wp, word_4, user_agent = list(map(lambda x: re.findall(r'\'(.*?)\'', x), 
                                                                         [sql_1, sql_2, sql_3, xss, cmd, log4j, word_1, word_2, word_3, wp, word_4, user_agent]))
-sql_1, sql_2, sql_3, xss, cmd, log4j, word_1, word_2, word_3, wp, word_4, user_agent = list(map(lambda x: [y for y in x if y != ''],
+sql_1, sql_2, sql_3, xss, cmd, log4j, word_1, word_2, word_3, wp, word_4, user_agent = list(map(lambda x: [y for y in x if y != '' and y != ' '],
                                                                         [sql_1, sql_2, sql_3, xss, cmd, log4j, word_1, word_2, word_3, wp, word_4, user_agent])) 
 
 # device = torch.device('mps')
