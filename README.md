@@ -13,5 +13,6 @@
 - WAF & WEB LOG (APACHE or NGINX or IIS) Parsing
 - Docker application
 
-- TO DO: BERT based Tokenizer R&D (adding cyber security domain word)
+- TO DO 1: BERT based Tokenizer R&D (adding cyber security domain word)
+- TO DO 2: Mitre Att&ck Matrix mapping Tactic & T-ID based multi classification
 
