@@ -39,7 +39,7 @@ def user_input():
 # T-ID 분류 모델 - Tactic (14개) 별 예측 후, 상위 3개 T-ID 추출
 
 # Mitre Att&ck 데이터 호출
-mitre_attack_path = '/home/ngcsm/cti_xai/TID_mitre_attack/mitre_attack.xlsx'
+mitre_attack_path = 'MITRE ATT&CK DATA PATH !!!!!'
 tid_refer = pd.read_excel(mitre_attack_path, sheet_name= '세부명세')
 # print(tid_refer['Tactics(ID)'].value_counts())
 tactic_refer = list(tid_refer['Tactics(ID)'].value_counts().index)
@@ -47,12 +47,12 @@ tactic_refer = list(tid_refer['Tactics(ID)'].value_counts().index)
 tactic_desc = pd.read_excel(mitre_attack_path, sheet_name= '1.Tactics(전술)')
 
 # TFIDF 학습 키워드 호출 
-tfidf_word_path = '/home/ngcsm/cti_xai/TID_mitre_attack/Tactic_model_TFIDF_word'
+tfidf_word_path = 'TRAIN SET WORD PATH !!!!!'
 tfidf_word_list = os.listdir(tfidf_word_path)
 tfidf_word_list.sort(key=lambda f: int(re.sub('\D', '', f)))
 
 # Tactic 모델 호출
-tactic_model_path = '/home/ngcsm/cti_xai/TID_mitre_attack'
+tactic_model_path = 'MODEL PATH !!!!!'
 tactic_model_list = os.listdir(tactic_model_path)
 tactic_model_list.remove('Tactic_model_TFIDF_word')
 tactic_model_list.remove('mitre_attack.xlsx')
