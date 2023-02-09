@@ -114,7 +114,7 @@ def TID_TFIDF_prepro_predict():
     pred_result_html = pred_result.to_html(index=False, justify='center')
 
     # 각 Tactic 함수 별 위 전처리 결과 통한, 예측 후, 상위 n개 T-ID 호출
-    n = 3
+    n = 5
     top_n_tid = pred_result.head(n)
     top_n_tid = top_n_tid.rename(columns = {'AI': 'Techniques(ID)'})
 
@@ -139,6 +139,9 @@ def TID_TFIDF_prepro_predict():
                                             'Detection 설명(번역)': '탐지 방안'})
 
     # top_n_tid의 Tactic, T-ID를 grouping 하여, sample(1) 씩 추출
+    '''
+    예측 재진행 개념으로 샘플링 재진행!!!!!! 
+    '''
     top_n_tid = top_n_tid.groupby(['Tactic', 'T-ID']).sample(1)
     top_n_tid = top_n_tid.sort_values(by = 'AI', ascending = False)
 
