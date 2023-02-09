@@ -108,7 +108,7 @@ def TID_TFIDF_prepro_predict():
 
     pred_result['model_no'] = pred_result.index + 1
     pred_result = pred_result[['model_no', 'Tactics(ID)', 'AI', 'proba', 'max_proba']]
-    pred_result = pred_result.sort_values(by = 'max_proba', ascending = False)
+    # pred_result = pred_result.sort_values(by = 'max_proba', ascending = False)
 
     # pred_result to html
     pred_result_html = pred_result.to_html(index=False, justify='center')
@@ -134,6 +134,10 @@ def TID_TFIDF_prepro_predict():
                                             'Mitigations 설명(번역)': '대응 방안',
                                             'Detection 설명(번역)': '탐지 방안'})
 
+    # top_n_tid의 Tactic, T-ID를 grouping 하여, sample(1) 씩 추출
+    top_n_tid = top_n_tid.groupby(['Tactic', 'T-ID']).sample(1)
+    top_n_tid = top_n_tid.sort_values(by = 'AI', ascending = False)
+
     top_n_tid['AI'] = top_n_tid['AI'] * 100
     # top_n_tid['Tactic AI'] 소수점 2자리까지 표현
     top_n_tid['AI'] = top_n_tid['AI'].apply(lambda x: '%.2f' % x)
@@ -148,9 +152,10 @@ def TID_TFIDF_prepro_predict():
     top_n_tid_html = top_n_tid.to_html(index=False, justify='center')
 
     return render_template('TID_multi_model_predict.html', raw_data_str = raw_data_str,
-                                            pred_result_html = pred_result_html,
+                                            # pred_result_html = pred_result_html,
                                             top_n_tid_html = top_n_tid_html,
                                             )
+
 
 
 # @app.route('/web_UI_preprocess', methods = ['GET'])
