@@ -35,6 +35,124 @@ def user_input():
     return render_template('user_input.html')
 
 
+###################################################################
+# T-ID 분류 모델 - Tactic (14개) 별 예측 후, 상위 3개 T-ID 추출
+
+# Mitre Att&ck 데이터 호출
+mitre_attack_path = '/home/ngcsm/cti_xai/TID_mitre_attack/mitre_attack.xlsx'
+tid_refer = pd.read_excel(mitre_attack_path, sheet_name= '세부명세')
+# print(tid_refer['Tactics(ID)'].value_counts())
+tactic_refer = list(tid_refer['Tactics(ID)'].value_counts().index)
+# print(tactic_refer)
+# tactic_refer = pd.read_excel(mitre_attack_path, sheet_name= '1.Tactics(전술)')
+ 
+# TFIDF 학습 키워드 호출 
+tfidf_word_path = '/home/ngcsm/cti_xai/TID_mitre_attack/Tactic_model_TFIDF_word'
+tfidf_word_list = os.listdir(tfidf_word_path)
+tfidf_word_list.sort(key=lambda f: int(re.sub('\D', '', f)))
+
+# Tactic 모델 호출
+tactic_model_path = '/home/ngcsm/cti_xai/TID_mitre_attack'
+tactic_model_list = os.listdir(tactic_model_path)
+tactic_model_list.remove('Tactic_model_TFIDF_word')
+tactic_model_list.remove('mitre_attack.xlsx')
+tactic_model_list.sort(key = lambda f: int(f.split('_')[1]))
+
+
+for i in range(len(tfidf_word_list)):
+    # tfidf_word 기반 변수명 생성
+    globals()['tactic_{}_word'.format(i+1)] = pd.read_csv(os.path.join(tfidf_word_path, tfidf_word_list[i]))
+    try:
+        globals()['tactic_{}_model'.format(i+1)] = pickle.load(open(os.path.join(tactic_model_path, tactic_model_list[i]), 'rb'))
+    except:
+        print(globals()['tactic_{}_model'.format(i+1)].get_params())
+        print('모델 로드 실패')
+        pass
+    
+
+
+@app.route('/TID_TFIDF_prepro_predict_xai', methods=['POST'])
+def TID_TFIDF_prepro_predict():
+    raw_data_str = request.form['raw_data_str']
+    valid_raw_df = pd.DataFrame([raw_data_str], columns = ['total_text'])
+
+    pred_result = pd.DataFrame(columns = ['Tactics(ID)', 'AI', 'proba', 'max_proba'])
+
+    for i in range(len(tfidf_word_list)):
+
+        pred_result.loc[i, 'Tactics(ID)'] = tactic_refer[i]
+        # 학습 데이터의 word 및 IDF 호출
+        globals()['tactic_{}_word_list'.format(i+1)] = globals()['tactic_{}_word'.format(i+1)]['word'].tolist()
+        globals()['tactic_{}_idf_list'.format(i+1)] = globals()['tactic_{}_word'.format(i+1)]['IDF'].tolist()
+
+        # valid 셋 TF 도출
+        globals()['valid_{}_vectorizer'.format(i+1)] = CountVectorizer(lowercase = True, vocabulary = globals()['tactic_{}_word_list'.format(i+1)])
+        globals()['valid_{}_tf_feature'.format(i+1)] = globals()['valid_{}_vectorizer'.format(i+1)].fit_transform(valid_raw_df['total_text']).toarray()
+        globals()['valid_{}_tf_df'.format(i+1)] = pd.DataFrame(globals()['valid_{}_tf_feature'.format(i+1)], columns = globals()['valid_{}_vectorizer'.format(i+1)].get_feature_names_out())
+
+        # valid 셋 TF-IDF 도출
+        globals()['valid_{}_tfidf_df'.format(i+1)] = globals()['valid_{}_tf_df'.format(i+1)] * globals()['tactic_{}_idf_list'.format(i+1)]
+        # print(globals()['valid_{}_tfidf_df'.format(i+1)].shape)
+
+        # 전처리 완료된 valid 셋을 통한 Tactic 모델 별, T-IDF 에측
+        globals()['tactic_{}_predict'.format(i+1)] = globals()['tactic_{}_model'.format(i+1)].predict(globals()['valid_{}_tfidf_df'.format(i+1)])
+        pred_result.loc[i, 'AI'] = globals()['tactic_{}_predict'.format(i+1)][0]
+        
+        globals()['tactic_{}_predict_proba'.format(i+1)] = globals()['tactic_{}_model'.format(i+1)].predict_proba(globals()['valid_{}_tfidf_df'.format(i+1)])
+        globals()['tactic_{}_predict_proba'.format(i+1)] = np.round(globals()['tactic_{}_predict_proba'.format(i+1)], 4)
+        globals()['tactic_{}_predict_proba'.format(i+1)] = list(itertools.chain(*globals()['tactic_{}_predict_proba'.format(i+1)]))
+        pred_result.loc[i, 'proba'] = globals()['tactic_{}_predict_proba'.format(i+1)]
+        globals()['tactic_{}_max_proba'.format(i+1)] = max(globals()['tactic_{}_predict_proba'.format(i+1)])
+        pred_result.loc[i, 'max_proba'] = globals()['tactic_{}_max_proba'.format(i+1)]
+        
+
+    pred_result['model_no'] = pred_result.index + 1
+    pred_result = pred_result[['model_no', 'Tactics(ID)', 'AI', 'proba', 'max_proba']]
+    pred_result = pred_result.sort_values(by = 'max_proba', ascending = False)
+
+    # pred_result to html
+    pred_result_html = pred_result.to_html(index=False, justify='center')
+
+    # 각 Tactic 함수 별 위 전처리 결과 통한, 예측 후, 상위 n개 T-ID 호출
+    n = 3
+    top_n_tid = pred_result.head(n)
+    top_n_tid = top_n_tid.rename(columns = {'AI': 'Techniques(ID)'})
+
+    #########################################################################################
+    top_n_tid = top_n_tid.merge(tid_refer, how = 'left', on = ['Tactics(ID)', 'Techniques(ID)'])
+    #########################################################################################
+    
+    top_n_tid = top_n_tid[['Tactics(ID)', 'Tactics(name)', 'Techniques(ID)', 'Techniques(name)', 'max_proba',
+                        'Techniques 설명(번역)', 'Mitigations 설명(번역)', 'Detection 설명(번역)'
+                        ]]
+    top_n_tid = top_n_tid.rename(columns = {'Techniques(ID)': 'T-ID', 
+                                            'Techniques(name)': 'T-ID name',
+                                            'max_proba': 'AI',
+                                            'Tactics(ID)': 'Tactic',
+                                            'Tactics(name)': 'Tactic name',
+                                            'Techniques 설명(번역)': 'T-ID 설명',
+                                            'Mitigations 설명(번역)': '대응 방안',
+                                            'Detection 설명(번역)': '탐지 방안'})
+
+    top_n_tid['AI'] = top_n_tid['AI'] * 100
+    # top_n_tid['Tactic AI'] 소수점 2자리까지 표현
+    top_n_tid['AI'] = top_n_tid['AI'].apply(lambda x: '%.2f' % x)
+    top_n_tid['AI'] = top_n_tid['AI'].astype(str)
+
+    top_n_tid['AI'] = top_n_tid['AI'] + '%'
+    top_n_tid['T-ID 설명'] = top_n_tid['T-ID 설명'].fillna('-')
+    top_n_tid['대응 방안'] = top_n_tid['대응 방안'].fillna('-')
+    top_n_tid['탐지 방안'] = top_n_tid['탐지 방안'].fillna('-')
+
+    # top_n_tid to html
+    top_n_tid_html = top_n_tid.to_html(index=False, justify='center')
+
+    return render_template('TID_multi_model_predict.html', raw_data_str = raw_data_str,
+                                            pred_result_html = pred_result_html,
+                                            top_n_tid_html = top_n_tid_html,
+                                            )
+
+
 # @app.route('/web_UI_preprocess', methods = ['GET'])
 def web_UI_preprocess():
     
