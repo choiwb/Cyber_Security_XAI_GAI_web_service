@@ -44,8 +44,8 @@ tid_refer = pd.read_excel(mitre_attack_path, sheet_name= '세부명세')
 # print(tid_refer['Tactics(ID)'].value_counts())
 tactic_refer = list(tid_refer['Tactics(ID)'].value_counts().index)
 # print(tactic_refer)
-# tactic_refer = pd.read_excel(mitre_attack_path, sheet_name= '1.Tactics(전술)')
- 
+tactic_desc = pd.read_excel(mitre_attack_path, sheet_name= '1.Tactics(전술)')
+
 # TFIDF 학습 키워드 호출 
 tfidf_word_path = '/home/ngcsm/cti_xai/TID_mitre_attack/Tactic_model_TFIDF_word'
 tfidf_word_list = os.listdir(tfidf_word_path)
@@ -120,16 +120,20 @@ def TID_TFIDF_prepro_predict():
 
     #########################################################################################
     top_n_tid = top_n_tid.merge(tid_refer, how = 'left', on = ['Tactics(ID)', 'Techniques(ID)'])
+    top_n_tid = top_n_tid.merge(tactic_desc, how = 'left', on = ['Tactics(ID)', 'Tactics(name)'])
     #########################################################################################
     
-    top_n_tid = top_n_tid[['Tactics(ID)', 'Tactics(name)', 'Techniques(ID)', 'Techniques(name)', 'max_proba',
+    top_n_tid = top_n_tid[['Tactics(ID)', 'Tactics(name)', 'Tactics 설명(간략)', 'Techniques(ID)', 'Techniques(name)', 'max_proba',
                         'Techniques 설명(번역)', 'Mitigations 설명(번역)', 'Detection 설명(번역)'
                         ]]
+
+ 
     top_n_tid = top_n_tid.rename(columns = {'Techniques(ID)': 'T-ID', 
-                                            'Techniques(name)': 'T-ID name',
+                                            'Techniques(name)': 'T-ID 이름',
+                                            'Tactics 설명(간략)': 'Tactic 설명',
                                             'max_proba': 'AI',
                                             'Tactics(ID)': 'Tactic',
-                                            'Tactics(name)': 'Tactic name',
+                                            'Tactics(name)': 'Tactic 이름',
                                             'Techniques 설명(번역)': 'T-ID 설명',
                                             'Mitigations 설명(번역)': '대응 방안',
                                             'Detection 설명(번역)': '탐지 방안'})
