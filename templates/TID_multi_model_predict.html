@@ -3,18 +3,19 @@
 <style media="screen">
   body {
     text-align: center;
+    font-size: 16px;
   }
   iframe{ 
     border: none;
   }
 </style>
 <body>
-  <br><br><h4> Search :  {{raw_data_str}} <br></h4>
   <br><br><h2> Tactic 기반 T-ID AI 리포트 <br></h2>
-  <iframe width = "2000", height = "1500", srcdoc="{{top_n_tid_html}}" ></iframe>
+  <iframe width="2000" height="1500" srcdoc="{{ top_n_tid_html }}"></iframe>
 
-  <br><br>
-  <a href='/'>go back to home page</a>
+  <!-- Regenerate response-->
+  <button onclick="location.reload();">Regenerate response </button>
   <br><br><br><br><br>
+
 </body>
 </html>
