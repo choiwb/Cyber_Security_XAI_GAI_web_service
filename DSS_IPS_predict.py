@@ -72,7 +72,7 @@ for i in range(len(tfidf_word_list)):
 
 
 @app.route('/TID_TFIDF_prepro_predict_xai', methods=['POST'])
-def TID_TFIDF_prepro_predict():
+def TID_TFIDF_prepro_predict_xai():
     raw_data_str = request.form['raw_data_str']
     valid_raw_df = pd.DataFrame([raw_data_str], columns = ['total_text'])
 
@@ -115,20 +115,19 @@ def TID_TFIDF_prepro_predict():
 
     # 각 Tactic 함수 별 위 전처리 결과 통한, 예측 후, 상위 n개 T-ID 호출
     n = 5
-    top_n_tid = pred_result.head(n)
-    top_n_tid = top_n_tid.rename(columns = {'AI': 'Techniques(ID)'})
+    total_n_tid = pred_result.head(n)
+    total_n_tid = total_n_tid.rename(columns = {'AI': 'Techniques(ID)'})
 
     #########################################################################################
-    top_n_tid = top_n_tid.merge(tid_refer, how = 'left', on = ['Tactics(ID)', 'Techniques(ID)'])
-    top_n_tid = top_n_tid.merge(tactic_desc, how = 'left', on = ['Tactics(ID)', 'Tactics(name)'])
+    total_n_tid = total_n_tid.merge(tid_refer, how = 'left', on = ['Tactics(ID)', 'Techniques(ID)'])
+    total_n_tid = total_n_tid.merge(tactic_desc, how = 'left', on = ['Tactics(ID)', 'Tactics(name)'])
     #########################################################################################
     
-    top_n_tid = top_n_tid[['Tactics(ID)', 'Tactics(name)', 'Tactics 설명(간략)', 'Techniques(ID)', 'Techniques(name)', 'max_proba',
+    total_n_tid = total_n_tid[['Tactics(ID)', 'Tactics(name)', 'Tactics 설명(간략)', 'Techniques(ID)', 'Techniques(name)', 'max_proba',
                         'Techniques 설명(번역)', 'Mitigations 설명(번역)', 'Detection 설명(번역)'
                         ]]
 
- 
-    top_n_tid = top_n_tid.rename(columns = {'Techniques(ID)': 'T-ID', 
+    total_n_tid = total_n_tid.rename(columns = {'Techniques(ID)': 'T-ID', 
                                             'Techniques(name)': 'T-ID 이름',
                                             'Tactics 설명(간략)': 'Tactic 설명',
                                             'max_proba': 'AI',
@@ -138,11 +137,7 @@ def TID_TFIDF_prepro_predict():
                                             'Mitigations 설명(번역)': '대응 방안',
                                             'Detection 설명(번역)': '탐지 방안'})
 
-    # top_n_tid의 Tactic, T-ID를 grouping 하여, sample(1) 씩 추출
-    '''
-    예측 재진행 개념으로 샘플링 재진행!!!!!! 
-    '''
-    top_n_tid = top_n_tid.groupby(['Tactic', 'T-ID']).sample(1)
+    top_n_tid = total_n_tid.groupby(['Tactic', 'T-ID']).sample(1)
     top_n_tid = top_n_tid.sort_values(by = 'AI', ascending = False)
 
     top_n_tid['AI'] = top_n_tid['AI'] * 100
@@ -157,9 +152,9 @@ def TID_TFIDF_prepro_predict():
 
     # top_n_tid to html
     top_n_tid_html = top_n_tid.to_html(index=False, justify='center')
+    top_n_tid_html = top_n_tid_html.replace('\\n', '')
 
-    return render_template('TID_multi_model_predict.html', raw_data_str = raw_data_str,
-                                            # pred_result_html = pred_result_html,
+    return render_template('TID_multi_model_predict.html',
                                             top_n_tid_html = top_n_tid_html,
                                             )
 
