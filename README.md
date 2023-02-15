@@ -12,7 +12,8 @@
 - Feature importance Summary about predict data
 - WAF & WEB LOG (APACHE or NGINX or IIS) Parsing
 - Docker application
-
-- TO DO 1: BERT based Tokenizer R&D (adding cyber security domain word)
-- TO DO 2: Mitre Att&ck Matrix mapping Tactic & T-ID based multi classification
+- DistilBERT Transfer Learning (adding cyber security domain word)
+###
+- TO DO 1: Mitre Att&ck Matrix mapping Tactic & T-ID based multi classification
+- TO DO 2: OpenAI GPT (https://huggingface.co/openai-gpt) based cyber security Chatbot R&D
 
