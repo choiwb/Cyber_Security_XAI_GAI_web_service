@@ -1247,6 +1247,13 @@ def XAI_result():
     
     sig_pattern_html = f"<head>{sig_ai_pattern}</head>"        
     sig_df_html = sig_df.to_html(index=False, justify='center')
+    
+    #################################################################
+    start_chat_api = time.time()
+    answer_string = ips_chat_gpt(raw_data_str)
+    end_chat_api = time.time()
+    print('Open AI 챗봇 호출 시간: %.2f (초)' %(end_chat_api - start_chat_api))
+    #################################################################
 
 
     return render_template('XAI_output.html', payload_raw_data = request.form['raw_data_str'],  
