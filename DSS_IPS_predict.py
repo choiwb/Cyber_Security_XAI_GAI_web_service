@@ -35,6 +35,40 @@ def user_input():
     return render_template('user_input.html')
 
 
+ips_context_path = 'YOUR CONTEXT PATH !!!!!!!'
+
+def load_context(file_path):
+    with open(file_path, "r") as f:
+        context = f.read()
+    return context
+
+def ips_chat_gpt(raw_data_str):
+    context = load_context(ips_context_path)
+    prompt = context + ' ' + raw_data_str + '  이 IPS 장비 payload의 경우, 공격으로 판단할만한 부분이 있나요?'
+
+    completions = openai.Completion.create(
+    engine = 'text-davinci-003',
+    prompt=prompt,
+    max_tokens=256,
+    # max_length=512,
+    # max_completions=2,
+    n=1,
+    stop=None,
+    temperature=0.5,
+    )
+
+
+    answer_string = completions['choices'][0]['text'].strip()
+
+    q_and_a_df = pd.DataFrame([['Question', prompt], ['Answer', answer_string]],
+                            columns = ['Q&A', 'Contents'])
+    q_and_a_html = q_and_a_df.to_html(index=False, justify='center')
+    q_and_a_html = q_and_a_html.replace('\\n', '')
+
+    answer_string = answer_string.replace('네, ', '').replace('아니요. ', '')
+    return answer_string
+
+
 ###################################################################
 # T-ID 분류 모델 - Tactic (14개) 별 예측 후, 상위 3개 T-ID 추출
 
