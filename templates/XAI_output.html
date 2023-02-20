@@ -8,6 +8,7 @@
     border: none;
   }
 </style>
+
 <body>
   <br><br><h4> Payload :  {{payload_raw_data}} <br></h4>
   <h3> XAI 리포트 <br></h3>
@@ -38,9 +39,25 @@
   <!--
   <h5>{{answer_string}}</h5>
   -->
-  <iframe width = "1000", height = "400" srcdoc="{{q_and_a_html}}" ></iframe>
-
+  <iframe width = "1000", height = "500" srcdoc="{{q_and_a_html}}" ></iframe>
+  
   <br><br>
+  <h3> 사이버 킬 체인 다이어그램 <br></h3>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+  <meta charset="UTF-8">
+  <style>
+    .mermaid {
+      font-family: "Noto Sans KR", sans-serif;
+    }
+  </style>
+  <div class="mermaid">
+  {{cy_chain_mermaid}}
+  </div>
+    <script>
+    mermaid.initialize({startOnLoad:true});
+    </script>
+  <br><br>
+
   <a href='/'>go back to home page</a>
   <br><br><br><br><br>
 </center>
