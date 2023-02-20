@@ -44,12 +44,17 @@ def load_context(file_path):
 
 def ips_chat_gpt(raw_data_str):
     context = load_context(ips_context_path)
-    prompt = context + ' ' + raw_data_str + '  이 IPS 장비 payload의 경우, 공격으로 판단할만한 부분이 있나요?'
+    # prompt = context + ' ' + raw_data_str + '  이 IPS 장비 payload의 경우, 공격으로 판단할만한 부분이 있나요?'
+    prompt1 = raw_data_str + '  이 IPS 장비 payload의 경우, 공격으로 판단할만한 부분이 있나요?'
+    prompt2 = raw_data_str + ' 이 IPS 장비 payload의 경우, Mitre Att&ck Matrix 에서 Enterprise용 Tactics 14개 중에, 어떤 Tactics 인지? 그리고 어떤 T-ID 인지? Tactics, T-ID 순으로 알려주세요.'
+    prompt3 = raw_data_str + ' 이 IPS 장비 payload의 경우, 탐지할만한, Snort Rule을 작성해주세요.'
+    prompt4 = raw_data_str + ' 이 IPS 장비 payload의 경우, 연관될만한 CVE (Common Vulnerabilities and Exposures) 가 있나요?'
+    prompt5 = raw_data_str + ' 이 IPS 장비 payload의 경우, Cyber Kill Chain을 mermaid로 작성해주세요.'
 
-    completions = openai.Completion.create(
+    completions1 = openai.Completion.create(
     engine = 'text-davinci-003',
-    prompt=prompt,
-    max_tokens=256,
+    prompt=prompt1,
+    max_tokens=512,
     # max_length=512,
     # max_completions=2,
     n=1,
@@ -57,16 +62,65 @@ def ips_chat_gpt(raw_data_str):
     temperature=0.5,
     )
 
+    completions2 = openai.Completion.create(
+    engine = 'text-davinci-003',
+    prompt=prompt2,
+    max_tokens=512,
+    n=1,
+    stop=None,
+    temperature=0.5,
+    )
 
-    answer_string = completions['choices'][0]['text'].strip()
+    completions3 = openai.Completion.create(
+    engine = 'text-davinci-003',
+    prompt=prompt3,
+    max_tokens=512,
+    n=1,
+    stop=None,
+    temperature=0.5,
+    )
 
-    q_and_a_df = pd.DataFrame([['Question', prompt], ['Answer', answer_string]],
-                            columns = ['Q&A', 'Contents'])
+    completions4 = openai.Completion.create(
+    engine = 'text-davinci-003',
+    prompt=prompt4,
+    max_tokens=512,
+    n=1,
+    stop=None,
+    temperature=0.5,
+    )
+
+    completions5 = openai.Completion.create(
+    engine = 'text-davinci-003',
+    prompt=prompt5,
+    max_tokens=512,
+    n=1,
+    stop=None,
+    temperature=0.5,
+    )
+
+
+    answer_string1 = completions1['choices'][0]['text'].strip()
+    answer_string2 = completions2['choices'][0]['text'].strip()
+    answer_string3 = completions3['choices'][0]['text'].strip()
+    answer_string4 = completions4['choices'][0]['text'].strip()
+    answer_string5 = completions5['choices'][0]['text'].strip()
+
+    answer_string1 = answer_string1.replace('네, ', '').replace('아니요. ', '')
+    answer_string2 = answer_string2.replace('네, ', '').replace('아니요. ', '').replace('T-ID', ' T-ID')
+    answer_string3 = answer_string3.replace('네, ', '').replace('아니요. ', '')
+    answer_string4 = answer_string4.replace('네, ', '').replace('아니요. ', '')
+    answer_string5 = answer_string5.replace('네, ', '').replace('아니요. ', '')
+
+    q_and_a_df = pd.DataFrame([['공격 판단 근거', answer_string1], ['Tactics & T-ID 추천', answer_string2],
+                            ['Snort Rule 추천', answer_string3], ['CVE 추천', answer_string4],
+                            ['사이버 킬 체인 작성', answer_string5]], 
+                            columns = ['Question', 'Answer'])
+
     q_and_a_html = q_and_a_df.to_html(index=False, justify='center')
     q_and_a_html = q_and_a_html.replace('\\n', '')
 
-    answer_string = answer_string.replace('네, ', '').replace('아니요. ', '')
-    return answer_string
+    # return answer_string
+    return q_and_a_html
 
 
 ###################################################################
