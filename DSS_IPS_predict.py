@@ -35,6 +35,11 @@ def user_input():
     return render_template('user_input.html')
 
 
+
+import multiprocessing
+import openai
+
+openai.api_key = "YOUR API KEY !!!!!!!"
 ips_context_path = 'YOUR CONTEXT PATH !!!!!!!'
 
 def load_context(file_path):
