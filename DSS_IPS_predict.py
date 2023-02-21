@@ -90,6 +90,7 @@ def ips_chat_gpt(raw_data_str):
     q_and_a_html = q_and_a_html.replace('\\n', '')
 
     cy_chain_mermaid = answer_strings[5]
+    cy_chain_mermaid = cy_chain_mermaid.replace('```mermaid', '').replace('graph TD', 'graph LR')
     print(cy_chain_mermaid)
 
     # return answer_string
