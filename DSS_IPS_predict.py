@@ -61,40 +61,47 @@ def get_completion(prompt):
 def ips_chat_gpt(raw_data_str):
     context = load_context(ips_context_path)
     
+    # Chat GPT의 경우, OpenAI GPT 3.5의 챗봇 특화 모델로, 2021년 9월 까지의 데이터로 학습된 모델 임.
     prompt_list = [
-        raw_data_str + '  이 IPS 장비 payload의 경우, 공격으로 판단할만한 부분이 있나요?',
-        raw_data_str + ' 이 IPS 장비 payload의 경우, Mitre Att&ck Matrix 에서 Enterprise용 Tactics 14개 중에, 어떤 Tactics 인지? 그리고 해당 Tactics의 설명은 한국어로 간략히 작성해주세요.',
+        raw_data_str + '  SQL Injection, Command Injection, XSS (Cross Site Scripting) 총 3가지 공격 유형 중에 이 IPS 장비 payload의 경우, 어떤 공격 유형에 해당하는지 판단 근거를 작성해주세요.',
+        raw_data_str + ' 2021년 9월 기준, Mitre Att&ck에서 전체 Enterprise Tactics ID 중 이 IPS 장비 payload의 경우, 적합한 Techniques ID와 간략한 설명의 경우, 한글로 작성해주세요.',
         raw_data_str + ' 이 IPS 장비 payload의 경우, 탐지할만한, Snort Rule을 작성해주세요.',
         raw_data_str + ' 이 IPS 장비 payload의 경우, 탐지할만한, Sigma Rule을 작성해주세요.',
-        raw_data_str + ' 이 IPS 장비 payload의 경우, 연관될만한 CVE (Common Vulnerabilities and Exposures) 가 있나요?',
-        raw_data_str + ' 이 IPS 장비 payload의 경우, Cyber Kill Chain을 mermaid로 작성해주세요.',
+        raw_data_str + ' 이 IPS 장비 payload의 경우, 연관될만한 CVE (Common Vulnerabilities and Exposures) 가 있으면 작성해주세요.',
+        raw_data_str + ' 이 IPS 장비 payload의 경우, Cyber Kill Chain을 graph LR로 시작하는 mermaid로 작성해주세요.'
     ]
 
-    with multiprocessing.Pool() as pool:
-        completions = pool.map(get_completion, prompt_list)
+    try:
+        with multiprocessing.Pool() as pool:
+            completions = pool.map(get_completion, prompt_list)
 
-    answer_strings = [c['choices'][0]['text'].strip() for c in completions]
+        answer_strings = [c['choices'][0]['text'].strip() for c in completions]
 
-    answer_strings = [s.replace('네, ', '').replace('아니요. ', '') for s in answer_strings]
-    answer_strings[1] = answer_strings[1].replace('입니다.', '입니다. ').replace('설명:', ' 설명:')
+        answer_strings = [s.replace('네, ', '').replace('아니요. ', '') for s in answer_strings]
+        answer_strings[1] = answer_strings[1].replace('설명:', ' 설명:')
+        answer_strings[1] = '2021년 9월 업데이트 기준 ' + answer_strings[1]
 
-    q_and_a_df = pd.DataFrame([
-        ['공격 판단 근거', answer_strings[0]],
-        ['Tactics 추천', answer_strings[1]],
-        ['Snort Rule 추천', answer_strings[2]],
-        ['Sigma Rule 추천', answer_strings[3]],
-        ['CVE 추천', answer_strings[4]],
-    ], columns=['Question', 'Answer'])
+        q_and_a_df = pd.DataFrame([
+            ['공격 판단 근거', answer_strings[0]],
+            ['T-ID 추천', answer_strings[1]],
+            ['Snort Rule 추천', answer_strings[2]],
+            ['Sigma Rule 추천', answer_strings[3]],
+            ['CVE 추천', answer_strings[4]]
+        ], columns=['Question', 'Answer'])
 
-    q_and_a_html = q_and_a_df.to_html(index=False, justify='center')
-    q_and_a_html = q_and_a_html.replace('\\n', '')
+        q_and_a_html = q_and_a_df.to_html(index=False, justify='center')
+        q_and_a_html = q_and_a_html.replace('\\n', '')
 
-    cy_chain_mermaid = answer_strings[5]
-    cy_chain_mermaid = cy_chain_mermaid.replace('```mermaid', '').replace('graph TD', 'graph LR')
-    print(cy_chain_mermaid)
+        cy_chain_mermaid = answer_strings[5]
+        # cy_chain_mermaid = cy_chain_mermaid.replace('```mermaid', '').replace('graph TD', 'graph LR').replace('graph TB', 'graph LR').replace('```', '')
+        cy_chain_mermaid = cy_chain_mermaid.replace('```mermaid', '').replace('```', '')
 
-    # return answer_string
-    return q_and_a_html, cy_chain_mermaid
+        print(cy_chain_mermaid)
+
+        return q_and_a_html, cy_chain_mermaid
+
+    except:
+        return '서비스 오류입니다. 다시 시도해주세요.'
 
 
 ###################################################################
@@ -922,62 +929,52 @@ def XAI_result():
     ai_feature_list.append(['payload_word_comb_04' for x in ai_detect_list for y in word_4 if re.search(y, x.lower())])
     ai_feature_list.append(['payload_useragent_comb' for x in ai_detect_list for y in user_agent if re.search(y, x.lower())])
     '''
+    
     for x in ai_detect_list:
         for y in sql_1:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_sql_comb_01'])
                 break
-    for x in ai_detect_list:
         for y in sql_2:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_sql_comb_02'])
                 break
-    for x in ai_detect_list:
         for y in sql_3:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_sql_comb_03'])
                 break
-    for x in ai_detect_list:
         for y in log4j:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_log4j_comb_01'])
                 break
-    for x in ai_detect_list:
         for y in xss:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_xss_comb_01'])
                 break
-    for x in ai_detect_list:
         for y in cmd:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_cmd_comb_01'])
                 break
-    for x in ai_detect_list:
         for y in wp:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_wp_comb_01'])
                 break
-    for x in ai_detect_list:
         for y in word_1:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_word_comb_01'])
                 break
-    for x in ai_detect_list:
         for y in word_2:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_word_comb_02'])
                 break
-    for x in ai_detect_list:
         for y in word_3:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_word_comb_03'])
                 break
-    for x in ai_detect_list:
         for y in word_4:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_word_comb_04'])
                 break
-    for x in ai_detect_list:
         for y in user_agent:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_useragent_comb'])
@@ -1276,12 +1273,14 @@ def XAI_result():
     sig_pattern_html = f"<head>{sig_ai_pattern}</head>"        
     sig_df_html = sig_df.to_html(index=False, justify='center')
     
-    #################################################################
     start_chat_api = time.time()
-    q_and_a_html, cy_chain_mermaid = ips_chat_gpt(raw_data_str)
+    try:
+        q_and_a_html, cy_chain_mermaid = ips_chat_gpt(raw_data_str)
+    except:
+        q_and_a_html = '서비스 오류입니다. 다시 시도해주세요.'
+        cy_chain_mermaid = '서비스 오류입니다. 다시 시도해주세요.'
     end_chat_api = time.time()
     print('Open AI 챗봇 호출 시간: %.2f (초)' %(end_chat_api - start_chat_api))
-    #################################################################
 
 
     return render_template('XAI_output.html', payload_raw_data = request.form['raw_data_str'],  
