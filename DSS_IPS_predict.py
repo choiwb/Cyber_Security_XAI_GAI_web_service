@@ -61,10 +61,10 @@ def get_completion(prompt):
 def ips_chat_gpt(raw_data_str):
     context = load_context(ips_context_path)
     
-    # Chat GPT의 경우, OpenAI GPT 3.5의 챗봇 특화 모델로, 2021년 9월 까지의 데이터로 학습된 모델 임.
+    # GPT 3.5 (text-davinci-003)는 2021년 6월 까지의 데이터로 학습된 모델 임.
     prompt_list = [
         raw_data_str + '  SQL Injection, Command Injection, XSS (Cross Site Scripting) 총 3가지 공격 유형 중에 이 IPS 장비 payload의 경우, 어떤 공격 유형에 해당하는지 판단 근거를 작성해주세요.',
-        raw_data_str + ' 2021년 9월 기준, Mitre Att&ck에서 전체 Enterprise Tactics ID 중 이 IPS 장비 payload의 경우, 적합한 Techniques ID와 간략한 설명의 경우, 한글로 작성해주세요.',
+        raw_data_str + ' 2021년 6월 기준, Mitre Att&ck에서 전체 Enterprise Tactics ID 중 이 IPS 장비 payload의 경우, 적합한 Techniques ID와 간략한 설명의 경우, 한글로 작성해주세요.',
         raw_data_str + ' 이 IPS 장비 payload의 경우, 탐지할만한, Snort Rule을 작성해주세요.',
         raw_data_str + ' 이 IPS 장비 payload의 경우, 탐지할만한, Sigma Rule을 작성해주세요.',
         raw_data_str + ' 이 IPS 장비 payload의 경우, 연관될만한 CVE (Common Vulnerabilities and Exposures) 가 있으면 작성해주세요.',
@@ -79,7 +79,7 @@ def ips_chat_gpt(raw_data_str):
 
         answer_strings = [s.replace('네, ', '').replace('아니요. ', '') for s in answer_strings]
         answer_strings[1] = answer_strings[1].replace('설명:', ' 설명:')
-        answer_strings[1] = '2021년 9월 업데이트 기준 ' + answer_strings[1]
+        answer_strings[1] = '2021년 6월 업데이트 기준 ' + answer_strings[1]
 
         q_and_a_df = pd.DataFrame([
             ['공격 판단 근거', answer_strings[0]],
