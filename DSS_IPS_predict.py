@@ -63,7 +63,7 @@ def ips_chat_gpt(raw_data_str):
     
     # GPT 3.5 (text-davinci-003)는 2021년 6월 까지의 데이터로 학습된 모델 임.
     prompt_list = [
-        raw_data_str + '  SQL Injection, Command Injection, XSS (Cross Site Scripting) 총 3가지 공격 유형 중에 이 IPS 장비 payload의 경우, 어떤 공격 유형에 해당하는지 판단 근거를 작성해주세요.',
+        raw_data_str + '  SQL Injection, Command Injection, XSS (Cross Site Scripting), 관리자 페이지 접근 시도, JNDI Injection, WordPress 취약점, malicious bot 총 7가지 공격 유형 중에 이 IPS 장비 payload의 경우, 어떤 공격 유형에 해당하는지 판단 근거를 작성해주세요.',
         raw_data_str + ' 2021년 6월 기준, Mitre Att&ck에서 전체 Enterprise Tactics ID 중 이 IPS 장비 payload의 경우, 적합한 Techniques ID와 간략한 설명의 경우, 한글로 작성해주세요.',
         raw_data_str + ' 이 IPS 장비 payload의 경우, 탐지할만한, Snort Rule을 작성해주세요.',
         raw_data_str + ' 이 IPS 장비 payload의 경우, 탐지할만한, Sigma Rule을 작성해주세요.',
