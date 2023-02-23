@@ -40,7 +40,7 @@ import multiprocessing
 import openai
 
 openai.api_key = "YOUR API KEY !!!!!!!"
-ips_context_path = 'YOUR CONTEXT PATH !!!!!!!'
+tactics_path = 'YOUR CONTEXT PATH !!!!!!!'
 
 def load_context(file_path):
     with open(file_path, "r") as f:
@@ -59,15 +59,15 @@ def get_completion(prompt):
     return completion
 
 def ips_chat_gpt(raw_data_str):
-    context = load_context(ips_context_path)
+    context = load_context(tactics_path)
     
     # GPT 3.5 (text-davinci-003)는 2021년 6월 까지의 데이터로 학습된 모델 임.
     prompt_list = [
         raw_data_str + '  SQL Injection, Command Injection, XSS (Cross Site Scripting), Attempt access admin page (관리자 페이지 접근 시도), JNDI Injection, WordPress 취약점, malicious bot 총 7가지 공격 유형 중에 이 IPS 장비 payload의 경우, 어떤 공격 유형에 해당하는지 판단 근거를 작성해주세요.',
-        raw_data_str + ' 2021년 6월 기준, Mitre Att&ck에서 전체 Enterprise Tactics ID 중 이 IPS 장비 payload의 경우, 적합한 Techniques ID와 간략한 설명의 경우, 한글로 작성해주세요.',
+        context + " " + raw_data_str + ' 2021년 4월 발표된 Mitre Att&ck v9에서 전체 14개 Enterprise Tactics ID 중 이 IPS 장비 payload의 경우, TA로 시작하는 적합한 Tactics ID와 간략한 설명의 경우, 한글로 작성해주세요.',
         raw_data_str + ' 이 IPS 장비 payload의 경우, 탐지할만한, Snort Rule을 작성해주세요.',
         raw_data_str + ' 이 IPS 장비 payload의 경우, 탐지할만한, Sigma Rule을 작성해주세요.',
-        raw_data_str + ' 이 IPS 장비 payload의 경우, 연관될만한 CVE (Common Vulnerabilities and Exposures) 가 있으면 작성해주세요.',
+        raw_data_str + ' 이 IPS 장비 payload의 경우, 연관될만한 CVE (Common Vulnerabilities and Exposures) 가 있으면 해당 CVE와 판단 근거를 2문장 이내로 작성해주세요.',
         raw_data_str + ' 이 IPS 장비 payload의 경우, Cyber Kill Chain을 graph LR로 시작하는 mermaid로 작성해주세요.'
     ]
 
@@ -79,18 +79,20 @@ def ips_chat_gpt(raw_data_str):
 
         answer_strings = [s.replace('네, ', '').replace('아니요. ', '') for s in answer_strings]
         answer_strings[1] = answer_strings[1].replace('설명:', ' 설명:')
-        answer_strings[1] = '2021년 6월 업데이트 기준 ' + answer_strings[1]
+        # 띄워쓰기 포함 !!!!!
+        answer_strings[1] = '2021년 4월 Mitre Att&ck v9 기준 ' + answer_strings[1] + '<br>' + '※최신 Mitre Att&ck 정보의 경우, https://attack.mitre.org/tactics/enterprise/ 참고해주시면 감사합니다.'
 
         q_and_a_df = pd.DataFrame([
             ['공격 판단 근거', answer_strings[0]],
-            ['T-ID 추천', answer_strings[1]],
+            ['Tactics 추천', answer_strings[1]],
             ['Snort Rule 추천', answer_strings[2]],
             ['Sigma Rule 추천', answer_strings[3]],
             ['CVE 추천', answer_strings[4]]
         ], columns=['Question', 'Answer'])
 
-        q_and_a_html = q_and_a_df.to_html(index=False, justify='center')
-        q_and_a_html = q_and_a_html.replace('\\n', '')
+        q_and_a_df['Answer'] = q_and_a_df['Answer'].str.replace('\n', '<br>')
+        q_and_a_html = q_and_a_df.to_html(index=False, justify='center', escape = False)
+        # q_and_a_html = q_and_a_html.replace('\\n', '')
 
         cy_chain_mermaid = answer_strings[5]
         # cy_chain_mermaid = cy_chain_mermaid.replace('```mermaid', '').replace('graph TD', 'graph LR').replace('graph TB', 'graph LR').replace('```', '')
@@ -101,9 +103,9 @@ def ips_chat_gpt(raw_data_str):
         return q_and_a_html, cy_chain_mermaid
 
     except:
-        return '서비스 오류입니다. 다시 시도해주세요.'
+        return '서비스 오류입니다. 다시 시도해주세요.'    
 
-
+    
 ###################################################################
 # T-ID 분류 모델 - Tactic (14개) 별 예측 후, 상위 3개 T-ID 추출
 
