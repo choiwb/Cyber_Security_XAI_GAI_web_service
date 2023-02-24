@@ -68,7 +68,7 @@ def ips_chat_gpt(raw_data_str):
         raw_data_str + ' 이 IPS 장비 payload의 경우, 탐지할만한, Snort Rule을 작성해주세요.',
         raw_data_str + ' 이 IPS 장비 payload의 경우, 탐지할만한, Sigma Rule을 작성해주세요.',
         raw_data_str + ' 이 IPS 장비 payload의 경우, 연관될만한 CVE (Common Vulnerabilities and Exposures) 가 있으면 해당 CVE와 판단 근거를 2문장 이내로 작성해주세요.',
-        raw_data_str + ' 이 IPS 장비 payload의 경우, Cyber Kill Chain을 graph LR로 시작하는 mermaid로 작성해주세요.'
+        raw_data_str + ' 이 IPS 장비 payload의 경우, Cyber Kill Chain을 graph LR;로 시작하는 mermaid로 작성해주세요.'
     ]
 
     try:
