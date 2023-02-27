@@ -63,6 +63,8 @@ def ips_chat_gpt(raw_data_str):
     
     # GPT 3.5 (text-davinci-003)는 2021년 6월 까지의 데이터로 학습된 모델 임.
     prompt_list = [
+        raw_data_str + ' 이 IPS 장비 payload의 경우, HOST를 작성해주세요. 없는 경우, -로 작성해주세요.',
+        raw_data_str + ' 이 IPS 장비 payload의 경우, User-Agent를 작성해주세요. 없는 경우, -로 작성해주세요.',
         raw_data_str + '  SQL Injection, Command Injection, XSS (Cross Site Scripting), Attempt access admin page (관리자 페이지 접근 시도), JNDI Injection, WordPress 취약점, malicious bot 총 7가지 공격 유형 중에 이 IPS 장비 payload의 경우, 어떤 공격 유형에 해당하는지 2문장 이내로 판단 근거를 작성해주세요.',
         context + " " + raw_data_str + ' 2021년 4월 발표된 Mitre Att&ck v9에서 전체 14개 Enterprise Tactics ID 중 이 IPS 장비 payload의 경우, TA로 시작하는 적합한 Tactics ID와 설명의 경우, 2문장 이내 한글로 작성해주세요.',
         raw_data_str + ' 이 IPS 장비 payload의 경우, 탐지할만한, Snort Rule을 작성해주세요.',
@@ -78,16 +80,20 @@ def ips_chat_gpt(raw_data_str):
         answer_strings = [c['choices'][0]['text'].strip() for c in completions]
 
         answer_strings = [s.replace('네, ', '').replace('아니요. ', '') for s in answer_strings]
-        answer_strings[1] = answer_strings[1].replace('설명:', ' 설명:')
-        # answer_strings[1] = '2021년 4월 Mitre Att&ck v9 기준 ' + answer_strings[1] + '<br>' + '※최신 Mitre Att&ck 정보의 경우, https://attack.mitre.org/tactics/enterprise/ 참고해주시면 감사합니다.'
-        answer_strings[1] = '2021년 4월 Mitre Att&ck v9 기준 ' + answer_strings[1]
+        answer_strings[0] = answer_strings[0].lower().replace('host: ', '')
+        answer_strings[1] = answer_strings[1].lower().replace('user-agent: ', '')
+        answer_strings[3] = answer_strings[3].replace('설명:', ' 설명:')
+        # answer_strings[3] = '2021년 4월 Mitre Att&ck v9 기준 ' + answer_strings[3] + '<br>' + '※최신 Mitre Att&ck 정보의 경우, https://attack.mitre.org/tactics/enterprise/ 참고해주시면 감사합니다.'
+        answer_strings[3] = '2021년 4월 Mitre Att&ck v9 기준 ' + answer_strings[3]
 
         q_and_a_df = pd.DataFrame([
-            ['공격 판단 근거', answer_strings[0]],
-            ['Tactics 추천', answer_strings[1]],
-            ['Snort Rule 추천', answer_strings[2]],
-            ['Sigma Rule 추천', answer_strings[3]],
-            ['CVE 추천', answer_strings[4]]
+            ['HOST', answer_strings[0]],
+            ['User-Agent', answer_strings[1]],
+            ['공격 판단 근거', answer_strings[2]],
+            ['Tactics 추천', answer_strings[3]],
+            ['Snort Rule 추천', answer_strings[4]],
+            ['Sigma Rule 추천', answer_strings[5]],
+            ['CVE 추천', answer_strings[6]]
         ], columns=['Question', 'Answer'])
 
         # print(q_and_a_df)
@@ -96,7 +102,7 @@ def ips_chat_gpt(raw_data_str):
         q_and_a_html = q_and_a_df.to_html(index=False, justify='center')
         q_and_a_html = q_and_a_html.replace('\\n', ' ')
 
-        cy_chain_mermaid = answer_strings[5]
+        cy_chain_mermaid = answer_strings[7]
         # cy_chain_mermaid = cy_chain_mermaid.replace('```mermaid', '').replace('graph TD', 'graph LR').replace('graph TB', 'graph LR').replace('```', '')
         cy_chain_mermaid = cy_chain_mermaid.replace('```mermaid', '').replace('```', '')
 
@@ -105,7 +111,7 @@ def ips_chat_gpt(raw_data_str):
         return q_and_a_html, cy_chain_mermaid
 
     except:
-        return '서비스 오류입니다. 다시 시도해주세요.'
+       return '서비스 오류입니다. 다시 시도해주세요.'
 
     
 ###################################################################
