@@ -1282,8 +1282,21 @@ def XAI_result():
     
     # </font> ~ </span> 사이를 background-color:yello 추가
     # 단, <font, <span 이 있는 경우 예외 처리
-    sig_ai_pattern = re.sub(r'</font>(?:(?<!<font)(?<!<span)|(?<=<span))[^<]*(?!<font)(?!<span)(?=</span>)',
-                        r'</font><span style="background-color:yellow;">\g<0></span>', sig_ai_pattern)
+    '''
+    </font>
+    (?:
+    (?<!<font)(?<!<span)
+    |
+    (?<=<span)
+    |
+    (?<=<font)
+    )
+    [^<]*
+    (?!<font)(?!<span)
+    (?=</span>)
+    '''
+    sig_ai_pattern = re.sub(r'</font>(?:(?<!<font)(?<!<span)|(?<=<span)|(?<=<font))[^<]*(?!<font)(?!<span)(?=</span>)',
+                       r'</font><span style="background-color:yellow;">\g<0></span>', sig_ai_pattern))
     
     sig_pattern_html = f"<head>{sig_ai_pattern}</head>"        
     sig_df_html = sig_df.to_html(index=False, justify='center')
