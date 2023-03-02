@@ -1296,7 +1296,7 @@ def XAI_result():
     (?=</span>)
     '''
     sig_ai_pattern = re.sub(r'</font>(?:(?<!<font)(?<!<span)|(?<=<span)|(?<=<font))[^<]*(?!<font)(?!<span)(?=</span>)',
-                       r'</font><span style="background-color:yellow;">\g<0></span>', sig_ai_pattern))
+                       r'</font><span style="background-color:yellow;">\g<0></span>', sig_ai_pattern)
     
     sig_pattern_html = f"<head>{sig_ai_pattern}</head>"        
     sig_df_html = sig_df.to_html(index=False, justify='center')
