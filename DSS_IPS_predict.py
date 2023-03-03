@@ -47,71 +47,87 @@ def load_context(file_path):
         context = f.read()
     return context
 
-def get_completion(prompt):
-    completion = openai.Completion.create(
-            engine='text-davinci-003',
-            prompt=prompt,
-            max_tokens=512,
-            n=1,
-            stop=None,
-            temperature=0.5,
+def chatgpt_init(ques_init):
+    raw_data_str, ques = ques_init
+    tactics_file = load_context(tactics_path)
+    completion = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "assistant", "content": tactics_file},
+        {"role": "user", "content": raw_data_str + ' ' + ques}
+    ]
     )
     return completion
 
-def ips_chat_gpt(raw_data_str):
-    context = load_context(tactics_path)
+def chatgpt_continue(raw_data_str, prev_ans, ques):
     
-    # GPT 3.5 (text-davinci-003)는 2021년 6월 까지의 데이터로 학습된 모델 임.
-    prompt_list = [
-        raw_data_str + ' 이 IPS 장비 payload의 경우, HOST를 작성해주세요. 없는 경우, -로 작성해주세요.',
-        raw_data_str + ' 이 IPS 장비 payload의 경우, User-Agent를 작성해주세요. 없는 경우, -로 작성해주세요.',
-        raw_data_str + '  SQL Injection, Command Injection, XSS (Cross Site Scripting), Attempt access admin page (관리자 페이지 접근 시도), JNDI Injection, WordPress 취약점, malicious bot 총 7가지 공격 유형 중에 이 IPS 장비 payload의 경우, 어떤 공격 유형에 해당하는지 2문장 이내로 판단 근거를 작성해주세요.',
-        context + " " + raw_data_str + ' 2021년 4월 발표된 Mitre Att&ck v9에서 전체 14개 Enterprise Tactics ID 중 이 IPS 장비 payload의 경우, TA로 시작하는 적합한 Tactics ID와 설명의 경우, 2문장 이내 한글로 작성해주세요.',
-        raw_data_str + ' 이 IPS 장비 payload의 경우, 탐지할만한, Snort Rule을 작성해주세요.',
-        raw_data_str + ' 이 IPS 장비 payload의 경우, 탐지할만한, Sigma Rule을 작성해주세요.',
-        raw_data_str + ' 이 IPS 장비 payload의 경우, 연관될만한 CVE (Common Vulnerabilities and Exposures) 가 있으면 해당 CVE와 판단 근거를 2문장 이내로 작성해주세요.',
-        raw_data_str + ' 이 IPS 장비 payload의 경우, Cyber Kill Chain을 graph LR;로 시작하는 mermaid로 작성해주세요.'
+    completion = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "assistant", "content": prev_ans},
+        {"role": "user", "content": raw_data_str + ' ' + ques}
     ]
+    )
+    return completion
 
-    try:
-        with multiprocessing.Pool() as pool:
-            completions = pool.map(get_completion, prompt_list)
+def chatgpt_xai_explain(raw_data_str, xai_result):
+    
+    ques = '입력된 payload 의 AI 예측 결과 상위 10개 피처 중요도에 대한 설명을 AI 공격 탐지 키워드 기반으로 보안 전문가들이 쉽게 이해할만한 설명으로 3문장 이내로 작성해주세요.'
+    completion = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "assistant", "content": xai_result},
+        {"role": "user", "content": raw_data_str + ' ' + ques}
+    ]
+    )
+    xai_explain = completion['choices'][0]['message']['content']
 
-        answer_strings = [c['choices'][0]['text'].strip() for c in completions]
+    return xai_explain
 
-        answer_strings = [s.replace('네, ', '').replace('아니요. ', '') for s in answer_strings]
-        answer_strings[0] = answer_strings[0].lower().replace('host: ', '')
-        answer_strings[1] = answer_strings[1].lower().replace('user-agent: ', '')
-        answer_strings[3] = answer_strings[3].replace('설명:', ' 설명:')
-        # answer_strings[3] = '2021년 4월 Mitre Att&ck v9 기준 ' + answer_strings[3] + '<br>' + '※최신 Mitre Att&ck 정보의 경우, https://attack.mitre.org/tactics/enterprise/ 참고해주시면 감사합니다.'
-        answer_strings[3] = '2021년 4월 Mitre Att&ck v9 기준 ' + answer_strings[3]
+def chatgpt_run(raw_data_str):
+    
+    ques_init = [
+        (raw_data_str, '2021년 4월 발표된 Mitre Att&ck v9에서 전체 14개 Enterprise Tactics ID 중 입력된 payload의 경우, TA로 시작하는 적합한 Tactics ID와 설명의 경우, 2문장 이내 한글로 작성해주세요.'),
+        (raw_data_str, '입력된 payload의 경우, 탐지할만한, Sigma Rule만 5문장 이내 영어로 작성해주세요.'),
+        (raw_data_str, '입력된 payload의 경우, Cyber Kill Chain을 단계 별로, 작성해주세요.')
+        ]
+    
+    with multiprocessing.Pool() as pool:
+        completions_init = pool.map(chatgpt_init, ques_init)
+    
+    init_answer_strings = [c['choices'][0]['message']['content'] for c in completions_init]
+    init_answer_strings = [s.lower().replace('네, ', '').replace('아니요. ', '').replace('예, ', '').replace('\n', '').replace('sure, ', '').replace('sure! ', '').replace('```mermaid', '').replace('```', '') for s in init_answer_strings]
+    
+    first_ques = '입력된 payload의 경우, 탐지할만한, Snort Rule만 3문장 이내 영어로 작성해주세요.'
+    prev_ans = init_answer_strings[1]
+    completions = chatgpt_continue(raw_data_str, prev_ans, first_ques)
+    first_answer_str = completions['choices'][0]['message']['content']
+    first_answer_str = first_answer_str.lower().replace('네, ', '').replace('아니요. ', '').replace('예, ', '').replace('\n', '').replace('sure, ', '').replace('sure! ', '')
 
-        q_and_a_df = pd.DataFrame([
-            ['HOST', answer_strings[0]],
-            ['User-Agent', answer_strings[1]],
-            ['공격 판단 근거', answer_strings[2]],
-            ['Tactics 추천', answer_strings[3]],
-            ['Snort Rule 추천', answer_strings[4]],
-            ['Sigma Rule 추천', answer_strings[5]],
-            ['CVE 추천', answer_strings[6]]
+    second_ques = '입력된 payload의 경우, 연관될만한 CVE (Common Vulnerabilities and Exposures) 가 있으면 해당 CVE와 판단 근거를 2문장 이내 한글로 작성해주세요.'
+    prev_ans = init_answer_strings[1]
+    completions = chatgpt_continue(raw_data_str, prev_ans, second_ques)
+    second_answer_str = completions['choices'][0]['message']['content']
+    second_answer_str = second_answer_str.lower().replace('네, ', '').replace('아니요. ', '').replace('예, ', '').replace('\n', '').replace('sure, ', '').replace('sure! ', '')
+
+    third_ques = '입력된 payload의 경우, cyber kill chain의 몇 번째 단계에 해당하는지, 그리고 간략한 설명을 2문장 이내로 작성해주세요.'
+    prev_ans = init_answer_strings[2]  
+    completions = chatgpt_continue(raw_data_str, prev_ans, third_ques)
+    third_answwer_str = completions['choices'][0]['message']['content']
+    third_answwer_str = third_answwer_str.lower().replace('네, ', '').replace('아니요. ', '').replace('예, ', '').replace('\n', '').replace('sure, ', '').replace('sure! ', '')
+
+    q_and_a_df = pd.DataFrame([
+            ['Tactics 추천', init_answer_strings[0]],
+            ['Sigma Rule 추천', init_answer_strings[1]],
+            ['Snort Rule 추천', first_answer_str],
+            ['CVE 추천', second_answer_str],
+            ['사이버 킬 체인 대응 단계 추천', third_answwer_str]
         ], columns=['Question', 'Answer'])
+    
+    q_and_a_html = q_and_a_df.to_html(index=False, justify='center')
+    q_and_a_html = q_and_a_html.replace('\\n', ' ')
 
-        # print(q_and_a_df)
-        # q_and_a_df['Answer'] = q_and_a_df['Answer'].str.replace('\n', '<br>')
-        # q_and_a_html = q_and_a_df.to_html(index=False, justify='center', escape = False)
-        q_and_a_html = q_and_a_df.to_html(index=False, justify='center')
-        q_and_a_html = q_and_a_html.replace('\\n', ' ')
-
-        cy_chain_mermaid = answer_strings[7]
-        # cy_chain_mermaid = cy_chain_mermaid.replace('```mermaid', '').replace('graph TD', 'graph LR').replace('graph TB', 'graph LR').replace('```', '')
-        cy_chain_mermaid = cy_chain_mermaid.replace('```mermaid', '').replace('```', '')
-
-        print(cy_chain_mermaid)
-
-        return q_and_a_html, cy_chain_mermaid
-
-    except:
-       return '서비스 오류입니다. 다시 시도해주세요.'
+    return q_and_a_html
 
     
 ###################################################################
@@ -1302,11 +1318,14 @@ def XAI_result():
     sig_df_html = sig_df.to_html(index=False, justify='center')
     
     start_chat_api = time.time()
-    try:
-        q_and_a_html, cy_chain_mermaid = ips_chat_gpt(raw_data_str)
-    except:
-        q_and_a_html = '서비스 오류입니다. 다시 시도해주세요.'
-        cy_chain_mermaid = '서비스 오류입니다. 다시 시도해주세요.'
+    import concurrent.futures
+
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        xai_report_future = executor.submit(chatgpt_xai_explain, raw_data_str, top10_shap_values_html)
+        q_and_a_future = executor.submit(chatgpt_run, raw_data_str)
+
+    xai_report_html = xai_report_future.result()
+    q_and_a_html = q_and_a_future.result()
     end_chat_api = time.time()
     print('Open AI 챗봇 호출 시간: %.2f (초)' %(end_chat_api - start_chat_api))
 
@@ -1333,7 +1352,7 @@ def XAI_result():
                                 sig_df_html = sig_df_html,
                                 # summary_html = summary_html,
                                 q_and_a_html = q_and_a_html,
-                                cy_chain_mermaid = cy_chain_mermaid
+                                xai_report_html = xai_report_html
                                 )
 
 
