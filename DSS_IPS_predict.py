@@ -53,6 +53,7 @@ def chatgpt_init(ques_init):
     completion = openai.ChatCompletion.create(
     model="gpt-3.5-turbo",
     messages=[
+        {"role": "system", "content": 'You are a security analyst.'},
         {"role": "assistant", "content": tactics_file},
         {"role": "user", "content": raw_data_str + ' ' + ques}
     ]
@@ -64,6 +65,7 @@ def chatgpt_continue(raw_data_str, prev_ans, ques):
     completion = openai.ChatCompletion.create(
     model="gpt-3.5-turbo",
     messages=[
+        {"role": "system", "content": 'You are a security analyst.'},
         {"role": "assistant", "content": prev_ans},
         {"role": "user", "content": raw_data_str + ' ' + ques}
     ]
@@ -76,6 +78,7 @@ def chatgpt_xai_explain(raw_data_str, xai_result):
     completion = openai.ChatCompletion.create(
     model="gpt-3.5-turbo",
     messages=[
+        {"role": "system", "content": 'You are a security analyst.'},
         {"role": "assistant", "content": xai_result},
         {"role": "user", "content": raw_data_str + ' ' + ques}
     ]
