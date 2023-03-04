@@ -60,8 +60,8 @@ def chatgpt_init(ques_init):
     )
     return completion
 
-def chatgpt_continue(raw_data_str, prev_ans, ques):
-    
+def chatgpt_continue(ques_init):
+    raw_data_str, prev_ans, ques = ques_init
     completion = openai.ChatCompletion.create(
     model="gpt-3.5-turbo",
     messages=[
@@ -74,7 +74,7 @@ def chatgpt_continue(raw_data_str, prev_ans, ques):
 
 def chatgpt_xai_explain(raw_data_str, xai_result):
     
-    ques = '입력된 payload 의 AI 예측 결과 상위 10개 피처 중요도에 대한 설명을 AI 공격 탐지 키워드 기반으로 보안 전문가들이 쉽게 이해할만한 설명으로 3문장 이내로 작성해주세요.'
+    ques = '입력된 payload 의 AI 예측 결과 상위 10개 피처 중요도에 대한 설명을 AI 공격 탐지 키워드 기반으로 보안 전문가들이 쉽게 이해할만한 설명으로 in 3 sentences 작성해주세요.'
     completion = openai.ChatCompletion.create(
     model="gpt-3.5-turbo",
     messages=[
@@ -90,9 +90,9 @@ def chatgpt_xai_explain(raw_data_str, xai_result):
 def chatgpt_run(raw_data_str):
     
     ques_init = [
-        (raw_data_str, '2021년 4월 발표된 Mitre Att&ck v9에서 전체 14개 Enterprise Tactics ID 중 입력된 payload의 경우, TA로 시작하는 적합한 Tactics ID와 설명의 경우, 2문장 이내 한글로 작성해주세요.'),
-        (raw_data_str, '입력된 payload의 경우, 탐지할만한, Sigma Rule을 작성해주세요.'),
-        (raw_data_str, '입력된 payload의 경우, Cyber Kill Chain을 단계 별로, 작성해주세요.')
+        (raw_data_str, 'SQL Injection, Command Injection, XSS (Cross Site Scripting), Attempt access admin page (관리자 페이지 접근 시도), JNDI Injection, WordPress 취약점, malicious bot 총 7가지 공격 유형 중에 입력된 payload의 경우, 어떤 공격 유형에 해당하는지 1 sentence만 판단 근거를 작성해주세요.'),
+        (raw_data_str, '2021년 4월 발표된 Mitre Att&ck v9에서 전체 14개 Enterprise Tactics ID 중 입력된 payload의 경우, TA로 시작하는 적합한 Tactics ID와 설명의 경우, in 2 sentences 한글로 작성해주세요.'),
+        (raw_data_str, '입력된 payload의 경우, Cyber Kill Chain Model 전체 단계의 순서대로 명칭만 작성해주세요.')
         ]
     
     with multiprocessing.Pool() as pool:
@@ -101,30 +101,40 @@ def chatgpt_run(raw_data_str):
     init_answer_strings = [c['choices'][0]['message']['content'] for c in completions_init]
     init_answer_strings = [s.lower().replace('네, ', '').replace('아니요. ', '').replace('예, ', '').replace('\n', '').replace('sure, ', '').replace('sure! ', '').replace('```mermaid', '').replace('```', '') for s in init_answer_strings]
     
-    first_ques = '입력된 payload의 경우, 탐지할만한, Snort Rule을 작성해주세요.'
-    prev_ans = init_answer_strings[1]
-    completions = chatgpt_continue(raw_data_str, prev_ans, first_ques)
-    first_answer_str = completions['choices'][0]['message']['content']
-    first_answer_str = first_answer_str.lower().replace('네, ', '').replace('아니요. ', '').replace('예, ', '').replace('\n', '').replace('sure, ', '').replace('sure! ', '')
+    ques_init_2 = [
+        (raw_data_str, init_answer_strings[0], '입력된 payload의 경우, 탐지할만한, Sigma Rule을 작성해주세요.'),
+        (raw_data_str, init_answer_strings[2], '입력된 payload의 경우, Cyber Kill Chain Model의 몇 번째 단계에 해당하는지, 그리고 간략한 설명을 in 2 sentences 한글로 작성해주세요.')
+    ]
+    
+    with multiprocessing.Pool() as pool:
+        completions_init = pool.map(chatgpt_continue, ques_init_2)
 
-    second_ques = '입력된 payload의 경우, 연관될만한 CVE (Common Vulnerabilities and Exposures) 가 있으면 해당 CVE와 판단 근거를 2문장 이내 한글로 작성해주세요.'
-    prev_ans = init_answer_strings[1]
-    completions = chatgpt_continue(raw_data_str, prev_ans, second_ques)
-    second_answer_str = completions['choices'][0]['message']['content']
-    second_answer_str = second_answer_str.lower().replace('네, ', '').replace('아니요. ', '').replace('예, ', '').replace('\n', '').replace('sure, ', '').replace('sure! ', '')
+    second_answer_strings = [c['choices'][0]['message']['content'] for c in completions_init]
+    second_answer_strings = [s.lower().replace('네, ', '').replace('아니요. ', '').replace('예, ', '').replace('\n', '').replace('sure, ', '').replace('sure! ', '').replace('```mermaid', '').replace('```', '') for s in second_answer_strings]
+    
+    ques_init_3 = [
+        (raw_data_str, init_answer_strings[0] + ' ' + second_answer_strings[0], '입력된 payload의 경우, 탐지할만한, Snort Rule을 작성해주세요.'),
+        (raw_data_str, init_answer_strings[0] + ' ' + second_answer_strings[0], '입력된 payload의 경우, 2015년 이후 발표된 연관될만한 CVE (Common Vulnerabilities and Exposures) 가 있으면 해당 CVE 1개와 판단 근거를 in 2 sentences 한글로 작성해주세요.')
+    ]
 
-    third_ques = '입력된 payload의 경우, cyber kill chain의 몇 번째 단계에 해당하는지, 그리고 간략한 설명을 2문장 이내로 작성해주세요.'
-    prev_ans = init_answer_strings[2]  
-    completions = chatgpt_continue(raw_data_str, prev_ans, third_ques)
-    third_answwer_str = completions['choices'][0]['message']['content']
-    third_answwer_str = third_answwer_str.lower().replace('네, ', '').replace('아니요. ', '').replace('예, ', '').replace('\n', '').replace('sure, ', '').replace('sure! ', '')
+    with multiprocessing.Pool() as pool:
+        completions_init = pool.map(chatgpt_continue, ques_init_3)
+
+    third_answer_strings = [c['choices'][0]['message']['content'] for c in completions_init]
+    third_answer_strings = [s.lower().replace('네, ', '').replace('아니요. ', '').replace('예, ', '').replace('\n', '').replace('sure, ', '').replace('sure! ', '').replace('```mermaid', '').replace('```', '') for s in third_answer_strings]
+    
+
+    print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
+    print('공격 판단 근거: ', init_answer_strings[0])
+    print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
+    print('사이버 킬 체인 모델: ', init_answer_strings[2])
 
     q_and_a_df = pd.DataFrame([
-            ['Tactics 추천', init_answer_strings[0]],
-            ['Sigma Rule 추천', init_answer_strings[1]],
-            ['Snort Rule 추천', first_answer_str],
-            ['CVE 추천', second_answer_str],
-            ['사이버 킬 체인 대응 단계 추천', third_answwer_str]
+            ['Tactics 추천', init_answer_strings[1]],
+            ['Sigma Rule 추천', second_answer_strings[0]],
+            ['Snort Rule 추천', third_answer_strings[0]],
+            ['CVE 추천', third_answer_strings[1]],
+            ['사이버 킬 체인 대응 단계 추천', second_answer_strings[1]]
         ], columns=['Question', 'Answer'])
     
     q_and_a_html = q_and_a_df.to_html(index=False, justify='center')
