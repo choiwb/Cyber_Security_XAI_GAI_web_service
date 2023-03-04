@@ -91,7 +91,7 @@ def chatgpt_run(raw_data_str):
     
     ques_init = [
         (raw_data_str, '2021년 4월 발표된 Mitre Att&ck v9에서 전체 14개 Enterprise Tactics ID 중 입력된 payload의 경우, TA로 시작하는 적합한 Tactics ID와 설명의 경우, 2문장 이내 한글로 작성해주세요.'),
-        (raw_data_str, '입력된 payload의 경우, 탐지할만한, Sigma Rule만 5문장 이내 영어로 작성해주세요.'),
+        (raw_data_str, '입력된 payload의 경우, 탐지할만한, Sigma Rule을 작성해주세요.'),
         (raw_data_str, '입력된 payload의 경우, Cyber Kill Chain을 단계 별로, 작성해주세요.')
         ]
     
@@ -101,7 +101,7 @@ def chatgpt_run(raw_data_str):
     init_answer_strings = [c['choices'][0]['message']['content'] for c in completions_init]
     init_answer_strings = [s.lower().replace('네, ', '').replace('아니요. ', '').replace('예, ', '').replace('\n', '').replace('sure, ', '').replace('sure! ', '').replace('```mermaid', '').replace('```', '') for s in init_answer_strings]
     
-    first_ques = '입력된 payload의 경우, 탐지할만한, Snort Rule만 3문장 이내 영어로 작성해주세요.'
+    first_ques = '입력된 payload의 경우, 탐지할만한, Snort Rule을 작성해주세요.'
     prev_ans = init_answer_strings[1]
     completions = chatgpt_continue(raw_data_str, prev_ans, first_ques)
     first_answer_str = completions['choices'][0]['message']['content']
