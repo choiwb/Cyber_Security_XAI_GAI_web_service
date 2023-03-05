@@ -73,7 +73,6 @@ def chatgpt_continue(ques_init):
     return completion
 
 def chatgpt_xai_explain(raw_data_str, xai_result):
-    
     ques = '입력된 payload 의 AI 예측 결과 상위 10개 피처 중요도에 대한 설명을 AI 공격 탐지 키워드 기반으로 보안 전문가들이 쉽게 이해할만한 설명으로 in 3 sentences 작성해주세요.'
     completion = openai.ChatCompletion.create(
     model="gpt-3.5-turbo",
@@ -88,9 +87,8 @@ def chatgpt_xai_explain(raw_data_str, xai_result):
     return xai_explain
 
 def chatgpt_run(raw_data_str):
-    
     ques_init = [
-        (raw_data_str, 'SQL Injection, Command Injection, XSS (Cross Site Scripting), Attempt access admin page (관리자 페이지 접근 시도), JNDI Injection, WordPress 취약점, malicious bot 총 7가지 공격 유형 중에 입력된 payload의 경우, 어떤 공격 유형에 해당하는지 1 sentence만 판단 근거를 작성해주세요.'),
+        (raw_data_str, 'SQL Injection, Command Injection, XSS (Cross Site Scripting), Attempt access admin page (관리자 페이지 접근 시도), JNDI Injection, WordPress 취약점, malicious bot 총 7가지 공격 유형 중에 입력된 payload의 경우, 어떤 공격 유형에 해당하는지 판단 근거를 in 2 sentences 한글로 작성해주세요.'),
         (raw_data_str, '2021년 4월 발표된 Mitre Att&ck v9에서 전체 14개 Enterprise Tactics ID 중 입력된 payload의 경우, TA로 시작하는 적합한 Tactics ID와 설명의 경우, in 2 sentences 한글로 작성해주세요.'),
         (raw_data_str, '입력된 payload의 경우, Cyber Kill Chain Model 전체 단계의 순서대로 명칭만 작성해주세요.')
         ]
@@ -125,11 +123,10 @@ def chatgpt_run(raw_data_str):
     
 
     print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
-    print('공격 판단 근거: ', init_answer_strings[0])
-    print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
     print('사이버 킬 체인 모델: ', init_answer_strings[2])
 
     q_and_a_df = pd.DataFrame([
+            ['공격 판단 근거', init_answer_strings[0]],
             ['Tactics 추천', init_answer_strings[1]],
             ['Sigma Rule 추천', second_answer_strings[0]],
             ['Snort Rule 추천', third_answer_strings[0]],
