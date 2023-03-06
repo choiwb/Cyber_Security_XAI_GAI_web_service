@@ -100,7 +100,7 @@ def chatgpt_run(raw_data_str):
     init_answer_strings = [s.lower().replace('네, ', '').replace('아니요. ', '').replace('예, ', '').replace('\n', '').replace('sure, ', '').replace('sure! ', '').replace('```mermaid', '').replace('```', '') for s in init_answer_strings]
     
     ques_init_2 = [
-        (raw_data_str, init_answer_strings[0], '입력된 payload의 경우, 탐지할만한, Sigma Rule을 작성해주세요.'),
+        (raw_data_str, init_answer_strings[0], '입력된 payload의 경우, title로 시작하는 탐지할만한, Sigma Rule을 1개 만 작성해주세요.'),
         (raw_data_str, init_answer_strings[2], '입력된 payload의 경우, Cyber Kill Chain Model의 몇 번째 단계에 해당하는지, 그리고 간략한 설명을 in 2 sentences 한글로 작성해주세요.')
     ]
     
@@ -111,7 +111,7 @@ def chatgpt_run(raw_data_str):
     second_answer_strings = [s.lower().replace('네, ', '').replace('아니요. ', '').replace('예, ', '').replace('\n', '').replace('sure, ', '').replace('sure! ', '').replace('```mermaid', '').replace('```', '') for s in second_answer_strings]
     
     ques_init_3 = [
-        (raw_data_str, init_answer_strings[0] + ' ' + second_answer_strings[0], '입력된 payload의 경우, 탐지할만한, Snort Rule을 작성해주세요.'),
+        (raw_data_str, init_answer_strings[0] + ' ' + second_answer_strings[0], '입력된 payload의 경우, alert로 시작하는 탐지할만한, Snort Rule을 1개 만 작성해주세요.'),
         (raw_data_str, init_answer_strings[0] + ' ' + second_answer_strings[0], '입력된 payload의 경우, 2015년 이후 발표된 연관될만한 CVE (Common Vulnerabilities and Exposures) 가 있으면 해당 CVE 1개와 판단 근거를 in 2 sentences 한글로 작성해주세요.')
     ]
 
