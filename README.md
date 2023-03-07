@@ -16,5 +16,6 @@
 - OpenAI ChatGPT API (gpt-3.5-turbo) based XAI analysis
 -----
 - TO DO 1: Mitre Att&ck Matrix mapping Tactic & T-ID based multi classification
-- TO DO 2: OpenAI GPT (https://huggingface.co/openai-gpt) based cyber security Chatbot R&D
+- TO DO 2: DistilBERT (task: question-answering) based fine tuning like SQUAD dataset format
+- TO DO 3: OpenAI GPT (https://huggingface.co/openai-gpt) based cyber security Chatbot R&D
 
