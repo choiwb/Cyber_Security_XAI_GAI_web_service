@@ -11,11 +11,11 @@
 - Domain Signature pattern and AI feature highlighting after pattern method matching
 - Feature importance Summary about predict data
 - WAF & WEB LOG (APACHE or NGINX or IIS) Parsing
+- Mitre Att&ck Matrix mapping Tactic & T-ID based multi classification
 - Docker application
 - DistilBERT Transfer Learning (adding cyber security domain word)
+- DistilBERT (task: question-answering) based fine tuning like SQUAD dataset format
 - OpenAI ChatGPT API (gpt-3.5-turbo) based XAI analysis
 -----
-- TO DO 1: Mitre Att&ck Matrix mapping Tactic & T-ID based multi classification
-- TO DO 2: DistilBERT (task: question-answering) based fine tuning like SQUAD dataset format
-- TO DO 3: OpenAI GPT (https://huggingface.co/openai-gpt) based cyber security Chatbot R&D
+- TO DO: OpenAI GPT (https://huggingface.co/openai-gpt) based cyber security Chatbot R&D
 
