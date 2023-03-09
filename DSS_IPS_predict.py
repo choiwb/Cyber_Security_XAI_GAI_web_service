@@ -100,7 +100,9 @@ def chatgpt_run(raw_data_str):
     init_answer_strings = [s.lower().replace('네, ', '').replace('아니요. ', '').replace('예, ', '').replace('\n', '').replace('sure, ', '').replace('sure! ', '').replace('```mermaid', '').replace('```', '') for s in init_answer_strings]
     
     ques_init_2 = [
-        (raw_data_str, init_answer_strings[0], '입력된 payload의 경우, 탐지할만한, Sigma Rule을 1개 만 title, description, logsource, detection, falsepositives 순서대로 작성해주세요.'),
+        # (raw_data_str, init_answer_strings[0], '입력된 payload의 경우, 탐지할만한, Sigma Rule을 1개 만 title, description, logsource, detection, falsepositives 순서대로 작성해주세요.'),
+        (raw_data_str, init_answer_strings[0], '입력된 payload의 경우, 탐지할만한, Sigma Rule 1개에 대해서만 title, description, logsource, detection 총 4가지에 대해서만 순서대로 작성해주세요.'),
+
         (raw_data_str, init_answer_strings[2], '입력된 payload의 경우, Cyber Kill Chain Model의 몇 번째 단계에 해당하는지, 그리고 간략한 설명을 in 2 sentences 한글로 작성해주세요.')
     ]
     
