@@ -97,12 +97,10 @@ def chatgpt_run(raw_data_str):
         completions_init = pool.map(chatgpt_init, ques_init)
     
     init_answer_strings = [c['choices'][0]['message']['content'] for c in completions_init]
-    init_answer_strings = [s.lower().replace('네, ', '').replace('아니요. ', '').replace('예, ', '').replace('\n', '').replace('sure, ', '').replace('sure! ', '').replace('```mermaid', '').replace('```', '') for s in init_answer_strings]
+    init_answer_strings = [s.lower().replace('\n', ' ') for s in init_answer_strings]
     
     ques_init_2 = [
-        # (raw_data_str, init_answer_strings[0], '입력된 payload의 경우, 탐지할만한, Sigma Rule을 1개 만 title, description, logsource, detection, falsepositives 순서대로 작성해주세요.'),
-        (raw_data_str, init_answer_strings[0], '입력된 payload의 경우, 탐지할만한, Sigma Rule 1개에 대해서만 title, description, logsource, detection 총 4가지에 대해서만 순서대로 작성해주세요.'),
-
+        (raw_data_str, init_answer_strings[0], '입력된 payload의 경우, 탐지할만한, Sigma Rule 1개에 대해서 title로 시작하고 description, logsource, detection로 끝나는 곳까지만 순서대로 YAML format으로 작성해주세요.'),
         (raw_data_str, init_answer_strings[2], '입력된 payload의 경우, Cyber Kill Chain Model의 몇 번째 단계에 해당하는지, 그리고 간략한 설명을 in 2 sentences 한글로 작성해주세요.')
     ]
     
@@ -110,7 +108,7 @@ def chatgpt_run(raw_data_str):
         completions_init = pool.map(chatgpt_continue, ques_init_2)
 
     second_answer_strings = [c['choices'][0]['message']['content'] for c in completions_init]
-    second_answer_strings = [s.lower().replace('네, ', '').replace('아니요. ', '').replace('예, ', '').replace('\n', '').replace('sure, ', '').replace('sure! ', '').replace('```mermaid', '').replace('```', '').replace('false positives', 'falsepositives') for s in second_answer_strings]
+    second_answer_strings = [s.lower().replace('\n', ' ') for s in second_answer_strings]
     
     ques_init_3 = [
         (raw_data_str, init_answer_strings[0] + ' ' + second_answer_strings[0], '입력된 payload의 경우, 탐지할만한, Snort Rule을 1개 만 alert로 시작하고, rev:1;)로 끝나는 곳까지만 작성해주세요.'),
@@ -121,7 +119,7 @@ def chatgpt_run(raw_data_str):
         completions_init = pool.map(chatgpt_continue, ques_init_3)
 
     third_answer_strings = [c['choices'][0]['message']['content'] for c in completions_init]
-    third_answer_strings = [s.lower().replace('네, ', '').replace('아니요. ', '').replace('예, ', '').replace('\n', '').replace('sure, ', '').replace('sure! ', '').replace('```mermaid', '').replace('```', '') for s in third_answer_strings]
+    third_answer_strings = [s.lower().replace('\n', ' ') for s in third_answer_strings]
     
 
     print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
@@ -138,7 +136,7 @@ def chatgpt_run(raw_data_str):
     
     q_and_a_html = q_and_a_df.to_html(index=False, justify='center')
     # q_and_a_html = q_and_a_html.replace('\\n', ' ')
-    q_and_a_html = q_and_a_html.replace('description', '<br>description').replace('logsource', '<br>logsource').replace('detection', '<br>detection').replace('falsepositives', '<br>falsepositives')
+    q_and_a_html = q_and_a_html.replace('description', '<br>description').replace('logsource', '<br>logsource').replace('detection', '<br>detection')
 
     return q_and_a_html
 
