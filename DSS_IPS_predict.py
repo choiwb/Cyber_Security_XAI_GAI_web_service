@@ -527,6 +527,7 @@ ips_feature_df = pd.DataFrame([['ips_00001_payload_base64', 'payload에 공격�
 
 
 def highlight_text(text, signature, ai_field):
+
     # background yellow - 시그니처 패턴
     replacement = "\033[103m" + "\\1" + "\033[49m"
     # foreground red - AI 생성 필드
@@ -536,18 +537,20 @@ def highlight_text(text, signature, ai_field):
     # re.escape() : 특수문자를 이스케이프 처리
     text = re.sub("(" + "|".join(map(re.escape, signature)) + ")", replacement, text, flags=re.I)
 
-    # ai_field에서 cmd 및 user_agent 제외
-    not_cmd_user_agent_field = [i for i in ai_field if i not in cmd and i not in user_agent]
+    # ai_field에서 cmd, sql, user_agent 제외
+    not_cmd_sql_user_agent_field = [i for i in ai_field if i not in cmd and i not in user_agent and i not in sql_1 and i not in sql_2 and i not in sql_3]
+    # ai_field에서 cmd, sql 인 경우
+    cmd_sql = [i for i in ai_field if i in cmd or i in sql_1 or i in sql_2 or i in sql_3]
 
-    text = re.sub("(" + "|".join(not_cmd_user_agent_field) + ")", replacement_2, text, flags=re.I)
+    text = re.sub("(" + "|".join(not_cmd_sql_user_agent_field) + ")", replacement_2, text, flags=re.I)
 
-    # test.split('HTTP/1.[01]')[0]에 cmd가 있는 경우, highlight 처리
+    # test.split('HTTP/1.[01]')[0]에 cmd, sql가 있는 경우, highlight 처리
     # text.spliyt('HTTP/1.[01]')[1]에 user-agent가 있는 경우, highlight 처리
     if 'HTTP/1.1' in text and text.count('HTTP/1.1') == 1:
-        text = re.sub("(" + "|".join(cmd) + ")", replacement_2, text.split('HTTP/1.1')[0], flags=re.I) + 'HTTP/1.1' + text.split('HTTP/1.1')[1]
+        text = re.sub("(" + "|".join(cmd_sql) + ")", replacement_2, text.split('HTTP/1.1')[0], flags=re.I) + 'HTTP/1.1' + text.split('HTTP/1.1')[1]
         text = text.split('HTTP/1.1')[0] + 'HTTP/1.1' + re.sub("(" + "|".join(user_agent) + ")", replacement_2, text.split('HTTP/1.1')[1], flags=re.I)
     elif 'HTTP/1.0' in text and text.count('HTTP/1.0') == 1:
-        text = re.sub("(" + "|".join(cmd) + ")", replacement_2, text.split('HTTP/1.0')[0], flags=re.I) + 'HTTP/1.0' + text.split('HTTP/1.0')[1]
+        text = re.sub("(" + "|".join(cmd_sql) + ")", replacement_2, text.split('HTTP/1.0')[0], flags=re.I) + 'HTTP/1.0' + text.split('HTTP/1.0')[1]
         text = text.split('HTTP/1.0')[0] + 'HTTP/1.0' + re.sub("(" + "|".join(user_agent) + ")", replacement_2, text.split('HTTP/1.0')[1], flags=re.I)
 
     regex = re.compile('\x1b\[103m(.*?)\x1b\[49m')
