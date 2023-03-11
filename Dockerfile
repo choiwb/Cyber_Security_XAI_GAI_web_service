@@ -10,18 +10,18 @@ WORKDIR /app
 RUN apt-get clean && apt-get -y update && apt-get -y upgrade
 RUN apt-get -y install openjdk-11-jdk
 
+
 COPY requirements.txt /app
 
 COPY DSS_IPS_predict.py /app
 COPY setting.py /app
 COPY DSS_IPS_preprocess_sql_tfidf.py /app
-COPY IPS_XAI_deploy_20221201_sql_tfidf.csv /app
-COPY train_word_idf.csv /app
 
 COPY templates /app/templates
 COPY static /app/static
 COPY saved_model /app/saved_model
 COPY BERT_transfer_checkpoint /app/BERT_transfer_checkpoint
+COPY chatgpt_context /app/chatgpt_context
 
 # Install dependencies
 RUN pip3 install --upgrade setuptools pip
