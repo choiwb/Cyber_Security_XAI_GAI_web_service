@@ -124,7 +124,6 @@ ips_query = """
         OR INT(RLIKE(LOWER(payload), 'mozi[\\.]') )>0
         OR INT(RLIKE(LOWER(payload), 'bingbot') )>0
         OR INT(RLIKE(LOWER(payload), 'md5') )>0
-        OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'jpg(.*?)http/1.') )>0
         OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'count(.*?)cgi(.*?)http') )>0
         OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'this(.*?)program(.*?)can') )>0
         OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'get(.*?)ping') )>0
