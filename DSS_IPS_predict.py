@@ -34,6 +34,17 @@ app = Flask(__name__)
 def user_input():
     return render_template('user_input.html')
 
+def payload_anonymize(raw_data_str):
+    # IP
+    # 61. 시작 하는 경우
+    ip_pattern = r'\b61\.(?:[0-9]{1,3}\.){2}[0-9]{1,3}\b'
+    output_str = re.sub(ip_pattern, '10.10.123.123', raw_data_str)
+    # HOST
+    # :// 또는 %3a%2f%2f 또는 www.  ~ .go.kr 또는 .or.kr
+    host_pattern = r"(?:(?<=:\/\/)|(?<=%3a%2f%2f)|(?<=www\.))(?!:\/\/|%3a%2f%2f|www\.)(.*?)(?=\.go\.kr|\.or\.kr)"
+
+    output_str = re.sub(host_pattern, '*****', output_str, flags = re.I)
+    return output_str
 
 
 import multiprocessing
@@ -279,6 +290,9 @@ def web_UI_predict():
     
     # payload 입력
     payload_input = request.form['raw_data_str']
+    
+    # 비식별
+    payload_input = payload_anonymize(payload_input)
 
     ############################################
     # payload hash 변환 (ssdeep 이용)
@@ -597,6 +611,22 @@ def XAI_result():
 
    # payload의 raw data 입력 값!
     raw_data_str = request.form['raw_data_str']
+    
+    # 비식별
+    raw_data_str = payload_anonymize(raw_data_str)
+    
+    # 비식별 하이라이트 처리 - background red
+    replacement = "\033[101m" + "\\1" + "\033[49m"
+    # raw_data_str의 '10.10.123.123' 과 '*****' 애 replacement 적용
+
+    ip_anony = '10.10.123.123'
+    host_anony = '*****'
+    anony_list = [ip_anony, host_anony]
+    payload_anonymize_highlight = re.sub("(" + "|".join(map(re.escape, anony_list)) + ")", replacement, raw_data_str, flags=re.I)
+    print(payload_anonymize_highlight)
+    
+    background_red_regex = r'\x1b\[101m(.*?)\x1b\[49m'
+    payload_anonymize_highlight_html = re.sub(background_red_regex, r'<span style = "background-color:red">\1</span>', payload_anonymize_highlight)
 
     # XAI 실행 시간
     kor_time = datetime.datetime.now()
@@ -1350,6 +1380,7 @@ def XAI_result():
 
 
     return render_template('XAI_output.html', payload_raw_data = request.form['raw_data_str'],  
+                               payload_anonymize_highlight_html = payload_anonymize_highlight_html,
                                 # expected_value_sql_logit = expected_value_sql_logit,
                                 train_mean_proba_html = train_mean_proba_html,
                                 train_mean_pred_comment = train_mean_pred_comment,
