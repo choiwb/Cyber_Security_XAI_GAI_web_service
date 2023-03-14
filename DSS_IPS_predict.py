@@ -616,7 +616,9 @@ def XAI_result():
     raw_data_str = payload_anonymize(raw_data_str)
     
     # 비식별 하이라이트 처리 - background red
-    replacement = "\033[101m" + "\\1" + "\033[49m"
+    # replacement = "\033[101m" + "\\1" + "\033[49m"
+    # 비식별 하이라이트 처리 - background black
+    replacement = "\033[40m" + "\\1" + "\033[49m"
     # raw_data_str의 '10.10.123.123' 과 '*****' 애 replacement 적용
 
     ip_anony = '10.10.123.123'
@@ -625,8 +627,11 @@ def XAI_result():
     payload_anonymize_highlight = re.sub("(" + "|".join(map(re.escape, anony_list)) + ")", replacement, raw_data_str, flags=re.I)
     print(payload_anonymize_highlight)
     
-    background_red_regex = r'\x1b\[101m(.*?)\x1b\[49m'
-    payload_anonymize_highlight_html = re.sub(background_red_regex, r'<span style = "background-color:red">\1</span>', payload_anonymize_highlight)
+    # background_red_regex = r'\x1b\[101m(.*?)\x1b\[49m'
+    background_black_regex = r'\x1b\[40m(.*?)\x1b\[49m'
+
+    # payload_anonymize_highlight_html = re.sub(background_red_regex, r'<span style = "background-color:red">\1</span>', payload_anonymize_highlight)
+    payload_anonymize_highlight_html = re.sub(background_black_regex, r'<span style = "background-color:black; color:white">\1</span>', payload_anonymize_highlight)
 
     # XAI 실행 시간
     kor_time = datetime.datetime.now()
