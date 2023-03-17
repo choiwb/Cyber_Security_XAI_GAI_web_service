@@ -1419,6 +1419,9 @@ def WAF_payload_parsing():
     # raw_data_str '"'로 시작하는 경우 '' 처리
     if raw_data_str[0] == '"':
         raw_data_str = raw_data_str[1:]
+        
+    # 비식별
+    raw_data_str = payload_anonymize(raw_data_str)
 
     pre_df = pd.DataFrame([raw_data_str], columns = ['payload'])
     pre_df['http_method'] = [str(x).split(' ')[0] for x in pre_df['payload']]
@@ -1548,6 +1551,9 @@ def WAF_payload_parsing():
 @app.route('/WEB_payload_parsing', methods = ['POST'])
 def WEB_payload_parsing():
     raw_data_str = request.form['raw_data_str']
+    
+    # 비식별
+    raw_data_str = payload_anonymize(raw_data_str)
 
     # raw_data_str에 '"'가 4개 이상 (2쌍) 인 경우, APACHE, 아니면, IIS
     if raw_data_str.count('"') >= 4:
