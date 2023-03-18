@@ -60,13 +60,28 @@ def load_context(file_path):
 
 def chatgpt_init(ques_init):
     raw_data_str, ques = ques_init
+    completion = openai.ChatCompletion.create(
+    model="gpt-4",
+    max_tokens=128,
+    temperature=0.1,
+    messages=[
+        {"role": "system", "content": 'You are a security analyst.'},
+        {"role": "user", "content": raw_data_str + '. ' + ques}
+    ]
+    )
+    return completion
+
+def chatgpt_tactics(ques_init):
+    raw_data_str, ques = ques_init
     tactics_file = load_context(tactics_path)
     completion = openai.ChatCompletion.create(
-    model="gpt-3.5-turbo",
+    model="gpt-4",
+    max_tokens=256,
+    temperature=0.1,
     messages=[
         {"role": "system", "content": 'You are a security analyst.'},
         {"role": "assistant", "content": tactics_file},
-        {"role": "user", "content": raw_data_str + ' ' + ques}
+        {"role": "user", "content": raw_data_str + '. ' + ques}
     ]
     )
     return completion
@@ -74,11 +89,15 @@ def chatgpt_init(ques_init):
 def chatgpt_continue(ques_init):
     raw_data_str, prev_ans, ques = ques_init
     completion = openai.ChatCompletion.create(
-    model="gpt-3.5-turbo",
+    model="gpt-4",
+    max_tokens=256,
+    temperature=0.1,
+    # sigma rule 질의 시, stopwords
+    stop = "falsepositives: level:",
     messages=[
         {"role": "system", "content": 'You are a security analyst.'},
         {"role": "assistant", "content": prev_ans},
-        {"role": "user", "content": raw_data_str + ' ' + ques}
+        {"role": "user", "content": raw_data_str + '. ' + ques}
     ]
     )
     return completion
@@ -86,7 +105,9 @@ def chatgpt_continue(ques_init):
 def chatgpt_xai_explain(raw_data_str, xai_result):
     ques = '입력된 payload 의 AI 예측 결과 상위 10개 피처 중요도에 대한 설명을 AI 공격 탐지 키워드 기반으로 보안 전문가들이 쉽게 이해할만한 설명으로 in 3 sentences 한글로 작성해주세요.'
     completion = openai.ChatCompletion.create(
-    model="gpt-3.5-turbo",
+    model="gpt-4",
+    max_tokens=256,
+    temperature=0.1,
     messages=[
         {"role": "system", "content": 'You are a security analyst.'},
         {"role": "assistant", "content": xai_result},
@@ -98,9 +119,17 @@ def chatgpt_xai_explain(raw_data_str, xai_result):
     return xai_explain
 
 def chatgpt_run(raw_data_str):
+    single_ques_init = [
+        (raw_data_str, '2021년 4월 발표된 Mitre Att&ck v9에서 전체 14개 Enterprise Tactics ID 중 입력된 payload의 경우, TA로 시작하는 적합한 Tactics ID와 설명의 경우, in 2 sentences 한글로 작성해주세요.')
+    ]
+
+    tactics_completion = chatgpt_tactics(single_ques_init[0])
+    tactics_string = tactics_completion['choices'][0]['message']['content']
+    tactics_string = tactics_string.lower().replace('\n', ' ') 
+
+
     ques_init = [
         (raw_data_str, 'SQL Injection, Command Injection, XSS (Cross Site Scripting), Attempt access admin page (관리자 페이지 접근 시도), JNDI Injection, WordPress 취약점, malicious bot 총 7가지 공격 유형 중에 입력된 payload의 경우, 어떤 공격 유형에 해당하는지 판단 근거를 in 2 sentences 한글로 작성해주세요.'),
-        (raw_data_str, '2021년 4월 발표된 Mitre Att&ck v9에서 전체 14개 Enterprise Tactics ID 중 입력된 payload의 경우, TA로 시작하는 적합한 Tactics ID와 설명의 경우, in 2 sentences 한글로 작성해주세요.'),
         (raw_data_str, '입력된 payload의 경우, Cyber Kill Chain Model 전체 단계의 순서대로 명칭만 작성해주세요.')
         ]
     
@@ -112,7 +141,9 @@ def chatgpt_run(raw_data_str):
     
     ques_init_2 = [
         (raw_data_str, init_answer_strings[0], '입력된 payload의 경우, 탐지할만한, Sigma Rule 1개에 대해서 title로 시작하고 description, logsource, detection로 끝나는 곳까지만 순서대로 YAML format으로 작성해주세요.'),
-        (raw_data_str, init_answer_strings[2], '입력된 payload의 경우, Cyber Kill Chain Model의 몇 번째 단계에 해당하는지, 그리고 간략한 설명을 in 2 sentences 한글로 작성해주세요.')
+        (raw_data_str, init_answer_strings[0], '입력된 payload의 경우, 탐지할만한, Snort Rule을 1개 만 alert로 시작하고, rev:1;)로 끝나는 곳까지만 작성해주세요.'),
+        (raw_data_str, init_answer_strings[0], '입력된 payload의 경우, 2015년 이후 발표된 연관될만한 CVE (Common Vulnerabilities and Exposures) 가 있으면 해당 CVE 1개와 판단 근거를 in 2 sentences 한글로 작성해주세요.'),
+        (raw_data_str, init_answer_strings[1], '입력된 payload의 경우, Cyber Kill Chain Model의 몇 번째 단계에 해당하는지, 그리고 간략한 설명을 in 2 sentences 한글로 작성해주세요.')
     ]
     
     with multiprocessing.Pool() as pool:
@@ -120,31 +151,20 @@ def chatgpt_run(raw_data_str):
 
     second_answer_strings = [c['choices'][0]['message']['content'] for c in completions_init]
     second_answer_strings = [s.lower().replace('\n', ' ') for s in second_answer_strings]
-    
-    ques_init_3 = [
-        (raw_data_str, init_answer_strings[0] + ' ' + second_answer_strings[0], '입력된 payload의 경우, 탐지할만한, Snort Rule을 1개 만 alert로 시작하고, rev:1;)로 끝나는 곳까지만 작성해주세요.'),
-        (raw_data_str, init_answer_strings[0] + ' ' + second_answer_strings[0], '입력된 payload의 경우, 2015년 이후 발표된 연관될만한 CVE (Common Vulnerabilities and Exposures) 가 있으면 해당 CVE 1개와 판단 근거를 in 2 sentences 한글로 작성해주세요.')
-    ]
 
-    with multiprocessing.Pool() as pool:
-        completions_init = pool.map(chatgpt_continue, ques_init_3)
-
-    third_answer_strings = [c['choices'][0]['message']['content'] for c in completions_init]
-    third_answer_strings = [s.lower().replace('\n', ' ') for s in third_answer_strings]
-    
 
     print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
-    print('사이버 킬 체인 모델: ', init_answer_strings[2])
+    print('사이버 킬 체인 모델: ', init_answer_strings[1])
 
     q_and_a_df = pd.DataFrame([
             ['공격 판단 근거', init_answer_strings[0]],
-            ['Tactics 추천', init_answer_strings[1]],
+            ['Tactics 추천', tactics_string],
             ['Sigma Rule 추천', second_answer_strings[0]],
-            ['Snort Rule 추천', third_answer_strings[0]],
-            ['CVE 추천', third_answer_strings[1]],
-            ['사이버 킬 체인 대응 단계 추천', second_answer_strings[1]]
+            ['Snort Rule 추천', second_answer_strings[1]],
+            ['CVE 추천', second_answer_strings[2]],
+            ['사이버 킬 체인 대응 단계 추천', second_answer_strings[3]]
         ], columns=['Question', 'Answer'])
-    
+
     q_and_a_html = q_and_a_df.to_html(index=False, justify='center')
     # q_and_a_html = q_and_a_html.replace('\\n', ' ')
     q_and_a_html = q_and_a_html.replace('description', '<br>description').replace('logsource', '<br>logsource').replace('detection', '<br>detection')
