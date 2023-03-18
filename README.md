@@ -15,7 +15,7 @@
 - Docker application
 - DistilBERT Transfer Learning (adding cyber security domain word)
 - DistilBERT (task: question-answering) based fine tuning like SQUAD dataset format
-- OpenAI ChatGPT API (gpt-3.5-turbo) based XAI analysis
+- OpenAI API (gpt-4) based XAI analysis
 -----
 - TO DO: OpenAI GPT (https://huggingface.co/openai-gpt) based cyber security Chatbot R&D
 
