@@ -61,9 +61,9 @@ def load_context(file_path):
 def chatgpt_init(ques_init):
     raw_data_str, ques = ques_init
     completion = openai.ChatCompletion.create(
-    model="gpt-4",
+    model="gpt-3.5-turbo",
     max_tokens=128,
-    temperature=0.1,
+    # temperature=0.1,
     messages=[
         {"role": "system", "content": 'You are a security analyst.'},
         {"role": "user", "content": raw_data_str + '. ' + ques}
@@ -75,9 +75,9 @@ def chatgpt_tactics(ques_init):
     raw_data_str, ques = ques_init
     tactics_file = load_context(tactics_path)
     completion = openai.ChatCompletion.create(
-    model="gpt-4",
+    model="gpt-3.5-turbo",
     max_tokens=256,
-    temperature=0.1,
+    # temperature=0.1,
     messages=[
         {"role": "system", "content": 'You are a security analyst.'},
         {"role": "assistant", "content": tactics_file},
@@ -91,7 +91,7 @@ def chatgpt_continue(ques_init):
     completion = openai.ChatCompletion.create(
     model="gpt-4",
     max_tokens=256,
-    temperature=0.1,
+    # temperature=0.1,
     # sigma rule 질의 시, stopwords
     stop = "falsepositives: level:",
     messages=[
@@ -105,9 +105,10 @@ def chatgpt_continue(ques_init):
 def chatgpt_xai_explain(raw_data_str, xai_result):
     ques = '입력된 payload 의 AI 예측 결과 상위 10개 피처 중요도에 대한 설명을 AI 공격 탐지 키워드 기반으로 보안 전문가들이 쉽게 이해할만한 설명으로 in 3 sentences 한글로 작성해주세요.'
     completion = openai.ChatCompletion.create(
+    # model="gpt-3.5-turbo",
     model="gpt-4",
     max_tokens=256,
-    temperature=0.1,
+    # temperature=0.1,
     messages=[
         {"role": "system", "content": 'You are a security analyst.'},
         {"role": "assistant", "content": xai_result},
@@ -120,7 +121,7 @@ def chatgpt_xai_explain(raw_data_str, xai_result):
 
 def chatgpt_run(raw_data_str):
     single_ques_init = [
-        (raw_data_str, '2021년 4월 발표된 Mitre Att&ck v9에서 전체 14개 Enterprise Tactics ID 중 입력된 payload의 경우, TA로 시작하는 적합한 Tactics ID와 설명의 경우, in 2 sentences 한글로 작성해주세요.')
+        (raw_data_str, '2021년 4월 발표된 Mitre Att&ck v9에서 전체 14개 Enterprise Tactics ID 중 입력된 payload의 경우, 적합한 Tactics ID 1개와 설명을, in 2 sentences 한글로 작성해주세요.')
     ]
 
     tactics_completion = chatgpt_tactics(single_ques_init[0])
