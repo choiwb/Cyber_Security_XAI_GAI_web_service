@@ -17,5 +17,6 @@
 - DistilBERT (task: question-answering) based fine tuning like SQUAD dataset format
 - OpenAI API (gpt-3.5-turbo & gpt-4) based XAI analysis
 -----
-- TO DO: OpenAI GPT (https://huggingface.co/openai-gpt) based cyber security Chatbot R&D
+- TO DO 1: transformers based text-summarization
+- TO DO 2: OpenAI GPT (https://huggingface.co/openai-gpt) based cyber security Chatbot R&D
 
