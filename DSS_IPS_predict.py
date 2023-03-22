@@ -121,7 +121,7 @@ def chatgpt_xai_explain(raw_data_str, xai_result):
 
 def chatgpt_run(raw_data_str):
     single_ques_init = [
-        (raw_data_str, '2021년 4월 발표된 Mitre Att&ck v9에서 전체 14개 Enterprise Tactics ID 중 입력된 payload의 경우, 적합한 Tactics ID 1개와 설명을, in 2 sentences 한글로 작성해주세요.')
+        (raw_data_str, '2021년 4월 발표된 Mitre Att&ck v9에서 전체 14개 Enterprise Tactics ID 중 입력된 payload의 경우, TA로 시작하는 적합한 Tactics ID 1개와 설명을, in 2 sentences 한글로 작성해주세요.')
     ]
 
     tactics_completion = chatgpt_tactics(single_ques_init[0])
