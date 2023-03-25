@@ -1,6 +1,6 @@
-# IPS_anomaly_detection_XAI_flask_docker
+# Cyber_Security_XAI_GAI_web_service
 
-[IPS (Intrusion Prevention System) Detection - anomalies / normal]
+IPS (Intrusion Prevention System) Detection - attack / normal
 
 - Data: IPS Payload
 - Feature create: PySpark (Spark SQL)
