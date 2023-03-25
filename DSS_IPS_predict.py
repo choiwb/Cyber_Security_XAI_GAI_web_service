@@ -514,11 +514,15 @@ def shap_logit(x):
     logit_result = 1 / (1 + np.exp(-x))
     return logit_result
 
-signature_list = ['/etc/passwd', 'password=admin', 'information_schema', 'xp_cmdshell', '<script']
+signature_list = ['/etc/passwd', 'password=admin', 'information_schema', 'xp_cmdshell', '<script', 'admin-ajax.php?action=revslider_show_image&img=../']
 # 탐지 패턴 소문자화
 signature_list = [x.lower() for x in signature_list]
+# 시그니처 패턴 리스트에서 XSS 창 실행 예외 처리를 위해 소문자 이스케이프 처리
+signature_list = [re.sub(r'[\<]' , '&lt;', x) for x in signature_list] 
+signature_list = [re.sub(r'[\>]' , '&gt;', x) for x in signature_list]
 
-method_list = ['IGLOO-UD-File Downloading Vulnerability-1(/etc/passwd)', 'IGLOO-UD-WeakIDPasswd-1(password=admin)', 'IGLOO information_schema', 'IGLOO xp_cmdshell', 'IGLOO script']
+
+method_list = ['IGLOO-UD-File Downloading Vulnerability-1(/etc/passwd)', 'IGLOO-UD-WeakIDPasswd-1(password=admin)', 'IGLOO information_schema', 'IGLOO xp_cmdshell', 'IGLOO script', 'IGLOO admin']
 
 # ai_list에 element 안에 '(.*?)'가 포함되어 있는 경우, '(.*?)' 기준으로 split 후, 리스트에 추가
 first_ai_list = [x.split('(.*?)')[0] for x in ai_field if '(.*?)' in x]
@@ -632,6 +636,12 @@ def XAI_result():
 
    # payload의 raw data 입력 값!
     raw_data_str = request.form['raw_data_str']
+    
+    ##########################################################
+    # raw_data_str 변수에 XSS 관련 문구가 있어서 창이 나오는 이슈 해결 
+    raw_data_str = re.sub(r'[\<]' , '&lt;', raw_data_str)
+    raw_data_str = re.sub(r'[\>]' , '&gt;', raw_data_str)
+    ##########################################################
     
     # 비식별
     raw_data_str = payload_anonymize(raw_data_str)
@@ -1014,6 +1024,12 @@ def XAI_result():
     ai_detect_regex = r'\x1b\[91m(.*?)\x1b\[39m'
     ai_detect_list = re.findall(ai_detect_regex, sig_ai_pattern)
     ai_detect_list = [re.sub(r'\x1b\[103m|\x1b\[49m', '', x) for x in ai_detect_list]
+    
+    ###################################################################
+    # raw_adta_str 변수에 XSS 관련 문구 떼문에 변경한 부분 원복
+    ai_detect_list = [re.sub('&lt;', '<', x) for x in ai_detect_list]
+    ai_detect_list = [re.sub('&gt;', '>', x) for x in ai_detect_list]
+    ###################################################################
 
 
     ai_feature_list = []
