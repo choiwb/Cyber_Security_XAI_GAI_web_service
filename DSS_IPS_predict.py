@@ -1413,6 +1413,12 @@ def XAI_result():
     import concurrent.futures
 
     with concurrent.futures.ThreadPoolExecutor() as executor:
+        ###################################################################
+        # raw_adta_str 변수에 XSS 관련 문구 떼문에 변경한 부분 원복
+        raw_data_str = re.sub('&lt;', '<', raw_data_str)
+        raw_data_str = re.sub('&gt;', '>', raw_data_str)
+        ###################################################################
+
         xai_report_future = executor.submit(chatgpt_xai_explain, raw_data_str, top10_shap_values_html)
         q_and_a_future = executor.submit(chatgpt_run, raw_data_str)
 
