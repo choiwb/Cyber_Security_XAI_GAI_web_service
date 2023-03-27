@@ -184,9 +184,9 @@ def chatgpt_run(raw_data_str):
             ['공격 판단 근거', init_answer_strings[0]],
             ['Tactics 추천', tactics_string],
             ['Sigma Rule 추천', sigma_string],
-            ['Snort Rule 추천', second_answer_strings[1]],
-            ['CVE 추천', second_answer_strings[2]],
-            ['사이버 킬 체인 대응 단계 추천', second_answer_strings[3]]
+            ['Snort Rule 추천', second_answer_strings[0]],
+            ['CVE 추천', second_answer_strings[1]],
+            ['사이버 킬 체인 대응 단계 추천', second_answer_strings[2]]
         ], columns=['Question', 'Answer'])
 
     q_and_a_html = q_and_a_df.to_html(index=False, justify='center')
