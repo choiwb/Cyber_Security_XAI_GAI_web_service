@@ -90,7 +90,7 @@ def chatgpt_tactics(ques_init):
 def chatgpt_continue(ques_init):
     raw_data_str, prev_ans, ques = ques_init
     completion = openai.ChatCompletion.create(
-    model="gpt-4",
+    model="gpt-3.5-turbo",
     max_tokens=256,
     # temperature=0.1,
     messages=[
