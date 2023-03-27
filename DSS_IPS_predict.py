@@ -102,7 +102,7 @@ def chatgpt_continue(ques_init):
     return completion
 
 def chatgpt_continue_sigma(ques_init):
-    raw_data_str, ques = ques_init
+    raw_data_str, prev_ans, ques = ques_init
     sigmarule_path = load_context(sigmarule_yaml_sample_path)
 
     completion = openai.ChatCompletion.create(
@@ -112,6 +112,7 @@ def chatgpt_continue_sigma(ques_init):
     messages=[
         {"role": "system", "content": 'You are a security analyst.'},
         {"role": "assistant", "content": sigmarule_path},
+        {"role": "assistant", "content": prev_ans},
         {"role": "user", "content": raw_data_str + '. ' + ques}
     ]
     )
@@ -168,7 +169,7 @@ def chatgpt_run(raw_data_str):
     second_answer_strings = [s.lower().replace('\n', ' ') for s in second_answer_strings]
     
     sigma_ques_init = [
-        (raw_data_str, '입력된 payload의 경우, 탐지할만한, Sigma Rule 1개에 대해서 YAML format으로 작성해주세요.')
+       (raw_data_str, init_answer_strings[0], '입력된 payload의 경우, 탐지할만한, Sigma Rule 1개에 대해서 YAML format으로 작성해주세요.')
     ]
     
     sigma_completion = chatgpt_continue_sigma(sigma_ques_init[0])
