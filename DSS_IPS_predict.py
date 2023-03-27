@@ -103,7 +103,7 @@ def chatgpt_continue(ques_init):
 
 def chatgpt_continue_sigma(ques_init):
     raw_data_str, prev_ans, ques = ques_init
-    sigmarule_path = load_context(sigmarule_yaml_sample_path)
+    sigmarule_file = load_context(sigmarule_yaml_sample_path)
 
     completion = openai.ChatCompletion.create(
     model="gpt-4",
@@ -111,7 +111,7 @@ def chatgpt_continue_sigma(ques_init):
 
     messages=[
         {"role": "system", "content": 'You are a security analyst.'},
-        {"role": "assistant", "content": sigmarule_path},
+        {"role": "assistant", "content": sigmarule_file},
         {"role": "assistant", "content": prev_ans},
         {"role": "user", "content": raw_data_str + '. ' + ques}
     ]
