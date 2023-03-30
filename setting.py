@@ -169,10 +169,10 @@ ips_query = """
         OR INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[1],  'user(.*?)agent(.*?)urlgrabber(.*?)yum') )>0
                 ,1, 0) AS ips_00001_payload_useragent_comb,
                 
-        (SIZE(SPLIT(REGEXP_REPLACE(payload, '\\n|\\r|\\t', ' '), 'GET(.*?)HTTP/1.')) -1)
-            + (SIZE(SPLIT(REGEXP_REPLACE(payload, '\\n|\\r|\\t', ' '), 'POST(.*?)HTTP/1.')) -1)
-        + (SIZE(SPLIT(REGEXP_REPLACE(payload, '\\n|\\r|\\t', ' '), 'HEAD(.*?)HTTP/1.')) -1)
-        + (SIZE(SPLIT(REGEXP_REPLACE(payload, '\\n|\\r|\\t', ' '), 'OPTION(.*?)HTTP/1.')) -1)-1)
+        (SIZE(SPLIT(REGEXP_REPLACE(payload, '\\n|\\r|\\t|\\N|\\R|\\T', ' '), 'GET(.*?)HTTP/1.')) -1)
+            + (SIZE(SPLIT(REGEXP_REPLACE(payload, '\\n|\\r|\\t|\\N|\\R|\\T', ' '), 'POST(.*?)HTTP/1.')) -1)
+        + (SIZE(SPLIT(REGEXP_REPLACE(payload, '\\n|\\r|\\t|\\N|\\R|\\T', ' '), 'HEAD(.*?)HTTP/1.')) -1)
+        + (SIZE(SPLIT(REGEXP_REPLACE(payload, '\\n|\\r|\\t|\\N|\\R|\\T', ' '), 'OPTION(.*?)HTTP/1.')) -1)
         AS ips_00001_payload_whitelist
 
     FROM table
