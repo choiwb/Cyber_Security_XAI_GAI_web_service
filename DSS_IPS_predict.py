@@ -128,7 +128,7 @@ def chatgpt_xai_explain(raw_data_str, xai_result):
     messages=[
         {"role": "system", "content": 'You are a security analyst.'},
         {"role": "assistant", "content": xai_result},
-        {"role": "user", "content": raw_data_str + ' ' + ques}
+        {"role": "user", "content": raw_data_str + '. ' + ques}
     ]
     )
     xai_explain = completion['choices'][0]['message']['content']
