@@ -53,6 +53,8 @@ import openai
 openai.api_key = "YOUR API KEY !!!!!!!"
 tactics_path = 'YOUR CONTEXT PATH !!!!!!!'
 sigmarule_yaml_sample_path = 'YOUR CONTEXT PATH !!!!!!!'
+snortrule_sample_path = 'YOUR CONTEXT PATH !!!!!!!'
+
 
 def load_context(file_path):
     with open(file_path, "r") as f:
@@ -95,6 +97,22 @@ def chatgpt_continue(ques_init):
     # temperature=0.1,
     messages=[
         {"role": "system", "content": 'You are a security analyst.'},
+        {"role": "assistant", "content": prev_ans},
+        {"role": "user", "content": raw_data_str + '. ' + ques}
+    ]
+    )
+    return completion
+
+def chatgpt_continue_snort(ques_init):
+    raw_data_str, prev_ans, ques = ques_init
+    snortrule_file = load_context(snortrule_sample_path)
+
+    completion = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo",
+    max_tokens=256,
+    messages=[
+        {"role": "system", "content": 'You are a security analyst.'},
+        {"role": "assistant", "content": snortrule_file},
         {"role": "assistant", "content": prev_ans},
         {"role": "user", "content": raw_data_str + '. ' + ques}
     ]
@@ -157,7 +175,6 @@ def chatgpt_run(raw_data_str):
     init_answer_strings = [s.lower().replace('\n', ' ') for s in init_answer_strings]
     
     ques_init_2 = [
-        (raw_data_str, init_answer_strings[0], '입력된 payload의 경우, 탐지할만한, Snort Rule을 1개 만 alert로 시작하고, rev:1;)로 끝나는 곳까지만 작성해주세요.'),
         (raw_data_str, init_answer_strings[0], '입력된 payload의 경우, 2015년 이후 발표된 연관될만한 CVE (Common Vulnerabilities and Exposures) 가 있으면 해당 CVE 1개와 판단 근거를 in 2 sentences 한글로 작성해주세요.'),
         (raw_data_str, init_answer_strings[1], '입력된 payload의 경우, Cyber Kill Chain Model의 몇 번째 단계에 해당하는지, 그리고 간략한 설명을 in 2 sentences 한글로 작성해주세요.')
     ]
@@ -171,11 +188,18 @@ def chatgpt_run(raw_data_str):
     sigma_ques_init = [
        (raw_data_str, init_answer_strings[0], '입력된 payload의 경우, 탐지할만한, Sigma Rule 1개에 대해서 YAML format으로 작성해주세요.')
     ]
-    
+        
     sigma_completion = chatgpt_continue_sigma(sigma_ques_init[0])
     sigma_string = sigma_completion['choices'][0]['message']['content']
     sigma_string = sigma_string.lower().replace('\n', ' ') 
 
+    snort_ques_init = [
+    (raw_data_str, init_answer_strings[0], '입력된 payload의 경우, 탐지할만한, Snort Rule을 1개 만 alert로 시작하고, rev:1;)로 끝나는 곳까지만 작성해주세요.')
+    ]
+    
+    snort_completion = chatgpt_continue_snort(snort_ques_init[0])
+    snort_string = snort_completion['choices'][0]['message']['content']
+    snort_string = snort_string.lower().replace('\n', ' ') 
 
     print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
     print('사이버 킬 체인 모델: ', init_answer_strings[1])
@@ -184,9 +208,9 @@ def chatgpt_run(raw_data_str):
             ['공격 판단 근거', init_answer_strings[0]],
             ['Tactics 추천', tactics_string],
             ['Sigma Rule 추천', sigma_string],
-            ['Snort Rule 추천', second_answer_strings[0]],
-            ['CVE 추천', second_answer_strings[1]],
-            ['사이버 킬 체인 대응 단계 추천', second_answer_strings[2]]
+            ['Snort Rule 추천', snort_string],
+            ['CVE 추천', second_answer_strings[0]],
+            ['사이버 킬 체인 대응 단계 추천', second_answer_strings[1]]
         ], columns=['Question', 'Answer'])
 
     q_and_a_html = q_and_a_df.to_html(index=False, justify='center')
