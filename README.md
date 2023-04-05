@@ -1,6 +1,7 @@
 # Cyber_Security_XAI_GAI_web_service
 
-IPS & WAF Detection - attack / normal  WEB Log Detection - SQL Injection, Command Injection, XSS, normal
+IPS & WAF Detection - attack / normal
+WEB Log Detection - SQL Injection, Command Injection, XSS, normal
 -----
 - Data: IPS & WAF Payload, WEB Log
 - Feature create: PySpark (Spark SQL)
