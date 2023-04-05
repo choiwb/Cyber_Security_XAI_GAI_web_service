@@ -1,0 +1,1 @@
+alert tcp any any -> any 80 (content:"GET"; nocase; http_method; content:"/admin.php"; nocase; http_uri; msg:"Possible web application attack"; sid:100001; rev:1;)

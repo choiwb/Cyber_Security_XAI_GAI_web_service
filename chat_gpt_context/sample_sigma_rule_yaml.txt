@@ -1,0 +1,16 @@
+title: Detect command injection in HTTP request
+description: This rule detects the presence of a command injection attack in HTTP request logs by looking for specific patterns in the request.
+logsource:
+  category: webserver
+  product: httpd
+detection:
+  keywords:
+    - 'cd+/'
+    - 'rm+-rf'
+    - 'wget+http:/'
+    - 'chmod+777'
+  condition: keywords
+  falsepositives:
+    - Legitimate administrative actions using similar commands
+    - False matches due to log entries containing one or more of the keywords in a non-malicious context
+  level: high
