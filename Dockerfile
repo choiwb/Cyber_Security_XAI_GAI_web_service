@@ -15,7 +15,6 @@ COPY requirements.txt /app
 
 COPY DSS_IPS_predict.py /app
 COPY setting.py /app
-COPY DSS_IPS_preprocess_sql_tfidf.py /app
 
 COPY templates /app/templates
 COPY static /app/static
