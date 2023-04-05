@@ -947,7 +947,7 @@ def IPS_XAI_result():
     (?!<font)(?!<span)
     (?=</span>)
     '''
-    # CSS 버전 이슈?로 동일 서버에선 문제 없으나 XAI UI 에선 적용 안하기로 함 - 20230308
+    # CSS 버전 이슈로 XAI에선 적용 안하기로 함 - 20230308
     # sig_ai_pattern = re.sub(r'</font>(?:(?<!<font)(?<!<span)|(?<=<span)|(?<=<font))[^<]*(?!<font)(?!<span)(?=</span>)',
     #                   r'</font><span style="background-color:yellow;">\g<0></span>', sig_ai_pattern)
     sig_ai_pattern = re.sub(r'\<\/font\>(?:(?<!\<font)(?<!\<span)|(?<=\<span)|(?<=\<font))[^\<]*(?!\<font)(?!\<span)(?=\<\/span\>)',
