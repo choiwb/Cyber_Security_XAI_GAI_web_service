@@ -2,7 +2,7 @@ import os
 import pandas as pd, numpy as np
 import pyspark
 import shap
-from setting_ngcsm import *
+from setting import *
 from pyspark.sql import SparkSession
 from pyspark.sql.types import *
 from flask import request, Flask, render_template, Markup
