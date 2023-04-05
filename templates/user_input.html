@@ -6,45 +6,36 @@
         <center>
         <img src='static\igloo.jpg' alt="igloo"><br>
         <h1><br> XAI <br></h1>
+        <h5> ☑ XAI 에서 사용 되는 일부 기능은 OpenAI API를 사용 하므로, 관련 내용은 일부 OpenAI 에 보내질 수 있습니다. </h5>
         <h3> IPS Detection </h3>
 
-        <form method="POST", action="{{url_for('web_UI_predict')}}">
+        <form method="POST", action="{{url_for('IPS_web_UI_predict')}}">
            <h4> Payload :  <input type="text", name='raw_data_str', placeholder="enter 1" 
                                         style="height:50px;width:1200px;font-size:16px;"> <br></h4>
-                <h4> <input type="submit" , value='Predict!'
+                <h4> <input type="submit" , value='Predict !'
                                         style="font-size:16px;"> <br><br></h4>
         </form>
 
-        <h3> WAF LOG </h3>
+        <h3> WAF Parsing & Detection </h3>
 
         <form method="POST", action="{{url_for('WAF_payload_parsing')}}">
             <h4> Payload :  <input type="text", name='raw_data_str', placeholder="enter 1" 
                                             style="height:50px;width:1200px;font-size:16px;"> <br></h4>
-                    <h4> <input type="submit" , value='WAF Parsing !'
+                    <h4> <input type="submit" , value='Parsing !'
                                             style="font-size:16px;"> <br><br></h4>
-        </form>
-
-        <h3> WEB LOG </h3>
+        </form>           
+        
+        <h3> WEB Parsing </h3>
 
         <form method="POST", action="{{url_for('WEB_payload_parsing')}}">
             <h4> SIEM RAW (APACHE or NGINX or IIS Log) :  <input type="text", name='raw_data_str', placeholder="enter 1" 
                                             style="height:50px;width:1200px;font-size:16px;"> <br></h4>
-                    <h4> <input type="submit" , value='WEB Parsing !'
+                    <h4> <input type="submit" , value='Parsing !'
                                             style="font-size:16px;"> <br><br></h4>
 
         </form>
-            
-        <h3> Tactic based T-ID classification </h3>
-
-        <form method="POST", action="{{url_for('TID_TFIDF_prepro_predict')}}">
-            <h4> Search :  <input type="text", name='raw_data_str', placeholder="enter 1" 
-                                            style="height:50px;width:1200px;font-size:16px;"> <br></h4>
-                    <h4> <input type="submit" , value='enter !'
-                                            style="font-size:16px;"> <br><br></h4>
-
-        </form>
-           
-    </center>
+        
+        </center>
 
     </body>
 </html>
