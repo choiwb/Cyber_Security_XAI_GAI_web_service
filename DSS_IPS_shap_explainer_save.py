@@ -2,18 +2,17 @@ import shap
 from setting import *
 import torch
 import scipy as sp
-from transformers import pipeline, AutoTokenizer
 import numpy as np
-from transformers import AutoTokenizer
 import os
 
 explainer_save_path = 'YOUR SHAP EXPLAINER SAVE DIR !!!!!!!'
 
-sql_explainer = shap.TreeExplainer(IPS_model)
-text_explainer = shap.TreeExplainer(IPS_text_model['lgbmclassifier'],
-             feature_names=IPS_text_model['tfidfvectorizer'].get_feature_names_out())
-total_explainer = shap.TreeExplainer(IPS_total_model)
+ips_explainer = shap.TreeExplainer(IPS_model)
+waf_explainer = shap.TreeExplainer(WAF_model)
+web_explainer = shap.TreeExplainer(WEB_model)
 
-pickle.dump(sql_explainer, open(os.path.join(explainer_save_path, 'DSS_IPS_shap_explainer.pkl'), 'wb'))
-pickle.dump(text_explainer, open(os.path.join(explainer_save_path, 'DSS_IPS_text_shap_explainer.pkl'), 'wb'))
-pickle.dump(total_explainer, open(os.path.join(explainer_save_path, 'DSS_IPS_total_shap_explainer.pkl'), 'wb'))
+
+pickle.dump(ips_explainer, open(os.path.join(explainer_save_path, 'DSS_IPS_LGB_explainer_20230313.pkl'), 'wb'))
+pickle.dump(waf_explainer, open(os.path.join(explainer_save_path, 'DSS_WAF_LGB_explainer_20230313.pkl'), 'wb'))
+pickle.dump(web_explainer, open(os.path.join(explainer_save_path, 'DSS_WEB_LGB_explainer_20230404.pkl'), 'wb'))
+
