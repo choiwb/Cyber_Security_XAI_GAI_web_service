@@ -1,0 +1,6 @@
+- IPS model: DSS_IPS_LGB_20230313.pkl
+- IPS XAI: DSS_IPS_LGB_explainer_20230313.pkl
+- WAF model: DSS_WAF_LGB_20230313.pkl
+- WAF XAI: DSS_WAF_LGB_explainer_20230313.pkl
+- WEB model: DSS_WEB_LGB_20230404.pkl
+- WEB XAI: DSS_WEB_LGB_explainer_20230404.pkl
