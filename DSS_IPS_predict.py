@@ -687,67 +687,81 @@ def IPS_XAI_result():
     ###################################################################
 
     ai_feature_list = []
+    ai_pattern_list = []
 
     for x in ai_detect_list:
         for y in sql_1:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_sql_comb_01'])
+                ai_pattern_list.append([y])
                 break
         for y in sql_2:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_sql_comb_02'])
+                ai_pattern_list.append([y])
                 break
         for y in sql_3:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_sql_comb_03'])
+                ai_pattern_list.append([y])
                 break
         for y in log4j:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_log4j_comb_01'])
+                ai_pattern_list.append([y])
                 break
         for y in xss:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_xss_comb_01'])
+                ai_pattern_list.append([y])
                 break
         for y in cmd:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_cmd_comb_01'])
+                ai_pattern_list.append([y])
                 break
         for y in wp:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_wp_comb_01'])
+                ai_pattern_list.append([y])
                 break
         for y in word_1:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_word_comb_01'])
+                ai_pattern_list.append([y])
                 break
         for y in word_2:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_word_comb_02'])
+                ai_pattern_list.append([y])
                 break
         for y in word_3:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_word_comb_03'])
+                ai_pattern_list.append([y])
                 break
         for y in word_4:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_word_comb_04'])
+                ai_pattern_list.append([y])
                 break
         for y in user_agent:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_useragent_comb'])
+                ai_pattern_list.append([y])
                 break
 
-    # ai_feature_list = [x for x in ai_feature_list if x != []]
     ai_feature_list = list(itertools.chain(*ai_feature_list))
-    
+    ai_pattern_list = list(itertools.chain(*ai_pattern_list))
+    # ai_pattern_list에사 (.*?) => ~ 로 변경, [\\.] => . 으로 변경, [\\+] => + 로 변경
+    ai_pattern_list = [x.replace('(.*?)', '~').replace('[\\+]', '+').replace('[\\.]', '.') for x in ai_pattern_list]
 
     # ai_feature_list, ai_detect_list 를 이용하여 2개 컬럼 기반 data frame 생성
     print(ai_detect_list)
-    # print(ai_feature_list)
-    ai_feature_df = pd.DataFrame({'피처 명': ai_feature_list, 'AI 공격 탐지 키워드': ai_detect_list})
-    print(ai_feature_df)
+    print(ai_feature_list)
+    print(ai_pattern_list)
 
+    ai_feature_df = pd.DataFrame({'피처 명': ai_feature_list, 'AI 공격 탐지 키워드': ai_pattern_list})
     # ai_feature_df['피처 명'] 중복된 행이 있다면, ',' 기준 concat
     ai_feature_df = ai_feature_df.groupby('피처 명')['AI 공격 탐지 키워드'].apply(', '.join).reset_index()
 
@@ -1268,64 +1282,81 @@ def WAF_XAI_result():
     ###################################################################
 
     ai_feature_list = []
+    ai_pattern_list = []
 
     for x in ai_detect_list:
         for y in sql_1:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_sql_comb_01'])
+                ai_pattern_list.append([y])
                 break
         for y in sql_2:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_sql_comb_02'])
+                ai_pattern_list.append([y])
                 break
         for y in sql_3:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_sql_comb_03'])
+                ai_pattern_list.append([y])
                 break
         for y in log4j:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_log4j_comb_01'])
+                ai_pattern_list.append([y])
                 break
         for y in xss:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_xss_comb_01'])
+                ai_pattern_list.append([y])
                 break
         for y in cmd:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_cmd_comb_01'])
+                ai_pattern_list.append([y])
                 break
         for y in wp:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_wp_comb_01'])
+                ai_pattern_list.append([y])
                 break
         for y in word_1:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_word_comb_01'])
+                ai_pattern_list.append([y])
                 break
         for y in word_2:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_word_comb_02'])
+                ai_pattern_list.append([y])
                 break
         for y in word_3:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_word_comb_03'])
+                ai_pattern_list.append([y])
                 break
         for y in word_4:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_word_comb_04'])
+                ai_pattern_list.append([y])
                 break
         for y in user_agent:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_useragent_comb'])
+                ai_pattern_list.append([y])
                 break
 
-    # ai_feature_list = [x for x in ai_feature_list if x != []]
     ai_feature_list = list(itertools.chain(*ai_feature_list))
+    ai_pattern_list = list(itertools.chain(*ai_pattern_list))
+    # ai_pattern_list에사 (.*?) => ~ 로 변경, [\\.] => . 으로 변경, [\\+] => + 로 변경
+    ai_pattern_list = [x.replace('(.*?)', '~').replace('[\\+]', '+').replace('[\\.]', '.') for x in ai_pattern_list]
 
     # ai_feature_list, ai_detect_list 를 이용하여 2개 컬럼 기반 data frame 생성
     print(ai_detect_list)
     print(ai_feature_list)
-    ai_feature_df = pd.DataFrame({'피처 명': ai_feature_list, 'AI 공격 탐지 키워드': ai_detect_list})
+    print(ai_pattern_list)
+
+    ai_feature_df = pd.DataFrame({'피처 명': ai_feature_list, 'AI 공격 탐지 키워드': ai_pattern_list})
 
     # ai_feature_df['피처 명'] 중복된 행이 있다면, ',' 기준 concat
     ai_feature_df = ai_feature_df.groupby('피처 명')['AI 공격 탐지 키워드'].apply(', '.join).reset_index()
@@ -1799,62 +1830,77 @@ def WEB_XAI_result():
     ###################################################################
 
     ai_feature_list = []
+    ai_pattern_list = []
 
     for x in ai_detect_list:
         for y in web_sql_1:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['weblog_sql_comb_01'])
+                ai_pattern_list.append([y])
                 break
         for y in web_sql_2:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['weblog_sql_comb_02'])
+                ai_pattern_list.append([y])
                 break
         for y in web_sql_3:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['weblog_sql_comb_03'])
+                ai_pattern_list.append([y])
                 break
         for y in web_sql_4:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['weblog_sql_comb_04'])
+                ai_pattern_list.append([y])
                 break
         for y in web_sql_5:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['weblog_sql_comb_05'])
+                ai_pattern_list.append([y])
                 break
         for y in web_xss:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['weblog_xss_comb_01'])
+                ai_pattern_list.append([y])
                 break
         for y in web_cmd_1:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['weblog_cmd_comb_01'])
+                ai_pattern_list.append([y])
                 break
         for y in web_cmd_2:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['weblog_cmd_comb_02'])
+                ai_pattern_list.append([y])
                 break
         for y in web_cmd_3:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['weblog_cmd_comb_03'])
+                ai_pattern_list.append([y])
                 break
         for y in dir_access_1:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['weblog_dir_access_comb_01'])
+                ai_pattern_list.append([y])
                 break
         for y in dir_access_2:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['weblog_dir_access_comb_02'])
+                ai_pattern_list.append([y])
                 break
 
 
-    # ai_feature_list = [x for x in ai_feature_list if x != []]
     ai_feature_list = list(itertools.chain(*ai_feature_list))
+    ai_pattern_list = list(itertools.chain(*ai_pattern_list))
+    # ai_pattern_list에사 (.*?) => ~ 로 변경, [\\.] => . 으로 변경, [\\+] => + 로 변경
+    ai_pattern_list = [x.replace('(.*?)', '~').replace('[\\+]', '+').replace('[\\.]', '.') for x in ai_pattern_list]
 
     # ai_feature_list, ai_detect_list 를 이용하여 2개 컬럼 기반 data frame 생성
     print(ai_detect_list)
     print(ai_feature_list)
-    ai_feature_df = pd.DataFrame({'피처 명': ai_feature_list, 'AI 공격 탐지 키워드': ai_detect_list})
+    print(ai_pattern_list)
 
+    ai_feature_df = pd.DataFrame({'피처 명': ai_feature_list, 'AI 공격 탐지 키워드': ai_pattern_list})
     # ai_feature_df['피처 명'] 중복된 행이 있다면, ',' 기준 concat
     ai_feature_df = ai_feature_df.groupby('피처 명')['AI 공격 탐지 키워드'].apply(', '.join).reset_index()
 
