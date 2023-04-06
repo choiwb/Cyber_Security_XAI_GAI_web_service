@@ -18,8 +18,7 @@ COPY setting.py /app
 
 COPY templates /app/templates
 COPY static /app/static
-COPY saved_model /app/saved_model
-COPY BERT_transfer_checkpoint /app/BERT_transfer_checkpoint
+COPY save_model /app/save_model
 COPY chatgpt_context /app/chatgpt_context
 
 # Install dependencies
