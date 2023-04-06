@@ -2354,12 +2354,14 @@ def WAF_payload_parsing():
 def WEB_payload_parsing():
     raw_data_str = request.form['raw_data_str']
 
+    # raw_data_str이 "" 인 경우, " " 처리
+    raw_data_str = raw_data_str.replace('""', '" "')
+
     # 비식별
     raw_data_str = payload_anonymize(raw_data_str)
 
     # raw_data_str에 '"'가 4개 이상 (2쌍) 인 경우, APACHE, 아니면, IIS
     if raw_data_str.count('"') >= 4:
-    
         pre_df = pd.DataFrame([raw_data_str], columns = ['payload'])
         pre_df['payload_prep'] = [str(x).split('"', maxsplit=1)[1] for x in pre_df['payload']]
 
@@ -2415,6 +2417,12 @@ def WEB_payload_parsing():
             else:
                 query.append('')
         df_m['http_query'] = query
+
+        # except_url_query 여기서 9번째 글자가 공백이 아닌 경우 공백 추가
+        # HTTP/1.1 또는 HTTP/1.0 다음 9번째 글자가 공백이 아닌 경우, 공백 추가
+        for i, x in enumerate(df_m['except_url_query']):
+            if x[9] != ' ':
+                df_m['except_url_query'][i] = x[:9] + ' ' + x[9:]
 
         df_m['http_version'] = [str(x).split(' ', maxsplit=1)[0] for x in df_m['except_url_query']]
 
@@ -2556,6 +2564,7 @@ def WEB_payload_parsing():
             df_m['http_query'] = query
 
             df_m['http_version'] = [str(x).split(' ', maxsplit=1)[0] for x in df_m['start_version']]
+            print(df_m['http_version'])
 
             df_m['except_version'] = [str(x).split(' ', maxsplit=1)[1] for x in df_m['start_version']]
             df_m['user_agent'] = [str(x).split(' ', maxsplit=1)[0] for x in df_m['except_version']]
