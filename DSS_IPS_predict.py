@@ -2421,8 +2421,8 @@ def WEB_payload_parsing():
         # except_url_query 여기서 9번째 글자가 공백이 아닌 경우 공백 추가
         # HTTP/1.1 또는 HTTP/1.0 다음 9번째 글자가 공백이 아닌 경우, 공백 추가
         for i, x in enumerate(df_m['except_url_query']):
-            if x[9] != ' ':
-                df_m['except_url_query'][i] = x[:9] + ' ' + x[9:]
+            if x[8] != ' ':
+                df_m['except_url_query'][i] = x[:8] + ' ' + x[8:]
 
         df_m['http_version'] = [str(x).split(' ', maxsplit=1)[0] for x in df_m['except_url_query']]
 
