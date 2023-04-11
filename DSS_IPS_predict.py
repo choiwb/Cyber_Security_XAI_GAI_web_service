@@ -2419,10 +2419,10 @@ def WEB_payload_parsing():
         df_m['http_query'] = query
 
         # except_url_query 여기서 9번째 글자가 공백이 아닌 경우 공백 추가
-        # HTTP/1.1 또는 HTTP/1.0 다음 9번째 글자가 공백이 아닌 경우, 공백 추가
+        # HTTP/1.1 또는 HTTP/1.0 다음 9번째 글자가 공백이 아닌 경우, 해당 문자열 제거
         for i, x in enumerate(df_m['except_url_query']):
             if x[8] != ' ':
-                df_m['except_url_query'][i] = x[:8] + ' ' + x[8:]
+                df_m['except_url_query'][i] = x[:8] + x[9:]
 
         df_m['http_version'] = [str(x).split(' ', maxsplit=1)[0] for x in df_m['except_url_query']]
 
@@ -2459,18 +2459,14 @@ def WEB_payload_parsing():
             final_np = np.where(final_df.iloc[:,:] == '', '-', final_df.iloc[:,:])
             final_df = pd.DataFrame(final_np, columns = final_df.columns)
 
-            final_df['http_version'] = final_df['http_version'].str.replace('"', '', regex = False)
-            final_df['http_status'] = final_df['http_status'].str.replace('"', '', regex = False)
-            final_df['pkt_bytes'] = final_df['pkt_bytes'].str.replace('"', '', regex = False)
-            final_df['referer'] = final_df['referer'].str.replace('"', '', regex = False)
-            final_df['user_agent'] = final_df['user_agent'].str.replace('"', '', regex = False)
-            final_df['xforwarded_for'] = final_df['xforwarded_for'].str.replace('"', '', regex = False)
-            final_df['request_body'] = final_df['request_body'].str.replace('"', '', regex = False)
-
-
             # http_query 필드의 첫 글자가 '?' 인 경우, '' 처리
             if final_df.iloc[0,2].startswith('?') == True:
                 final_df['http_query'] = final_df['http_query'].str[1:]
+            
+            # final_df의 컬럼별 값에서 '"' 가 있는 경우, '' 처리
+            final_df = final_df.apply(lambda x: x.str.replace('"', ''))
+            # final_df의 '' 값은 '-' 로 변경
+            final_df = final_df.replace('', '-')
 
             # FLASK 적용
             flask_html = final_df.to_html(index = False, justify = 'center')
@@ -2486,15 +2482,14 @@ def WEB_payload_parsing():
             final_np = np.where(final_df.iloc[:,:] == '', '-', final_df.iloc[:,:])
             final_df = pd.DataFrame(final_np, columns = final_df.columns)
 
-            final_df['http_version'] = final_df['http_version'].str.replace('"', '', regex = False)
-            final_df['http_status'] = final_df['http_status'].str.replace('"', '', regex = False)
-            final_df['pkt_bytes'] = final_df['pkt_bytes'].str.replace('"', '', regex = False)
-            final_df['referer'] = final_df['referer'].str.replace('"', '', regex = False)
-            final_df['user_agent'] = final_df['user_agent'].str.replace('"', '', regex = False)
-
             # http_query 필드의 첫 글자가 '?' 인 경우, '' 처리
             if final_df.iloc[0,2].startswith('?') == True:
                 final_df['http_query'] = final_df['http_query'].str[1:]
+            
+            # final_df의 컬럼별 값에서 '"' 가 있는 경우, '' 처리
+            final_df = final_df.apply(lambda x: x.str.replace('"', ''))
+            # final_df의 '' 값은 '-' 로 변경
+            final_df = final_df.replace('', '-')
 
             # FLASK 적용
             flask_html = final_df.to_html(index = False, justify = 'center')
@@ -2503,7 +2498,6 @@ def WEB_payload_parsing():
             cti_json = final_df.to_json(orient = 'records')
             # print(ctf_df)
             warning_statement = 'WEB_APACHE 로그 입니다.'
-
 
     else:
         try:
@@ -2579,12 +2573,15 @@ def WEB_payload_parsing():
             df_m['sent_bytes'] = [str(x).split(' ', maxsplit=1)[0] for x in df_m['except_status']]
 
             final_df = df_m[['http_method', 'http_url', 'http_query', 'http_version', 'user_agent', 'referer', 'http_status', 'sent_bytes']]
-            final_np = np.where(final_df.iloc[:,:] == '', '-', final_df.iloc[:,:])
-            final_df = pd.DataFrame(final_np, columns = final_df.columns)
 
             # http_query 필드의 첫 글자가 '?' 인 경우, '' 처리
             if final_df.iloc[0,2].startswith('?') == True:
                 final_df['http_query'] = final_df['http_query'].str[1:]
+
+            # final_df의 컬럼별 값에서 '"' 가 있는 경우, '' 처리
+            final_df = final_df.apply(lambda x: x.str.replace('"', ''))
+            # final_df의 '' 값은 '-' 로 변경
+            final_df = final_df.replace('', '-')
 
             # FLASK 적용
             flask_html = final_df.to_html(index = False, justify = 'center')
