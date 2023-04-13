@@ -16,7 +16,7 @@
                                         style="font-size:16px;"> <br><br></h4>
         </form>
 
-        <h3> WAF Parsing & Detection </h3>
+        <h3> WAF Detection </h3>
 
         <form method="POST", action="{{url_for('WAF_payload_parsing')}}">
             <h4> Payload :  <input type="text", name='raw_data_str', placeholder="enter 1" 
@@ -25,12 +25,12 @@
                                             style="font-size:16px;"> <br><br></h4>
         </form>           
         
-        <h3> WEB Parsing </h3>
+        <h3> WEB Detection </h3>
 
-        <form method="POST", action="{{url_for('WEB_payload_parsing')}}">
+        <form method="POST", action="{{url_for('WEB_web_UI_predict')}}">
             <h4> SIEM RAW (APACHE or NGINX or IIS Log) :  <input type="text", name='raw_data_str', placeholder="enter 1" 
                                             style="height:50px;width:1200px;font-size:16px;"> <br></h4>
-                    <h4> <input type="submit" , value='Parsing !'
+                    <h4> <input type="submit" , value='Predict !'
                                             style="font-size:16px;"> <br><br></h4>
 
         </form>
