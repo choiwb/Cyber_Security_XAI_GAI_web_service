@@ -10,6 +10,7 @@ WEB Log Detection - SQL Injection, Command Injection, XSS, normal
 - Deployment: Flask & Docker
 - Domain Signature pattern and AI feature highlighting after pattern method matching
 - WAF & WEB LOG (APACHE or NGINX or IIS) Parsing
+- WEB LOG based user-agent browser-type classification
 -----
 - DistilBERT Transfer Learning (adding cyber security domain word)
 - DistilBERT (task: question-answering) based fine tuning like SQUAD dataset format
