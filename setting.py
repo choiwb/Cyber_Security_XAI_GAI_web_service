@@ -39,6 +39,25 @@ WEB_explainer_path = 'save_model/DSS_WEB_LGB_explainer_20230404.pkl'
 WEB_model = pickle.load(open(WEB_model_path, 'rb'))
 
 
+# 2023/04/13 WEB User-Agent 모델 - Light GBM
+WEB_useragent_model_path = 'save_model/DSS_WEB_useragent_LGB_20230413.pkl'
+# 위 모델의 TF-IDF 단어 호출
+WEB_useragent_tfidf_word_path = 'save_model/useragent_tfidf_word.csv'
+
+WEB_useragent_model = pickle.load(open(WEB_useragent_model_path, 'rb'))
+WEB_useragent_tfidf_word = pd.read_csv(WEB_useragent_tfidf_word_path)
+WEB_useragent_tfidf_word = WEB_useragent_tfidf_word.sort_values(by = 'word', ascending = True)
+
+tfidf_feature = WEB_useragent_tfidf_word['feature'].tolist()
+tfidf_word = WEB_useragent_tfidf_word['word'].tolist()
+tfidf_value = WEB_useragent_tfidf_word['IDF'].tolist()
+
+sep_list = [' ', ',', ';', '-', '/']
+sep_str = '|'.join(sep_list)
+
+vectorizer = CountVectorizer(lowercase = True,
+                             tokenizer = lambda x: re.split(sep_str, x),
+                              vocabulary = tfidf_word)
 
 ips_query = """
     
