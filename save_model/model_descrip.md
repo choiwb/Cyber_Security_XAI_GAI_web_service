@@ -4,3 +4,5 @@
 - WAF XAI: DSS_WAF_LGB_explainer_20230313.pkl
 - WEB model: DSS_WEB_LGB_20230404.pkl
 - WEB XAI: DSS_WEB_LGB_explainer_20230404.pkl
+- WEB useragent modek: DSS_WEB_useragent_LGB_20230413.pkl
+- WEB useragent TF-IDF word: useragent_tfidf_word.csv
