@@ -524,6 +524,395 @@ def web_highlight_text(text, signature, ai_field):
     return text, sig_pattern_df
 
 
+@app.route('/WAF_payload_parsing', methods = ['POST'])
+def WAF_payload_parsing():
+    raw_data_str = request.form['raw_data_str']
+
+    ##############################################
+    # raw_data_str이 " 으로 시작하는 경우 '' 처리
+    if raw_data_str[0] == '"':
+        raw_data_str = raw_data_str[1:]
+    ##############################################
+
+    # 비식별
+    raw_data_str = payload_anonymize(raw_data_str)
+
+    pre_df = pd.DataFrame([raw_data_str], columns = ['payload'])
+    pre_df['http_method'] = [str(x).split(' ')[0] for x in pre_df['payload']]
+
+
+    mtd = [str(x).split(' ')[0] for x in pre_df['payload']]
+    for i, m in enumerate(mtd):
+        if len(m) > 10 or len(m) == 1 or not m.isalpha():
+            mtd[i] = ''
+
+    method_list = ['', 'upload', 'get', 'profind', 'put', 'options', 'head', 'trace', 'connect', 'delete', 'post', 'patch']
+ 
+    m_idx = []
+    not_m_idx = []
+
+    for i, m in enumerate(pre_df['http_method']):
+        # if m in method_list:
+        if m.lower() in method_list:
+            m_idx.append(i)
+        else:
+            not_m_idx.append(i)
+
+    df_m = pre_df.iloc[m_idx].reset_index(drop=True)
+    df_nm = pre_df.iloc[not_m_idx].reset_index(drop=True)
+
+    # payload_0: payload에서 ' ' (공백) 첫번째를 기준으로 나누엇, 2번째 값을 반환하므로, http_url 부터 끝 임.
+    # 따라서, http_url + http_query + http_body
+    df_m['payload_0'] = [str(x).split(' ', maxsplit=1)[1] for x in df_m['payload']]
+    # url_query: payload_0에서, ' ' (공백) 첫번째를 기준으로 나누어, 1번째 값을 반환하므로, http_url ~ http_query 임.
+    # 따라서, http_url + http_query
+    df_m['url_query'] = [str(x).split(' ', maxsplit=1)[0] for x in df_m['payload_0']]
+
+    http_body = []
+    for i in df_m['payload_0']:
+        if ' ' in i:
+            # payload_0에서 공백이 있는 경우, http_body
+            http_body.append(i.split(' ', maxsplit=1)[1])
+        else:
+            http_body.append('')
+
+    df_m['http_body'] = http_body
+    # url_query에서 ? 가 있는 경우, 1번째 값을 반환하므로, http_url 임.
+    df_m['http_url'] = [str(x).split('?', maxsplit=1)[0] for x in df_m['url_query']]
+
+    query = []
+    for i in df_m['url_query']:
+        if '?' in i:
+            # url_query에서, ?가 있는 경우, 2번째 값을 반환하므로, http_query 임.
+            query.append('?'+i.split('?', maxsplit=1)[1])
+        else:
+            query.append('')
+    df_m['http_query'] = query
+
+    
+
+    df_res = df_m[['payload', 'http_method', 'http_url', 'http_query', 'http_body']]
+
+    a = []
+    a.append('')
+    df_nm['http_method'] = a
+    df_nm['http_url'] = a
+    df_nm['http_query'] = a                                                         
+    df_nm['http_body'] = a
+    df_nm['uri'] = list(df_nm['payload'])
+
+    if str(df_nm['http_url'][0:1]) == 'nan' and str(df_nm['http_query'][0:1]) == 'nan' and str(df_nm['http_body'][0:1]) == 'nan':
+        df_nm['http_body'][0:1] = df_nm['uri'][0:1]
+
+    if df_nm['uri'][0:1].isna().sum() == 0:
+        df_nm = df_nm.fillna('-')
+        df_nm_np = np.where(df_nm.iloc[:, :] == '', '-', df_nm.iloc[:, :])
+        df_nm = pd.DataFrame(df_nm_np, columns = df_nm.columns.tolist())
+        df_nm['http_body'] = df_nm['uri']
+        df_nm = df_nm.drop(['payload', 'uri'], axis = 1)
+        df_nm['http_version'] = '-'
+        df_nm = df_nm[['http_method', 'http_url', 'http_query', 'http_version', 'http_body']]
+
+        # http_query 필드의 첫 글자가 '?' 인 경우, '' 처리
+        if df_nm.iloc[0,2].startswith('?') == True:
+            df_nm['http_query'] = df_nm['http_query'].str[1:]
+
+        # FLASK 적용
+        flask_html = df_nm.to_html(index = False, justify = 'center')
+        # print(flask_df)
+        # CTI 적용
+        cti_json = df_nm.to_json(orient = 'records')
+        # print(ctf_df)
+        warning_statement = '비정상적인 Payload 입력 형태 입니다. (예, payload 의 시작이 특수문자 등)'
+
+
+    else:
+        # http_version => HTTP/1.1 OR HTTP/1.0 OR HTTP/2.0
+        df_res['http_version'] = '-'
+        # df_res.iloc[0,4]) ' '  로 시작하는 경우 '' 처리
+        if df_res.iloc[0,4].startswith(' ') == True:
+            df_res['http_body'] = df_res['http_body'].str[1:]
+
+        if df_res.iloc[0,4].lower().startswith('http/') == True:
+            df_res['http_version'][0:1] = df_res['http_body'][0:1].str[0:8]
+            df_res['http_body'] = df_res['http_body'].str[8:]
+            
+        final_df = df_res[['payload', 'http_method', 'http_url', 'http_query', 'http_version', 'http_body']]
+        final_df = final_df.drop('payload', axis = 1)
+
+        final_np = np.where(final_df.iloc[:, :] == '', '-', final_df.iloc[:, :])
+        final_df = pd.DataFrame(final_np, columns = final_df.columns.tolist())
+
+        # http_query 필드의 첫 글자가 '?' 인 경우, '' 처리
+        if final_df.iloc[0,2].startswith('?') == True:
+            final_df['http_query'] = final_df['http_query'].str[1:]
+
+
+        # FLASK 적용
+        flask_html = final_df.to_html(index = False, justify = 'center')
+        # print(flask_df)
+        # CTI 적용
+        cti_json = final_df.to_json(orient = 'records')
+        # print(ctf_df)
+
+        warning_statement = '정상적인 Payload 입력 형태 입니다.'
+
+
+    
+    return render_template('WAF_payload_parsing_output.html',
+                        flask_html = flask_html,
+                        warning_statement = warning_statement
+                        )
+    
+
+@app.route('/WEB_payload_parsing', methods = ['POST'])
+def WEB_payload_parsing():
+    raw_data_str = request.form['raw_data_str']
+
+    # raw_data_str이 "" 인 경우, " " 처리
+    raw_data_str = raw_data_str.replace('""', '" "')
+
+    # 비식별
+    raw_data_str = payload_anonymize(raw_data_str)
+
+    # raw_data_str에 '"'가 4개 이상 (2쌍) 인 경우, APACHE, 아니면, IIS
+    if raw_data_str.count('"') >= 4:
+        pre_df = pd.DataFrame([raw_data_str], columns = ['payload'])
+        pre_df['payload_prep'] = [str(x).split('"', maxsplit=1)[1] for x in pre_df['payload']]
+
+        pre_df['http_method'] = [str(x).split(' ', maxsplit=1)[0] for x in pre_df['payload_prep']]
+
+        mtd = [str(x).split(' ', maxsplit=1)[0] for x in pre_df['payload_prep']]
+        for i, m in enumerate(mtd):
+            if len(m) > 10 or len(m) == 1 or not m.isalpha():
+                mtd[i] = ''
+
+        method_list = ['', 'upload', 'get', 'profind', 'put', 'options', 'head', 'trace', 'connect', 'delete', 'post', 'patch']
+
+        m_idx = []
+        not_m_idx = []
+
+        for i, m in enumerate(pre_df['http_method']):
+            # if m in method_list:
+            if m.lower() in method_list:
+                m_idx.append(i)
+            else:
+                not_m_idx.append(i)
+
+
+        df_m = pre_df.iloc[m_idx].reset_index(drop=True)
+        df_nm = pre_df.iloc[not_m_idx].reset_index(drop=True)
+
+        # payload_0: payload에서 ' ' (공백) 첫번째를 기준으로 나누엇, 2번째 값을 반환하므로, http_url 부터 끝 임.
+        # 따라서, http_url + http_query + 끝
+        df_m['payload_0'] = [str(x).split(' ', maxsplit=1)[1] for x in df_m['payload_prep']]
+
+        # url_query: payload_0에서, ' ' (공백) 첫번째를 기준으로 나누어, 1번째 값을 반환하므로, http_url ~ http_query 임.
+        # 따라서, http_url + http_query
+        df_m['url_query'] = [str(x).split(' ', maxsplit=1)[0] for x in df_m['payload_0']]
+
+        except_url_query = []
+        for i in df_m['payload_0']:
+            if ' ' in i:
+                # payload_0에서 공백이 있는 경우, http_body
+                except_url_query.append(i.split(' ', maxsplit=1)[1])
+                # print(except_url_query)
+            else:
+                except_url_query.append('')
+
+        df_m['except_url_query'] = except_url_query
+        # url_query에서 ? 가 있는 경우, 1번째 값을 반환하므로, http_url 임.
+        df_m['http_url'] = [str(x).split('?', maxsplit=1)[0] for x in df_m['url_query']]
+
+        query = []
+        for i in df_m['url_query']:
+            if '?' in i:
+                # url_query에서, ?가 있는 경우, 2번째 값을 반환하므로, http_query 임.
+                query.append('?'+i.split('?', maxsplit=1)[1])
+            else:
+                query.append('')
+        df_m['http_query'] = query
+
+        # except_url_query 여기서 9번째 글자가 공백이 아닌 경우 공백 추가
+        # HTTP/1.1 또는 HTTP/1.0 다음 9번째 글자가 공백이 아닌 경우, 해당 문자열 제거
+        for i, x in enumerate(df_m['except_url_query']):
+            if x[8] != ' ':
+                df_m['except_url_query'][i] = x[:8] + x[9:]
+
+        df_m['http_version'] = [str(x).split(' ', maxsplit=1)[0] for x in df_m['except_url_query']]
+
+        df_m['except_version'] = [str(x).split(' ', maxsplit=1)[1] for x in df_m['except_url_query']]
+        df_m['http_status'] = [str(x).split(' ', maxsplit=1)[0] for x in df_m['except_version']]
+
+        df_m['except_status'] = [str(x).split(' ', maxsplit=1)[1] for x in df_m['except_version']]
+        df_m['pkt_bytes'] = [str(x).split(' ', maxsplit=1)[0] for x in df_m['except_status']]
+
+        df_m['except_bytes'] = [str(x).split(' ', maxsplit=1)[1] for x in df_m['except_status']]
+        df_m['referer'] = [str(x).split(' ', maxsplit=1)[0] for x in df_m['except_bytes']]
+
+        df_m['except_referer'] = [str(x).split(' ', maxsplit=1)[1] for x in df_m['except_bytes']]
+        df_m['agent_etc'] = [str(x).split('"', maxsplit=1)[1] for x in df_m['except_referer']]
+
+        df_m['user_agent'] = [str(x).split('"', maxsplit=1)[0] for x in df_m['agent_etc']]
+        df_m['except_agent'] = [str(x).split('"', maxsplit=1)[1] for x in df_m['agent_etc']]
+
+        # xforwarded_for 및 request_body 있는 경우, NGINX 임.
+        if df_m.iloc[0,-1].count('"') >= 1:
+        # 2022/11/14 기준 APACHE & NGINX 구분 로직 TO DO
+        # 1. NGINX 처럼 APACHE, IIS에 xforwarded_for 및 request_body 필드 추가 (null 값으로)
+        # 2. APACHE 이면서, SIEM RAW 필드에 'nginx' 문자열 있는 경우,  NGINX 아니면, APACHE => 이 경우, NGINX에 xforwarded_for, request_body 추가하지 않음.
+        # 3. http_version 이후를, http_body 필드를 생성하여 필드 통합.
+
+            df_m['except_agent'] = [str(x).split('"', maxsplit=1)[1] for x in df_m['except_agent']]
+            df_m['xforwarded_for'] = [str(x).split('"', maxsplit=1)[0] for x in df_m['except_agent']]
+
+            df_m['except_xforwarded'] = [str(x).split('"', maxsplit=1)[1] for x in df_m['except_agent']]
+            df_m['request_body'] = [str(x).split('"', maxsplit=1)[1] for x in df_m['except_xforwarded']]
+
+            final_df = df_m[['http_method', 'http_url', 'http_query', 'http_version', 'http_status', 'pkt_bytes', 'referer', 'user_agent', 'xforwarded_for', 'request_body']]
+        
+            final_np = np.where(final_df.iloc[:,:] == '', '-', final_df.iloc[:,:])
+            final_df = pd.DataFrame(final_np, columns = final_df.columns)
+
+            # http_query 필드의 첫 글자가 '?' 인 경우, '' 처리
+            if final_df.iloc[0,2].startswith('?') == True:
+                final_df['http_query'] = final_df['http_query'].str[1:]
+            
+            # final_df의 컬럼별 값에서 '"' 가 있는 경우, '' 처리
+            final_df = final_df.apply(lambda x: x.str.replace('"', ''))
+            # final_df의 '' 값은 '-' 로 변경
+            final_df = final_df.replace('', '-')
+
+            # FLASK 적용
+            flask_html = final_df.to_html(index = False, justify = 'center')
+            # print(flask_df)
+            # CTI 적용
+            cti_json = final_df.to_json(orient = 'records')
+            # print(ctf_df)
+            warning_statement = 'WEB_NGINX 로그 입니다.'
+        
+        else:
+            final_df = df_m[['http_method', 'http_url', 'http_query', 'http_version', 'http_status', 'pkt_bytes', 'referer', 'user_agent']]
+
+            final_np = np.where(final_df.iloc[:,:] == '', '-', final_df.iloc[:,:])
+            final_df = pd.DataFrame(final_np, columns = final_df.columns)
+
+            # http_query 필드의 첫 글자가 '?' 인 경우, '' 처리
+            if final_df.iloc[0,2].startswith('?') == True:
+                final_df['http_query'] = final_df['http_query'].str[1:]
+            
+            # final_df의 컬럼별 값에서 '"' 가 있는 경우, '' 처리
+            final_df = final_df.apply(lambda x: x.str.replace('"', ''))
+            # final_df의 '' 값은 '-' 로 변경
+            final_df = final_df.replace('', '-')
+
+            # FLASK 적
+            flask_html = final_df.to_html(index = False, justify = 'center')
+            # print(flask_df)
+            # CTI 적용
+            cti_json = final_df.to_json(orient = 'records')
+            # print(ctf_df)
+            warning_statement = 'WEB_APACHE 로그 입니다.'
+
+    else:
+        try:
+            pre_df = pd.DataFrame([raw_data_str], columns = ['payload'])
+            pre_df['payload_prep'] = [str(x).split(' ', maxsplit=4)[4] for x in pre_df['payload']]
+            # payload_prep 이 'http/' 부터 시작
+            pre_df['start_version'] = re.findall(r'http/(.*)', pre_df.iloc[0,1], flags=re.I)
+            pre_df['http_method'] = [str(x).split(' ', maxsplit=1)[0] for x in pre_df['payload_prep']]
+            pre_df['start_version'] = 'HTTP/' + pre_df.iloc[0,2]
+            mtd = [str(x).split(' ', maxsplit=1)[0] for x in pre_df['payload_prep']]
+            for i, m in enumerate(mtd):
+                if len(m) > 10 or len(m) == 1 or not m.isalpha():
+                    mtd[i] = ''
+
+            method_list = ['', 'upload', 'get', 'profind', 'put', 'options', 'head', 'trace', 'connect', 'delete', 'post', 'patch']
+
+            m_idx = []
+            not_m_idx = []
+
+            for i, m in enumerate(pre_df['http_method']):
+                # if m in method_list:
+                if m.lower() in method_list:
+                    m_idx.append(i)
+                else:
+                    not_m_idx.append(i)
+
+
+            df_m = pre_df.iloc[m_idx].reset_index(drop=True)
+            df_nm = pre_df.iloc[not_m_idx].reset_index(drop=True)
+
+            # payload_0: payload에서 ' ' (공백) 첫번째를 기준으로 나누엇, 2번째 값을 반환하므로, http_url 부터 끝 임.
+            # 따라서, http_url + http_query + 끝
+            df_m['payload_0'] = [str(x).split(' ', maxsplit=1)[1] for x in df_m['payload_prep']]
+            # url_query: payload_0에서, ' ' (공백) 첫번째를 기준으로 나누어, 1번째 값을 반환하므로, http_url ~ http_query 임.
+            # 따라서, http_url + http_query
+            df_m['url_query'] = [str(x).split(' ', maxsplit=1)[0] for x in df_m['payload_0']]
+
+            except_url_query = []
+            for i in df_m['payload_0']:
+                if ' ' in i:
+                    # payload_0에서 공백이 있는 경우, http_body
+                    except_url_query.append(i.split(' ', maxsplit=1)[1])
+                    # print(except_url_query)
+                else:
+                    except_url_query.append('')
+
+            df_m['except_url_query'] = except_url_query
+            # url_query에서 ? 가 있는 경우, 1번째 값을 반환하므로, http_url 임.
+            df_m['http_url'] = [str(x).split('?', maxsplit=1)[0] for x in df_m['url_query']]
+
+            query = []
+            for i in df_m['url_query']:
+                if '?' in i:
+                    # url_query에서, ?가 있는 경우, 2번째 값을 반환하므로, http_query 임.
+                    query.append('?'+i.split('?', maxsplit=1)[1])
+                else:
+                    query.append('')
+            df_m['http_query'] = query
+
+            df_m['http_version'] = [str(x).split(' ', maxsplit=1)[0] for x in df_m['start_version']]
+            print(df_m['http_version'])
+
+            df_m['except_version'] = [str(x).split(' ', maxsplit=1)[1] for x in df_m['start_version']]
+            df_m['user_agent'] = [str(x).split(' ', maxsplit=1)[0] for x in df_m['except_version']]
+            
+            df_m['except_agent'] = [str(x).split(' ', maxsplit=1)[1] for x in df_m['except_version']]
+            df_m['referer'] = [str(x).split(' ', maxsplit=1)[0] for x in df_m['except_agent']]
+
+            df_m['except_referer'] =  [str(x).split(' ', maxsplit=1)[1] for x in df_m['except_agent']]
+            df_m['http_status'] = [str(x).split(' ', maxsplit=1)[0] for x in df_m['except_referer']]
+
+            df_m['except_status'] = [str(x).split(' ', maxsplit=1)[1] for x in df_m['except_referer']]
+            df_m['sent_bytes'] = [str(x).split(' ', maxsplit=1)[0] for x in df_m['except_status']]
+
+            final_df = df_m[['http_method', 'http_url', 'http_query', 'http_version', 'user_agent', 'referer', 'http_status', 'sent_bytes']]
+
+            # http_query 필드의 첫 글자가 '?' 인 경우, '' 처리
+            if final_df.iloc[0,2].startswith('?') == True:
+                final_df['http_query'] = final_df['http_query'].str[1:]
+
+            # final_df의 컬럼별 값에서 '"' 가 있는 경우, '' 처리
+            final_df = final_df.apply(lambda x: x.str.replace('"', ''))
+            # final_df의 '' 값은 '-' 로 변경
+            final_df = final_df.replace('', '-')
+
+            # FLASK 적용
+            flask_html = final_df.to_html(index = False, justify = 'center')
+            # print(flask_df)
+            # CTI 적용
+            cti_json = final_df.to_json(orient = 'records')
+            # print(ctf_df)
+            warning_statement = 'WEB_IIS 로그 입니다.'
+        except:
+            flask_html = 'WEB 로그가 아닙니다.'
+            cti_json = 'WEB 로그가 아닙니다.'
+            warning_statement = 'WEB 로그가 아닙니다.'
+
+    return final_df, warning_statement
+
+
 @app.route('/IPS_XAI_result', methods = ['POST'])
 def IPS_XAI_result(): 
    # payload의 raw data 입력 값!
@@ -1829,6 +2218,7 @@ def WEB_XAI_result():
     ai_detect_list = [re.sub('&gt;', '>', x) for x in ai_detect_list]
     ###################################################################
 
+
     ai_feature_list = []
     ai_pattern_list = []
 
@@ -1901,6 +2291,7 @@ def WEB_XAI_result():
     print(ai_pattern_list)
 
     ai_feature_df = pd.DataFrame({'피처 명': ai_feature_list, 'AI 공격 탐지 키워드': ai_pattern_list})
+
     # ai_feature_df['피처 명'] 중복된 행이 있다면, ',' 기준 concat
     ai_feature_df = ai_feature_df.groupby('피처 명')['AI 공격 탐지 키워드'].apply(', '.join).reset_index()
 
@@ -2065,7 +2456,7 @@ def WEB_XAI_result():
     (?=</span>)
     '''
     
-    # CSS 버전 이슈로 XAI에선 적용 안하기로 함 - 20230308
+    # CSS 버전 이슈로 IGLOO XAI에선 적용 안하기로 함 - 20230308
     # sig_ai_pattern = re.sub(r'</font>(?:(?<!<font)(?<!<span)|(?<=<span)|(?<=<font))[^<]*(?!<font)(?!<span)(?=</span>)',
     #                   r'</font><span style="background-color:yellow;">\g<0></span>', sig_ai_pattern)
     sig_ai_pattern = re.sub(r'\<\/font\>(?:(?<!\<font)(?<!\<span)|(?<=\<span)|(?<=\<font))[^\<]*(?!\<font)(?!\<span)(?=\<\/span\>)',
@@ -2073,16 +2464,16 @@ def WEB_XAI_result():
     
     sig_pattern_html = f"<head>{sig_ai_pattern}</head>"        
     sig_df_html = sig_df.to_html(index=False, justify='center')
-    
+
     ###################################
     # User-Agent 의 browser-type 분류
-    # raw_data_str의 HTTP/1. 이 있는 경우 split 후, 뒷부분만 추출
-    if 'HTTP/1.' in raw_data_str:
-        useragent_raw_data_str = raw_data_str.split('HTTP/1.')[1]
-    else:
-        useragent_raw_data_str = raw_data_str
+    # web_payload_parsing 함수에서 user_agent 추출 !!!!!!!!
+    web_parsing_result, weblog_type_comment = WEB_payload_parsing()
+    # FLASK 적용
+    web_parsing_result_html = web_parsing_result.to_html(index = False, justify = 'center')
+    useragent_parsing_result = web_parsing_result['user_agent'][0]
 
-    useragent_raw_data_df = pd.DataFrame([useragent_raw_data_str], columns=['user_agent'])
+    useragent_raw_data_df = pd.DataFrame([useragent_parsing_result], columns=['user_agent'])
 
     valud_tfidf_feature = vectorizer.fit_transform(useragent_raw_data_df['user_agent']).toarray()
     valid_tfidf_df = pd.DataFrame(valud_tfidf_feature, columns=vectorizer.get_feature_names_out())
@@ -2099,6 +2490,7 @@ def WEB_XAI_result():
 
     useragent_pred_explain = '입력된 WEB Log의 User-Agent는 Browser-Types 중에 %s에 해당합니다.' %(useragent_pred[0])
     ###################################
+
 
     try:
         # IGLOO XAI 리포트 작성
@@ -2231,402 +2623,10 @@ def WEB_XAI_result():
                                 sig_df_html = sig_df_html,
                                 xai_report_html = xai_report_html,
                                 q_and_a_html = q_and_a_html,
+                                web_parsing_result_html = web_parsing_result_html,
+                                weblog_type_comment = weblog_type_comment,
                                 useragent_pred_explain = useragent_pred_explain
                                 )
-
-
-
-@app.route('/WAF_payload_parsing', methods = ['POST'])
-def WAF_payload_parsing():
-    raw_data_str = request.form['raw_data_str']
-
-    ##############################################
-    # raw_data_str이 " 으로 시작하는 경우 '' 처리
-    if raw_data_str[0] == '"':
-        raw_data_str = raw_data_str[1:]
-    ##############################################
-
-    # 비식별
-    raw_data_str = payload_anonymize(raw_data_str)
-
-    pre_df = pd.DataFrame([raw_data_str], columns = ['payload'])
-    pre_df['http_method'] = [str(x).split(' ')[0] for x in pre_df['payload']]
-
-
-    mtd = [str(x).split(' ')[0] for x in pre_df['payload']]
-    for i, m in enumerate(mtd):
-        if len(m) > 10 or len(m) == 1 or not m.isalpha():
-            mtd[i] = ''
-
-    method_list = ['', 'upload', 'get', 'profind', 'put', 'options', 'head', 'trace', 'connect', 'delete', 'post', 'patch']
- 
-    m_idx = []
-    not_m_idx = []
-
-    for i, m in enumerate(pre_df['http_method']):
-        # if m in method_list:
-        if m.lower() in method_list:
-            m_idx.append(i)
-        else:
-            not_m_idx.append(i)
-
-    df_m = pre_df.iloc[m_idx].reset_index(drop=True)
-    df_nm = pre_df.iloc[not_m_idx].reset_index(drop=True)
-
-    # payload_0: payload에서 ' ' (공백) 첫번째를 기준으로 나누엇, 2번째 값을 반환하므로, http_url 부터 끝 임.
-    # 따라서, http_url + http_query + http_body
-    df_m['payload_0'] = [str(x).split(' ', maxsplit=1)[1] for x in df_m['payload']]
-    # url_query: payload_0에서, ' ' (공백) 첫번째를 기준으로 나누어, 1번째 값을 반환하므로, http_url ~ http_query 임.
-    # 따라서, http_url + http_query
-    df_m['url_query'] = [str(x).split(' ', maxsplit=1)[0] for x in df_m['payload_0']]
-
-    http_body = []
-    for i in df_m['payload_0']:
-        if ' ' in i:
-            # payload_0에서 공백이 있는 경우, http_body
-            http_body.append(i.split(' ', maxsplit=1)[1])
-        else:
-            http_body.append('')
-
-    df_m['http_body'] = http_body
-    # url_query에서 ? 가 있는 경우, 1번째 값을 반환하므로, http_url 임.
-    df_m['http_url'] = [str(x).split('?', maxsplit=1)[0] for x in df_m['url_query']]
-
-    query = []
-    for i in df_m['url_query']:
-        if '?' in i:
-            # url_query에서, ?가 있는 경우, 2번째 값을 반환하므로, http_query 임.
-            query.append('?'+i.split('?', maxsplit=1)[1])
-        else:
-            query.append('')
-    df_m['http_query'] = query
-
-    
-
-    df_res = df_m[['payload', 'http_method', 'http_url', 'http_query', 'http_body']]
-
-    a = []
-    a.append('')
-    df_nm['http_method'] = a
-    df_nm['http_url'] = a
-    df_nm['http_query'] = a                                                         
-    df_nm['http_body'] = a
-    df_nm['uri'] = list(df_nm['payload'])
-
-    if str(df_nm['http_url'][0:1]) == 'nan' and str(df_nm['http_query'][0:1]) == 'nan' and str(df_nm['http_body'][0:1]) == 'nan':
-        df_nm['http_body'][0:1] = df_nm['uri'][0:1]
-
-    if df_nm['uri'][0:1].isna().sum() == 0:
-        df_nm = df_nm.fillna('-')
-        df_nm_np = np.where(df_nm.iloc[:, :] == '', '-', df_nm.iloc[:, :])
-        df_nm = pd.DataFrame(df_nm_np, columns = df_nm.columns.tolist())
-        df_nm['http_body'] = df_nm['uri']
-        df_nm = df_nm.drop(['payload', 'uri'], axis = 1)
-        df_nm['http_version'] = '-'
-        df_nm = df_nm[['http_method', 'http_url', 'http_query', 'http_version', 'http_body']]
-
-        # http_query 필드의 첫 글자가 '?' 인 경우, '' 처리
-        if df_nm.iloc[0,2].startswith('?') == True:
-            df_nm['http_query'] = df_nm['http_query'].str[1:]
-
-        # FLASK 적용
-        flask_html = df_nm.to_html(index = False, justify = 'center')
-        # print(flask_df)
-        # CTI 적용
-        cti_json = df_nm.to_json(orient = 'records')
-        # print(ctf_df)
-        warning_statement = '비정상적인 Payload 입력 형태 입니다. (예, payload 의 시작이 특수문자 등)'
-
-
-    else:
-        # http_version => HTTP/1.1 OR HTTP/1.0 OR HTTP/2.0
-        df_res['http_version'] = '-'
-        # df_res.iloc[0,4]) ' '  로 시작하는 경우 '' 처리
-        if df_res.iloc[0,4].startswith(' ') == True:
-            df_res['http_body'] = df_res['http_body'].str[1:]
-
-        if df_res.iloc[0,4].lower().startswith('http/') == True:
-            df_res['http_version'][0:1] = df_res['http_body'][0:1].str[0:8]
-            df_res['http_body'] = df_res['http_body'].str[8:]
-            
-        final_df = df_res[['payload', 'http_method', 'http_url', 'http_query', 'http_version', 'http_body']]
-        final_df = final_df.drop('payload', axis = 1)
-
-        final_np = np.where(final_df.iloc[:, :] == '', '-', final_df.iloc[:, :])
-        final_df = pd.DataFrame(final_np, columns = final_df.columns.tolist())
-
-        # http_query 필드의 첫 글자가 '?' 인 경우, '' 처리
-        if final_df.iloc[0,2].startswith('?') == True:
-            final_df['http_query'] = final_df['http_query'].str[1:]
-
-
-        # FLASK 적용
-        flask_html = final_df.to_html(index = False, justify = 'center')
-        # print(flask_df)
-        # CTI 적용
-        cti_json = final_df.to_json(orient = 'records')
-        # print(ctf_df)
-
-        warning_statement = '정상적인 Payload 입력 형태 입니다.'
-
-
-    
-    return render_template('WAF_payload_parsing_output.html',
-                        flask_html = flask_html,
-                        warning_statement = warning_statement
-                        )
-    
-
-@app.route('/WEB_payload_parsing', methods = ['POST'])
-def WEB_payload_parsing():
-    raw_data_str = request.form['raw_data_str']
-
-    # raw_data_str이 "" 인 경우, " " 처리
-    raw_data_str = raw_data_str.replace('""', '" "')
-
-    # 비식별
-    raw_data_str = payload_anonymize(raw_data_str)
-
-    # raw_data_str에 '"'가 4개 이상 (2쌍) 인 경우, APACHE, 아니면, IIS
-    if raw_data_str.count('"') >= 4:
-        pre_df = pd.DataFrame([raw_data_str], columns = ['payload'])
-        pre_df['payload_prep'] = [str(x).split('"', maxsplit=1)[1] for x in pre_df['payload']]
-
-        pre_df['http_method'] = [str(x).split(' ', maxsplit=1)[0] for x in pre_df['payload_prep']]
-
-        mtd = [str(x).split(' ', maxsplit=1)[0] for x in pre_df['payload_prep']]
-        for i, m in enumerate(mtd):
-            if len(m) > 10 or len(m) == 1 or not m.isalpha():
-                mtd[i] = ''
-
-        method_list = ['', 'upload', 'get', 'profind', 'put', 'options', 'head', 'trace', 'connect', 'delete', 'post', 'patch']
-
-        m_idx = []
-        not_m_idx = []
-
-        for i, m in enumerate(pre_df['http_method']):
-            # if m in method_list:
-            if m.lower() in method_list:
-                m_idx.append(i)
-            else:
-                not_m_idx.append(i)
-
-
-        df_m = pre_df.iloc[m_idx].reset_index(drop=True)
-        df_nm = pre_df.iloc[not_m_idx].reset_index(drop=True)
-
-        # payload_0: payload에서 ' ' (공백) 첫번째를 기준으로 나누엇, 2번째 값을 반환하므로, http_url 부터 끝 임.
-        # 따라서, http_url + http_query + 끝
-        df_m['payload_0'] = [str(x).split(' ', maxsplit=1)[1] for x in df_m['payload_prep']]
-
-        # url_query: payload_0에서, ' ' (공백) 첫번째를 기준으로 나누어, 1번째 값을 반환하므로, http_url ~ http_query 임.
-        # 따라서, http_url + http_query
-        df_m['url_query'] = [str(x).split(' ', maxsplit=1)[0] for x in df_m['payload_0']]
-
-        except_url_query = []
-        for i in df_m['payload_0']:
-            if ' ' in i:
-                # payload_0에서 공백이 있는 경우, http_body
-                except_url_query.append(i.split(' ', maxsplit=1)[1])
-                # print(except_url_query)
-            else:
-                except_url_query.append('')
-
-        df_m['except_url_query'] = except_url_query
-        # url_query에서 ? 가 있는 경우, 1번째 값을 반환하므로, http_url 임.
-        df_m['http_url'] = [str(x).split('?', maxsplit=1)[0] for x in df_m['url_query']]
-
-        query = []
-        for i in df_m['url_query']:
-            if '?' in i:
-                # url_query에서, ?가 있는 경우, 2번째 값을 반환하므로, http_query 임.
-                query.append('?'+i.split('?', maxsplit=1)[1])
-            else:
-                query.append('')
-        df_m['http_query'] = query
-
-        # except_url_query 여기서 9번째 글자가 공백이 아닌 경우 공백 추가
-        # HTTP/1.1 또는 HTTP/1.0 다음 9번째 글자가 공백이 아닌 경우, 해당 문자열 제거
-        for i, x in enumerate(df_m['except_url_query']):
-            if x[8] != ' ':
-                df_m['except_url_query'][i] = x[:8] + x[9:]
-
-        df_m['http_version'] = [str(x).split(' ', maxsplit=1)[0] for x in df_m['except_url_query']]
-
-        df_m['except_version'] = [str(x).split(' ', maxsplit=1)[1] for x in df_m['except_url_query']]
-        df_m['http_status'] = [str(x).split(' ', maxsplit=1)[0] for x in df_m['except_version']]
-
-        df_m['except_status'] = [str(x).split(' ', maxsplit=1)[1] for x in df_m['except_version']]
-        df_m['pkt_bytes'] = [str(x).split(' ', maxsplit=1)[0] for x in df_m['except_status']]
-
-        df_m['except_bytes'] = [str(x).split(' ', maxsplit=1)[1] for x in df_m['except_status']]
-        df_m['referer'] = [str(x).split(' ', maxsplit=1)[0] for x in df_m['except_bytes']]
-
-        df_m['except_referer'] = [str(x).split(' ', maxsplit=1)[1] for x in df_m['except_bytes']]
-        df_m['agent_etc'] = [str(x).split('"', maxsplit=1)[1] for x in df_m['except_referer']]
-
-        df_m['user_agent'] = [str(x).split('"', maxsplit=1)[0] for x in df_m['agent_etc']]
-        df_m['except_agent'] = [str(x).split('"', maxsplit=1)[1] for x in df_m['agent_etc']]
-
-        # xforwarded_for 및 request_body 있는 경우, NGINX 임.
-        if df_m.iloc[0,-1].count('"') >= 1:
-        # 2022/11/14 기준 APACHE & NGINX 구분 로직 TO DO
-        # 1. NGINX 처럼 APACHE, IIS에 xforwarded_for 및 request_body 필드 추가 (null 값으로)
-        # 2. APACHE 이면서, SIEM RAW 필드에 'nginx' 문자열 있는 경우,  NGINX 아니면, APACHE => 이 경우, NGINX에 xforwarded_for, request_body 추가하지 않음.
-        # 3. http_version 이후를, http_body 필드를 생성하여 필드 통합.
-
-            df_m['except_agent'] = [str(x).split('"', maxsplit=1)[1] for x in df_m['except_agent']]
-            df_m['xforwarded_for'] = [str(x).split('"', maxsplit=1)[0] for x in df_m['except_agent']]
-
-            df_m['except_xforwarded'] = [str(x).split('"', maxsplit=1)[1] for x in df_m['except_agent']]
-            df_m['request_body'] = [str(x).split('"', maxsplit=1)[1] for x in df_m['except_xforwarded']]
-
-            final_df = df_m[['http_method', 'http_url', 'http_query', 'http_version', 'http_status', 'pkt_bytes', 'referer', 'user_agent', 'xforwarded_for', 'request_body']]
-        
-            final_np = np.where(final_df.iloc[:,:] == '', '-', final_df.iloc[:,:])
-            final_df = pd.DataFrame(final_np, columns = final_df.columns)
-
-            # http_query 필드의 첫 글자가 '?' 인 경우, '' 처리
-            if final_df.iloc[0,2].startswith('?') == True:
-                final_df['http_query'] = final_df['http_query'].str[1:]
-            
-            # final_df의 컬럼별 값에서 '"' 가 있는 경우, '' 처리
-            final_df = final_df.apply(lambda x: x.str.replace('"', ''))
-            # final_df의 '' 값은 '-' 로 변경
-            final_df = final_df.replace('', '-')
-
-            # FLASK 적용
-            flask_html = final_df.to_html(index = False, justify = 'center')
-            # print(flask_df)
-            # CTI 적용
-            cti_json = final_df.to_json(orient = 'records')
-            # print(ctf_df)
-            warning_statement = 'WEB_NGINX 로그 입니다.'
-        
-        else:
-            final_df = df_m[['http_method', 'http_url', 'http_query', 'http_version', 'http_status', 'pkt_bytes', 'referer', 'user_agent']]
-
-            final_np = np.where(final_df.iloc[:,:] == '', '-', final_df.iloc[:,:])
-            final_df = pd.DataFrame(final_np, columns = final_df.columns)
-
-            # http_query 필드의 첫 글자가 '?' 인 경우, '' 처리
-            if final_df.iloc[0,2].startswith('?') == True:
-                final_df['http_query'] = final_df['http_query'].str[1:]
-            
-            # final_df의 컬럼별 값에서 '"' 가 있는 경우, '' 처리
-            final_df = final_df.apply(lambda x: x.str.replace('"', ''))
-            # final_df의 '' 값은 '-' 로 변경
-            final_df = final_df.replace('', '-')
-
-            # FLASK 적용
-            flask_html = final_df.to_html(index = False, justify = 'center')
-            # print(flask_df)
-            # CTI 적용
-            cti_json = final_df.to_json(orient = 'records')
-            # print(ctf_df)
-            warning_statement = 'WEB_APACHE 로그 입니다.'
-
-    else:
-        try:
-            pre_df = pd.DataFrame([raw_data_str], columns = ['payload'])
-            pre_df['payload_prep'] = [str(x).split(' ', maxsplit=4)[4] for x in pre_df['payload']]
-            # payload_prep 이 'http/' 부터 시작
-            pre_df['start_version'] = re.findall(r'http/(.*)', pre_df.iloc[0,1], flags=re.I)
-            pre_df['http_method'] = [str(x).split(' ', maxsplit=1)[0] for x in pre_df['payload_prep']]
-            pre_df['start_version'] = 'HTTP/' + pre_df.iloc[0,2]
-            mtd = [str(x).split(' ', maxsplit=1)[0] for x in pre_df['payload_prep']]
-            for i, m in enumerate(mtd):
-                if len(m) > 10 or len(m) == 1 or not m.isalpha():
-                    mtd[i] = ''
-
-            method_list = ['', 'upload', 'get', 'profind', 'put', 'options', 'head', 'trace', 'connect', 'delete', 'post', 'patch']
-
-            m_idx = []
-            not_m_idx = []
-
-            for i, m in enumerate(pre_df['http_method']):
-                # if m in method_list:
-                if m.lower() in method_list:
-                    m_idx.append(i)
-                else:
-                    not_m_idx.append(i)
-
-
-            df_m = pre_df.iloc[m_idx].reset_index(drop=True)
-            df_nm = pre_df.iloc[not_m_idx].reset_index(drop=True)
-
-            # payload_0: payload에서 ' ' (공백) 첫번째를 기준으로 나누엇, 2번째 값을 반환하므로, http_url 부터 끝 임.
-            # 따라서, http_url + http_query + 끝
-            df_m['payload_0'] = [str(x).split(' ', maxsplit=1)[1] for x in df_m['payload_prep']]
-            # url_query: payload_0에서, ' ' (공백) 첫번째를 기준으로 나누어, 1번째 값을 반환하므로, http_url ~ http_query 임.
-            # 따라서, http_url + http_query
-            df_m['url_query'] = [str(x).split(' ', maxsplit=1)[0] for x in df_m['payload_0']]
-
-            except_url_query = []
-            for i in df_m['payload_0']:
-                if ' ' in i:
-                    # payload_0에서 공백이 있는 경우, http_body
-                    except_url_query.append(i.split(' ', maxsplit=1)[1])
-                    # print(except_url_query)
-                else:
-                    except_url_query.append('')
-
-            df_m['except_url_query'] = except_url_query
-            # url_query에서 ? 가 있는 경우, 1번째 값을 반환하므로, http_url 임.
-            df_m['http_url'] = [str(x).split('?', maxsplit=1)[0] for x in df_m['url_query']]
-
-            query = []
-            for i in df_m['url_query']:
-                if '?' in i:
-                    # url_query에서, ?가 있는 경우, 2번째 값을 반환하므로, http_query 임.
-                    query.append('?'+i.split('?', maxsplit=1)[1])
-                else:
-                    query.append('')
-            df_m['http_query'] = query
-
-            df_m['http_version'] = [str(x).split(' ', maxsplit=1)[0] for x in df_m['start_version']]
-            print(df_m['http_version'])
-
-            df_m['except_version'] = [str(x).split(' ', maxsplit=1)[1] for x in df_m['start_version']]
-            df_m['user_agent'] = [str(x).split(' ', maxsplit=1)[0] for x in df_m['except_version']]
-            
-            df_m['except_agent'] = [str(x).split(' ', maxsplit=1)[1] for x in df_m['except_version']]
-            df_m['referer'] = [str(x).split(' ', maxsplit=1)[0] for x in df_m['except_agent']]
-
-            df_m['except_referer'] =  [str(x).split(' ', maxsplit=1)[1] for x in df_m['except_agent']]
-            df_m['http_status'] = [str(x).split(' ', maxsplit=1)[0] for x in df_m['except_referer']]
-
-            df_m['except_status'] = [str(x).split(' ', maxsplit=1)[1] for x in df_m['except_referer']]
-            df_m['sent_bytes'] = [str(x).split(' ', maxsplit=1)[0] for x in df_m['except_status']]
-
-            final_df = df_m[['http_method', 'http_url', 'http_query', 'http_version', 'user_agent', 'referer', 'http_status', 'sent_bytes']]
-
-            # http_query 필드의 첫 글자가 '?' 인 경우, '' 처리
-            if final_df.iloc[0,2].startswith('?') == True:
-                final_df['http_query'] = final_df['http_query'].str[1:]
-
-            # final_df의 컬럼별 값에서 '"' 가 있는 경우, '' 처리
-            final_df = final_df.apply(lambda x: x.str.replace('"', ''))
-            # final_df의 '' 값은 '-' 로 변경
-            final_df = final_df.replace('', '-')
-
-            # FLASK 적용
-            flask_html = final_df.to_html(index = False, justify = 'center')
-            # print(flask_df)
-            # CTI 적용
-            cti_json = final_df.to_json(orient = 'records')
-            # print(ctf_df)
-            warning_statement = 'WEB_IIS 로그 입니다.'
-        except:
-            flask_html = 'WEB 로그가 아닙니다.'
-            cti_json = 'WEB 로그가 아닙니다.'
-            warning_statement = 'WEB 로그가 아닙니다.'
-
-    return render_template('WEB_payload_parsing_output.html',
-                                # web_raw_data_str = request.form['web_raw_data_str'],
-                                flask_html = flask_html,
-                                warning_statement = warning_statement
-                            )
 
 
 
