@@ -2073,6 +2073,32 @@ def WEB_XAI_result():
     
     sig_pattern_html = f"<head>{sig_ai_pattern}</head>"        
     sig_df_html = sig_df.to_html(index=False, justify='center')
+    
+    ###################################
+    # User-Agent 의 browser-type 분류
+    # raw_data_str의 HTTP/1. 이 있는 경우 split 후, 뒷부분만 추출
+    if 'HTTP/1.' in raw_data_str:
+        useragent_raw_data_str = raw_data_str.split('HTTP/1.')[1]
+    else:
+        useragent_raw_data_str = raw_data_str
+
+    useragent_raw_data_df = pd.DataFrame([useragent_raw_data_str], columns=['user_agent'])
+
+    valud_tfidf_feature = vectorizer.fit_transform(useragent_raw_data_df['user_agent']).toarray()
+    valid_tfidf_df = pd.DataFrame(valud_tfidf_feature, columns=vectorizer.get_feature_names_out())
+    # TF * IDF 도출
+    valid_tfidf_df = valid_tfidf_df * tfidf_value
+    valid_tfidf_df.columns = tfidf_feature
+    
+    # TF-IDF 피처 값이 0이 아닌 경우, 피처 추출
+    valid_tfidf_extract = valid_tfidf_df.loc[:, (valid_tfidf_df != 0).any(axis=0)]
+    print(valid_tfidf_extract)
+
+    useragent_pred = WEB_useragent_model.predict(valid_tfidf_df)
+    print(useragent_pred)
+
+    useragent_pred_explain = '입력된 WEB Log의 User-Agent는 Browser-Types 중에 %s에 해당합니다.' %(useragent_pred[0])
+    ###################################
 
     try:
         # IGLOO XAI 리포트 작성
@@ -2205,6 +2231,7 @@ def WEB_XAI_result():
                                 sig_df_html = sig_df_html,
                                 xai_report_html = xai_report_html,
                                 q_and_a_html = q_and_a_html,
+                                useragent_pred_explain = useragent_pred_explain
                                 )
 
 
