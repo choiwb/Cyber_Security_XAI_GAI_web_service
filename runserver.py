@@ -2469,6 +2469,9 @@ def WEB_XAI_result():
     web_parsing_result, weblog_type_comment = WEB_payload_parsing()
     # FLASK 적용
     web_parsing_result_html = web_parsing_result.to_html(index = False, justify = 'center')
+
+    # 영어 이외의 모든 문자열 제거
+    web_parsing_result['user_agent'] = web_parsing_result.apply(lambda x: re.sub(r'[^a-zA-Z]+', ' ', x['user_agent']), axis = 1)
     useragent_parsing_result = web_parsing_result['user_agent'][0]
 
     useragent_raw_data_df = pd.DataFrame([useragent_parsing_result], columns=['user_agent'])
@@ -2488,7 +2491,6 @@ def WEB_XAI_result():
 
     useragent_pred_explain = '입력된 WEB Log의 User-Agent는 Browser-Types 중에 %s에 해당합니다.' %(useragent_pred[0])
     ###################################
-
 
     try:
         # IGLOO XAI 리포트 작성
