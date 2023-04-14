@@ -13,7 +13,7 @@ RUN apt-get -y install openjdk-11-jdk
 
 COPY requirements.txt /app
 
-COPY DSS_IPS_predict.py /app
+COPY runserver.py /app
 COPY setting.py /app
 
 COPY templates /app/templates
