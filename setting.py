@@ -52,7 +52,9 @@ tfidf_feature = WEB_useragent_tfidf_word['feature'].tolist()
 tfidf_word = WEB_useragent_tfidf_word['word'].tolist()
 tfidf_value = WEB_useragent_tfidf_word['IDF'].tolist()
 
-sep_list = [' ', ',', ';', '-', '/']
+# sep_list = [' ', ',', ';', ':', '-', '/', '_']
+sep_list = [' ']
+
 sep_str = '|'.join(sep_list)
 
 vectorizer = CountVectorizer(lowercase = True,
