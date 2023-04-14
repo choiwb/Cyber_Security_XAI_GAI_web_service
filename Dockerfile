@@ -25,12 +25,12 @@ COPY chatgpt_context /app/chatgpt_context
 RUN pip3 install --upgrade setuptools pip
 RUN pip3 install -r requirements.txt
 
-ENV FLASK_APP DSS_IPS_predict.py
+ENV FLASK_APP runserver.py
 ENV FLASK_RUN_HOST 0.0.0.0
 ENV FLASK_RUN_PORT 17171
 
 # Run flask app
-CMD ["python3","DSS_IPS_predict.py"]
+CMD ["python3","runserver.py"]
 
 
 ###################################
