@@ -13,7 +13,7 @@ import itertools
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 
-SERVER_IP = '127.0.0.1'
+SERVER_IP = '0.0.0.0'
 PORT = 17171
 
 
