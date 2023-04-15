@@ -6,3 +6,4 @@
 - WEB XAI: DSS_WEB_LGB_explainer_20230404.pkl
 - WEB useragent modek: DSS_WEB_useragent_LGB_20230413.pkl
 - WEB useragent TF-IDF word: useragent_tfidf_word.csv
+- signature pattern: signature_pattern_list.csv
