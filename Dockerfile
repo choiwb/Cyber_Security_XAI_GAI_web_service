@@ -10,10 +10,6 @@ WORKDIR /app
 RUN apt-get clean && apt-get -y update && apt-get -y upgrade
 RUN apt-get -y install openjdk-11-jdk
 
-# IPython 설치
-RUN pip3 install ipython
-
-
 COPY requirements.txt /app
 
 COPY runserver.py /app
