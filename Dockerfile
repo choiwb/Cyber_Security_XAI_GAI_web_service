@@ -12,6 +12,9 @@ RUN apt-get -y install openjdk-11-jdk
 
 COPY requirements.txt /app
 
+# IPython 설치
+RUN pip3 install ipython
+
 COPY runserver.py /app
 COPY setting.py /app
 COPY shap_explainer_save.py /app
