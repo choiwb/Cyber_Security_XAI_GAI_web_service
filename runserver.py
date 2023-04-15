@@ -346,7 +346,7 @@ def shap_logit(x):
 
 # 보안 시그니처 패턴 리스트 => highlight 처리
 # 시그니처 패턴 리스트 csv 호출 => 사용자 정의 & Web CGI 공격 & 패턴 블럭  sheet 참조! (단, Snort(사용자 패턴) 시트 제외!)
-sig_pattern_csv_path = 'save_modek'
+sig_pattern_csv_path = 'save_model'
 df = pd.read_csv(os.path.join(sig_pattern_csv_path, 'signature_pattern_list.csv'))
 # print('@@@@@@@@@@@@@@')
 # 총 3435 개
