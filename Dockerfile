@@ -18,6 +18,7 @@ COPY requirements.txt /app
 
 COPY runserver.py /app
 COPY setting.py /app
+COPY shap_explainer_save.py /app
 
 COPY templates /app/templates
 COPY static /app/static
