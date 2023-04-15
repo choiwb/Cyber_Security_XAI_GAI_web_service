@@ -3,11 +3,9 @@ pyspark==3.3.0
 pandas==1.4.4
 numpy==1.22.3
 lightgbm==3.2.1
-scikit-learn==1.1.2
+scikit-learn==1.0.2
 shap==0.41.0
-transformers==4.21.3
-torch==1.13.1
 scipy==1.8.0
-waitress==2.1.2
 matplotlib==3.5.1
 plotly==5.5.0
+openai
