@@ -2628,4 +2628,4 @@ def WEB_XAI_result():
 
 
 if __name__ == '__main__':
-   app.run(host = SERVER_IP, port = PORT)
+   app.run(host = SERVER_IP, port = PORT, debug = True)
