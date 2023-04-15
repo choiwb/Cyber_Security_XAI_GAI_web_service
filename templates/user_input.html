@@ -18,7 +18,7 @@
 
         <h3> WAF Detection </h3>
 
-        <form method="POST", action="{{url_for('WAF_payload_parsing')}}">
+        <form method="POST", action="{{url_for('WAF_web_UI_predict')}}">
             <h4> Payload :  <input type="text", name='raw_data_str', placeholder="enter 1" 
                                             style="height:50px;width:1200px;font-size:16px;"> <br></h4>
                     <h4> <input type="submit" , value='Predict !'
