@@ -10,6 +10,9 @@ WORKDIR /app
 RUN apt-get clean && apt-get -y update && apt-get -y upgrade
 RUN apt-get -y install openjdk-11-jdk
 
+# IPython 설치
+RUN pip3 install ipython
+
 
 COPY requirements.txt /app
 
@@ -26,7 +29,8 @@ RUN pip3 install --upgrade setuptools pip
 RUN pip3 install -r requirements.txt
 
 ENV FLASK_APP runserver.py
-ENV FLASK_RUN_HOST 0.0.0.0
+# ENV FLASK_ENV development
+ENV FLASK_RUN_HOST 127.0.0.1
 ENV FLASK_RUN_PORT 17171
 
 # Run flask app
@@ -34,5 +38,5 @@ CMD ["python3","runserver.py"]
 
 
 ###################################
-# docker build -t choiwb/dss_ips_ml_app .
-# docker run -d -p 17171:17171 choiwb/dss_ips_ml_app
+# docker build -t choiwb/ml_xai_gai_web .
+# docker run -d -p 17171:17171 choiwb/ml_xai_gai_web
