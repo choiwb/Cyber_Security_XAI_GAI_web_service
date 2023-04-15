@@ -30,7 +30,7 @@ RUN pip3 install -r requirements.txt
 
 ENV FLASK_APP runserver.py
 # ENV FLASK_ENV development
-ENV FLASK_RUN_HOST 127.0.0.1
+ENV FLASK_RUN_HOST 0.0.0.0
 ENV FLASK_RUN_PORT 17171
 
 # Run flask app
