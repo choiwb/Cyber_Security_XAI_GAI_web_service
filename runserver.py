@@ -13,7 +13,10 @@ import time
 import itertools
 
 
-
+java_location = '/usr/lib/jvm/java-11-openjdk-amd64'
+os.environ['JAVA_HOME'] = java_location
+    
+    
 app = Flask(__name__)
 
 
@@ -36,8 +39,6 @@ def IPS_predict_UI_sql_result():
     # 비식별
     raw_data_str = payload_anonymize(raw_data_str)
 
-    java_location = '/usr/lib/jvm/java-11-openjdk-amd64'
-    os.environ['JAVA_HOME'] = java_location
     conf = pyspark.SparkConf().setAppName('prep_data').setMaster('local')
     sc = pyspark.SparkContext.getOrCreate(conf = conf)
 
@@ -74,8 +75,6 @@ def WAF_predict_UI_sql_result():
     # 비식별
     raw_data_str = payload_anonymize(raw_data_str)
 
-    java_location = '/usr/lib/jvm/java-11-openjdk-amd64'
-    os.environ['JAVA_HOME'] = java_location
     conf = pyspark.SparkConf().setAppName('prep_data').setMaster('local')
     sc = pyspark.SparkContext.getOrCreate(conf = conf)
 
@@ -109,8 +108,6 @@ def WEB_predict_UI_sql_result():
     # 비식별
     raw_data_str = payload_anonymize(raw_data_str)
 
-    java_location = '/usr/lib/jvm/java-11-openjdk-amd64'
-    os.environ['JAVA_HOME'] = java_location
     conf = pyspark.SparkConf().setAppName('prep_data').setMaster('local')
     sc = pyspark.SparkContext.getOrCreate(conf = conf)
 
