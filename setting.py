@@ -55,7 +55,7 @@ tfidf_word = WEB_useragent_tfidf_word['word'].tolist()
 tfidf_value = WEB_useragent_tfidf_word['IDF'].tolist()
 
 # sep_list = [' ', ',', ';', ':', '-', '/', '_']
-sep_list = [' ', 'mozilla', 'windows', 'gecko', 'like', 'applewebkit', 'chrome', 'safari']
+sep_list = [' ', 'mozilla', 'windows', 'gecko', 'like', 'applewebkit', 'chrome', 'safari', 'khtml']
 
 sep_str = '|'.join(sep_list)
 
