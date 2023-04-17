@@ -655,13 +655,8 @@ def WAF_payload_parsing():
 
         warning_statement = '정상적인 Payload 입력 형태 입니다.'
 
+    return final_df, warning_statement
 
-    
-    return render_template('WAF_payload_parsing_output.html',
-                        flask_html = flask_html,
-                        warning_statement = warning_statement
-                        )
-    
 
 @app.route('/WEB_payload_parsing', methods = ['POST'])
 def WEB_payload_parsing():
@@ -1945,6 +1940,10 @@ def WAF_XAI_result():
     
     sig_pattern_html = f"<head>{sig_ai_pattern}</head>"        
     sig_df_html = sig_df.to_html(index=False, justify='center')
+    
+    # waf payload parsing
+    payload_parsing_result_df, payload_pasring_comment = WAF_payload_parsing()
+    payload_parsing_result_html = payload_parsing_result_df.to_html(index = False, justify = 'center')
 
     try:
         # IGLOO XAI 리포트 작성
@@ -2078,6 +2077,8 @@ def WAF_XAI_result():
                                 sig_df_html = sig_df_html,
                                 xai_report_html = xai_report_html,
                                 q_and_a_html = q_and_a_html,
+                                payload_parsing_result_html = payload_parsing_result_html,
+                                payload_pasring_comment = payload_pasring_comment
                                 )
 
 
