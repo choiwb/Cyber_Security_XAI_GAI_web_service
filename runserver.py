@@ -1942,7 +1942,7 @@ def WAF_XAI_result():
     sig_df_html = sig_df.to_html(index=False, justify='center')
     
     # waf payload parsing
-    payload_parsing_result_df, payload_pasring_comment = WAF_payload_parsing()
+    payload_parsing_result_df, payload_parsing_comment = WAF_payload_parsing()
     payload_parsing_result_html = payload_parsing_result_df.to_html(index = False, justify = 'center')
 
     try:
@@ -2078,7 +2078,7 @@ def WAF_XAI_result():
                                 xai_report_html = xai_report_html,
                                 q_and_a_html = q_and_a_html,
                                 payload_parsing_result_html = payload_parsing_result_html,
-                                payload_pasring_comment = payload_pasring_comment
+                                payload_parsing_comment = payload_parsing_comment
                                 )
 
 
