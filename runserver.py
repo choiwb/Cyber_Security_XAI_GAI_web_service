@@ -2496,7 +2496,7 @@ def WEB_XAI_result():
 
     if useragent_pred[0] == 'bad_bot_crawler':
         useragent_pred[0] = '악성 봇 크롤러'
-    elif useragent_pred[0] == 'normal_bod_crawler':
+    elif useragent_pred[0] == 'normal_bot_crawler':
         useragent_pred[0] = '정상 봇 크롤러'
     else:
         useragent_pred[0] = '애플리케이션'
