@@ -2092,6 +2092,9 @@ def WEB_XAI_result():
     raw_data_str = re.sub(r'[\<]' , '&lt;', raw_data_str)
     raw_data_str = re.sub(r'[\>]' , '&gt;', raw_data_str)
     ##########################################################
+    
+    # 출발지 IP 의 경우, nginx: 다음 IP 부터 시작
+    start_ip = re.findall(r'(?<=nginx: )\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}', raw_data_str)
 
     # 비식별
     raw_data_str = payload_anonymize(raw_data_str)
@@ -2495,6 +2498,9 @@ def WEB_XAI_result():
         useragent_pred[0] = '어플리케이션'
 
     useragent_pred_explain = '입력된 WEB Log의 User-Agent는 %s에 해당합니다.' %(useragent_pred[0])
+    
+    print('출발지 IP (비식별 전): ', start_ip[0])
+    
     ###################################
 
     try:
