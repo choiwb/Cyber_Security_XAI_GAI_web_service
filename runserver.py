@@ -2487,7 +2487,14 @@ def WEB_XAI_result():
     useragent_pred = WEB_useragent_model.predict(valid_tfidf_df)
     print(useragent_pred)
 
-    useragent_pred_explain = '입력된 WEB Log의 User-Agent는 Browser-Types 중에 %s에 해당합니다.' %(useragent_pred[0])
+    if useragent_pred[0] == 'bad_bot_crawler':
+        useragent_pred[0] = '악성 봇 크롤러'
+    elif useragent_pred[0] == 'normal_bod_crawler':
+        useragent_pred[0] = '정상 봇 크롤러'
+    else:
+        useragent_pred[0] = '어플리케이션'
+
+    useragent_pred_explain = '입력된 WEB Log의 User-Agent는 %s에 해당합니다.' %(useragent_pred[0])
     ###################################
 
     try:
