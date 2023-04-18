@@ -2499,7 +2499,7 @@ def WEB_XAI_result():
     elif useragent_pred[0] == 'normal_bod_crawler':
         useragent_pred[0] = '정상 봇 크롤러'
     else:
-        useragent_pred[0] = '어플리케이션'
+        useragent_pred[0] = '애플리케이션'
 
     useragent_pred_explain = '입력된 WEB Log의 User-Agent는 %s에 해당합니다.' %(useragent_pred[0])
     
