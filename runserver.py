@@ -746,6 +746,10 @@ def WEB_payload_parsing():
         df_m['except_referer'] = [str(x).split(' ', maxsplit=1)[1] for x in df_m['except_bytes']]
         df_m['agent_etc'] = [str(x).split('"', maxsplit=1)[1] for x in df_m['except_referer']]
 
+        # df_m['agent_etc'] 가 ' "'로 시작하는 경우, '' 처리
+        if df_m['agent_etc'][0].startswith(' "'):
+            df_m['agent_etc'][0] = df_m['agent_etc'][0][2:]
+        
         df_m['user_agent'] = [str(x).split('"', maxsplit=1)[0] for x in df_m['agent_etc']]
         df_m['except_agent'] = [str(x).split('"', maxsplit=1)[1] for x in df_m['agent_etc']]
 
