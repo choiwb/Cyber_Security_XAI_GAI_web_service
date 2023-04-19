@@ -64,6 +64,9 @@ vectorizer = CountVectorizer(lowercase = True,
                              tokenizer = lambda x: re.split(sep_str, x),
                               vocabulary = tfidf_word)
 
+# GeoIP2의 국가명 조회 DB 경로 - 20230419 업데이트 기준
+geoip_country_db_path = 'save_model/GeoLite2_Country_20230419.mmdb'
+
 ips_query = """
     
     SELECT
