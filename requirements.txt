@@ -9,3 +9,4 @@ scipy==1.8.0
 matplotlib==3.5.1
 plotly==5.5.0
 openai
+geoip2==4.6.0
