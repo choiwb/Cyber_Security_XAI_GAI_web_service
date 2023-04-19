@@ -11,6 +11,7 @@ import plotly.express as px
 import re
 import time
 import itertools
+import geoip2.database
 
 
 java_location = '/usr/lib/jvm/java-11-openjdk-amd64'
@@ -2505,6 +2506,13 @@ def WEB_XAI_result():
     
     print('출발지 IP (비식별 전): ', start_ip[0])
     
+    # GeoLite2-Country.mmdb 사용법
+    country_reader = geoip2.database.Reader(geoip_country_db_path)
+    country_response = country_reader.country(start_ip[0])
+    print(country_response.country.name) # 국가명 조회 (한글은 지원 안함)
+    start_ip_country = country_response.country.name
+    start_ip_country_explain = '입력된 WEB Log의 출발지 IP 국가 명은 %s 입니다.' %(start_ip_country)
+    
     ###################################
 
     try:
@@ -2640,7 +2648,8 @@ def WEB_XAI_result():
                                 q_and_a_html = q_and_a_html,
                                 web_parsing_result_html = web_parsing_result_html,
                                 weblog_type_comment = weblog_type_comment,
-                                useragent_pred_explain = useragent_pred_explain
+                                useragent_pred_explain = useragent_pred_explain,
+                                start_ip_country_explain = start_ip_country_explain
                                 )
 
 
