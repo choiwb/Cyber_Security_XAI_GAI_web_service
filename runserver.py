@@ -1947,8 +1947,13 @@ def WAF_XAI_result():
     sig_df_html = sig_df.to_html(index=False, justify='center')
     
     # waf payload parsing
-    payload_parsing_result_df, payload_parsing_comment = WAF_payload_parsing()
-    payload_parsing_result_html = payload_parsing_result_df.to_html(index = False, justify = 'center')
+    try:
+        payload_parsing_result_df, payload_parsing_comment = WAF_payload_parsing()
+        payload_parsing_result_html = payload_parsing_result_df.to_html(index = False, justify = 'center')
+    except:
+        payload_parsing_result_df = pd.DataFrame(['정상적인 WAF payload가 아닙니다.'], columns = ['파싱 오류'])
+        payload_parsing_result_html = payload_parsing_result_df.to_html(index = False, justify = 'center')
+        payload_parsing_comment = '정상적인 WAF payload가 아닙니다.'
 
     try:
         # IGLOO XAI 리포트 작성
@@ -2472,48 +2477,59 @@ def WEB_XAI_result():
     ###################################
     # User-Agent 의 browser-type 분류
     # web_payload_parsing 함수에서 user_agent 추출 !!!!!!!!
-    web_parsing_result, weblog_type_comment = WEB_payload_parsing()
-    # FLASK 적용
-    web_parsing_result_html = web_parsing_result.to_html(index = False, justify = 'center')
+    try:
+        web_parsing_result, weblog_type_comment = WEB_payload_parsing()
+        # FLASK 적용
+        web_parsing_result_html = web_parsing_result.to_html(index = False, justify = 'center')
 
-    # 영어 이외의 모든 문자열 제거
-    web_parsing_result['user_agent'] = web_parsing_result.apply(lambda x: re.sub(r'[^a-zA-Z]+', ' ', x['user_agent']), axis = 1)
-    useragent_parsing_result = web_parsing_result['user_agent'][0]
+        # 영어 이외의 모든 문자열 제거
+        web_parsing_result['user_agent'] = web_parsing_result.apply(lambda x: re.sub(r'[^a-zA-Z]+', ' ', x['user_agent']), axis = 1)
+        useragent_parsing_result = web_parsing_result['user_agent'][0]
 
-    useragent_raw_data_df = pd.DataFrame([useragent_parsing_result], columns=['user_agent'])
+        useragent_raw_data_df = pd.DataFrame([useragent_parsing_result], columns=['user_agent'])
 
-    valud_tfidf_feature = vectorizer.fit_transform(useragent_raw_data_df['user_agent']).toarray()
-    valid_tfidf_df = pd.DataFrame(valud_tfidf_feature, columns=vectorizer.get_feature_names_out())
-    # TF * IDF 도출
-    valid_tfidf_df = valid_tfidf_df * tfidf_value
-    valid_tfidf_df.columns = tfidf_feature
-    
-    # TF-IDF 피처 값이 0이 아닌 경우, 피처 추출
-    valid_tfidf_extract = valid_tfidf_df.loc[:, (valid_tfidf_df != 0).any(axis=0)]
-    print(valid_tfidf_extract)
+        valud_tfidf_feature = vectorizer.fit_transform(useragent_raw_data_df['user_agent']).toarray()
+        valid_tfidf_df = pd.DataFrame(valud_tfidf_feature, columns=vectorizer.get_feature_names_out())
+        # TF * IDF 도출
+        valid_tfidf_df = valid_tfidf_df * tfidf_value
+        valid_tfidf_df.columns = tfidf_feature
+        
+        # TF-IDF 피처 값이 0이 아닌 경우, 피처 추출
+        valid_tfidf_extract = valid_tfidf_df.loc[:, (valid_tfidf_df != 0).any(axis=0)]
+        print(valid_tfidf_extract)
 
-    useragent_pred = WEB_useragent_model.predict(valid_tfidf_df)
-    print(useragent_pred)
+        useragent_pred = WEB_useragent_model.predict(valid_tfidf_df)
+        print(useragent_pred)
 
-    if useragent_pred[0] == 'bad_bot_crawler':
-        useragent_pred[0] = '악성 봇 크롤러'
-    elif useragent_pred[0] == 'normal_bot_crawler':
-        useragent_pred[0] = '정상 봇 크롤러'
-    else:
-        useragent_pred[0] = '애플리케이션'
+        if useragent_pred[0] == 'bad_bot_crawler':
+            useragent_pred[0] = '악성 봇 크롤러'
+        elif useragent_pred[0] == 'normal_bot_crawler':
+            useragent_pred[0] = '정상 봇 크롤러'
+        else:
+            useragent_pred[0] = '애플리케이션'
 
-    useragent_pred_explain = '입력된 WEB Log의 User-Agent는 %s에 해당합니다.' %(useragent_pred[0])
-    
-    print('출발지 IP (비식별 전): ', start_ip[0])
-    
-    # GeoLite2-Country.mmdb 사용법
-    country_reader = geoip2.database.Reader(geoip_country_db_path)
-    country_response = country_reader.country(start_ip[0])
-    print(country_response.country.name) # 국가명 조회 (한글은 지원 안함)
-    start_ip_country = country_response.country.name
-    start_ip_country_explain = '입력된 WEB Log의 출발지 IP 국가 명은 %s 입니다.' %(start_ip_country)
-    
-    ###################################
+        useragent_pred_explain = '입력된 WEB Log의 User-Agent는 %s에 해당합니다.' %(useragent_pred[0])
+
+        # CTI 연계
+        # 입력된 WEB Log의 출발지 IP 파싱 후, CTI 와 연계하여 출발지 국가명 추출
+        # (현재 특정 대역 IP의 경우 ChatGPT 와의 연계 때문에 비식별 진행 함.)
+        print('출발지 IP (비식별 전): ', start_ip[0])
+
+        # GeoLite2-Country.mmdb 사용법
+        country_reader = geoip2.database.Reader(geoip_country_db_path)
+        country_response = country_reader.country(start_ip[0])
+        print(country_response.country.name) # 국가명 조회 (한글은 지원 안함)
+        start_ip_country = country_response.country.name
+        start_ip_country_explain = '입력된 WEB Log의 출발지 IP 국가 명은 %s 입니다.' %(start_ip_country)
+
+
+    except:
+        useragent_pred_explain = 'WEB 로그가 아닙니다.'
+        web_parsing_result = pd.DataFrame(['WEB 로그가 아닙니다.'], columns = ['파싱 오류'])
+        web_parsing_result_html = web_parsing_result.to_html(index = False, justify = 'center')
+        weblog_type_comment = 'WEB 로그가 아닙니다.'
+        start_ip_country_explain = 'WEB 로그가 아닙니다.'
+
 
     try:
         # IGLOO XAI 리포트 작성
