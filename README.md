@@ -10,7 +10,7 @@ WEB Log Detection - SQL Injection, Command Injection, XSS, normal
 - Deployment: Flask & Docker
 - Domain Signature pattern and AI feature highlighting after pattern method matching
 - WAF & WEB LOG (APACHE or NGINX or IIS) Parsing
-- WEB LOG based user-agent application, normal_bot_crawler, bad_bot_crawler classification (referenced https://user-agents.net/, https://github.com/mitchellkrogza/nginx-ultimate-bad-bot-blocker/blob/master/_generator_lists/bad-user-agents.list)
+- WEB LOG based user-agent application, normal_bot_crawler, bad_bot_crawler classification (referenced https://user-agents.net/, https://github.com/mitchellkrogza/nginx-ultimate-bad-bot-blocker/blob/master/_generator_lists/bad-user-agents.list) & Start IP based country name connection (referenced https://dev.maxmind.com/geoip/geolite2-free-geolocation-data)
 -----
 - DistilBERT Transfer Learning (adding cyber security domain word)
 - DistilBERT (task: question-answering) based fine tuning like SQUAD dataset format
