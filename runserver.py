@@ -610,17 +610,17 @@ def WAF_payload_parsing():
         df_nm['http_body'] = df_nm['uri']
         df_nm = df_nm.drop(['payload', 'uri'], axis = 1)
         df_nm['http_version'] = '-'
-        df_nm = df_nm[['http_method', 'http_url', 'http_query', 'http_version', 'http_body']]
+        final_df = df_nm[['http_method', 'http_url', 'http_query', 'http_version', 'http_body']]
 
         # http_query 필드의 첫 글자가 '?' 인 경우, '' 처리
-        if df_nm.iloc[0,2].startswith('?') == True:
-            df_nm['http_query'] = df_nm['http_query'].str[1:]
+        if final_df.iloc[0,2].startswith('?') == True:
+            final_df['http_query'] = final_df['http_query'].str[1:]
 
         # FLASK 적용
-        flask_html = df_nm.to_html(index = False, justify = 'center')
+        flask_html = final_df.to_html(index = False, justify = 'center')
         # print(flask_df)
         # CTI 적용
-        cti_json = df_nm.to_json(orient = 'records')
+        cti_json = final_df.to_json(orient = 'records')
         # print(ctf_df)
         warning_statement = '비정상적인 Payload 입력 형태 입니다. (예, payload 의 시작이 특수문자 등)'
 
@@ -904,8 +904,9 @@ def WEB_payload_parsing():
             # print(ctf_df)
             warning_statement = 'WEB_IIS 로그 입니다.'
         except:
-            flask_html = 'WEB 로그가 아닙니다.'
-            cti_json = 'WEB 로그가 아닙니다.'
+            # flask_html = 'WEB 로그가 아닙니다.'
+            # cti_json = 'WEB 로그가 아닙니다.'
+            final_df = pd.DataFrame([raw_data_str], columns = ['web_log'])
             warning_statement = 'WEB 로그가 아닙니다.'
 
     return final_df, warning_statement
@@ -1946,14 +1947,9 @@ def WAF_XAI_result():
     sig_pattern_html = f"<head>{sig_ai_pattern}</head>"        
     sig_df_html = sig_df.to_html(index=False, justify='center')
     
-    # waf payload parsing
-    try:
-        payload_parsing_result_df, payload_parsing_comment = WAF_payload_parsing()
-        payload_parsing_result_html = payload_parsing_result_df.to_html(index = False, justify = 'center')
-    except:
-        payload_parsing_result_df = pd.DataFrame(['정상적인 WAF payload가 아닙니다.'], columns = ['파싱 오류'])
-        payload_parsing_result_html = payload_parsing_result_df.to_html(index = False, justify = 'center')
-        payload_parsing_comment = '정상적인 WAF payload가 아닙니다.'
+    # waf_payload_parsing 함수에서 파싱 진행
+    payload_parsing_result_df, payload_parsing_comment = WAF_payload_parsing()
+    payload_parsing_result_html = payload_parsing_result_df.to_html(index = False, justify = 'center')
 
     try:
         # IGLOO XAI 리포트 작성
@@ -2477,10 +2473,11 @@ def WEB_XAI_result():
     ###################################
     # User-Agent 의 browser-type 분류
     # web_payload_parsing 함수에서 user_agent 추출 !!!!!!!!
-    try:
-        web_parsing_result, weblog_type_comment = WEB_payload_parsing()
-        # FLASK 적용
-        web_parsing_result_html = web_parsing_result.to_html(index = False, justify = 'center')
+    web_parsing_result, weblog_type_comment = WEB_payload_parsing()
+    # FLASK 적용
+    web_parsing_result_html = web_parsing_result.to_html(index = False, justify = 'center')
+    
+    if weblog_type_comment != 'WEB 로그가 아닙니다.':
 
         # 영어 이외의 모든 문자열 제거
         web_parsing_result['user_agent'] = web_parsing_result.apply(lambda x: re.sub(r'[^a-zA-Z]+', ' ', x['user_agent']), axis = 1)
@@ -2522,12 +2519,8 @@ def WEB_XAI_result():
         start_ip_country = country_response.country.name
         start_ip_country_explain = '입력된 WEB Log의 출발지 IP 국가 명은 %s 입니다.' %(start_ip_country)
 
-
-    except:
+    else:
         useragent_pred_explain = 'WEB 로그가 아닙니다.'
-        web_parsing_result = pd.DataFrame(['WEB 로그가 아닙니다.'], columns = ['파싱 오류'])
-        web_parsing_result_html = web_parsing_result.to_html(index = False, justify = 'center')
-        weblog_type_comment = 'WEB 로그가 아닙니다.'
         start_ip_country_explain = 'WEB 로그가 아닙니다.'
 
 
