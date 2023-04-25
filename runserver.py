@@ -710,58 +710,6 @@ def WAF_payload_parsing():
         warning_statement = '정상적인 Payload 입력 형태 입니다.'
 
     return final_df, warning_statement
-        df_nm_np = np.where(df_nm.iloc[:, :] == '', '-', df_nm.iloc[:, :])
-        df_nm = pd.DataFrame(df_nm_np, columns = df_nm.columns.tolist())
-        df_nm['http_body'] = df_nm['uri']
-        df_nm = df_nm.drop(['payload', 'uri'], axis = 1)
-        df_nm['http_version'] = '-'
-        final_df = df_nm[['http_method', 'http_url', 'http_query', 'http_version', 'http_body']]
-
-        # http_query 필드의 첫 글자가 '?' 인 경우, '' 처리
-        if final_df.iloc[0,2].startswith('?') == True:
-            final_df['http_query'] = final_df['http_query'].str[1:]
-
-        # FLASK 적용
-        flask_html = final_df.to_html(index = False, justify = 'center')
-        # print(flask_df)
-        # CTI 적용
-        cti_json = final_df.to_json(orient = 'records')
-        # print(ctf_df)
-        warning_statement = '비정상적인 Payload 입력 형태 입니다. (예, payload 의 시작이 특수문자 등)'
-
-
-    else:
-        # http_version => HTTP/1.1 OR HTTP/1.0 OR HTTP/2.0
-        df_res['http_version'] = '-'
-        # df_res.iloc[0,4]) ' '  로 시작하는 경우 '' 처리
-        if df_res.iloc[0,4].startswith(' ') == True:
-            df_res['http_body'] = df_res['http_body'].str[1:]
-
-        if df_res.iloc[0,4].lower().startswith('http/') == True:
-            df_res['http_version'][0:1] = df_res['http_body'][0:1].str[0:8]
-            df_res['http_body'] = df_res['http_body'].str[8:]
-            
-        final_df = df_res[['payload', 'http_method', 'http_url', 'http_query', 'http_version', 'http_body']]
-        final_df = final_df.drop('payload', axis = 1)
-
-        final_np = np.where(final_df.iloc[:, :] == '', '-', final_df.iloc[:, :])
-        final_df = pd.DataFrame(final_np, columns = final_df.columns.tolist())
-
-        # http_query 필드의 첫 글자가 '?' 인 경우, '' 처리
-        if final_df.iloc[0,2].startswith('?') == True:
-            final_df['http_query'] = final_df['http_query'].str[1:]
-
-
-        # FLASK 적용
-        flask_html = final_df.to_html(index = False, justify = 'center')
-        # print(flask_df)
-        # CTI 적용
-        cti_json = final_df.to_json(orient = 'records')
-        # print(ctf_df)
-
-        warning_statement = '정상적인 Payload 입력 형태 입니다.'
-
-    return final_df, warning_statement
 
 
 @app.route('/WEB_payload_parsing', methods = ['POST'])
