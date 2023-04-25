@@ -752,6 +752,9 @@ def WEB_payload_parsing():
 
     # raw_data_str이 "" 인 경우, " " 처리
     raw_data_str = raw_data_str.replace('""', '" "')
+    
+    # url encode to decode
+    raw_data_str = payload_urldecode(raw_data_str)
 
     # 비식별
     raw_data_str = payload_anonymize(raw_data_str)
