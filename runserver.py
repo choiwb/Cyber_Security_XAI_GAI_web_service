@@ -12,6 +12,7 @@ import re
 import time
 import itertools
 import geoip2.database
+import urllib.parse
 
 
 java_location = '/usr/lib/jvm/java-11-openjdk-amd64'
@@ -20,6 +21,15 @@ os.environ['JAVA_HOME'] = java_location
     
 app = Flask(__name__)
 
+
+# URL Encoding (percent encoding) to decoding
+def payload_urldecode(raw_data_str):
+    raw_data_str = urllib.parse.unquote(raw_data_str)
+    # 2중 디코딩 필요 (..%252f => ..%2f => ../)
+    # 즉, % => %25 로 되어 있는 경우 !!!!!
+    raw_data_str = urllib.parse.unquote(raw_data_str)
+
+    return raw_data_str
 
 
 def payload_anonymize(raw_data_str):
@@ -37,6 +47,10 @@ def payload_anonymize(raw_data_str):
 
 def IPS_predict_UI_sql_result():
     raw_data_str = request.form['raw_data_str']
+    
+    # url encode to decode
+    raw_data_str = payload_urldecode(raw_data_str)
+    
     # 비식별
     raw_data_str = payload_anonymize(raw_data_str)
 
@@ -73,6 +87,10 @@ def IPS_predict_UI_sql_result():
 
 def WAF_predict_UI_sql_result():
     raw_data_str = request.form['raw_data_str']
+    
+    # url encode to decode
+    raw_data_str = payload_urldecode(raw_data_str)
+    
     # 비식별
     raw_data_str = payload_anonymize(raw_data_str)
 
@@ -106,6 +124,10 @@ def WAF_predict_UI_sql_result():
 
 def WEB_predict_UI_sql_result():
     raw_data_str = request.form['raw_data_str']
+    
+    # url encode to decode
+    raw_data_str = payload_urldecode(raw_data_str)
+    
     # 비식별
     raw_data_str = payload_anonymize(raw_data_str)
 
@@ -922,6 +944,9 @@ def IPS_XAI_result():
     raw_data_str = re.sub(r'[\<]' , '&lt;', raw_data_str)
     raw_data_str = re.sub(r'[\>]' , '&gt;', raw_data_str)
     ##########################################################
+    
+    # url encode to decode
+    raw_data_str = payload_urldecode(raw_data_str)
 
     # 비식별
     raw_data_str = payload_anonymize(raw_data_str)
@@ -1515,6 +1540,9 @@ def WAF_XAI_result():
     raw_data_str = re.sub(r'[\<]' , '&lt;', raw_data_str)
     raw_data_str = re.sub(r'[\>]' , '&gt;', raw_data_str)
     ##########################################################
+    
+    # url encode to decode
+    raw_data_str = payload_urldecode(raw_data_str)
 
     # 비식별
     raw_data_str = payload_anonymize(raw_data_str)
@@ -2106,6 +2134,10 @@ def WEB_XAI_result():
     # APACHE 또는 IIS 로그
     else: 
         start_ip = re.findall(r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}', raw_data_str)
+        
+        
+    # url encode to decode
+    raw_data_str = payload_urldecode(raw_data_str)
 
     # 비식별
     raw_data_str = payload_anonymize(raw_data_str)
