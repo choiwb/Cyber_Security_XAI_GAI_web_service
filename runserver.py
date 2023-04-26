@@ -56,11 +56,12 @@ def payload_anonymize(raw_data_str):
     ip_pattern = r'\b61\.(?:[0-9]{1,3}\.){2}[0-9]{1,3}\b'
     output_str = re.sub(ip_pattern, '10.10.123.123', raw_data_str)
     # HOST
-    # :// 또는 %3a%2f%2f 또는 www.  ~ .go.kr 또는 .or.kr 또는 .com 또는 .co.kr
-    host_pattern = r"(?:(?<=:\/\/)|(?<=%3a%2f%2f)|(?<=www\.))(.*?)(?=\.go\.kr|\.or\.kr|\.com|\.co\.kr)"
+    # host: 또는 :// 또는 %3a%2f%2f 또는 www.  ~ .go.kr 또는 .or.kr 또는 .com 또는 .co.kr
+    host_pattern = r"(?:(?<=:\/\/)|(?<=%3a%2f%2f)|(?<=www\.)|(?<=host: ))(.*?)(?=\.go\.kr|\.or\.kr|\.com|\.co\.kr)"
 
     output_str = re.sub(host_pattern, '*****', output_str, flags = re.I)
     return output_str
+
 
 
 def IPS_predict_UI_sql_result():
