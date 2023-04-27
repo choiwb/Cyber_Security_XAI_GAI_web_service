@@ -1118,8 +1118,8 @@ def IPS_XAI_result():
     top10_shap_values = pd.merge(top10_shap_values, payload_df_t, how = 'left', on = '피처 명')
     top10_shap_values = top10_shap_values[['순위', '피처 명', '피처 설명', '피처 값', '피처 중요도', 'AI 예측 방향']]
 
-    # top10_shap_values['피처 명'] 에서 'ips_00001_' 제거
-    top10_shap_values['피처 명'] = top10_shap_values['피처 명'].apply(lambda x: x[10:] if x.startswith('ips_00001_') else x)
+    # top10_shap_values['피처 명'] 에서 'ips_' 제거
+    top10_shap_values['피처 명'] = top10_shap_values['피처 명'].apply(lambda x: x[4:] if x.startswith('ips_') else x)
 
     top10_shap_values['순위'] = top10_shap_values.index + 1
     top10_shap_values  = top10_shap_values[['순위', '피처 명', '피처 설명', '피처 값', '피처 중요도', 'AI 예측 방향']]
@@ -1375,8 +1375,8 @@ def IPS_XAI_result():
 
     # higher: red, lower: green
     shap_cols = payload_df.columns.tolist()
-    # payload_df.columns startswith 'ips_00001' 인 경우, ''로 변경
-    shap_cols = [x.replace('ips_00001_', '') for x in shap_cols]
+    # payload_df.columns startswith 'ips_' 인 경우, ''로 변경
+    shap_cols = [x.replace('ips_', '') for x in shap_cols]cols]
 
     # force_plot = plt.figure()
     force_plot = shap.force_plot(expected_value_sql[0], shap_values_sql[1], payload_df, link = 'logit',
@@ -1716,9 +1716,9 @@ def WAF_XAI_result():
     top10_shap_values = pd.merge(top10_shap_values, payload_df_t, how = 'left', on = '피처 명')
     top10_shap_values = top10_shap_values[['순위', '피처 명', '피처 설명', '피처 값', '피처 중요도', 'AI 예측 방향']]
 
-    # top10_shap_values['피처 명'] 에서 'waf_00001_' 제거
-    top10_shap_values['피처 명'] = top10_shap_values['피처 명'].apply(lambda x: x[10:] if x.startswith('waf_00001_') else x)
-
+    # top10_shap_values['피처 명'] 에서 'waf_' 제거
+    top10_shap_values['피처 명'] = top10_shap_values['피처 명'].apply(lambda x: x[4:] if x.startswith('waf_') else x)
+    
     top10_shap_values['순위'] = top10_shap_values.index + 1
     top10_shap_values  = top10_shap_values[['순위', '피처 명', '피처 설명', '피처 값', '피처 중요도', 'AI 예측 방향']]
     top10_shap_values['피처 중요도'] = top10_shap_values['피처 중요도'].apply(lambda x: round(x, 4))
@@ -1967,8 +1967,8 @@ def WAF_XAI_result():
 
     # higher: red, lower: green
     shap_cols = payload_df.columns.tolist()
-    # payload_df.columns startswith 'waf_00001' 인 경우, ''로 변경
-    shap_cols = [x.replace('waf_00001_', '') for x in shap_cols]
+    # payload_df.columns startswith 'waf_' 인 경우, ''로 변경
+    shap_cols = [x.replace('waf_', '') for x in shap_cols]p_cols]
 
     # force_plot = plt.figure()
     force_plot = shap.force_plot(expected_value_sql[0], shap_values_sql[1], payload_df, link = 'logit',
