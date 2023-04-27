@@ -1283,8 +1283,10 @@ def IPS_XAI_result():
             first_fv_result = '정상 인식'
             first_statement = '%s 가 %s 하였습니다.' %(first_feature, first_fv_result)
     else:
-        first_statement = '로그 전송이 총 %s건 입니다.' % first_fv       
-
+        if first_fv == 1:
+            first_statement = '로그 전송이 2건 이상 임에 따라 정상 입니다.'     
+        else:
+            first_statement = '로그 전송이 1건 이하 임에 따라 공격일 가능성이 있습니다.'
 
     if second_feature != 'payload_whitelist':
         if second_fv == 1:
@@ -1294,8 +1296,10 @@ def IPS_XAI_result():
             second_fv_result = '정상 인식'
             second_statement = '%s 가 %s 하였습니다.' %(second_feature, second_fv_result)
     else:
-        second_statement = '로그 전송이 총 %s건 입니다.' % second_fv       
-
+        if second_fv == 1:
+            second_statement = '로그 전송이 2건 이상 임에 따라 정상 입니다.'     
+        else:
+            second_statement = '로그 전송이 1건 이하 임에 따라 공격일 가능성이 있습니다.'
 
     if third_feature != 'payload_whitelist':
         if third_fv == 1:
@@ -1305,7 +1309,10 @@ def IPS_XAI_result():
             third_fv_result = '정상 인식'
             third_statement = '%s 가 %s 하였습니다.' %(third_feature, third_fv_result)
     else:
-        third_statement = '로그 전송이 총 %s건 입니다.' % third_fv       
+        if third_fv == 1:
+            third_statement = '로그 전송이 2건 이상 임에 따라 정상 입니다.'     
+        else:
+            third_statement = '로그 전송이 1건 이하 임에 따라 공격일 가능성이 있습니다.'      
 
 
     # top10_shap_values to html
