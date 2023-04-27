@@ -1274,45 +1274,51 @@ def IPS_XAI_result():
     third_word = top10_shap_values.iloc[2,-1]
 
 
-    
-    if first_feature != 'payload_whitelist':
+   
+    if first_feature != 'payload_whitelist' and first_feature != 'payload_dir_access_comb_02':
         if first_fv == 1:
             first_fv_result = '공격 탐지'
             first_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(first_feature, first_fv_result, first_word)
         else:
             first_fv_result = '정상 인식'
             first_statement = '%s 가 %s 하였습니다.' %(first_feature, first_fv_result)
-    else:
+    elif first_feature == 'payload_whitelist':
         if first_fv == 1:
             first_statement = '로그 전송이 1건 이하 임에 따라 공격일 가능성이 있습니다.'     
         else:
             first_statement = '로그 전송이 2건 이상 임에 따라 정상 입니다.'
+    else:
+        first_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % first_fv       
 
-    if second_feature != 'payload_whitelist':
+    if second_feature != 'payload_whitelist' and second_feature != 'payload_dir_access_comb_02':
         if second_fv == 1:
             second_fv_result = '공격 탐지'
             second_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(second_feature, second_fv_result, second_word)
         else:
             second_fv_result = '정상 인식'
             second_statement = '%s 가 %s 하였습니다.' %(second_feature, second_fv_result)
-    else:
+    elif second_feature == 'payload_whitelist':
         if second_fv == 1:
             second_statement = '로그 전송이 1건 이하 임에 따라 공격일 가능성이 있습니다.'     
         else:
             second_statement = '로그 전송이 2건 이상 임에 따라 정상 입니다.'
+    else:
+        second_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % second_fv      
 
-    if third_feature != 'payload_whitelist':
+    if third_feature != 'payload_whitelist' and third_feature != 'payload_dir_access_comb_02':
         if third_fv == 1:
             third_fv_result = '공격 탐지'
             third_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(third_feature, third_fv_result, third_word)
         else:
             third_fv_result = '정상 인식'
             third_statement = '%s 가 %s 하였습니다.' %(third_feature, third_fv_result)
-    else:
+    elif third_feature == 'payload_whitelist':
         if third_fv == 1:
             third_statement = '로그 전송이 1건 이하 임에 따라 공격일 가능성이 있습니다.'     
         else:
-            third_statement = '로그 전송이 2건 이상 임에 따라 정상 입니다.''      
+            third_statement = '로그 전송이 2건 이상 임에 따라 정상 입니다.'
+    else:
+        third_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % third_fv
 
 
     # top10_shap_values to html
@@ -1902,29 +1908,35 @@ def WAF_XAI_result():
     third_word = top10_shap_values.iloc[2,-1]
 
 
-    
-    if first_fv == 1:
-        first_fv_result = '공격 탐지'
-        first_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(first_feature, first_fv_result, first_word)
+    if first_feature != 'payload_dir_access_comb_02':
+        if first_fv == 1:
+            first_fv_result = '공격 탐지'
+            first_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(first_feature, first_fv_result, first_word)
+        else:
+            first_fv_result = '정상 인식'
+            first_statement = '%s 가 %s 하였습니다.' %(first_feature, first_fv_result)
     else:
-        first_fv_result = '정상 인식'
-        first_statement = '%s 가 %s 하였습니다.' %(first_feature, first_fv_result)
+        first_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % first_fv       
 
-
-    if second_fv == 1:
-        second_fv_result = '공격 탐지'
-        second_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(second_feature, second_fv_result, second_word)
+    if second_feature != 'payload_dir_access_comb_02':
+        if second_fv == 1:
+            second_fv_result = '공격 탐지'
+            second_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(second_feature, second_fv_result, second_word)
+        else:
+            second_fv_result = '정상 인식'
+            second_statement = '%s 가 %s 하였습니다.' %(second_feature, second_fv_result)
     else:
-        second_fv_result = '정상 인식'
-        second_statement = '%s 가 %s 하였습니다.' %(second_feature, second_fv_result)
+        second_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % second_fv      
 
-
-    if third_fv == 1:
-        third_fv_result = '공격 탐지'
-        third_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(third_feature, third_fv_result, third_word)
+    if third_feature != 'payload_dir_access_comb_02':
+        if third_fv == 1:
+            third_fv_result = '공격 탐지'
+            third_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(third_feature, third_fv_result, third_word)
+        else:
+            third_fv_result = '정상 인식'
+            third_statement = '%s 가 %s 하였습니다.' %(third_feature, third_fv_result)
     else:
-        third_fv_result = '정상 인식'
-        third_statement = '%s 가 %s 하였습니다.' %(third_feature, third_fv_result)
+        third_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % third_fv
 
 
     # top10_shap_values to html
