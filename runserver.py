@@ -2275,9 +2275,6 @@ def WEB_XAI_result():
     top10_shap_values = pd.merge(top10_shap_values, payload_df_t, how = 'left', on = '피처 명')
     top10_shap_values = top10_shap_values[['순위', '피처 명', '피처 설명', '피처 값', '피처 중요도', 'AI 예측 방향']]
 
-    # top10_shap_values['피처 명'] 에서 'waf_00001_' 제거
-    top10_shap_values['피처 명'] = top10_shap_values['피처 명'].apply(lambda x: x[10:] if x.startswith('waf_00001_') else x)
-
     top10_shap_values['순위'] = top10_shap_values.index + 1
     top10_shap_values  = top10_shap_values[['순위', '피처 명', '피처 설명', '피처 값', '피처 중요도', 'AI 예측 방향']]
     top10_shap_values['피처 중요도'] = top10_shap_values['피처 중요도'].apply(lambda x: round(x, 4))
