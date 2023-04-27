@@ -522,7 +522,7 @@ def highlight_text(text, signature, ai_field):
     return text, sig_pattern_df
 
 
-def web_highlight_text(text, signature, ai_field):
+def web_highlight_text(text, signature, web_ai_field):
 
     # background yellow - 시그니처 패턴
     replacement = "\033[103m" + "\\1" + "\033[49m"
