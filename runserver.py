@@ -2345,12 +2345,12 @@ def WEB_XAI_result():
                 ai_feature_list.append(['weblog_cmd_comb_03'])
                 ai_pattern_list.append([y])
                 break
-        for y in dir_access_1:
+        for y in web_dir_access_1:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['weblog_dir_access_comb_01'])
                 ai_pattern_list.append([y])
                 break
-        for y in dir_access_2:
+        for y in web_dir_access_2:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['weblog_dir_access_comb_02'])
                 ai_pattern_list.append([y])
