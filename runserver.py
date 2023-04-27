@@ -1160,11 +1160,6 @@ def IPS_XAI_result():
                 ai_feature_list.append(['payload_sql_comb_03'])
                 ai_pattern_list.append([y])
                 break
-        for y in log4j:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_log4j_comb_01'])
-                ai_pattern_list.append([y])
-                break
         for y in xss:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_xss_comb_01'])
@@ -1175,9 +1170,9 @@ def IPS_XAI_result():
                 ai_feature_list.append(['payload_cmd_comb_01'])
                 ai_pattern_list.append([y])
                 break
-        for y in wp:
+        for y in log4j:
             if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_wp_comb_01'])
+                ai_feature_list.append(['payload_log4j_comb_01'])
                 ai_pattern_list.append([y])
                 break
         for y in word_1:
@@ -1200,11 +1195,38 @@ def IPS_XAI_result():
                 ai_feature_list.append(['payload_word_comb_04'])
                 ai_pattern_list.append([y])
                 break
-        for y in user_agent:
+        for y in word_5:
             if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_useragent_comb'])
+                ai_feature_list.append(['payload_word_comb_05'])
                 ai_pattern_list.append([y])
                 break
+        for y in word_5:
+            if re.search(y, x.lower()):
+                ai_feature_list.append(['payload_word_comb_06'])
+                ai_pattern_list.append([y])
+                break
+        for y in wp:
+            if re.search(y, x.lower()):
+                ai_feature_list.append(['payload_wp_comb_01'])
+                ai_pattern_list.append([y])
+                break
+        for y in dir_access_1:
+            if re.search(y, x.lower()):
+                ai_feature_list.append(['payload_dir_access_comb_01'])
+                ai_pattern_list.append([y])
+                break
+        for y in dir_access_2:
+            if re.search(y, x.lower()):
+                ai_feature_list.append(['payload_dir_access_comb_02'])
+                ai_pattern_list.append([y])
+                break
+        for y in user_agent:
+            if re.search(y, x.lower()):
+                ai_feature_list.append(['payload_useragent_comb_01'])
+                ai_pattern_list.append([y])
+                break
+                
+                
 
     ai_feature_list = list(itertools.chain(*ai_feature_list))
     ai_pattern_list = list(itertools.chain(*ai_pattern_list))
@@ -1758,11 +1780,6 @@ def WAF_XAI_result():
                 ai_feature_list.append(['payload_sql_comb_03'])
                 ai_pattern_list.append([y])
                 break
-        for y in log4j:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_log4j_comb_01'])
-                ai_pattern_list.append([y])
-                break
         for y in xss:
             if re.search(y, x.lower()):
                 ai_feature_list.append(['payload_xss_comb_01'])
@@ -1773,9 +1790,9 @@ def WAF_XAI_result():
                 ai_feature_list.append(['payload_cmd_comb_01'])
                 ai_pattern_list.append([y])
                 break
-        for y in wp:
+        for y in log4j:
             if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_wp_comb_01'])
+                ai_feature_list.append(['payload_log4j_comb_01'])
                 ai_pattern_list.append([y])
                 break
         for y in word_1:
@@ -1798,11 +1815,38 @@ def WAF_XAI_result():
                 ai_feature_list.append(['payload_word_comb_04'])
                 ai_pattern_list.append([y])
                 break
-        for y in user_agent:
+        for y in word_5:
             if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_useragent_comb'])
+                ai_feature_list.append(['payload_word_comb_05'])
                 ai_pattern_list.append([y])
                 break
+        for y in word_5:
+            if re.search(y, x.lower()):
+                ai_feature_list.append(['payload_word_comb_06'])
+                ai_pattern_list.append([y])
+                break
+        for y in wp:
+            if re.search(y, x.lower()):
+                ai_feature_list.append(['payload_wp_comb_01'])
+                ai_pattern_list.append([y])
+                break
+        for y in dir_access_1:
+            if re.search(y, x.lower()):
+                ai_feature_list.append(['payload_dir_access_comb_01'])
+                ai_pattern_list.append([y])
+                break
+        for y in dir_access_2:
+            if re.search(y, x.lower()):
+                ai_feature_list.append(['payload_dir_access_comb_02'])
+                ai_pattern_list.append([y])
+                break
+        for y in user_agent:
+            if re.search(y, x.lower()):
+                ai_feature_list.append(['payload_useragent_comb_01'])
+                ai_pattern_list.append([y])
+                break
+                
+                
 
     ai_feature_list = list(itertools.chain(*ai_feature_list))
     ai_pattern_list = list(itertools.chain(*ai_pattern_list))
