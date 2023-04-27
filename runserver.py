@@ -414,51 +414,58 @@ response_list = df['대응 방안'].tolist()
 
 
 
-# IPS & WAF 피처 설명 테이블 생성
-ips_feature_df = pd.DataFrame([['ips_00001_payload_base64', 'payload에 공격관련 키워드(base64)가 포함되는 경우에 대한 표현'],
-                                ['ips_00001_payload_cmd_comb_01', 'payload에 cmd 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['ips_00001_payload_log4j_comb_01', 'payload에 log4j 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['ips_00001_payload_sql_comb_01', 'payload에 SQL-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['ips_00001_payload_sql_comb_02', 'payload에 SQL-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['ips_00001_payload_sql_comb_03', 'payload에 SQL-I 관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['ips_00001_payload_useragent_comb', 'payload에 악성 user_agent가 포함되는 경우에 대한 표현'],
-                                ['ips_00001_payload_word_comb_01', 'payload에 공격관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['ips_00001_payload_word_comb_02', 'payload에 공격관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['ips_00001_payload_word_comb_03', 'payload에 공격관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['ips_00001_payload_word_comb_04', 'payload에 공격관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['ips_00001_payload_wp_comb_01', 'payload에 wp 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['ips_00001_payload_xss_comb_01', 'payload에 XSS 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['ips_00001_payload_whitelist', 'payload에 공격과 관련없이 로그전송 이벤트인 경우에 대한 표현']
+# IPS & WAF & WEB 피처 설명 테이블 생성
+ips_feature_df = pd.DataFrame([['ips_payload_whitelist', 'payload에 공격과 관련없이 로그전송 이벤트인 경우에 대한 표현'],
+                                ['ips_payload_sql_comb_01', 'payload에 SQL-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['ips_payload_sql_comb_02', 'payload에 SQL-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['ips_payload_sql_comb_03', 'payload에 SQL-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['ips_payload_xss_comb_01', 'payload에 XSS 관련 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['ips_payload_cmd_comb_01', 'payload에 CMD-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['ips_payload_log4j_comb_01', 'payload에 Log4j 관련 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['ips_payload_word_comb_01', 'payload에 공격관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['ips_payload_word_comb_02', 'payload에 공격관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['ips_payload_word_comb_03', 'payload에 공격관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['ips_payload_word_comb_04', 'payload에 공격관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['ips_payload_word_comb_05', 'payload에 공격관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['ips_payload_word_comb_06', 'payload에 공격관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['ips_payload_wp_comb_01', 'payload에 Word Press 관련 키워드 조합이 포함되는 경우에 대한 표현']
+                                ['ips_payload_dir_access_comb_01', 'payload에 디렉토리 접근 관련 키워드 조합이 포함되는 경우에 대한 표현']
+                                ['ips_payload_dir_access_comb_02', 'payload에 디렉토리 접근 관련 키워드 조합이 포함되는 경우에 대한 표현']
+                                ['ips_payload_useragent_comb_01', 'payload에 악성 user_agent가 포함되는 경우에 대한 표현']
                               ]
                                 , columns=['피처 명', '피처 설명'])
 
-waf_feature_df = pd.DataFrame([['waf_00001_payload_cmd_comb_01', 'payload에 cmd 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['waf_00001_payload_log4j_comb_01', 'payload에 log4j 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['waf_00001_payload_sql_comb_01', 'payload에 SQL-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['waf_00001_payload_sql_comb_02', 'payload에 SQL-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['waf_00001_payload_sql_comb_03', 'payload에 SQL-I 관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['waf_00001_payload_useragent_comb', 'payload에 악성 user_agent가 포함되는 경우에 대한 표현'],
-                                ['waf_00001_payload_word_comb_01', 'payload에 공격관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['waf_00001_payload_word_comb_02', 'payload에 공격관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['waf_00001_payload_word_comb_03', 'payload에 공격관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['waf_00001_payload_word_comb_04', 'payload에 공격관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['waf_00001_payload_wp_comb_01', 'payload에 wp 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['waf_00001_payload_xss_comb_01', 'payload에 XSS 관련 키워드 조합이 포함되는 경우에 대한 표현']
+waf_feature_df = pd.DataFrame([['waf_payload_sql_comb_01', 'payload에 SQL-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['waf_payload_sql_comb_02', 'payload에 SQL-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['waf_payload_sql_comb_03', 'payload에 SQL-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['waf_payload_xss_comb_01', 'payload에 XSS 관련 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['waf_payload_cmd_comb_01', 'payload에 CMD-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['waf_payload_log4j_comb_01', 'payload에 Log4j 관련 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['waf_payload_word_comb_01', 'payload에 공격관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['waf_payload_word_comb_02', 'payload에 공격관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['waf_payload_word_comb_03', 'payload에 공격관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['waf_payload_word_comb_04', 'payload에 공격관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['waf_payload_word_comb_05', 'payload에 공격관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['waf_payload_word_comb_06', 'payload에 공격관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['waf_payload_wp_comb_01', 'payload에 Word Press 관련 키워드 조합이 포함되는 경우에 대한 표현']
+                                ['waf_payload_dir_access_comb_01', 'payload에 디렉토리 접근 관련 키워드 조합이 포함되는 경우에 대한 표현']
+                                ['waf_payload_dir_access_comb_02', 'payload에 디렉토리 접근 관련 키워드 조합이 포함되는 경우에 대한 표현']
+                                ['waf_payload_useragent_comb_01', 'payload에 악성 user_agent가 포함되는 경우에 대한 표현']
                               ]
                                 , columns=['피처 명', '피처 설명'])
 
 
 web_feature_df = pd.DataFrame([['weblog_sql_comb_01', 'web log에 SQL-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['weblog_sql_comb_02', 'web log에 SQL-I 관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['weblog_sql_comb_03', 'web log에 SQL-I 관련 키워드가 포함되는 경우에 대한 표현'],
+                                ['weblog_sql_comb_02', 'web log에 SQL-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['weblog_sql_comb_03', 'web log에 SQL-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
                                 ['weblog_sql_comb_04', 'web log에 SQL-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['weblog_sql_comb_05', 'web log에 SQL-I 관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['weblog_xss_comb_01', 'web log에 XSS 관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['weblog_cmd_comb_01', 'web log에 cmd 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['weblog_cmd_comb_02', 'web log에 cmd 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['weblog_cmd_comb_03', 'web log에 cmd 관련 키워드가 포함되는 경우에 대한 표현'],
-                                ['weblog_dir_access_comb_01', 'web log에 디렉토리 접근 (etc/passwd) 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['weblog_dir_access_comb_02', 'web log에 상위 디렉토리 접근 (../) 관련 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['weblog_sql_comb_05', 'web log에 SQL-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['weblog_xss_comb_01', 'web log에 XSS 관련 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['weblog_cmd_comb_01', 'web log에 CMD-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['weblog_cmd_comb_02', 'web log에 CMD-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['weblog_cmd_comb_03', 'web log에 CMD-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['weblog_dir_access_comb_01', 'web log에 디렉토리 접근 관련 키워드 조합이 포함되는 경우에 대한 표현'],
+                                ['weblog_dir_access_comb_02', 'web log에 디렉토리 접근 관련 키워드 조합이 포함되는 경우에 대한 표현'],
                               ]
                                 , columns=['피처 명', '피처 설명'])
 
