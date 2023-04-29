@@ -22,7 +22,7 @@ COPY shap_explainer_save.py /app
 COPY templates /app/templates
 COPY static /app/static
 COPY save_model /app/save_model
-COPY chatgpt_context /app/chatgpt_context
+COPY chat_gpt_context /app/chat_gpt_context
 
 # Install dependencies
 RUN pip3 install --upgrade setuptools pip
