@@ -16,6 +16,7 @@ WEB Log Detection - SQL Injection, Command Injection, XSS, normal
 - DistilBERT (task: question-answering) based fine tuning like SQUAD dataset format
 - DistilBART based text-summarization
 - OpenAI API (gpt-3.5-turbo & gpt-4) based XAI analysis
+- Cerebras GPT (https://huggingface.co/cerebras/Cerebras-GPT-111M) based Cyber Security domain fine tuning
 -----
-- TO DO: OpenAI GPT (https://huggingface.co/openai-gpt) based cyber security Chatbot R&D
+- TO DO: Cerebras GPT (https://huggingface.co/cerebras/Cerebras-GPT-13B) based cyber security Chatbot R&D
 
