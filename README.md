@@ -18,5 +18,5 @@ WEB Log Detection - SQL Injection, Command Injection, XSS, normal
 - OpenAI API (gpt-3.5-turbo & gpt-4) based XAI analysis
 - Cerebras GPT (https://huggingface.co/cerebras/Cerebras-GPT-111M) based Cyber Security domain fine tuning
 -----
-- TO DO: Cerebras GPT based cyber security Chatbot R&D and gradio based deployment
+- TO DO: Cerebras GPT based cyber security Chatbot R&D and Gradio based deployment
 
