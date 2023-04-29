@@ -1,0 +1,21 @@
+﻿instruction,input,output
+What is SQL Injection attack?,,a type of cyber attack in which an attacker tries to exploit vulnerabilities in a web application's database layer by injecting malicious SQL statements into a form or input field.
+What is Command Injection attack?,,a type of cyber attack where an attacker executes arbitrary commands on a vulnerable system by exploiting a vulnerability in a web application or other software that allows user input to be passed to the underlying operating system.
+What is XSS (Cross Site Scripting) attack?,,"a type of cyber attack in which an attacker injects malicious code into a vulnerable web application, which is then executed by a victim's browser. The attack typically involves injecting script code into a web page or web application that is then executed when a user visits the page or interacts with the application."
+What is JNDI Injection attack?,,a type of security vulnerability that occurs when an attacker is able to inject malicious data into a Java Naming and Directory Interface (JNDI) lookup operation.
+What is Word Press vulnerability?,,a weakness in the WordPress core software or in one of the many third-party plugins or themes that are commonly used with WordPress.
+How many enterprise Tactics IDs are in the Mitre Att&ck v13 matrix released in April 2023?,"The Mitre Att&ck v13, announced in April 2023, consists of a total of 14 Enterprise Tactics IDs, including TA0001 (Initial Access), TA0002 (Execution), TA0003 (Persistence), TA0004 (Privilege Escalation), TA0005 (Defense Evasion), TA0006 (Credential Access), TA0007 (Discovery), TA0008 (Lateral Movement), TA0009 (Collection), TA0010 (Exfiltration), TA0011 (Command and Control), TA0040 (Impact), TA0042 (Resource Development), and TA0043 (Reconnaissance).",The Mitre Att&ck v13 matrix released in April 2023 has a total of 14 Enterprise Tactics IDs.
+What is TA0043 (Reconnaissance)?,,The adversary is trying to gather information they can use to plan future operations.
+What is TA0042 (Resource Development)?,,The adversary is trying to establish resources they can use to support operations.
+What is TA0001 (Initial Access)?,,The adversary is trying to get into your network.
+What is TA0002 (Execution)?,,The adversary is trying to run malicious code.
+What is TA0003 (Persistence)?,,The adversary is trying to maintain their foothold.
+What is TA0004 (Privilege Escalation)?,,The adversary is trying to gain higher-level permissions.
+What is TA0005 (Defense Evasion)?,,The adversary is trying to avoid being detected.
+What is TA0006 (Credential Access)?,,The adversary is trying to steal account names and passwords.
+What is TA0007 (Discovery)?,,The adversary is trying to figure out your environment.
+What is TA0008 (Lateral Movement)?,,The adversary is trying to move through your environment.
+What is TA0009 (Collection)?,,The adversary is trying to gather data of interest to their goal.
+What is TA0011 (Command and Control)?,,The adversary is trying to communicate with compromised systems to control them.
+What is TA0010 (Exfiltration)?,,The adversary is trying to steal data.
+What is TA0040 (Impact)?,,"The adversary is trying to manipulate, interrupt, or destroy your systems and data."
