@@ -162,5 +162,4 @@ with gr.Blocks(css="#chatbot .overflow-y-auto{height:2000px} footer {visibility:
     txt.submit(answer, [state, state_chatbot, txt], [state, state_chatbot, chatbot])
     txt.submit(lambda: "", None, txt)
 
-# gradio_interface.launch(debug=True, server_name="192.168.35.185", share=True)
 gradio_interface.launch(debug=True, server_name="127.0.0.1", share=True)
