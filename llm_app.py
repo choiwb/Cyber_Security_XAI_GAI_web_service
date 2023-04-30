@@ -38,14 +38,6 @@ def answer(state, state_chatbot, prompt):
 
     ##########################################
     '''
-    messages = state + [{"role": "User", "content": prompt}]
-
-    conversation_history = "\n".join(
-        # [f"### {msg['role']}:\n{msg['content']}" for msg in messages]
-        [f"{msg['role']}:\n{msg['content']}" for msg in messages]
-
-    )
-
     ans = pipe(
         conversation_history + "\n\nAssistant:",
         do_sample=True,
@@ -62,6 +54,7 @@ def answer(state, state_chatbot, prompt):
     '''
     ##########################################
 
+
     # prompt 에 \n, \r, \t, "가 있는 경우, ' ' 처리
     prompt = prompt.replace('\n', ' ').replace('\r', ' ').replace('\t', ' ').replace('"', ' ')
     
@@ -76,8 +69,16 @@ def answer(state, state_chatbot, prompt):
     ##############################################
     # history 최대 512 token 까지 업데이트 코드 추가 !!!
     ##############################################
-    
+    messages = state + [{"role": "User", "content": prompt}]
+
+    conversation_history = "\n".join(
+        # [f"### {msg['role']}:\n{msg['content']}" for msg in messages]
+        [f"{msg['role']}:\n{msg['content']}" for msg in messages]
+    )
+
+
     generation_config = transformers.GenerationConfig(
+            conversation_history=conversation_history,  
             max_new_tokens=256,
             temperature=0.2,
             top_p=0.75,
@@ -90,6 +91,9 @@ def answer(state, state_chatbot, prompt):
             pad_token_id=model.config.pad_token_id,
             eos_token_id=model.config.eos_token_id,
     )
+
+    print('!!!!!!!!!!!!!!!!!!!!!!!!!!')
+    print(conversation_history)
 
     with torch.no_grad():
         output = model.generate(
