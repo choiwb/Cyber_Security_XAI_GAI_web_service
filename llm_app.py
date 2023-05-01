@@ -128,7 +128,7 @@ def generate_text(
     typical_p, 
     num_beams
 ):
-    # Create a conversation context of the last 2 entries in the history
+    # Create a conversation context of the last 1 entries in the history
     # 학습 데이터가 적음에 따라 history가 길어질 수록 동일한 답변을 많이 유도하므로, 우선 1개 대화까지만 기억.
     inp = ''.join([
         f"Human: {h[0]}\n\nAssistant: {'' if h[1] is None else h[1]}\n\n" for h in history[-1:]
