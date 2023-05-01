@@ -183,8 +183,8 @@ ips_query = """
         OR INSTR(LOWER(payload), 'put /')>0
                     ,1, 0) AS ips_payload_word_comb_05,
 
-        IF(INT(RLIKE(LOWER(payload), ""80040e07(.*?)font"") )>0
-        OR INT(RLIKE(LOWER(payload), ""80040e14(.*?)font"") )>0
+        IF(INT(RLIKE(LOWER(payload), '80040e07(.*?)font') )>0
+        OR INT(RLIKE(LOWER(payload), '80040e14(.*?)font') )>0
         OR INT(RLIKE(LOWER(payload), 'search(.*?)cgi') )>0
         OR INT(RLIKE(LOWER(payload), 'bbs(.*?)forum(.*?)cgi') )>0
         OR INT(RLIKE(LOWER(payload), 'web(.*?)store(.*?)cgi') )>0
@@ -342,8 +342,8 @@ waf_query = """
         OR INSTR(LOWER(payload), 'put /')>0
                     ,1, 0) AS waf_payload_word_comb_05,
 
-        IF(INT(RLIKE(LOWER(payload), ""80040e07(.*?)font"") )>0
-        OR INT(RLIKE(LOWER(payload), ""80040e14(.*?)font"") )>0
+        IF(INT(RLIKE(LOWER(payload), '80040e07(.*?)font') )>0
+        OR INT(RLIKE(LOWER(payload), '80040e14(.*?)font') )>0
         OR INT(RLIKE(LOWER(payload), 'search(.*?)cgi') )>0
         OR INT(RLIKE(LOWER(payload), 'bbs(.*?)forum(.*?)cgi') )>0
         OR INT(RLIKE(LOWER(payload), 'web(.*?)store(.*?)cgi') )>0
