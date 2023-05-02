@@ -28,21 +28,15 @@ tokenizer.add_special_tokens({'pad_token': '[PAD]'})
 
 model = transformers.AutoModelForCausalLM.from_pretrained(
     MODEL, 
-    # load_in_8bit=True, 
-    # torch_dtype=torch.float16,
-    # device_map={'':0} if CUDA_AVAILABLE else 'auto',
-)
-'''
-model = peft.PeftModel.from_pretrained(
-    model,
-    'lxe/lora-cerebras-gpt2.7b-alpaca-shortprompt',
-    torch_dtype=torch.float16
+    load_in_8bit=True, 
+    torch_dtype=torch.float16,
+    device_map={'':0} if CUDA_AVAILABLE else 'auto',
 )
 
-model.half()
-'''
+print(model.eval())
+print(model.dtype)
 
-model.eval()
+
 
 # Streaming functionality taken from https://github.com/oobabooga/text-generation-webui/blob/master/modules/text_generation.py#L105
 
@@ -232,8 +226,8 @@ with gr.Blocks(css="#chatbot .overflow-y-auto{height:2000px} footer {visibility:
         # user_message '$' 를 ' ' 로 변경
         # 주소 앞에 '$' 있을 경우 UI 표출 시 에러 발생 !!!!!
         user_message = user_message.replace('$', ' ')
-        print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1')
-        print(user_message)
+        # print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1')
+        # print(user_message)
 
         return "", history + [[user_message, None]]
     
