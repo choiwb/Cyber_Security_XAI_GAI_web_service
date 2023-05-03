@@ -22,7 +22,9 @@ device = torch.device("cuda" if CUDA_AVAILABLE else "cpu")
 MODEL = 'cerebras-gpt111m-finetune'
 # tokenizer = transformers.AutoTokenizer.from_pretrained(MODEL)
 # tokenizer.pad_token_id = 0
-tokenizer = transformers.AutoTokenizer.from_pretrained("cerebras/Cerebras-GPT-111M")
+tokenizer = transformers.AutoTokenizer.from_pretrained("cerebras/Cerebras-GPT-111M",
+                                         max_position_embeddings = 2048,
+                                        ignore_mismatched_sizes = True)
 # tokenizer = transformers.AutoTokenizer.from_pretrained(MODEL)
 tokenizer.add_special_tokens({'pad_token': '[PAD]'})
 
@@ -35,6 +37,7 @@ model = transformers.AutoModelForCausalLM.from_pretrained(
 
 print(model.eval())
 print(model.dtype)
+print(model.config)
 
 
 
