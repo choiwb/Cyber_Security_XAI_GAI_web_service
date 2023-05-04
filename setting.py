@@ -25,10 +25,10 @@ IPS_explainer_path = 'save_model/DSS_IPS_LGB_explainer_20230427.pkl'
 IPS_model = pickle.load(open(new_IPS_model_path, 'rb'))
 
 
-# 2023/04/27 WAF 모델 - Light GBM
-new_WAF_model_path = 'save_model/DSS_WAF_LGB_20230427.pkl'
+# 2023/05/04 WAF 모델 - Light GBM
+new_WAF_model_path = 'save_model/DSS_WAF_LGB_20230504.pkl'
 # 위 모델을, SHAP의 TreeExplainer 연산 및 저장
-WAF_explainer_path = 'save_model/DSS_WAF_LGB_explainer_20230427.pkl'
+WAF_explainer_path = 'save_model/DSS_WAF_LGB_explainer_20230504.pkl'
 
 WAF_model = pickle.load(open(new_WAF_model_path, 'rb'))
 
