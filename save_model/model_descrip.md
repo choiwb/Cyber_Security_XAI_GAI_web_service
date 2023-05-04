@@ -1,7 +1,7 @@
 - IPS model: DSS_IPS_LGB_20230427.pkl
 - IPS XAI: DSS_IPS_LGB_explainer_20230427.pkl
-- WAF model: DSS_WAF_LGB_20230427.pkl
-- WAF XAI: DSS_WAF_LGB_explainer_20230427.pkl
+- WAF model: DSS_WAF_LGB_20230504.pkl
+- WAF XAI: DSS_WAF_LGB_explainer_20230504.pkl
 - WEB model: DSS_WEB_LGB_20230404.pkl
 - WEB XAI: DSS_WEB_LGB_explainer_20230404.pkl
 - WEB useragent modek: DSS_WEB_useragent_LGB_20230413.pkl
