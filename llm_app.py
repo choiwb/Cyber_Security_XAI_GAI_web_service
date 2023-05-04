@@ -183,7 +183,8 @@ def generate_text(
             history[-1][1] = reply.strip()
             yield history
 
-with gr.Blocks(css="#chatbot .overflow-y-auto{height:2000px} footer {visibility: hidden;}", secure = True, capture_session = True, server_name = None) as gradio_interface:
+# with gr.Blocks(css="#chatbot .overflow-y-auto{height:2000px} footer {visibility: hidden;}", secure = True, capture_session = True, server_name = None) as gradio_interface:
+with gr.Blocks(css="#chatbot .overflow-y-auto{height:2000px} footer {visibility: hidden;}") as gradio_interface:
 
     with gr.Row():
         gr.HTML(
