@@ -19,27 +19,40 @@ CUDA_AVAILABLE = torch.cuda.is_available()
 
 device = torch.device("cuda" if CUDA_AVAILABLE else "cpu")
 
-MODEL = 'cerebras-gpt111m-finetune'
+# 영어 모델
+# MODEL = 'cerebras-gpt111m-finetune'
+# 한글 모델
+# MODEL = 'koalpaca-355m-finetune'
+MODEL = 'polyglot-ko-1.3b-finetune'
+
 # tokenizer = transformers.AutoTokenizer.from_pretrained(MODEL)
 # tokenizer.pad_token_id = 0
-tokenizer = transformers.AutoTokenizer.from_pretrained("cerebras/Cerebras-GPT-111M",
-                                         max_position_embeddings = 2048,
-                                        ignore_mismatched_sizes = True)
-# tokenizer = transformers.AutoTokenizer.from_pretrained(MODEL)
+# tokenizer = transformers.AutoTokenizer.from_pretrained(
+#                                       "cerebras/Cerebras-GPT-111M",
+#                                        max_position_embeddings = 2048,
+#                                        ignore_mismatched_sizes = True)
+tokenizer = transformers.AutoTokenizer.from_pretrained(MODEL, max_length = 2048,
+                                                       max_position_embeddings = 2048,
+                                                       ignore_mismatched_sizes = True)
 tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+
 
 model = transformers.AutoModelForCausalLM.from_pretrained(
     MODEL, 
+    max_length = 2048,
+    max_position_embeddings = 2048,
+    ignore_mismatched_sizes = True,
+    # CUDA 존재 시만 파라미터 적용 가능 !!!!!
     load_in_8bit=True, 
     torch_dtype=torch.float16,
     device_map={'':0} if CUDA_AVAILABLE else 'auto',
 )
 
+
+print(model.half())
 print(model.eval())
 print(model.dtype)
 print(model.config)
-
-
 
 # Streaming functionality taken from https://github.com/oobabooga/text-generation-webui/blob/master/modules/text_generation.py#L105
 
@@ -125,10 +138,12 @@ def generate_text(
     typical_p, 
     num_beams
 ):
-    # Create a conversation context of the last 1 entries in the history
-    # 학습 데이터가 적음에 따라 history가 길어질 수록 동일한 답변을 많이 유도하므로, 우선 1개 대화까지만 기억.
+    # Create a conversation context of the last 5 entries in the history
+    # 학습 데이터가 적음에 따라 history가 길어질 수록 동일한 답변을 많이 유도하므로, 우선 5개 대화까지만 기억.
     inp = ''.join([
-        f"Human: {h[0]}\n\nAssistant: {'' if h[1] is None else h[1]}\n\n" for h in history[-1:]
+        # f"Human: {h[0]}\n\nAssistant: {'' if h[1] is None else h[1]}\n\n" for h in history[-5:]
+        f"질문:{h[0]}\n답변:{'' if h[1] is None else h[1]}\n\n" for h in history[-5:]
+
     ]).strip()
      
     input_ids = tokenizer.encode(
@@ -168,7 +183,9 @@ def generate_text(
 
             # If reply contains '^Human:' or '^Assistant:' 
             # then we have reached the end of the assistant's response
-            stop_re = re.compile(r'^(Human|Assistant):', re.MULTILINE)
+            # stop_re = re.compile(r'^(Human|Assistant):', re.MULTILINE)
+            stop_re = re.compile(r'^(질문|답변):', re.MULTILINE)
+
             if re.search(stop_re, reply):
                 reply = ''.join(reply.split('\n')[:-1])
                 history[-1][1] = reply.strip()
@@ -183,7 +200,6 @@ def generate_text(
             history[-1][1] = reply.strip()
             yield history
 
-# with gr.Blocks(css="#chatbot .overflow-y-auto{height:2000px} footer {visibility: hidden;}", secure = True, capture_session = True, server_name = None) as gradio_interface:
 with gr.Blocks(css="#chatbot .overflow-y-auto{height:2000px} footer {visibility: hidden;}") as gradio_interface:
 
     with gr.Row():
@@ -199,7 +215,9 @@ with gr.Blocks(css="#chatbot .overflow-y-auto{height:2000px} footer {visibility:
     with gr.Row():
         with gr.Column():
             chatbot = gr.Chatbot()
-            msg = gr.Textbox(value="As a Cyber Security Analyst, What is SQL Injection attack?", placeholder="Type a message...")
+            # msg = gr.Textbox(value="As a Cyber Security Analyst, What is SQL Injection attack?", placeholder="Type a message...")
+            msg = gr.Textbox(value="보안 전문가로서, JNDI Injection 공격에 대해서 설명해줘.", placeholder="Type a message...")
+
             with gr.Row():
                 clear = gr.Button("Clear")
 
@@ -230,8 +248,8 @@ with gr.Blocks(css="#chatbot .overflow-y-auto{height:2000px} footer {visibility:
         # user_message '$' 를 ' ' 로 변경
         # 주소 앞에 '$' 있을 경우 UI 표출 시 에러 발생 !!!!!
         user_message = user_message.replace('$', ' ')
-        # print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1')
-        # print(user_message)
+        print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1')
+        print(user_message)
 
         return "", history + [[user_message, None]]
     
