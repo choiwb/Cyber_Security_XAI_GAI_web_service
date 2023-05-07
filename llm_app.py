@@ -50,7 +50,6 @@ model = transformers.AutoModelForCausalLM.from_pretrained(
 
 
 print(model.half())
-print(model.eval())
 print(model.dtype)
 print(model.config)
 
