@@ -58,7 +58,7 @@ print('config: ', config)
 #                            load_in_8bit=True,  torch_dtype=torch.float16, device_map={"":0})
 # tokenizer = transformers.AutoTokenizer.from_pretrained(config.base_model_name_or_path)
 # tokenizer.add_special_tokens({'pad_token': '[PAD]'})
-model = transformers.AutoModelForCausalLM.from_pretrained(config.base_model_name_or_path).half().to(device)
+model = transformers.AutoModelForCausalLM.from_pretrained(config.base_model_name_or_path,  torch_dtype = torch.float16, device_map = {'': 0}).half().to(device)
 tokenizer = transformers.AutoTokenizer.from_pretrained(config.base_model_name_or_path)
 
 # Load the Lora model
