@@ -2,13 +2,15 @@ import torch
 import gradio as gr
 import re
 import transformers
-# import peft
 import traceback
 import argparse
 
 from queue import Queue
 from threading import Thread
 import gc
+
+from peft import PeftModel, PeftConfig
+
 
 ############################################
 import matplotlib
@@ -31,12 +33,12 @@ MODEL = 'polyglot-ko-1.3b-finetune'
 #                                       "cerebras/Cerebras-GPT-111M",
 #                                        max_position_embeddings = 2048,
 #                                        ignore_mismatched_sizes = True)
-tokenizer = transformers.AutoTokenizer.from_pretrained(MODEL, max_length = 2048,
-                                                       max_position_embeddings = 2048,
-                                                       ignore_mismatched_sizes = True)
-tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+# tokenizer = transformers.AutoTokenizer.from_pretrained(MODEL, max_length = 2048,
+#                                                       max_position_embeddings = 2048,
+#                                                       ignore_mismatched_sizes = True)
+#tokenizer.add_special_tokens({'pad_token': '[PAD]'})
 
-
+'''
 model = transformers.AutoModelForCausalLM.from_pretrained(
     MODEL, 
     max_length = 2048,
@@ -47,6 +49,21 @@ model = transformers.AutoModelForCausalLM.from_pretrained(
     torch_dtype=torch.float16,
     device_map={'':0} if CUDA_AVAILABLE else 'auto',
 )
+'''
+
+# Load peft config for pre-trained checkpoint etc.
+config = PeftConfig.from_pretrained(MODEL)
+print('config: ', config)
+# model = transformers.AutoModelForCausalLM.from_pretrained(config.base_model_name_or_path,  
+#                            load_in_8bit=True,  torch_dtype=torch.float16, device_map={"":0})
+# tokenizer = transformers.AutoTokenizer.from_pretrained(config.base_model_name_or_path)
+# tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+model = transformers.AutoModelForCausalLM.from_pretrained(config.base_model_name_or_path).half().to(device)
+tokenizer = transformers.AutoTokenizer.from_pretrained(config.base_model_name_or_path)
+
+# Load the Lora model
+# model = PeftModel.from_pretrained(model, MODEL, device_map={"":0})
+model = PeftModel.from_pretrained(model, MODEL, torch_dtype = torch.float16, device_map = {'': 0}).half().to(device)
 
 
 print(model.half())
