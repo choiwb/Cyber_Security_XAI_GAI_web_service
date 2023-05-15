@@ -65,6 +65,9 @@ tokenizer = transformers.AutoTokenizer.from_pretrained(config.base_model_name_or
 # model = PeftModel.from_pretrained(model, MODEL, device_map={"":0})
 model = PeftModel.from_pretrained(model, MODEL, torch_dtype = torch.float16, device_map = {'': 0}).half().to(device)
 
+model.config.pad_token_id = tokenizer.pad_token_id = 0 # unk
+model.config.bos_token_id = 1
+model.config.eos_token_id = 2
 
 print(model.half())
 print(model.dtype)
