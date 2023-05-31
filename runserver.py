@@ -2668,10 +2668,7 @@ def WEB_XAI_result():
 
         useragent_pred_explain = '입력된 WEB Log의 User-Agent는 %s에 해당합니다.' %(useragent_pred[0])
 
-        # CTI 연계
-        # 입력된 WEB Log의 출발지 IP 파싱 후, CTI 와 연계하여 출발지 국가명 추출
-        # (현재 특정 대역 IP의 경우 ChatGPT 와의 연계 때문에 비식별 진행 함.)
-        print('출발지 IP (비식별 전): ', start_ip[0])
+        print('출발지 IP: ', start_ip[0])
 
         # GeoLite2-Country.mmdb 사용법
         country_reader = geoip2.database.Reader(geoip_country_db_path)
