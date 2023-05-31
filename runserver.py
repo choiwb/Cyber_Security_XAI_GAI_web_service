@@ -734,9 +734,9 @@ def WEB_payload_parsing():
 
     # raw_data_str이 "" 인 경우, " " 처리
     raw_data_str = raw_data_str.replace('""', '" "')
-    
+
     # encode to decode
-    raw_data_str = payload_decode(raw_data_str)
+    # raw_data_str = payload_decode(raw_data_str)
 
     # 비식별
     # raw_data_str = payload_anonymize(raw_data_str)
@@ -822,7 +822,7 @@ def WEB_payload_parsing():
         # df_m['agent_etc'] 가 ' "'로 시작하는 경우, '' 처리
         if df_m['agent_etc'][0].startswith(' "'):
             df_m['agent_etc'][0] = df_m['agent_etc'][0][2:]
-        
+
         df_m['user_agent'] = [str(x).split('"', maxsplit=1)[0] for x in df_m['agent_etc']]
         df_m['except_agent'] = [str(x).split('"', maxsplit=1)[1] for x in df_m['agent_etc']]
 
@@ -853,13 +853,17 @@ def WEB_payload_parsing():
             # final_df의 '' 값은 '-' 로 변경
             final_df = final_df.replace('', '-')
 
+            # SIEM 기반 이 아닌 일반적인 WEB 로그 포괄을 위해 아래와 같은 주요 필드 5개 파싱.
+            final_df = final_df[['http_method', 'http_url', 'http_query', 'http_version', 'user_agent']]
+
             # FLASK 적용
             flask_html = final_df.to_html(index = False, justify = 'center')
             # print(flask_df)
             # CTI 적용
             cti_json = final_df.to_json(orient = 'records')
             # print(ctf_df)
-            warning_statement = 'WEB_NGINX 로그 입니다.'
+            # warning_statement = 'WEB_NGINX 로그 입니다.'
+            warning_statement = 'WEB 로그 입니다.'
         
         else:
             final_df = df_m[['http_method', 'http_url', 'http_query', 'http_version', 'http_status', 'pkt_bytes', 'referer', 'user_agent']]
@@ -876,13 +880,17 @@ def WEB_payload_parsing():
             # final_df의 '' 값은 '-' 로 변경
             final_df = final_df.replace('', '-')
 
+            # SIEM 기반 이 아닌 일반적인 WEB 로그 포괄을 위해 아래와 같은 주요 필드 5개 파싱.
+            final_df = final_df[['http_method', 'http_url', 'http_query', 'http_version', 'user_agent']]
+
             # FLASK 적
             flask_html = final_df.to_html(index = False, justify = 'center')
             # print(flask_df)
             # CTI 적용
             cti_json = final_df.to_json(orient = 'records')
             # print(ctf_df)
-            warning_statement = 'WEB_APACHE 로그 입니다.'
+            # warning_statement = 'WEB_APACHE 로그 입니다.'
+            warning_statement = 'WEB 로그 입니다.'
 
     else:
         try:
@@ -968,13 +976,17 @@ def WEB_payload_parsing():
             # final_df의 '' 값은 '-' 로 변경
             final_df = final_df.replace('', '-')
 
+            # SIEM 기반 이 아닌 일반적인 WEB 로그 포괄을 위해 아래와 같은 주요 필드 5개 파싱.
+            final_df = final_df[['http_method', 'http_url', 'http_query', 'http_version', 'user_agent']]
+
             # FLASK 적용
             flask_html = final_df.to_html(index = False, justify = 'center')
             # print(flask_df)
             # CTI 적용
             cti_json = final_df.to_json(orient = 'records')
             # print(ctf_df)
-            warning_statement = 'WEB_IIS 로그 입니다.'
+            # warning_statement = 'WEB_IIS 로그 입니다.'
+            warning_statement = 'WEB 로그 입니다.'
         except:
             # flask_html = 'WEB 로그가 아닙니다.'
             # cti_json = 'WEB 로그가 아닙니다.'
@@ -2255,6 +2267,7 @@ def WEB_XAI_result():
     # 비식별
     # raw_data_str = payload_anonymize(raw_data_str)
 
+    '''
     # 비식별 하이라이트 처리 - background red
     # replacement = "\033[101m" + "\\1" + "\033[49m"
     # 비식별 하이라이트 처리 - background black & foreground white
@@ -2272,7 +2285,8 @@ def WEB_XAI_result():
     background_black_foreground_white_regex = r'\x1b\[40m\x1b\[37m(.*?)\x1b\[0m'
 
     payload_anonymize_highlight_html = re.sub(background_black_foreground_white_regex, r'<span style = "background-color:black; color:white">\1</span>', payload_anonymize_highlight)
-
+    '''
+    
     payload_df = WEB_web_UI_preprocess()
     payload_arr = np.array(payload_df)
 
