@@ -2254,11 +2254,16 @@ def WEB_XAI_result():
     
     # 출발지 IP 의 경우, nginx: 다음 IP 부터 시작
     # NGINX 로그
+    '''
     if 'nginx:' in raw_data_str.lower():
         start_ip = re.findall(r'(?<=nginx: )\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}', raw_data_str.lower())
     # APACHE 또는 IIS 로그
     else: 
         start_ip = re.findall(r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}', raw_data_str)
+    '''
+
+    ip_pattern = r'((?<!\w\/)(?<!\w\/[0-9])(?:[0-9]{1,3}\.){3}[0-9]{1,3})'
+    start_ip = re.findall(ip_pattern, raw_data_str)
         
         
     # encode to decode
