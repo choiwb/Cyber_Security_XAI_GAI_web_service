@@ -739,7 +739,7 @@ def WEB_payload_parsing():
     raw_data_str = payload_decode(raw_data_str)
 
     # 비식별
-    raw_data_str = payload_anonymize(raw_data_str)
+    # raw_data_str = payload_anonymize(raw_data_str)
 
     # raw_data_str에 '"'가 4개 이상 (2쌍) 인 경우, APACHE, 아니면, IIS
     if raw_data_str.count('"') >= 4:
@@ -2253,7 +2253,7 @@ def WEB_XAI_result():
     raw_data_str = payload_decode(raw_data_str)
 
     # 비식별
-    raw_data_str = payload_anonymize(raw_data_str)
+    # raw_data_str = payload_anonymize(raw_data_str)
 
     # 비식별 하이라이트 처리 - background red
     # replacement = "\033[101m" + "\\1" + "\033[49m"
