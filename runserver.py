@@ -2804,7 +2804,7 @@ def WEB_XAI_result():
         q_and_a_html = '질의 응답 과정에서 오류가 발생했습니다.'
 
     return render_template('WEB_XAI_output.html', payload_raw_data = request.form['raw_data_str'],  
-                                payload_anonymize_highlight_html = payload_anonymize_highlight_html,
+                                # payload_anonymize_highlight_html = payload_anonymize_highlight_html,
                                 # train_mean_proba_html = train_mean_proba_html,
                                 # force_html = force_html,
                                 summary_html = summary_html,
