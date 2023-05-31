@@ -52,9 +52,17 @@ def payload_decode(raw_data_str):
 
 def payload_anonymize(raw_data_str):
     # IP
-    # 61. 시작 하는 경우
-    ip_pattern = r'\b61\.(?:[0-9]{1,3}\.){2}[0-9]{1,3}\b'
-    output_str = re.sub(ip_pattern, '10.10.123.123', raw_data_str)
+    # 단, 검색 엔진 (google, safari 등) 관련 버전은 예외 처리
+    # 예, chrome/xx.xx.xx.xx, safari/xx.xx.xx.xx
+    '''
+    파이어폭스, 엣지, 등 기타 검색엔진 적용을 위해 정규 표현식 간결화
+    예 임의의 영단어 \w\/ 인경우 
+    '''
+    # ip_pattern = r'((?<!safari\/)(?<!safari\/[0-9])(?<!chrome\/)(?<!chrome\/[0-9])(?:[0-9]{1,3}\.){3}[0-9]{1,3})'
+    ip_pattern = r'((?<!\w\/)(?<!\w\/[0-9])(?:[0-9]{1,3}\.){3}[0-9]{1,3})'
+
+    output_str = re.sub(ip_pattern, '10.10.123.123', raw_data_str, flags = re.I)
+    
     # HOST
     # host: 또는 :// 또는 %3a%2f%2f 또는 www.  ~ .go.kr 또는 .or.kr 또는 .com 또는 .co.kr
     host_pattern = r"(?:(?<=:\/\/)|(?<=%3a%2f%2f)|(?<=www\.)|(?<=host: ))(.*?)(?=\.go\.kr|\.or\.kr|\.com|\.co\.kr)"
@@ -148,7 +156,7 @@ def WEB_predict_UI_sql_result():
     raw_data_str = payload_decode(raw_data_str)
     
     # 비식별
-    raw_data_str = payload_anonymize(raw_data_str)
+    # raw_data_str = payload_anonymize(raw_data_str)
 
     conf = pyspark.SparkConf().setAppName('prep_data').setMaster('local')
     sc = pyspark.SparkContext.getOrCreate(conf = conf)
@@ -1230,8 +1238,8 @@ def IPS_XAI_result():
 
     ai_feature_list = list(itertools.chain(*ai_feature_list))
     ai_pattern_list = list(itertools.chain(*ai_pattern_list))
-    # ai_pattern_list에사 (.*?) => ~ 로 변경, [\\.] => . 으로 변경, [\\+] => + 로 변경
-    ai_pattern_list = [x.replace('(.*?)', '~').replace('[\\+]', '+').replace('[\\.]', '.') for x in ai_pattern_list]
+    # ai_pattern_list에사 (.*?) => [~] 로 변경, [\\.] => . 으로 변경, [\\+] => + 로 변경
+    ai_pattern_list = [x.replace('(.*?)', '[~]').replace('[\\+]', '+').replace('[\\.]', '.') for x in ai_pattern_list]
 
     # ai_feature_list, ai_detect_list 를 이용하여 2개 컬럼 기반 data frame 생성
     print(ai_detect_list)
@@ -1863,8 +1871,8 @@ def WAF_XAI_result():
 
     ai_feature_list = list(itertools.chain(*ai_feature_list))
     ai_pattern_list = list(itertools.chain(*ai_pattern_list))
-    # ai_pattern_list에사 (.*?) => ~ 로 변경, [\\.] => . 으로 변경, [\\+] => + 로 변경
-    ai_pattern_list = [x.replace('(.*?)', '~').replace('[\\+]', '+').replace('[\\.]', '.') for x in ai_pattern_list]
+    # ai_pattern_list에사 (.*?) => [~] 로 변경, [\\.] => . 으로 변경, [\\+] => + 로 변경
+    ai_pattern_list = [x.replace('(.*?)', '[~]').replace('[\\+]', '+').replace('[\\.]', '.') for x in ai_pattern_list]
 
     # ai_feature_list, ai_detect_list 를 이용하여 2개 컬럼 기반 data frame 생성
     print(ai_detect_list)
@@ -2429,8 +2437,8 @@ def WEB_XAI_result():
 
     ai_feature_list = list(itertools.chain(*ai_feature_list))
     ai_pattern_list = list(itertools.chain(*ai_pattern_list))
-    # ai_pattern_list에사 (.*?) => ~ 로 변경, [\\.] => . 으로 변경, [\\+] => + 로 변경
-    ai_pattern_list = [x.replace('(.*?)', '~').replace('[\\+]', '+').replace('[\\.]', '.') for x in ai_pattern_list]
+    # ai_pattern_list에사 (.*?) => [~] 로 변경, [\\.] => . 으로 변경, [\\+] => + 로 변경
+    ai_pattern_list = [x.replace('(.*?)', '[~]').replace('[\\+]', '+').replace('[\\.]', '.') for x in ai_pattern_list]
 
     # ai_feature_list, ai_detect_list 를 이용하여 2개 컬럼 기반 data frame 생성
     print(ai_detect_list)
