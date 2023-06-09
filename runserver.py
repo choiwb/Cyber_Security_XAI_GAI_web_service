@@ -1250,8 +1250,8 @@ def IPS_XAI_result():
 
     ai_feature_list = list(itertools.chain(*ai_feature_list))
     ai_pattern_list = list(itertools.chain(*ai_pattern_list))
-    # ai_pattern_list에사 (.*?) => [~] 로 변경, [\\.] => . 으로 변경, [\\+] => + 로 변경
-    ai_pattern_list = [x.replace('(.*?)', '[~]').replace('[\\+]', '+').replace('[\\.]', '.') for x in ai_pattern_list]
+    # ai_pattern_list에사 (.*?) => [~] 로 변경, [\\.] => . 으로 변경, [\\+] => + 로 변경, [\\%] => % 로 변경
+    ai_pattern_list = [x.replace('(.*?)', '[~]').replace('[\\+]', '+').replace('[\\.]', '.').replace('[\\%]', '%') for x in ai_pattern_list]
 
     # ai_feature_list, ai_detect_list 를 이용하여 2개 컬럼 기반 data frame 생성
     print(ai_detect_list)
@@ -1883,8 +1883,8 @@ def WAF_XAI_result():
 
     ai_feature_list = list(itertools.chain(*ai_feature_list))
     ai_pattern_list = list(itertools.chain(*ai_pattern_list))
-    # ai_pattern_list에사 (.*?) => [~] 로 변경, [\\.] => . 으로 변경, [\\+] => + 로 변경
-    ai_pattern_list = [x.replace('(.*?)', '[~]').replace('[\\+]', '+').replace('[\\.]', '.') for x in ai_pattern_list]
+    # ai_pattern_list에사 (.*?) => [~] 로 변경, [\\.] => . 으로 변경, [\\+] => + 로 변경, [\\%] => % 로 변경
+    ai_pattern_list = [x.replace('(.*?)', '[~]').replace('[\\+]', '+').replace('[\\.]', '.').replace('[\\%]', '%') for x in ai_pattern_list]
 
     # ai_feature_list, ai_detect_list 를 이용하여 2개 컬럼 기반 data frame 생성
     print(ai_detect_list)
@@ -2379,7 +2379,7 @@ def WEB_XAI_result():
     # print(top10_shap_values)
 
     # 보안 시그니처 패턴 리스트 highlight
-    sig_ai_pattern, sig_df = web_highlight_text(raw_data_str, signature_list, ai_field)
+    sig_ai_pattern, sig_df = web_highlight_text(raw_data_str, signature_list, web_ai_field)
     print(sig_ai_pattern)
 
     ai_detect_regex = r'\x1b\[91m(.*?)\x1b\[39m'
@@ -2456,8 +2456,8 @@ def WEB_XAI_result():
 
     ai_feature_list = list(itertools.chain(*ai_feature_list))
     ai_pattern_list = list(itertools.chain(*ai_pattern_list))
-    # ai_pattern_list에사 (.*?) => [~] 로 변경, [\\.] => . 으로 변경, [\\+] => + 로 변경
-    ai_pattern_list = [x.replace('(.*?)', '[~]').replace('[\\+]', '+').replace('[\\.]', '.') for x in ai_pattern_list]
+    # ai_pattern_list에사 (.*?) => [~] 로 변경, [\\.] => . 으로 변경, [\\+] => + 로 변경, [\\%] => % 로 변경
+    ai_pattern_list = [x.replace('(.*?)', '[~]').replace('[\\+]', '+').replace('[\\.]', '.').replace('[\\%]', '%') for x in ai_pattern_list]
 
     # ai_feature_list, ai_detect_list 를 이용하여 2개 컬럼 기반 data frame 생성
     print(ai_detect_list)
