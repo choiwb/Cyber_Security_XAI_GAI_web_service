@@ -208,8 +208,8 @@ ips_query = """
                 ,1, 0) AS ips_payload_dir_access_comb_01,
 
         (SIZE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), '[\\.][\\.]/')) -1)
-        + (SIZE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), '[\\.][\\.]%2f')) -1)
-        + (SIZE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), '%2e%2e%2f')) -1)
+        + (SIZE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), '[\\.][\\.][\\%]2f')) -1)
+        + (SIZE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), '[\\%]2e[\\%]2e[\\%]2f')) -1)
         AS ips_payload_dir_access_comb_02,
 
         IF((INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[1],  'user(.*?)agent(.*?)zgrab') )>0)
@@ -365,8 +365,8 @@ waf_query = """
                 ,1, 0) AS waf_payload_dir_access_comb_01,
 
         (SIZE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), '[\\.][\\.]/')) -1)
-        + (SIZE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), '[\\.][\\.]%2f')) -1)
-        + (SIZE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), '%2e%2e%2f')) -1)
+        + (SIZE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), '[\\.][\\.][\\%]2f')) -1)
+        + (SIZE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), '[\\%]2e[\\%]2e[\\%]2f')) -1)
         AS waf_payload_dir_access_comb_02,
 
         IF((INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[1],  'user(.*?)agent(.*?)zgrab') )>0)
@@ -446,11 +446,11 @@ SELECT
                 ,1, 0) AS weblog_cmd_comb_02,
 
         IF((INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'command') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'ping%20') )>0)
+        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'ping[\\%]20') )>0)
         OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'ping[\\+]') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'echo%20') )>0)
+        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'echo[\\%]20') )>0)
         OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'echo[\\+]') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'cat%20') )>0)
+        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'cat[\\%]20') )>0)
         OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'cat[\\+]') )>0)
         OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'shell_exe') )>0)
                 ,1, 0) AS weblog_cmd_comb_03,
@@ -459,7 +459,7 @@ SELECT
                 ,1, 0) AS weblog_dir_access_comb_01,
 
         (SIZE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), '[\\.][\\.]/')) -1)
-        + (SIZE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), '[\\.][\\.]%2f')) -1)
+        + (SIZE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), '[\\.][\\.][\\%]2f')) -1)
                 AS weblog_dir_access_comb_02
 
 
@@ -476,22 +476,22 @@ ai_field = re.findall(r'\'(.*?)\'', attack_query)
 # ai_field에서 'remove_string' 는 제거
 ai_field = [x for x in ai_field if x != '' and x != ' ']
 
-
 # attack_new_sql_query 에서 'AS' 를 기준으로 분할
 attack_new_sql_query_split = attack_query.split('AS')
-
 sql_1, sql_2, sql_3, xss, cmd, log4j, word_1, word_2, word_3, word_4, word_5, word_6, wp, dir_access_1, dir_access_2, user_agent = attack_new_sql_query_split[:16]
+
 sql_1, sql_2, sql_3, xss, cmd, log4j, word_1, word_2, word_3, word_4, word_5, word_6, wp, dir_access_1, dir_access_2, user_agent = list(map(lambda x: re.findall(r'\'(.*?)\'', x), 
                                                                         [sql_1, sql_2, sql_3, xss, cmd, log4j, word_1, word_2, word_3, word_4, word_5, word_6, wp, dir_access_1, dir_access_2, user_agent]))
 sql_1, sql_2, sql_3, xss, cmd, log4j, word_1, word_2, word_3, word_4, word_5, word_6, wp, dir_access_1, dir_access_2, user_agent = list(map(lambda x: [y for y in x if y != '' and y != ' '],
                                                                         [sql_1, sql_2, sql_3, xss, cmd, log4j, word_1, word_2, word_3, word_4, word_5, word_6, wp, dir_access_1, dir_access_2, user_agent])) 
 
 
+
 # attack_new_sql_query '\\n|\\r|\\t', 'http/1.' 는 제거, 단 regex = False
 web_attack_query = web_query.replace('\\n|\\r|\\t', '').replace('http/1.', '')
 # new_sql_query의 '' 안에 있는 문자열들을 추출하여 리스트 생성, 
 web_ai_field = re.findall(r'\'(.*?)\'', web_attack_query)
-# ai_field에서 'remove_string' 는 제거
+# web_ai_field에서 'remove_string' 는 제거
 web_ai_field = [x for x in web_ai_field if x != '' and x != ' ']
 
 # web_attack_new_sql_query_split 에서 'AS' 를 기준으로 분할
@@ -502,6 +502,8 @@ web_sql_1, web_sql_2, web_sql_3, web_sql_4, web_sql_5, web_xss, web_cmd_1, web_c
                                                                         [web_sql_1, web_sql_2, web_sql_3, web_sql_4, web_sql_5, web_xss, web_cmd_1, web_cmd_2, web_cmd_3, web_dir_access_1, web_dir_access_2]))
 web_sql_1, web_sql_2, web_sql_3, web_sql_4, web_sql_5, web_xss, web_cmd_1, web_cmd_2, web_cmd_3, web_dir_access_1, web_dir_access_2 = list(map(lambda x: [y for y in x if y != '' and y != ' '],
                                                                         [web_sql_1, web_sql_2, web_sql_3, web_sql_4, web_sql_5, web_xss, web_cmd_1, web_cmd_2, web_cmd_3, web_dir_access_1, web_dir_access_2])) 
+
+
 
 
 
