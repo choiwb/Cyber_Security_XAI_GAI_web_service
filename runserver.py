@@ -377,6 +377,26 @@ def WEB_web_UI_predict():
     # normal_proba = int(np.round(pred_proba[:, 1], 2) * 100)
     normal_proba = 100 - cmd_proba - sql_proba - xss_proba
 
+    total_proba_list = [cmd_proba, normal_proba, sql_proba, xss_proba]
+    '''
+    pred = 0 이면, CMD Injection
+    1이면, 정상
+    2이면, SQL Injection
+    3이면, XSS
+    '''
+    if pred == 0:
+        pred_label = 'CMD Injection'
+    elif pred == 1:
+        pred_label = '정상'
+    elif pred == 2:
+        pred_label = 'SQL Injection'
+    else:
+        pred_label = 'XSS'
+    print(pred_label)
+    
+    pred_max_proba = max(total_proba_list)
+    print(pred_max_proba)
+
 
     return render_template('WEB_server_output.html', data = [pred, cmd_proba, normal_proba, sql_proba, xss_proba],
                                                 # method_str = method_str
