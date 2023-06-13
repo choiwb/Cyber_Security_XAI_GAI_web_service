@@ -2704,7 +2704,7 @@ def WEB_XAI_result():
             start_ip_country_explain = '입력된 WEB Log의 출발지 IP 국가 명은 %s 입니다.' %(start_ip_country)
         # GeoIP DB에 없는 경우, 한국으로 지정 !!!!!!!
         except:
-            start_ip_country_explain = '입력된 WEB Log의 출발지 IP 국가 명은 South Korea 입니다.'
+            start_ip_country_explain = '입력된 WEB Log의 출발지 IP 국가 명은 조회 결과 존재하지 않습니다.'
 
     else:
         useragent_pred_explain = 'WEB 로그가 아닙니다.'
