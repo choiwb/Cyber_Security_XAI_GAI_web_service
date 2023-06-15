@@ -443,44 +443,13 @@ response_list = df['대응 방안'].tolist()
 
 
 # IPS & WAF & WEB 피처 설명 테이블 생성
-ips_feature_df = pd.DataFrame([['ips_payload_whitelist', 'payload에 공격과 관련없이 로그전송 이벤트인 경우에 대한 표현'],
-                                ['ips_payload_sql_comb_01', 'payload에 SQL-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['ips_payload_sql_comb_02', 'payload에 SQL-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['ips_payload_sql_comb_03', 'payload에 SQL-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['ips_payload_xss_comb_01', 'payload에 XSS 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['ips_payload_cmd_comb_01', 'payload에 CMD-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['ips_payload_log4j_comb_01', 'payload에 Log4j 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['ips_payload_word_comb_01', 'payload에 공격관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['ips_payload_word_comb_02', 'payload에 공격관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['ips_payload_word_comb_03', 'payload에 공격관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['ips_payload_word_comb_04', 'payload에 공격관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['ips_payload_word_comb_05', 'payload에 공격관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['ips_payload_word_comb_06', 'payload에 공격관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['ips_payload_wp_comb_01', 'payload에 Word Press 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['ips_payload_dir_access_comb_01', 'payload에 디렉토리 접근 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['ips_payload_dir_access_comb_02', 'payload에 디렉토리 접근 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['ips_payload_useragent_comb_01', 'payload에 악성 user_agent가 포함되는 경우에 대한 표현']
-                              ]
-                                , columns=['피처 명', '피처 설명'])
+ips_feature_file = '/home/xai/xai_flask/save_model/IPS_피처생성정의서_v202306.xlsx'
+ips_feature_df = pd.read_excel(ips_feature_file)
+ips_feature_df = ips_feature_df[['피처 명', '피처 설명']]
 
-waf_feature_df = pd.DataFrame([['waf_payload_sql_comb_01', 'payload에 SQL-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['waf_payload_sql_comb_02', 'payload에 SQL-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['waf_payload_sql_comb_03', 'payload에 SQL-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['waf_payload_xss_comb_01', 'payload에 XSS 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['waf_payload_cmd_comb_01', 'payload에 CMD-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['waf_payload_log4j_comb_01', 'payload에 Log4j 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['waf_payload_word_comb_01', 'payload에 공격관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['waf_payload_word_comb_02', 'payload에 공격관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['waf_payload_word_comb_03', 'payload에 공격관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['waf_payload_word_comb_04', 'payload에 공격관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['waf_payload_word_comb_05', 'payload에 공격관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['waf_payload_word_comb_06', 'payload에 공격관련 키워드 또는 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['waf_payload_wp_comb_01', 'payload에 Word Press 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['waf_payload_dir_access_comb_01', 'payload에 디렉토리 접근 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['waf_payload_dir_access_comb_02', 'payload에 디렉토리 접근 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['waf_payload_useragent_comb_01', 'payload에 악성 user_agent가 포함되는 경우에 대한 표현']
-                              ]
-                                , columns=['피처 명', '피처 설명'])
+waf_feature_file = '/home/xai/xai_flask/save_model/WAF_피처생성정의서_v202306.xlsx'
+waf_feature_df = pd.read_excel(waf_feature_file)
+waf_feature_df = waf_feature_df[['피처 명', '피처 설명']]
 
 
 web_feature_df = pd.DataFrame([['weblog_sql_comb_01', 'web log에 SQL-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
@@ -510,9 +479,9 @@ def highlight_text(text, signature, ai_field):
     text = re.sub("(" + "|".join(map(re.escape, signature)) + ")", replacement, text, flags=re.I)
 
     # ai_field에서 cmd, sql, user_agent 제외
-    not_cmd_sql_user_agent_field = [i for i in ai_field if i not in cmd and i not in user_agent and i not in sql_1 and i not in sql_2 and i not in sql_3]
+    not_cmd_sql_user_agent_field = [i for i in ai_field if i not in cmd_1_field  and i not in useragent_field]
     # ai_field에서 cmd, sql 인 경우
-    cmd_sql = [i for i in ai_field if i in cmd or i in sql_1 or i in sql_2 or i in sql_3]
+    cmd_sql = [i for i in ai_field if i in cmd_1_field or i in useragent_field ]
 
     text = re.sub("(" + "|".join(not_cmd_sql_user_agent_field) + ")", replacement_2, text, flags=re.I)
 
@@ -520,10 +489,10 @@ def highlight_text(text, signature, ai_field):
     # text.spliyt('HTTP/1.[01]')[1]에 user-agent가 있는 경우, highlight 처리
     if 'HTTP/1.1' in text and text.count('HTTP/1.1') == 1:
         text = re.sub("(" + "|".join(cmd_sql) + ")", replacement_2, text.split('HTTP/1.1')[0], flags=re.I) + 'HTTP/1.1' + text.split('HTTP/1.1')[1]
-        text = text.split('HTTP/1.1')[0] + 'HTTP/1.1' + re.sub("(" + "|".join(user_agent) + ")", replacement_2, text.split('HTTP/1.1')[1], flags=re.I)
+        text = text.split('HTTP/1.1')[0] + 'HTTP/1.1' + re.sub("(" + "|".join(useragent_field) + ")", replacement_2, text.split('HTTP/1.1')[1], flags=re.I)
     elif 'HTTP/1.0' in text and text.count('HTTP/1.0') == 1:
         text = re.sub("(" + "|".join(cmd_sql) + ")", replacement_2, text.split('HTTP/1.0')[0], flags=re.I) + 'HTTP/1.0' + text.split('HTTP/1.0')[1]
-        text = text.split('HTTP/1.0')[0] + 'HTTP/1.0' + re.sub("(" + "|".join(user_agent) + ")", replacement_2, text.split('HTTP/1.0')[1], flags=re.I)
+        text = text.split('HTTP/1.0')[0] + 'HTTP/1.0' + re.sub("(" + "|".join(useragent_field) + ")", replacement_2, text.split('HTTP/1.0')[1], flags=re.I)
 
     regex = re.compile('\x1b\[103m(.*?)\x1b\[49m')
 
@@ -1185,93 +1154,114 @@ def IPS_XAI_result():
     ai_pattern_list = []
 
     for x in ai_detect_list:
-        for y in sql_1:
+        for y in auth_field: 
             if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_sql_comb_01'])
+                ai_feature_list.append(['payload_auth_comb'])
                 ai_pattern_list.append([y])
                 break
-        for y in sql_2:
+        for y in bof_field:
             if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_sql_comb_02'])
+                ai_feature_list.append(['payload_bof_comb'])
                 ai_pattern_list.append([y])
                 break
-        for y in sql_3:
+        for y in cmd_1_field:
             if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_sql_comb_03'])
+                ai_feature_list.append(['payload_cmd_01_comb'])
                 ai_pattern_list.append([y])
                 break
-        for y in xss:
+        for y in cmd_2_field:
             if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_xss_comb_01'])
+                ai_feature_list.append(['payload_cmd_02_comb'])
                 ai_pattern_list.append([y])
                 break
-        for y in cmd:
+        for y in code_field:
             if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_cmd_comb_01'])
+                ai_feature_list.append(['payload_code_comb'])
                 ai_pattern_list.append([y])
                 break
-        for y in log4j:
+        for y in dir_1_field:
             if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_log4j_comb_01'])
+                ai_feature_list.append(['payload_dir_01_comb'])
                 ai_pattern_list.append([y])
                 break
-        for y in word_1:
+        for y in dir_2_field:
             if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_word_comb_01'])
+                ai_feature_list.append(['payload_dir_02_comb'])
                 ai_pattern_list.append([y])
                 break
-        for y in word_2:
+        for y in dir_count_field:
             if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_word_comb_02'])
+                ai_feature_list.append(['payload_dir_count'])
                 ai_pattern_list.append([y])
                 break
-        for y in word_3:
+        for y in cgi_field:
             if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_word_comb_03'])
+                ai_feature_list.append(['payload_cgi_comb'])
                 ai_pattern_list.append([y])
                 break
-        for y in word_4:
+        for y in wp_field:
             if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_word_comb_04'])
+                ai_feature_list.append(['payload_wp_comb'])
                 ai_pattern_list.append([y])
                 break
-        for y in word_5:
+        for y in error_field:
             if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_word_comb_05'])
+                ai_feature_list.append(['payload_error_comb'])
                 ai_pattern_list.append([y])
                 break
-        for y in word_5:
+        for y in file_field:
             if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_word_comb_06'])
+                ai_feature_list.append(['payload_file_comb'])
                 ai_pattern_list.append([y])
                 break
-        for y in wp:
+        for y in http_method_field:
             if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_wp_comb_01'])
+                ai_feature_list.append(['payload_http_method_comb'])
                 ai_pattern_list.append([y])
                 break
-        for y in dir_access_1:
+        for y in malware_field:
             if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_dir_access_comb_01'])
+                ai_feature_list.append(['payload_malware_comb'])
                 ai_pattern_list.append([y])
                 break
-        for y in dir_access_2:
+        for y in rce_field:
             if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_dir_access_comb_02'])
+                ai_feature_list.append(['payload_rce_comb'])
                 ai_pattern_list.append([y])
                 break
-        for y in user_agent:
+        for y in sql_1_field:
             if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_useragent_comb_01'])
+                ai_feature_list.append(['payload_sql_01_comb'])
                 ai_pattern_list.append([y])
                 break
-                
-                
+        for y in sql_2_field:
+            if re.search(y, x.lower()):
+                ai_feature_list.append(['payload_sql_02_comb'])
+                ai_pattern_list.append([y])
+                break
+        for y in useragent_field:
+            if re.search(y, x.lower()):
+                ai_feature_list.append(['payload_useragent_comb'])
+                ai_pattern_list.append([y])
+                break
+        for y in php_field:
+            if re.search(y, x.lower()):
+                ai_feature_list.append(['payload_php_comb'])
+                ai_pattern_list.append([y])
+                break
+        for y in xss_field:
+            if re.search(y, x.lower()):
+                ai_feature_list.append(['payload_xss_comb'])
+                ai_pattern_list.append([y])
+                break
+
 
     ai_feature_list = list(itertools.chain(*ai_feature_list))
     ai_pattern_list = list(itertools.chain(*ai_pattern_list))
-    # ai_pattern_list에사 (.*?) => [~] 로 변경, [\\.] => . 으로 변경, [\\+] => + 로 변경, [%%] => % 로 변경
-    ai_pattern_list = [x.replace('(.*?)', '[~]').replace('[\\+]', '+').replace('[\\.]', '.').replace('[%%]', '%') for x in ai_pattern_list]
+    # ai_pattern_list에사 (.*?) => [~] 로 변경, [%%] => % 로 변경
+    ai_pattern_list = [x.replace('(.*?)', '[~]').replace('[%%]', '%') for x in ai_pattern_list]
+    # [\\특수문자] => 특수문자 로 변경
+    ai_pattern_list = [re.sub(r'(\[\\)(.*?)(\])', r'\2', x, flags = re.I) for x in ai_pattern_list]
 
     # ai_feature_list, ai_detect_list 를 이용하여 2개 컬럼 기반 data frame 생성
     print(ai_detect_list)
@@ -1818,93 +1808,114 @@ def WAF_XAI_result():
     ai_pattern_list = []
 
     for x in ai_detect_list:
-        for y in sql_1:
+        for y in auth_field: 
             if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_sql_comb_01'])
+                ai_feature_list.append(['payload_auth_comb'])
                 ai_pattern_list.append([y])
                 break
-        for y in sql_2:
+        for y in bof_field:
             if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_sql_comb_02'])
+                ai_feature_list.append(['payload_bof_comb'])
                 ai_pattern_list.append([y])
                 break
-        for y in sql_3:
+        for y in cmd_1_field:
             if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_sql_comb_03'])
+                ai_feature_list.append(['payload_cmd_01_comb'])
                 ai_pattern_list.append([y])
                 break
-        for y in xss:
+        for y in cmd_2_field:
             if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_xss_comb_01'])
+                ai_feature_list.append(['payload_cmd_02_comb'])
                 ai_pattern_list.append([y])
                 break
-        for y in cmd:
+        for y in code_field:
             if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_cmd_comb_01'])
+                ai_feature_list.append(['payload_code_comb'])
                 ai_pattern_list.append([y])
                 break
-        for y in log4j:
+        for y in dir_1_field:
             if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_log4j_comb_01'])
+                ai_feature_list.append(['payload_dir_01_comb'])
                 ai_pattern_list.append([y])
                 break
-        for y in word_1:
+        for y in dir_2_field:
             if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_word_comb_01'])
+                ai_feature_list.append(['payload_dir_02_comb'])
                 ai_pattern_list.append([y])
                 break
-        for y in word_2:
+        for y in dir_count_field:
             if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_word_comb_02'])
+                ai_feature_list.append(['payload_dir_count'])
                 ai_pattern_list.append([y])
                 break
-        for y in word_3:
+        for y in cgi_field:
             if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_word_comb_03'])
+                ai_feature_list.append(['payload_cgi_comb'])
                 ai_pattern_list.append([y])
                 break
-        for y in word_4:
+        for y in wp_field:
             if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_word_comb_04'])
+                ai_feature_list.append(['payload_wp_comb'])
                 ai_pattern_list.append([y])
                 break
-        for y in word_5:
+        for y in error_field:
             if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_word_comb_05'])
+                ai_feature_list.append(['payload_error_comb'])
                 ai_pattern_list.append([y])
                 break
-        for y in word_5:
+        for y in file_field:
             if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_word_comb_06'])
+                ai_feature_list.append(['payload_file_comb'])
                 ai_pattern_list.append([y])
                 break
-        for y in wp:
+        for y in http_method_field:
             if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_wp_comb_01'])
+                ai_feature_list.append(['payload_http_method_comb'])
                 ai_pattern_list.append([y])
                 break
-        for y in dir_access_1:
+        for y in malware_field:
             if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_dir_access_comb_01'])
+                ai_feature_list.append(['payload_malware_comb'])
                 ai_pattern_list.append([y])
                 break
-        for y in dir_access_2:
+        for y in rce_field:
             if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_dir_access_comb_02'])
+                ai_feature_list.append(['payload_rce_comb'])
                 ai_pattern_list.append([y])
                 break
-        for y in user_agent:
+        for y in sql_1_field:
             if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_useragent_comb_01'])
+                ai_feature_list.append(['payload_sql_01_comb'])
                 ai_pattern_list.append([y])
                 break
-                
-                
+        for y in sql_2_field:
+            if re.search(y, x.lower()):
+                ai_feature_list.append(['payload_sql_02_comb'])
+                ai_pattern_list.append([y])
+                break
+        for y in useragent_field:
+            if re.search(y, x.lower()):
+                ai_feature_list.append(['payload_useragent_comb'])
+                ai_pattern_list.append([y])
+                break
+        for y in php_field:
+            if re.search(y, x.lower()):
+                ai_feature_list.append(['payload_php_comb'])
+                ai_pattern_list.append([y])
+                break
+        for y in xss_field:
+            if re.search(y, x.lower()):
+                ai_feature_list.append(['payload_xss_comb'])
+                ai_pattern_list.append([y])
+                break
+
 
     ai_feature_list = list(itertools.chain(*ai_feature_list))
     ai_pattern_list = list(itertools.chain(*ai_pattern_list))
-    # ai_pattern_list에사 (.*?) => [~] 로 변경, [\\.] => . 으로 변경, [\\+] => + 로 변경, [%%] => % 로 변경
-    ai_pattern_list = [x.replace('(.*?)', '[~]').replace('[\\+]', '+').replace('[\\.]', '.').replace('[%%]', '%') for x in ai_pattern_list]
+    # ai_pattern_list에사 (.*?) => [~] 로 변경, [%%] => % 로 변경
+    ai_pattern_list = [x.replace('(.*?)', '[~]').replace('[%%]', '%') for x in ai_pattern_list]
+    # [\\특수문자] => 특수문자 로 변경
+    ai_pattern_list = [re.sub(r'(\[\\)(.*?)(\])', r'\2', x, flags = re.I) for x in ai_pattern_list]
 
     # ai_feature_list, ai_detect_list 를 이용하여 2개 컬럼 기반 data frame 생성
     print(ai_detect_list)
@@ -2476,8 +2487,10 @@ def WEB_XAI_result():
 
     ai_feature_list = list(itertools.chain(*ai_feature_list))
     ai_pattern_list = list(itertools.chain(*ai_pattern_list))
-    # ai_pattern_list에사 (.*?) => [~] 로 변경, [\\.] => . 으로 변경, [\\+] => + 로 변경, [%%] => % 로 변경
-    ai_pattern_list = [x.replace('(.*?)', '[~]').replace('[\\+]', '+').replace('[\\.]', '.').replace('[%%]', '%') for x in ai_pattern_list]
+    # ai_pattern_list에사 (.*?) => [~] 로 변경, [%%] => % 로 변경
+    ai_pattern_list = [x.replace('(.*?)', '[~]').replace('[%%]', '%') for x in ai_pattern_list]
+    # [\\특수문자] => 특수문자 로 변경
+    ai_pattern_list = [re.sub(r'(\[\\)(.*?)(\])', r'\2', x, flags = re.I) for x in ai_pattern_list]
 
     # ai_feature_list, ai_detect_list 를 이용하여 2개 컬럼 기반 data frame 생성
     print(ai_detect_list)
