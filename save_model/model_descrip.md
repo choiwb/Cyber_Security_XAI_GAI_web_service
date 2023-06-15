@@ -1,7 +1,9 @@
-- IPS model: DSS_IPS_LGB_20230427.pkl
-- IPS XAI: DSS_IPS_LGB_explainer_20230427.pkl
-- WAF model: DSS_WAF_LGB_20230504.pkl
-- WAF XAI: DSS_WAF_LGB_explainer_20230504.pkl
+- IPS model: DSS_IPS_LGB_20230615.pkl
+- IPS XAI: DSS_IPS_LGB_explainer_20230615.pkl
+- IPS 피처 정의서: IPS_피처생성정의서_v202306.xlsx
+- WAF model: DSS_WAF_LGB_20230615.pkl
+- WAF XAI: DSS_WAF_LGB_explainer_20230615.pkl
+- WAF 피처 정의서: WAF_피처생성정의서_v202306.xlsx
 - WEB model: DSS_WEB_LGB_20230404.pkl
 - WEB XAI: DSS_WEB_LGB_explainer_20230404.pkl
 - WEB useragent modek: DSS_WEB_useragent_LGB_20230413.pkl
