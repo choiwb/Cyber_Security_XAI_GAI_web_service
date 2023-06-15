@@ -238,6 +238,8 @@ ips_query = """
     FROM table
     """
 
+
+
 waf_query = """
     
     SELECT
