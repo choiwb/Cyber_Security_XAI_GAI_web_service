@@ -479,9 +479,9 @@ def highlight_text(text, signature, ai_field):
     text = re.sub("(" + "|".join(map(re.escape, signature)) + ")", replacement, text, flags=re.I)
 
     # ai_field에서 cmd, sql, user_agent 제외
-    not_cmd_sql_user_agent_field = [i for i in ai_field if i not in cmd_1_field  and i not in useragent_field]
+    not_cmd_sql_user_agent_field = [i for i in ai_field if i not in cmd_1_field and i not in sql_1_field and i not in sql_2_field and i not in useragent_field]
     # ai_field에서 cmd, sql 인 경우
-    cmd_sql = [i for i in ai_field if i in cmd_1_field or i in useragent_field ]
+    cmd_sql = [i for i in ai_field if i in cmd_1_field or i in sql_1_field or i in sql_2_field or i in useragent_field]
 
     text = re.sub("(" + "|".join(not_cmd_sql_user_agent_field) + ")", replacement_2, text, flags=re.I)
 
