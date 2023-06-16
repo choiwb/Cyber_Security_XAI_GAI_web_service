@@ -1636,8 +1636,11 @@ def IPS_XAI_result():
         print('CVE 추천: %.2f (초)' % (end - start))
 
 
-        q_and_a_df = pd.DataFrame([
+        q_and_a_1_df = pd.DataFrame([
                 ['공격 판단 근거', init_answer_string_1],
+            ], columns=['Question', 'Answer'])
+        
+        q_and_a_2_df = pd.DataFrame([
                 ['Tactics 추천', init_answer_string_2],
                 ['Sigma Rule 추천', continue_answer_string_1],
                 ['Snort Rule 추천', continue_answer_string_3],
@@ -1645,12 +1648,14 @@ def IPS_XAI_result():
                 ['사이버 킬 체인 대응 단계 추천', continue_answer_string_2]
             ], columns=['Question', 'Answer'])
         
-        q_and_a_html = q_and_a_df.to_html(index=False, justify='center')
-        q_and_a_html = q_and_a_html.replace('description:', '<br>description:').replace('logsource:', '<br>logsource:').replace('detection:', '<br>detection:').replace('falsepositives:', '<br>falsepositives:').replace('level:', '<br>level:')
+        q_and_a_1_html = q_and_a_1_df.to_html(index=False, justify='center')
+        q_and_a_2_html = q_and_a_2_df.to_html(index=False, justify='center')
+        q_and_a_2_html = q_and_a_2_html.replace('description:', '<br>description:').replace('logsource:', '<br>logsource:').replace('detection:', '<br>detection:').replace('falsepositives:', '<br>falsepositives:').replace('level:', '<br>level:')
     except:
         xai_report_html = '질의 응답 과정에서 오류가 발생했습니다.'
-        q_and_a_html = '질의에 대한 답변을 생성하는데 실패했습니다.'
-
+        q_and_a_1_html = '질의에 대한 답변을 생성하는데 실패했습니다.'
+        q_and_a_2_html = '질의에 대한 답변을 생성하는데 실패했습니다.'
+        
 
     return render_template('IPS_XAI_output.html', payload_raw_data = request.form['raw_data_str'],  
                                 payload_anonymize_highlight_html = payload_anonymize_highlight_html,
@@ -1666,7 +1671,8 @@ def IPS_XAI_result():
                                 sig_pattern_html = sig_pattern_html,
                                 sig_df_html = sig_df_html,
                                 xai_report_html = xai_report_html,
-                                q_and_a_html = q_and_a_html,
+                                q_and_a_1_html = q_and_a_1_html,
+                                q_and_a_2_html = q_and_a_2_html
                                 )
 
 
@@ -2279,24 +2285,31 @@ def WAF_XAI_result():
         end = time.time()
         print('CVE 추천: %.2f (초)' % (end - start))
 
-
-
-        q_and_a_df = pd.DataFrame([
+        q_and_a_1_df = pd.DataFrame([
                 ['공격 판단 근거', init_answer_string_1],
-                ['Tactics 추천', init_answer_string_2],
+            ], columns=['Question', 'Answer'])
+        
+        q_and_a_2_df = pd.DataFrame([
                 ['WAF 구문 분석', init_answer_string_4],
+            ], columns=['Question', 'Answer'])
+        
+        q_and_a_3_df = pd.DataFrame([
+                ['Tactics 추천', init_answer_string_2],
                 ['Sigma Rule 추천', continue_answer_string_1],
                 ['Snort Rule 추천', continue_answer_string_3],
                 ['CVE 추천', continue_answer_string_4],
                 ['사이버 킬 체인 대응 단계 추천', continue_answer_string_2]
             ], columns=['Question', 'Answer'])
         
-        q_and_a_html = q_and_a_df.to_html(index=False, justify='center')
-        # q_and_a_html = q_and_a_html.replace('\\n', ' ')
-        q_and_a_html = q_and_a_html.replace('description:', '<br>description:').replace('logsource:', '<br>logsource:').replace('detection:', '<br>detection:').replace('falsepositives:', '<br>falsepositives:').replace('level:', '<br>level:')
+        q_and_a_1_html = q_and_a_1_df.to_html(index=False, justify='center')
+        q_and_a_2_html = q_and_a_2_df.to_html(index=False, justify='center')
+        q_and_a_3_html = q_and_a_3_df.to_html(index=False, justify='center')
+        q_and_a_3_html = q_and_a_3_html.replace('description:', '<br>description:').replace('logsource:', '<br>logsource:').replace('detection:', '<br>detection:').replace('falsepositives:', '<br>falsepositives:').replace('level:', '<br>level:')
     except:
         xai_report_html = '질의 응답 과정에서 오류가 발생했습니다.'
-        q_and_a_html = '질의 응답 과정에서 오류가 발생했습니다.'
+        q_and_a_1_html = '질의에 대한 답변을 생성하는데 실패했습니다.'
+        q_and_a_2_html = '질의에 대한 답변을 생성하는데 실패했습니다.'
+        q_and_a_3_html = '질의에 대한 답변을 생성하는데 실패했습니다.'
 
     return render_template('WAF_XAI_output.html', payload_raw_data = request.form['raw_data_str'],  
                                 payload_anonymize_highlight_html = payload_anonymize_highlight_html,
@@ -2312,7 +2325,9 @@ def WAF_XAI_result():
                                 sig_pattern_html = sig_pattern_html,
                                 sig_df_html = sig_df_html,
                                 xai_report_html = xai_report_html,
-                                q_and_a_html = q_and_a_html,
+                                q_and_a_1_html = q_and_a_1_html,
+                                q_and_a_2_html = q_and_a_2_html,
+                                q_and_a_3_html = q_and_a_3_html,                                
                                 payload_parsing_result_html = payload_parsing_result_html,
                                 payload_parsing_comment = payload_parsing_comment
                                 )
@@ -2884,23 +2899,34 @@ def WEB_XAI_result():
         print('CVE 추천: %.2f (초)' % (end - start))
 
 
-
-        q_and_a_df = pd.DataFrame([
+        q_and_a_1_df = pd.DataFrame([
                 ['공격 판단 근거', init_answer_string_1],
-                ['Tactics 추천', init_answer_string_2],
+            ], columns=['Question', 'Answer'])
+
+        q_and_a_2_df = pd.DataFrame([
                 ['WEB 구문 분석', init_answer_string_4],
+            ], columns=['Question', 'Answer'])
+        
+        q_and_a_3_df = pd.DataFrame([
+                ['Tactics 추천', init_answer_string_2],
                 ['Sigma Rule 추천', continue_answer_string_1],
                 ['Snort Rule 추천', continue_answer_string_3],
                 ['CVE 추천', continue_answer_string_4],
                 ['사이버 킬 체인 대응 단계 추천', continue_answer_string_2]
             ], columns=['Question', 'Answer'])
+
         
-        q_and_a_html = q_and_a_df.to_html(index=False, justify='center')
+        q_and_a_1_html = q_and_a_1_df.to_html(index=False, justify='center')
+        q_and_a_2_html = q_and_a_2_df.to_html(index=False, justify='center')
+        q_and_a_3_html = q_and_a_3_df.to_html(index=False, justify='center')
+
         # q_and_a_html = q_and_a_html.replace('\\n', ' ')
-        q_and_a_html = q_and_a_html.replace('description:', '<br>description:').replace('logsource:', '<br>logsource:').replace('detection:', '<br>detection:').replace('falsepositives:', '<br>falsepositives:').replace('level:', '<br>level:')
+        q_and_a_3_html = q_and_a_3_html.replace('description:', '<br>description:').replace('logsource:', '<br>logsource:').replace('detection:', '<br>detection:').replace('falsepositives:', '<br>falsepositives:').replace('level:', '<br>level:')
     except:
         xai_report_html = '질의 응답 과정에서 오류가 발생했습니다.'
-        q_and_a_html = '질의 응답 과정에서 오류가 발생했습니다.'
+        q_and_a_1_html = '질의 응답 과정에서 오류가 발생했습니다.'
+        q_and_a_2_html = '질의 응답 과정에서 오류가 발생했습니다.'
+        q_and_a_3_html = '질의 응답 과정에서 오류가 발생했습니다.'
 
     return render_template('WEB_XAI_output.html', payload_raw_data = request.form['raw_data_str'],  
                                 # payload_anonymize_highlight_html = payload_anonymize_highlight_html,
@@ -2915,7 +2941,9 @@ def WEB_XAI_result():
                                 sig_pattern_html = sig_pattern_html,
                                 sig_df_html = sig_df_html,
                                 xai_report_html = xai_report_html,
-                                q_and_a_html = q_and_a_html,
+                                q_and_a_1_html = q_and_a_1_html,
+                                q_and_a_2_html = q_and_a_2_html,
+                                q_and_a_3_html = q_and_a_3_html,                                
                                 web_parsing_result_html = web_parsing_result_html,
                                 weblog_type_comment = weblog_type_comment,
                                 useragent_pred_explain = useragent_pred_explain,
