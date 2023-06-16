@@ -18,5 +18,6 @@ WEB Log Detection - SQL Injection, Command Injection, XSS, normal
 - OpenAI API (gpt-3.5-turbo & gpt-4) based XAI analysis
 - Cerebras GPT (https://huggingface.co/cerebras/Cerebras-GPT-111M) based Cyber Security domain fine tuning and Gradio based deployment
 -----
-- TO DO: Polyglot-ko-1.3B (https://huggingface.co/EleutherAI/polyglot-ko-1.3b) based cyber security Chatbot R&D 
+- TO DO 1: Google API (PALM) application
+- TO DO 2: Polyglot-ko-1.3B (https://huggingface.co/EleutherAI/polyglot-ko-1.3b) based cyber security Chatbot R&D 
 
