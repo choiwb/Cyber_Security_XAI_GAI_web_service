@@ -219,6 +219,8 @@ import multiprocessing
 openai.api_key = "YOUR OPEN AI API KEY !!!!!!!"
 
 tactics_path = 'chat_gpt_context/tactics.txt'
+waf_parsing_path = 'chat_gpt_context/waf_parsing_desc.txt'
+web_parsing_path = 'chat_gpt_context/web_parsing_desc.txt'
 sigmarule_yaml_sample_path = 'chat_gpt_context/sample_sigma_rule_yaml.txt'
 snortrule_sample_path = 'chat_gpt_context/sample_snort_rule.txt'
 
@@ -237,6 +239,37 @@ def chatgpt_init(ques_init):
     messages=[
         {"role": "system", "content": 'You are a security analyst.'},
         {"role": "user", "content": raw_data_str + '. ' + ques}
+    ]
+    )
+    return completion
+
+def chatgpt_init_waf_parsing_desc(ques_init):
+    parsing_df ,ques = ques_init
+    waf_parsing_file = load_context(waf_parsing_path)
+
+    completion = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo",
+    max_tokens=512,
+    messages=[
+        {"role": "system", "content": 'You are a security analyst.'},
+        {"role": "assistant", "content": waf_parsing_file},
+        {"role": "user", "content": parsing_df + '. ' + ques}
+    ]
+    )
+    return completion
+
+
+def chatgpt_init_web_parsing_desc(ques_init):
+    parsing_df ,ques = ques_init
+    web_parsing_file = load_context(web_parsing_path)
+
+    completion = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo",
+    max_tokens=512,
+    messages=[
+        {"role": "system", "content": 'You are a security analyst.'},
+        {"role": "assistant", "content": web_parsing_file},
+        {"role": "user", "content": parsing_df + '. ' + ques}
     ]
     )
     return completion
@@ -2181,6 +2214,18 @@ def WAF_XAI_result():
         end = time.time()
         print('사이버 킬 체인 모델: %.2f (초)' % (end - start))
 
+        def chatgpt_init_4(payload_parsing_result_html):
+            ques_init = (payload_parsing_result_html, '파싱된 payload의 경우, http_method, http_url, http_query, http_version, http_body 순으로 어떤 특징이 있는지 in 3 sentences 한글로 작성해주세요.')
+            completions_init = chatgpt_init_waf_parsing_desc(ques_init)
+            init_answer_string_4 = completions_init['choices'][0]['message']['content']
+            init_answer_string_4 = init_answer_string_4.lower().replace('\n', ' ')
+            return init_answer_string_4
+        
+        start = time.time()
+        init_answer_string_4 = chatgpt_init_4(payload_parsing_result_html)
+        end = time.time()
+        print('WAF 구문 분석: %.2f (초)' % (end - start))
+
 
         # 질의 2단계
         # Sigma Rule 추천, 사이버 킬 체인 대응 단계 추천
@@ -2239,6 +2284,7 @@ def WAF_XAI_result():
         q_and_a_df = pd.DataFrame([
                 ['공격 판단 근거', init_answer_string_1],
                 ['Tactics 추천', init_answer_string_2],
+                ['WAF 구문 분석', init_answer_string_4],
                 ['Sigma Rule 추천', continue_answer_string_1],
                 ['Snort Rule 추천', continue_answer_string_3],
                 ['CVE 추천', continue_answer_string_4],
@@ -2770,6 +2816,20 @@ def WEB_XAI_result():
         end = time.time()
         print('사이버 킬 체인 모델: %.2f (초)' % (end - start))
 
+        
+        def chatgpt_init_4(web_parsing_result_html):
+            ques_init = (web_parsing_result_html, '파싱된 web log의 경우, http_method, http_url, http_query, http_version, user_agent 순으로 어떤 특징이 있는지 in 3 sentences 한글로 작성해주세요.')
+            completions_init = chatgpt_init_web_parsing_desc(ques_init)
+            init_answer_string_4 = completions_init['choices'][0]['message']['content']
+            init_answer_string_4 = init_answer_string_4.lower().replace('\n', ' ')
+            return init_answer_string_4
+        
+        start = time.time()
+        init_answer_string_4 = chatgpt_init_4(web_parsing_result_html)
+        end = time.time()
+        print('WEB 구문 분석: %.2f (초)' % (end - start))
+
+
 
         # 질의 2단계
         # Sigma Rule 추천, 사이버 킬 체인 대응 단계 추천
@@ -2828,6 +2888,7 @@ def WEB_XAI_result():
         q_and_a_df = pd.DataFrame([
                 ['공격 판단 근거', init_answer_string_1],
                 ['Tactics 추천', init_answer_string_2],
+                ['WEB 구문 분석', init_answer_string_4],
                 ['Sigma Rule 추천', continue_answer_string_1],
                 ['Snort Rule 추천', continue_answer_string_3],
                 ['CVE 추천', continue_answer_string_4],
