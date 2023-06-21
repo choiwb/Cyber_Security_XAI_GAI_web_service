@@ -1188,109 +1188,89 @@ def IPS_XAI_result():
 
     for x in ai_detect_list:
         for y in auth_field: 
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_auth_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_auth_comb')
+                ai_pattern_list.append(y)
         for y in bof_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_bof_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_bof_comb')
+                ai_pattern_list.append(y)
         for y in cmd_1_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_cmd_01_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_cmd_01_comb')
+                ai_pattern_list.append(y)
         for y in cmd_2_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_cmd_02_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_cmd_02_comb')
+                ai_pattern_list.append(y)
         for y in code_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_code_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_code_comb')
+                ai_pattern_list.append(y)
         for y in dir_1_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_dir_01_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_dir_01_comb')
+                ai_pattern_list.append(y)
         for y in dir_2_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_dir_02_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_dir_02_comb')
+                ai_pattern_list.append(y)
         for y in dir_count_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_dir_count'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_dir_count')
+                ai_pattern_list.append(y)
         for y in cgi_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_cgi_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_cgi_comb')
+                ai_pattern_list.append(y)
         for y in wp_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_wp_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_wp_comb')
+                ai_pattern_list.append(y)
         for y in error_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_error_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_error_comb')
+                ai_pattern_list.append(y)
         for y in file_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_file_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_file_comb')
+                ai_pattern_list.append(y)
         for y in http_method_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_http_method_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_http_method_comb')
+                ai_pattern_list.append(y)
         for y in malware_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_malware_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_malware_comb')
+                ai_pattern_list.append(y)
         for y in rce_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_rce_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_rce_comb')
+                ai_pattern_list.append(y)
         for y in sql_1_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_sql_01_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_sql_01_comb')
+                ai_pattern_list.append(y)
         for y in sql_2_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_sql_02_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_sql_02_comb')
+                ai_pattern_list.append(y)
         for y in useragent_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_useragent_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_useragent_comb')
+                ai_pattern_list.append(y)
         for y in php_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_php_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_php_comb')
+                ai_pattern_list.append(y)
         for y in xss_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_xss_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_xss_comb')
+                ai_pattern_list.append(y)
 
 
-    ai_feature_list = list(itertools.chain(*ai_feature_list))
-    ai_pattern_list = list(itertools.chain(*ai_pattern_list))
+    # ai_feature_list = list(itertools.chain(*ai_feature_list))
+    # ai_pattern_list = list(itertools.chain(*ai_pattern_list))
     # ai_pattern_list에사 (.*?) => [~] 로 변경, [%%] => % 로 변경
     ai_pattern_list = [x.replace('(.*?)', '[~]').replace('[%%]', '%') for x in ai_pattern_list]
     # [\\특수문자] => 특수문자 로 변경
@@ -1848,109 +1828,89 @@ def WAF_XAI_result():
 
     for x in ai_detect_list:
         for y in auth_field: 
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_auth_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_auth_comb')
+                ai_pattern_list.append(y)
         for y in bof_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_bof_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_bof_comb')
+                ai_pattern_list.append(y)
         for y in cmd_1_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_cmd_01_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_cmd_01_comb')
+                ai_pattern_list.append(y)
         for y in cmd_2_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_cmd_02_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_cmd_02_comb')
+                ai_pattern_list.append(y)
         for y in code_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_code_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_code_comb')
+                ai_pattern_list.append(y)
         for y in dir_1_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_dir_01_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_dir_01_comb')
+                ai_pattern_list.append(y)
         for y in dir_2_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_dir_02_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_dir_02_comb')
+                ai_pattern_list.append(y)
         for y in dir_count_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_dir_count'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_dir_count')
+                ai_pattern_list.append(y)
         for y in cgi_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_cgi_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_cgi_comb')
+                ai_pattern_list.append(y)
         for y in wp_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_wp_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_wp_comb')
+                ai_pattern_list.append(y)
         for y in error_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_error_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_error_comb')
+                ai_pattern_list.append(y)
         for y in file_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_file_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_file_comb')
+                ai_pattern_list.append(y)
         for y in http_method_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_http_method_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_http_method_comb')
+                ai_pattern_list.append(y)
         for y in malware_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_malware_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_malware_comb')
+                ai_pattern_list.append(y)
         for y in rce_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_rce_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_rce_comb')
+                ai_pattern_list.append(y)
         for y in sql_1_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_sql_01_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_sql_01_comb')
+                ai_pattern_list.append(y)
         for y in sql_2_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_sql_02_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_sql_02_comb')
+                ai_pattern_list.append(y)
         for y in useragent_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_useragent_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_useragent_comb')
+                ai_pattern_list.append(y)
         for y in php_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_php_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_php_comb')
+                ai_pattern_list.append(y)
         for y in xss_field:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['payload_xss_comb'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('payload_xss_comb')
+                ai_pattern_list.append(y)
 
 
-    ai_feature_list = list(itertools.chain(*ai_feature_list))
-    ai_pattern_list = list(itertools.chain(*ai_pattern_list))
+    # ai_feature_list = list(itertools.chain(*ai_feature_list))
+    # ai_pattern_list = list(itertools.chain(*ai_pattern_list))
     # ai_pattern_list에사 (.*?) => [~] 로 변경, [%%] => % 로 변경
     ai_pattern_list = [x.replace('(.*?)', '[~]').replace('[%%]', '%') for x in ai_pattern_list]
     # [\\특수문자] => 특수문자 로 변경
@@ -2490,64 +2450,54 @@ def WEB_XAI_result():
 
     for x in ai_detect_list:
         for y in web_sql_1:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['weblog_sql_comb_01'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('weblog_sql_comb_01')
+                ai_pattern_list.append(y)
         for y in web_sql_2:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['weblog_sql_comb_02'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('weblog_sql_comb_02')
+                ai_pattern_list.append(y)
         for y in web_sql_3:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['weblog_sql_comb_03'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('weblog_sql_comb_03')
+                ai_pattern_list.append(y)
         for y in web_sql_4:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['weblog_sql_comb_04'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('weblog_sql_comb_04')
+                ai_pattern_list.append(y)
         for y in web_sql_5:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['weblog_sql_comb_05'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('weblog_sql_comb_05')
+                ai_pattern_list.append(y)
         for y in web_xss:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['weblog_xss_comb_01'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('weblog_xss_comb_01')
+                ai_pattern_list.append(y)
         for y in web_cmd_1:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['weblog_cmd_comb_01'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('weblog_cmd_comb_01')
+                ai_pattern_list.append(y)
         for y in web_cmd_2:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['weblog_cmd_comb_02'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('weblog_cmd_comb_02')
+                ai_pattern_list.append(y)
         for y in web_cmd_3:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['weblog_cmd_comb_03'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('weblog_cmd_comb_03')
+                ai_pattern_list.append(y)
         for y in web_dir_access_1:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['weblog_dir_access_comb_01'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('weblog_dir_access_comb_01')
+                ai_pattern_list.append(y)
         for y in web_dir_access_2:
-            if re.search(y, x.lower()):
-                ai_feature_list.append(['weblog_dir_access_comb_02'])
-                ai_pattern_list.append([y])
-                break
+            if re.findall(y, x.lower()):
+                ai_feature_list.append('weblog_dir_access_comb_02')
+                ai_pattern_list.append(y)
 
 
-    ai_feature_list = list(itertools.chain(*ai_feature_list))
-    ai_pattern_list = list(itertools.chain(*ai_pattern_list))
+
+    # ai_feature_list = list(itertools.chain(*ai_feature_list))
+    # ai_pattern_list = list(itertools.chain(*ai_pattern_list))
     # ai_pattern_list에사 (.*?) => [~] 로 변경, [%%] => % 로 변경
     ai_pattern_list = [x.replace('(.*?)', '[~]').replace('[%%]', '%') for x in ai_pattern_list]
     # [\\특수문자] => 특수문자 로 변경
