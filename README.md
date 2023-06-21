@@ -16,8 +16,9 @@ WEB Log Detection - SQL Injection, Command Injection, XSS, normal
 - DistilBERT (task: question-answering) based fine tuning like SQUAD dataset format
 - DistilBART based text-summarization
 - OpenAI API (gpt-3.5-turbo & gpt-4) based XAI analysis
+- Google API (PALM) test
 - Cerebras GPT (https://huggingface.co/cerebras/Cerebras-GPT-111M) based Cyber Security domain fine tuning and Gradio based deployment
 -----
-- TO DO 1: Google API (PALM) application
+- TO DO 1: Deep Learning XAI (shap.text_plot) customization
 - TO DO 2: Polyglot-ko-1.3B (https://huggingface.co/EleutherAI/polyglot-ko-1.3b) based cyber security Chatbot R&D 
 
