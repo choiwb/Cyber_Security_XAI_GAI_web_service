@@ -26,10 +26,16 @@ IPS_model = pickle.load(open(new_IPS_model_path, 'rb'))
 
 
 # 2023/06/15 WAF 모델 - Light GBM
-new_WAF_model_path = 'save_model/DSS_WAF_LGB_20230615.pkl'
+# new_WAF_model_path = 'save_model/DSS_WAF_LGB_20230615.pkl'
+# 2023/06/22 WAF 모델 - Light GBM (Spark SQL 피처 & TF-IDF 피처)
+new_WAF_model_path = 'save_model/DSS_WAF_sql_tfidf_LGB_20230622.pkl'
+# 위 모델의 TF-IDF 단어 호출
+WAF_tfidf_word_path = 'save_model/waf_tfidf_word.csv'
+
 
 # 위 모델을, SHAP의 TreeExplainer 연산 및 저장
-WAF_explainer_path = 'save_model/DSS_WAF_LGB_explainer_20230615.pkl'
+# WAF_explainer_path = 'save_model/DSS_WAF_LGB_explainer_20230615.pkl'
+WAF_explainer_path = 'save_model/DSS_WAF_sql_tfidf_LGB_explainer_20230622.pkl'
 
 WAF_model = pickle.load(open(new_WAF_model_path, 'rb'))
 
@@ -55,15 +61,27 @@ tfidf_feature = WEB_useragent_tfidf_word['feature'].tolist()
 tfidf_word = WEB_useragent_tfidf_word['word'].tolist()
 tfidf_value = WEB_useragent_tfidf_word['IDF'].tolist()
 
-# sep_list = [' ', ',', ';', ':', '-', '/', '_']
-# sep_list = [' ', 'mozilla', 'windows', 'gecko', 'like', 'applewebkit', 'chrome', 'safari', 'khtml']
 sep_list = [' ']
-
 sep_str = '|'.join(sep_list)
 
 vectorizer = CountVectorizer(lowercase = True,
                              tokenizer = lambda x: re.split(sep_str, x),
                               vocabulary = tfidf_word)
+
+
+WAF_tfidf_word = pd.read_csv(WAF_tfidf_word_path)
+WAF_tfidf_word = WAF_tfidf_word.sort_values(by = 'word', ascending = True)
+
+tfidf_feature_waf = WAF_tfidf_word['feature'].tolist()
+tfidf_word_waf = WAF_tfidf_word['word'].tolist()
+tfidf_value_waf = WAF_tfidf_word['IDF'].tolist()
+
+sep_list_waf = [' ', '%20', '\\+', '\\/', '%2f', 'HTTP/1.1', '\\?', '\\n', '\\r', '\\t']
+sep_str_waf = '|'.join(sep_list_waf)
+
+vectorizer_waf = CountVectorizer(lowercase = True,
+                             tokenizer = lambda x: re.split(sep_str_waf, x),
+                            vocabulary = tfidf_word_waf)
 
 # GeoIP2의 국가명 조회 DB 경로 - 20230419 업데이트 기준
 geoip_country_db_path = 'save_model/GeoLite2_Country_20230419.mmdb'
