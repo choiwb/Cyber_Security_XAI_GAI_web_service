@@ -1981,6 +1981,7 @@ def WAF_XAI_result():
     third_word = top10_shap_values.iloc[2,-1]
 
 
+    
     if first_feature.startswith("payload_"):
         if first_feature != 'payload_dir_access_comb_02':
             if first_fv == 1:
@@ -1993,11 +1994,9 @@ def WAF_XAI_result():
             first_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % first_fv       
     else:
         if first_fv > 0:
-            first_fv_result = '공격 탐지'
-            first_statement = 'AI 자동 생성 피처가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(first_fv_result, first_word)
+            first_statement = 'AI 자동 생성 피처의 AI 탐지 키워드는 %s 이며 등장 하였습니다.'  %(first_word)
         else:
-            first_fv_result = '정상 인식'
-            first_statement = 'AI 자동 생성 피처가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(first_fv_result, first_word)
+            first_statement = 'AI 자동 생성 피처의 AI 탐지 키워드는 %s 이며 등장하지 않았습니다.'  %(first_word)
 
 
     if second_feature.startswith("payload_"):
@@ -2012,11 +2011,9 @@ def WAF_XAI_result():
             second_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % second_fv      
     else:
         if second_fv > 0:
-            second_fv_result = '공격 탐지'
-            second_statement = 'AI 자동 생성 피처가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(second_fv_result, second_word)
+            second_statement = 'AI 자동 생성 피처의 AI 탐지 키워드는 %s 이며 등장 하였습니다.'  %(second_word)
         else:
-            second_fv_result = '정상 인식'
-            second_statement = 'AI 자동 생성 피처가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(second_fv_result, second_word)
+            second_statement = 'AI 자동 생성 피처의 AI 탐지 키워드는 %s 이며 등장하지 않았습니다.'  %(second_word)
 
 
     if third_feature.startswith("payload_"):
@@ -2031,11 +2028,9 @@ def WAF_XAI_result():
             third_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % third_fv
     else:
         if third_fv > 0:
-            third_fv_result = '공격 탐지'
-            third_statement = 'AI 자동 생성 피처가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(third_fv_result, third_word)
+            third_statement = 'AI 자동 생성 피처의 AI 탐지 키워드는 %s 이며 등장 하였습니다.'  %(third_word)
         else:
-            third_fv_result = '정상 인식'
-            third_statement = 'AI 자동 생성 피처가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(third_fv_result, third_word)
+            third_statement = 'AI 자동 생성 피처의 AI 탐지 키워드는 %s 이며 등장하지 않았습니다.'  %(third_word)
 
 
     # top10_shap_values to html
