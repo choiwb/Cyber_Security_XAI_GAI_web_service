@@ -146,7 +146,22 @@ def WAF_predict_UI_sql_result():
     sql_result_df_array = np.array(sql_result_df)
     print('전처리 데이터 feature 값: ', sql_result_df_array)
 
-    return sql_result_df
+    # TF-IDF 기반 전처리 피처 생성 및 SQL 피처와 통합
+    valud_tfidf_feature = vectorizer_waf.fit_transform(domain_one_row_df['payload']).toarray()
+    valid_tfidf_df = pd.DataFrame(valud_tfidf_feature, columns=vectorizer_waf.get_feature_names_out())
+    # TF * IDF 도출
+    valid_tfidf_df = valid_tfidf_df * tfidf_value_waf
+    valid_tfidf_df.columns = tfidf_feature_waf
+
+    ''''''
+    valid_tfidf_extract = valid_tfidf_df.loc[:, (valid_tfidf_df != 0).any(axis=0)]
+    print(valid_tfidf_extract)
+    ''''''
+    
+    # sql_result_df와 valid_tfidf_df 통합
+    sql_tfidf_df = pd.concat([sql_result_df, valid_tfidf_df], axis=1)
+
+    return sql_tfidf_df
 
 
 def WEB_predict_UI_sql_result():
@@ -1807,8 +1822,9 @@ def WAF_XAI_result():
     top10_shap_values  = top10_shap_values[['순위', '피처 명', '피처 설명', '피처 값', '피처 중요도', 'AI 예측 방향']]
     top10_shap_values['피처 중요도'] = top10_shap_values['피처 중요도'].apply(lambda x: round(x, 4))
 
-    # print(top10_shap_values)
-
+    # top10_shap_values의 TF-IDF 피처에 대한 피처 설명 추가
+    top10_shap_values['피처 설명'] = top10_shap_values['피처 설명'].fillna('AI가 자동 생성한 피처')
+    
     # 보안 시그니처 패턴 리스트 highlight
     sig_ai_pattern, sig_df = highlight_text(raw_data_str, signature_list, ai_field)
     print(sig_ai_pattern)
@@ -1929,6 +1945,13 @@ def WAF_XAI_result():
 
     # print(ai_feature_df)
     top10_shap_values = top10_shap_values.merge(ai_feature_df, how='left', on='피처 명')
+
+    # top10_shap_values의 TF-IDF 피처에 AI 공격 탐지 키워드 추가
+    for i in range(top10_shap_values.shape[0]):
+        if top10_shap_values['피처 명'][i].startswith('token_'):
+            # top10_shap_values['피처 명'] 값을 WAF_tfidf_word['feature'] 에서 찾아, WAF_tfidf_word['word'] 값을 가져옴
+            top10_shap_values['AI 탐지 키워드'][i] = WAF_tfidf_word.loc[WAF_tfidf_word['feature'] == top10_shap_values['피처 명'][i], 'word'].values[0]
+
     top10_shap_values['AI 탐지 키워드'] = top10_shap_values['AI 탐지 키워드'].fillna('-')
 
     top10_shap_values['피처 중요도'] = np.round(top10_shap_values['피처 중요도'] * 100, 2)
@@ -1958,35 +1981,61 @@ def WAF_XAI_result():
     third_word = top10_shap_values.iloc[2,-1]
 
 
-    if first_feature != 'payload_dir_access_comb_02':
-        if first_fv == 1:
+    if first_feature.startswith("payload_"):
+        if first_feature != 'payload_dir_access_comb_02':
+            if first_fv == 1:
+                first_fv_result = '공격 탐지'
+                first_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(first_feature, first_fv_result, first_word)
+            else:
+                first_fv_result = '정상 인식'
+                first_statement = '%s 가 %s 하였습니다.' %(first_feature, first_fv_result)
+        else:
+            first_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % first_fv       
+    else:
+        if first_fv > 0:
             first_fv_result = '공격 탐지'
-            first_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(first_feature, first_fv_result, first_word)
+            first_statement = 'AI 자동 생성 피처가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(first_fv_result, first_word)
         else:
             first_fv_result = '정상 인식'
-            first_statement = '%s 가 %s 하였습니다.' %(first_feature, first_fv_result)
-    else:
-        first_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % first_fv       
+            first_statement = 'AI 자동 생성 피처가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(first_fv_result, first_word)
 
-    if second_feature != 'payload_dir_access_comb_02':
-        if second_fv == 1:
+
+    if second_feature.startswith("payload_"):
+        if second_feature != 'payload_dir_access_comb_02':
+            if second_fv == 1:
+                second_fv_result = '공격 탐지'
+                second_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(second_feature, second_fv_result, second_word)
+            else:
+                second_fv_result = '정상 인식'
+                second_statement = '%s 가 %s 하였습니다.' %(second_feature, second_fv_result)
+        else:
+            second_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % second_fv      
+    else:
+        if second_fv > 0:
             second_fv_result = '공격 탐지'
-            second_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(second_feature, second_fv_result, second_word)
+            second_statement = 'AI 자동 생성 피처가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(second_fv_result, second_word)
         else:
             second_fv_result = '정상 인식'
-            second_statement = '%s 가 %s 하였습니다.' %(second_feature, second_fv_result)
-    else:
-        second_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % second_fv      
+            second_statement = 'AI 자동 생성 피처가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(second_fv_result, second_word)
 
-    if third_feature != 'payload_dir_access_comb_02':
-        if third_fv == 1:
+
+    if third_feature.startswith("payload_"):
+        if third_feature != 'payload_dir_access_comb_02':
+            if third_fv == 1:
+                third_fv_result = '공격 탐지'
+                third_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(third_feature, third_fv_result, third_word)
+            else:
+                third_fv_result = '정상 인식'
+                third_statement = '%s 가 %s 하였습니다.' %(third_feature, third_fv_result)
+        else:
+            third_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % third_fv
+    else:
+        if third_fv > 0:
             third_fv_result = '공격 탐지'
-            third_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(third_feature, third_fv_result, third_word)
+            third_statement = 'AI 자동 생성 피처가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(third_fv_result, third_word)
         else:
             third_fv_result = '정상 인식'
-            third_statement = '%s 가 %s 하였습니다.' %(third_feature, third_fv_result)
-    else:
-        third_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % third_fv
+            third_statement = 'AI 자동 생성 피처가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(third_fv_result, third_word)
 
 
     # top10_shap_values to html
