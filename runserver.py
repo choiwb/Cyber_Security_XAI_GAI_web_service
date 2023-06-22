@@ -1281,14 +1281,14 @@ def IPS_XAI_result():
     print(ai_feature_list)
     print(ai_pattern_list)
 
-    ai_feature_df = pd.DataFrame({'피처 명': ai_feature_list, 'AI 공격 탐지 키워드': ai_pattern_list})
+    ai_feature_df = pd.DataFrame({'피처 명': ai_feature_list, 'AI 탐지 키워드': ai_pattern_list})
     # ai_feature_df['피처 명'] 중복된 행이 있다면, ',' 기준 concat
-    ai_feature_df = ai_feature_df.groupby('피처 명')['AI 공격 탐지 키워드'].apply(', '.join).reset_index()
+    ai_feature_df = ai_feature_df.groupby('피처 명')['AI 탐지 키워드'].apply(', '.join).reset_index()
 
 
     # print(ai_feature_df)
     top10_shap_values = top10_shap_values.merge(ai_feature_df, how='left', on='피처 명')
-    top10_shap_values['AI 공격 탐지 키워드'] = top10_shap_values['AI 공격 탐지 키워드'].fillna('-')
+    top10_shap_values['AI 탐지 키워드'] = top10_shap_values['AI 탐지 키워드'].fillna('-')
 
     top10_shap_values['피처 중요도'] = np.round(top10_shap_values['피처 중요도'] * 100, 2)
     top10_shap_values = top10_shap_values.rename(columns = {'피처 중요도': '피처 중요도(%)'})
@@ -1377,7 +1377,7 @@ def IPS_XAI_result():
     summary_plot = px.bar(top10_shap_values, x="피처 중요도(%)", y="피처 명", 
                 color = 'AI 예측 방향', color_discrete_map = {'공격': '#FF0000', '정상': '#00FF00', '기타': '#0000FF'},
                 text = '피처 중요도(%)', orientation='h', hover_data = {'피처 명': False, '피처 설명': True, '피처 값': True, '피처 중요도(%)': False, 'AI 예측 방향': False,
-                                                                    'AI 공격 탐지 키워드': True},
+                                                                    'AI 탐지 키워드': True},
                 template = 'plotly_white',
                 )
     
@@ -1411,7 +1411,7 @@ def IPS_XAI_result():
                                                 color = 'AI 예측 방향',
                                                 color_discrete_map = {'공격': '#FF0000', '정상': '#00FF00', '기타': '#0000FF'},
                                                 template = 'plotly_white',
-                                                custom_data = ['피처 설명', '피처 값', 'AI 예측 방향', 'AI 공격 탐지 키워드'],
+                                                custom_data = ['피처 설명', '피처 값', 'AI 예측 방향', 'AI 탐지 키워드'],
                                                 labels = ['피처 명']
                                                 )
     
@@ -1424,7 +1424,7 @@ def IPS_XAI_result():
                                             '피처 설명: %{customdata[0][0]}<br>' +
                                             '피처 값: %{customdata[0][1]}<br>' +
                                             'AI 예측 방향: %{customdata[0][2]}<br>' +
-                                            'AI 공격 탐지 키워드: %{customdata[0][3]}<br>',
+                                            'AI 탐지 키워드: %{customdata[0][3]}<br>',
 
                            hole = 0.3,
                            # hoverinfo = 'label+value'
@@ -1921,15 +1921,15 @@ def WAF_XAI_result():
     print(ai_feature_list)
     print(ai_pattern_list)
 
-    ai_feature_df = pd.DataFrame({'피처 명': ai_feature_list, 'AI 공격 탐지 키워드': ai_pattern_list})
+    ai_feature_df = pd.DataFrame({'피처 명': ai_feature_list, 'AI 탐지 키워드': ai_pattern_list})
 
     # ai_feature_df['피처 명'] 중복된 행이 있다면, ',' 기준 concat
-    ai_feature_df = ai_feature_df.groupby('피처 명')['AI 공격 탐지 키워드'].apply(', '.join).reset_index()
+    ai_feature_df = ai_feature_df.groupby('피처 명')['AI 탐지 키워드'].apply(', '.join).reset_index()
 
 
     # print(ai_feature_df)
     top10_shap_values = top10_shap_values.merge(ai_feature_df, how='left', on='피처 명')
-    top10_shap_values['AI 공격 탐지 키워드'] = top10_shap_values['AI 공격 탐지 키워드'].fillna('-')
+    top10_shap_values['AI 탐지 키워드'] = top10_shap_values['AI 탐지 키워드'].fillna('-')
 
     top10_shap_values['피처 중요도'] = np.round(top10_shap_values['피처 중요도'] * 100, 2)
     top10_shap_values = top10_shap_values.rename(columns = {'피처 중요도': '피처 중요도(%)'})
@@ -2005,7 +2005,7 @@ def WAF_XAI_result():
     summary_plot = px.bar(top10_shap_values, x="피처 중요도(%)", y="피처 명", 
                 color = 'AI 예측 방향', color_discrete_map = {'공격': '#FF0000', '정상': '#00FF00', '기타': '#0000FF'},
                 text = '피처 중요도(%)', orientation='h', hover_data = {'피처 명': False, '피처 설명': True, '피처 값': True, '피처 중요도(%)': False, 'AI 예측 방향': False,
-                                                                    'AI 공격 탐지 키워드': True},
+                                                                    'AI 탐지 키워드': True},
                 template = 'plotly_white',
                 )
     
@@ -2039,7 +2039,7 @@ def WAF_XAI_result():
                                                 color = 'AI 예측 방향',
                                                 color_discrete_map = {'공격': '#FF0000', '정상': '#00FF00', '기타': '#0000FF'},
                                                 template = 'plotly_white',
-                                                custom_data = ['피처 설명', '피처 값', 'AI 예측 방향', 'AI 공격 탐지 키워드'],
+                                                custom_data = ['피처 설명', '피처 값', 'AI 예측 방향', 'AI 탐지 키워드'],
                                                 labels = ['피처 명']
                                                 )
     
@@ -2052,7 +2052,7 @@ def WAF_XAI_result():
                                             '피처 설명: %{customdata[0][0]}<br>' +
                                             '피처 값: %{customdata[0][1]}<br>' +
                                             'AI 예측 방향: %{customdata[0][2]}<br>' +
-                                            'AI 공격 탐지 키워드: %{customdata[0][3]}<br>',
+                                            'AI 탐지 키워드: %{customdata[0][3]}<br>',
                            hole = 0.3,
                            # hoverinfo = 'label+value'
                             )
@@ -2508,15 +2508,15 @@ def WEB_XAI_result():
     print(ai_feature_list)
     print(ai_pattern_list)
 
-    ai_feature_df = pd.DataFrame({'피처 명': ai_feature_list, 'AI 공격 탐지 키워드': ai_pattern_list})
+    ai_feature_df = pd.DataFrame({'피처 명': ai_feature_list, 'AI 탐지 키워드': ai_pattern_list})
 
     # ai_feature_df['피처 명'] 중복된 행이 있다면, ',' 기준 concat
-    ai_feature_df = ai_feature_df.groupby('피처 명')['AI 공격 탐지 키워드'].apply(', '.join).reset_index()
+    ai_feature_df = ai_feature_df.groupby('피처 명')['AI 탐지 키워드'].apply(', '.join).reset_index()
 
 
     # print(ai_feature_df)
     top10_shap_values = top10_shap_values.merge(ai_feature_df, how='left', on='피처 명')
-    top10_shap_values['AI 공격 탐지 키워드'] = top10_shap_values['AI 공격 탐지 키워드'].fillna('-')
+    top10_shap_values['AI 탐지 키워드'] = top10_shap_values['AI 탐지 키워드'].fillna('-')
 
     top10_shap_values['피처 중요도'] = np.round(top10_shap_values['피처 중요도'] * 100, 2)
     top10_shap_values = top10_shap_values.rename(columns = {'피처 중요도': '피처 중요도(%)'})
@@ -2589,7 +2589,7 @@ def WEB_XAI_result():
         summary_plot = px.bar(top10_shap_values, x="피처 중요도(%)", y="피처 명", 
                     color = 'AI 예측 방향', color_discrete_map = {db_ai: '#FF0000', not_db_ai: '#0000FF'},
                     text = '피처 중요도(%)', orientation='h', hover_data = {'피처 명': False, '피처 설명': True, '피처 값': True, '피처 중요도(%)': False, 'AI 예측 방향': False,
-                                                                        'AI 공격 탐지 키워드': True},
+                                                                        'AI 탐지 키워드': True},
                     template = 'plotly_white',
                     )
     
@@ -2597,7 +2597,7 @@ def WEB_XAI_result():
         summary_plot = px.bar(top10_shap_values, x="피처 중요도(%)", y="피처 명", 
             color = 'AI 예측 방향', color_discrete_map = {db_ai: '#00FF00', not_db_ai: '#0000FF'},
             text = '피처 중요도(%)', orientation='h', hover_data = {'피처 명': False, '피처 설명': True, '피처 값': True, '피처 중요도(%)': False, 'AI 예측 방향': False,
-                                                                'AI 공격 탐지 키워드': True},
+                                                                'AI 탐지 키워드': True},
             template = 'plotly_white',
             )
 
