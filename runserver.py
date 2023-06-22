@@ -1942,15 +1942,19 @@ def WAF_XAI_result():
     # ai_feature_df['피처 명'] 중복된 행이 있다면, ',' 기준 concat
     ai_feature_df = ai_feature_df.groupby('피처 명')['AI 탐지 키워드'].apply(', '.join).reset_index()
 
-
     # print(ai_feature_df)
     top10_shap_values = top10_shap_values.merge(ai_feature_df, how='left', on='피처 명')
 
+    top10_shap_values['TF-IDF 피처 등장 횟수'] = '-'
+    
     # top10_shap_values의 TF-IDF 피처에 AI 공격 탐지 키워드 추가
     for i in range(top10_shap_values.shape[0]):
         if top10_shap_values['피처 명'][i].startswith('token_'):
             # top10_shap_values['피처 명'] 값을 WAF_tfidf_word['feature'] 에서 찾아, WAF_tfidf_word['word'] 값을 가져옴
             top10_shap_values['AI 탐지 키워드'][i] = WAF_tfidf_word.loc[WAF_tfidf_word['feature'] == top10_shap_values['피처 명'][i], 'word'].values[0]
+            # TF-IDF 피처의 등장 횟수 가져오기
+            top10_shap_values['TF-IDF 피처 등장 횟수'][i] = WAF_tfidf_word.loc[WAF_tfidf_word['feature'] == top10_shap_values['피처 명'][i], 'IDF'].values[0]
+            top10_shap_values['TF-IDF 피처 등장 횟수'][i] = top10_shap_values['피처 값'][i] / top10_shap_values['TF-IDF 피처 등장 횟수'][i]
 
     top10_shap_values['AI 탐지 키워드'] = top10_shap_values['AI 탐지 키워드'].fillna('-')
 
@@ -1970,18 +1974,20 @@ def WAF_XAI_result():
     # 학습 데이터 기반 피처 중요도 요약 (상위 3개 피처)
     ##################################################
 
-    first_feature = top10_shap_values.iloc[0, 1]
-    first_fv = top10_shap_values.iloc[0, 3]
-    first_word = top10_shap_values.iloc[0,-1]
-    second_feature = top10_shap_values.iloc[1, 1]
-    second_fv = top10_shap_values.iloc[1, 3]
-    second_word = top10_shap_values.iloc[1,-1]
-    third_feature = top10_shap_values.iloc[2, 1]
-    third_fv = top10_shap_values.iloc[2, 3]
-    third_word = top10_shap_values.iloc[2,-1]
+    first_feature = top10_shap_values['피처 명'][0]
+    first_fv = top10_shap_values['피처 값'][0]
+    first_word = top10_shap_values['AI 탐지 키워드'][0]
+    first_tfidf_count = top10_shap_values['TF-IDF 피처 등장 횟수'][0]
+    second_feature = top10_shap_values['피처 명'][1]
+    second_fv = top10_shap_values['피처 값'][1]
+    second_word = top10_shap_values['AI 탐지 키워드'][1]
+    second_tfidf_count = top10_shap_values['TF-IDF 피처 등장 횟수'][1]
+    third_feature = top10_shap_values['피처 명'][2]
+    third_fv = top10_shap_values['피처 값'][2]
+    third_word = top10_shap_values['AI 탐지 키워드'][2]
+    third_tfidf_count = top10_shap_values['TF-IDF 피처 등장 횟수'][2]
 
 
-    
     if first_feature.startswith("payload_"):
         if first_feature != 'payload_dir_access_comb_02':
             if first_fv == 1:
@@ -1994,7 +2000,7 @@ def WAF_XAI_result():
             first_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % first_fv       
     else:
         if first_fv > 0:
-            first_statement = 'AI 자동 생성 피처의 AI 탐지 키워드는 %s 이며 등장 하였습니다.'  %(first_word)
+            first_statement = 'AI 자동 생성 피처의 AI 탐지 키워드는 %s 이며 %d번 등장 하였습니다.'  %(first_word, first_tfidf_count)
         else:
             first_statement = 'AI 자동 생성 피처의 AI 탐지 키워드는 %s 이며 등장하지 않았습니다.'  %(first_word)
 
@@ -2011,7 +2017,7 @@ def WAF_XAI_result():
             second_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % second_fv      
     else:
         if second_fv > 0:
-            second_statement = 'AI 자동 생성 피처의 AI 탐지 키워드는 %s 이며 등장 하였습니다.'  %(second_word)
+            second_statement = 'AI 자동 생성 피처의 AI 탐지 키워드는 %s 이며 %d번 등장 하였습니다.'  %(second_word, second_tfidf_count)
         else:
             second_statement = 'AI 자동 생성 피처의 AI 탐지 키워드는 %s 이며 등장하지 않았습니다.'  %(second_word)
 
@@ -2028,7 +2034,7 @@ def WAF_XAI_result():
             third_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % third_fv
     else:
         if third_fv > 0:
-            third_statement = 'AI 자동 생성 피처의 AI 탐지 키워드는 %s 이며 등장 하였습니다.'  %(third_word)
+            third_statement = 'AI 자동 생성 피처의 AI 탐지 키워드는 %s 이며 %d번 등장 하였습니다.'  %(third_word, third_tfidf_count)
         else:
             third_statement = 'AI 자동 생성 피처의 AI 탐지 키워드는 %s 이며 등장하지 않았습니다.'  %(third_word)
 
@@ -2049,7 +2055,7 @@ def WAF_XAI_result():
     summary_plot = px.bar(top10_shap_values, x="피처 중요도(%)", y="피처 명", 
                 color = 'AI 예측 방향', color_discrete_map = {'공격': '#FF0000', '정상': '#00FF00', '기타': '#0000FF'},
                 text = '피처 중요도(%)', orientation='h', hover_data = {'피처 명': False, '피처 설명': True, '피처 값': True, '피처 중요도(%)': False, 'AI 예측 방향': False,
-                                                                    'AI 탐지 키워드': True},
+                                                                    'AI 탐지 키워드': True, 'TF-IDF 피처 등장 횟수': False},
                 template = 'plotly_white',
                 )
     
