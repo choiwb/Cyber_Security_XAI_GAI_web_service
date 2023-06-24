@@ -2410,6 +2410,8 @@ def WAF_XAI_result():
         q_and_a_1_html = '질의에 대한 답변을 생성하는데 실패했습니다.'
         q_and_a_2_html = '질의에 대한 답변을 생성하는데 실패했습니다.'
         q_and_a_3_html = '질의에 대한 답변을 생성하는데 실패했습니다.'
+        dl_xai_report_html = '질의에 대한 답변을 생성하는데 실패했습니다.'
+
 
     return render_template('WAF_XAI_output.html', payload_raw_data = request.form['raw_data_str'],  
                                 payload_anonymize_highlight_html = payload_anonymize_highlight_html,
