@@ -1,17 +1,17 @@
 
 
 
-# import psycopg2 as pg2
-# import os
-# import pandas as pd
-# import torch
-# from transformers import AutoTokenizer, pipeline
-
 import re
 import pickle
 import itertools
 import pandas as pd
+import numpy as np
+import scipy as sp
 from sklearn.feature_extraction.text import CountVectorizer
+import torch
+import shap
+from transformers import pipeline, AutoTokenizer, AutoModelForSequenceClassification
+
 
 SERVER_IP = '0.0.0.0'
 PORT = 17171
@@ -38,6 +38,41 @@ WAF_tfidf_word_path = 'save_model/waf_tfidf_word.csv'
 WAF_explainer_path = 'save_model/DSS_WAF_sql_tfidf_LGB_explainer_20230622.pkl'
 
 WAF_model = pickle.load(open(new_WAF_model_path, 'rb'))
+
+
+####################################################################################
+# WAF 딥러닝 모델 호출
+WAF_DL_path = 'save_model/WAF_DistilBERT_20230626'
+
+WAF_DL_model = AutoModelForSequenceClassification.from_pretrained(WAF_DL_path)
+WAF_DL_tokenizer = AutoTokenizer.from_pretrained(WAF_DL_path)
+WAF_DL_model.eval()
+
+device = torch.device('mps' if torch.backends.mps.is_available() else 'cpu')
+
+waf_dl_pipe = pipeline(task = "text-classification",
+                model = WAF_DL_model,
+                tokenizer = WAF_DL_tokenizer,
+                device = device)
+
+# define a prediction function
+def bert_predict(x):
+    tv = torch.tensor([WAF_DL_tokenizer.encode(v, padding='max_length', max_length=64, truncation=True) for v in x]).to(device)
+
+    # outputs = model(tv)[0].detach().cpu().numpy()
+    outputs = WAF_DL_model(tv)[0].detach().cpu().numpy()
+
+    scores = (np.exp(outputs).T / np.exp(outputs).sum(-1)).T
+    val = sp.special.logit(scores[:,1]) # use one vs rest logit units
+
+    return val
+
+# payload의 특정 패턴 기준으로 분할 regex
+masker = shap.maskers.Text(tokenizer = r"(\s|%20|\+|\/|%2f|HTTP/1.1|\?|\n|\r|\t)")
+WAF_DL_XAI = shap.Explainer(bert_predict, masker)
+
+####################################################################################
+
 
 
 # 2023/04/04 WEB 모델 - Light GBM
