@@ -2219,9 +2219,8 @@ def WAF_XAI_result():
     WAF_DL_shap_values_values_sum = np.sum(WAF_DL_shap_values_values_2)
     
     WAF_DL_shap_values_values_2_ratio = WAF_DL_shap_values_values_2 / WAF_DL_shap_values_values_sum
-    WAF_DL_shap_values_values_2_ratio = np.round(WAF_DL_shap_values_values_2_ratio, 4)
-    
     WAF_DL_shap_values_values_2_ratio = WAF_DL_shap_values_values_2_ratio * 100
+    WAF_DL_shap_values_values_2_ratio = np.round(WAF_DL_shap_values_values_2_ratio, 2)
     
     dl_xai_df['피처 중요도(%)'] = WAF_DL_shap_values_values_2_ratio
     dl_xai_df['AI 예측 방향'] = dl_shap_values_direction
@@ -2237,12 +2236,7 @@ def WAF_XAI_result():
     
     dl_summary_plot = px.bar(top10_dl_xai, x="피처 중요도(%)", y="AI 탐지 키워드", 
                 color='AI 예측 방향', color_discrete_map={'공격': '#FF0000', '정상': '#00FF00', '기타': '#0000FF'},
-                
-                ##########################
-                # text 호버링 아래 데이터 삭제 !!!!
-                ##########################
-                
-                text=top10_dl_xai['피처 중요도(%)'].apply(lambda x: f'{x:.2f}'),  # 소수점 2자리까지 포맷팅
+                text = '피처 중요도(%)',
                 orientation='h', hover_data={'피처 중요도(%)': False, 'AI 예측 방향': False,
                                              'AI 탐지 키워드': False},
                 template='plotly_white',
