@@ -1,3 +1,4 @@
+
 # Use python as base image
 FROM ubuntu:20.04
 FROM python:3.8.12
@@ -22,6 +23,7 @@ COPY shap_explainer_save.py /app
 COPY templates /app/templates
 COPY static /app/static
 COPY save_model /app/save_model
+COPY WAF_DistilBERT_20230626 /app/save_model/WAF_DistilBERT_20230626
 COPY chat_gpt_context /app/chat_gpt_context
 
 # Install dependencies
