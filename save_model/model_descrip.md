@@ -3,6 +3,8 @@
 - IPS 피처 정의서: IPS_피처생성정의서_v202306.xlsx
 - WAF model: DSS_WAF_LGB_20230615.pkl
 - WAF XAI: DSS_WAF_LGB_explainer_20230615.pkl
+- WAF model (Spark SQL + TF-IDF): DSS_WAF_sql_tfidf_LGB_20230622.pkl
+- WAF XAI (Spark SQL + TF-IDF): DSS_WAF_sql_tfidf_LGB_explainer_20230622.pkl
 - WAF 피처 정의서: WAF_피처생성정의서_v202306.xlsx
 - WEB model: DSS_WEB_LGB_20230404.pkl
 - WEB XAI: DSS_WEB_LGB_explainer_20230404.pkl
