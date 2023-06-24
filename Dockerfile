@@ -23,7 +23,7 @@ COPY shap_explainer_save.py /app
 COPY templates /app/templates
 COPY static /app/static
 COPY save_model /app/save_model
-COPY WAF_DistilBERT_20230626 /app/save_model/WAF_DistilBERT_20230626
+COPY save_model/WAF_DistilBERT_20230626 /app/save_model/WAF_DistilBERT_20230626
 COPY chat_gpt_context /app/chat_gpt_context
 
 # Install dependencies
