@@ -356,18 +356,17 @@ def chatgpt_continue_sigma(ques_init):
 ################################################
 
 
-def chatgpt_xai_explain(raw_data_str, xai_result):
-    ques = '입력된 payload 의 AI 예측 결과 상위 10개 피처 중요도에 대한 설명을 AI 공격 탐지 키워드 기반으로 보안 전문가들이 쉽게 이해할만한 설명으로 in 3 sentences 한글로 작성해주세요.'
+def chatgpt_xai_explain(xai_result):
+    ques = '입력된 AI 예측 결과 상위 10개 피처 중요도에 대한 설명을 AI 공격 탐지 키워드 기반으로 SQL Injection, Command Injection, XSS (Cross Site Scripting), Attempt access admin page (관리자 페이지 접근 시도), RCE (Remote Code Execution), WordPress 취약점, malicious bot 총 7가지 공격 유형 중에 연관된 공격 유형 1개와 함께 보안 전문가들이 쉽게 이해할만한 설명으로 in 3 sentences 한글로 작성해주세요.'
     completion = openai.ChatCompletion.create(
     model="gpt-4",
     max_tokens=512,
     messages=[
         {"role": "system", "content": 'You are a security analyst.'},
         {"role": "assistant", "content": xai_result},
-        {"role": "user", "content": raw_data_str + '. ' + ques}
+        {"role": "user", "content": ques}
     ]
     )
-
     xai_explain = completion['choices'][0]['message']['content']
 
     return xai_explain
@@ -1522,7 +1521,7 @@ def IPS_XAI_result():
     try:
         # IGLOO XAI 리포트 작성
         start = time.time()
-        xai_report_html = chatgpt_xai_explain(raw_data_str, top10_shap_values_html)
+        xai_report_html = chatgpt_xai_explain(top10_shap_values_html)
         end = time.time()
         print('IGLOO XAI 리포트 작성: %.2f (초)' %(end - start))
 
@@ -2260,7 +2259,7 @@ def WAF_XAI_result():
     try:
         # IGLOO XAI 리포트 작성
         start = time.time()
-        xai_report_html = chatgpt_xai_explain(raw_data_str, top10_shap_values_html)
+        xai_report_html = chatgpt_xai_explain(top10_shap_values_html)
         end = time.time()
         print('IGLOO XAI 리포트 작성: %.2f (초)' %(end - start))
 
@@ -2371,7 +2370,7 @@ def WAF_XAI_result():
 
         # IGLOO XAI 딥러닝 리포트 작성
         start = time.time()
-        dl_xai_report_html = chatgpt_xai_explain(raw_data_str, top10_dl_xai_html)
+        dl_xai_report_html = chatgpt_xai_explain(top10_dl_xai_html)
         end = time.time()
         print('IGLOO XAI 딥러닝 리포트 작성: %.2f (초)' %(end - start))
 
@@ -2877,7 +2876,7 @@ def WEB_XAI_result():
     try:
         # IGLOO XAI 리포트 작성
         start = time.time()
-        xai_report_html = chatgpt_xai_explain(raw_data_str, top10_shap_values_html)
+        xai_report_html = chatgpt_xai_explain(top10_shap_values_html)
         end = time.time()
         print('IGLOO XAI 리포트 작성: %.2f (초)' %(end - start))
 
