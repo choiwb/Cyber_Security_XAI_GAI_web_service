@@ -57,10 +57,8 @@ def payload_anonymize(raw_data_str):
     '''
     파이어폭스, 엣지, 등 기타 검색엔진 적용을 위해 정규 표현식 간결화
     예 임의의 영단어 \w\/ 인경우 
-    '''
-    # ip_pattern = r'((?<!safari\/)(?<!safari\/[0-9])(?<!chrome\/)(?<!chrome\/[0-9])(?:[0-9]{1,3}\.){3}[0-9]{1,3})'
-    ip_pattern = r'((?<!\w\/)(?<!\w\/[0-9])(?:[0-9]{1,3}\.){3}[0-9]{1,3})'
-
+    '''    
+    ip_pattern = r'((?<!\w\/)(?<!\w\/[0-9])(?<!\w\/[0-9][0-9])(?:[0-9]{1,3}\.){3}[0-9]{1,3})'
     output_str = re.sub(ip_pattern, '10.10.123.123', raw_data_str, flags = re.I)
     
     # HOST
@@ -2455,7 +2453,7 @@ def WEB_XAI_result():
         start_ip = re.findall(r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}', raw_data_str)
     '''
 
-    ip_pattern = r'((?<!\w\/)(?<!\w\/[0-9])(?:[0-9]{1,3}\.){3}[0-9]{1,3})'
+    ip_pattern = r'((?<!\w\/)(?<!\w\/[0-9])(?<!\w\/[0-9][0-9])(?:[0-9]{1,3}\.){3}[0-9]{1,3})'
     start_ip = re.findall(ip_pattern, raw_data_str)
         
         
