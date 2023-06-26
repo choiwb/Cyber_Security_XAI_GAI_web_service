@@ -1528,7 +1528,7 @@ def IPS_XAI_result():
         # 질의 1단계
         # 공격 판단 근거, Tactics ID, 사이버 킬 체인 모델
         def chatgpt_init_1(raw_data_str):
-            ques_init = (raw_data_str, 'SQL Injection, Command Injection, XSS (Cross Site Scripting), Attempt access admin page (관리자 페이지 접근 시도), JNDI Injection, WordPress 취약점, malicious bot 총 7가지 공격 유형 중에 입력된 payload의 경우, 어떤 공격 유형에 해당하는지 판단 근거를 in 2 sentences 한글로 작성해주세요.')
+            ques_init = (raw_data_str, 'SQL Injection, Command Injection, XSS (Cross Site Scripting), Attempt access admin page (관리자 페이지 접근 시도), RCE (Remote Code Execution), WordPress 취약점, malicious bot 총 7가지 공격 유형 중에 입력된 payload의 경우, 어떤 공격 유형에 해당하는지 판단 근거를 in 2 sentences 한글로 작성해주세요.')
 
             completions_init = chatgpt_init(ques_init)
             init_answer_string_1 = completions_init['choices'][0]['message']['content']
@@ -2266,7 +2266,7 @@ def WAF_XAI_result():
         # 질의 1단계
         # 공격 판단 근거, Tactics ID, 사이버 킬 체인 모델
         def chatgpt_init_1(raw_data_str):
-            ques_init = (raw_data_str, 'SQL Injection, Command Injection, XSS (Cross Site Scripting), Attempt access admin page (관리자 페이지 접근 시도), JNDI Injection, WordPress 취약점, malicious bot 총 7가지 공격 유형 중에 입력된 payload의 경우, 어떤 공격 유형에 해당하는지 판단 근거를 in 2 sentences 한글로 작성해주세요.')
+            ques_init = (raw_data_str, 'SQL Injection, Command Injection, XSS (Cross Site Scripting), Attempt access admin page (관리자 페이지 접근 시도), RCE (Remote Code Execution), WordPress 취약점, malicious bot 총 7가지 공격 유형 중에 입력된 payload의 경우, 어떤 공격 유형에 해당하는지 판단 근거를 in 2 sentences 한글로 작성해주세요.')
             completions_init = chatgpt_init(ques_init)
             init_answer_string_1 = completions_init['choices'][0]['message']['content']
             init_answer_string_1 = init_answer_string_1.lower().replace('\n', ' ')
@@ -2883,7 +2883,7 @@ def WEB_XAI_result():
         # 질의 1단계
         # 공격 판단 근거, Tactics ID, 사이버 킬 체인 모델
         def chatgpt_init_1(raw_data_str):
-            ques_init = (raw_data_str, 'SQL Injection, Command Injection, XSS (Cross Site Scripting), Attempt access admin page (관리자 페이지 접근 시도), JNDI Injection, WordPress 취약점, malicious bot 총 7가지 공격 유형 중에 입력된 payload의 경우, 어떤 공격 유형에 해당하는지 판단 근거를 in 2 sentences 한글로 작성해주세요.')
+            ques_init = (raw_data_str, 'SQL Injection, Command Injection, XSS (Cross Site Scripting), Attempt access admin page (관리자 페이지 접근 시도), RCE (Remote Code Execution), WordPress 취약점, malicious bot 총 7가지 공격 유형 중에 입력된 payload의 경우, 어떤 공격 유형에 해당하는지 판단 근거를 in 2 sentences 한글로 작성해주세요.')
             completions_init = chatgpt_init(ques_init)
             init_answer_string_1 = completions_init['choices'][0]['message']['content']
             init_answer_string_1 = init_answer_string_1.lower().replace('\n', ' ')
