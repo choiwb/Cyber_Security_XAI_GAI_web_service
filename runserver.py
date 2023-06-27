@@ -1518,6 +1518,80 @@ def IPS_XAI_result():
     sig_pattern_html = f"<head>{sig_ai_pattern}</head>"        
     sig_df_html = sig_df.to_html(index=False, justify='center')
 
+    ####################################################################################
+    # 딥러닝 기반 XAI
+    payload_text_df = pd.DataFrame([raw_data_str], columns = ['payload'])
+    
+    IPS_DL_shap_values = IPS_DL_XAI(payload_text_df['payload'], fixed_context=1, batch_size=1)
+    print(IPS_DL_shap_values)
+    
+    text_html = shap.text_plot(IPS_DL_shap_values, display = False)
+
+    pipe_result = ips_dl_pipe(payload_text_df.iloc[0,0])
+    pipe_result_label = pipe_result[0]['label']
+    
+    if pipe_result_label == 'POSITIVE':
+        pipe_result_label = '공격'
+    else:
+        pipe_result_label = '정상'
+        
+    pipe_result_score = pipe_result[0]['score']
+    # 소수점 4자리까지 표시
+    pipe_result_score = round(pipe_result_score, 4)
+    pipe_result_score = pipe_result_score * 100
+    
+    IPS_DL_shap_values_data = IPS_DL_shap_values.data[0]
+    IPS_DL_shap_values_values = IPS_DL_shap_values.values[0]
+
+    dl_xai_df = pd.DataFrame({'AI 탐지 키워드': IPS_DL_shap_values_data,
+                        'shap_values': IPS_DL_shap_values_values})
+
+    dl_shap_values_direction = np.where(IPS_DL_shap_values_values >= 0, '공격', '정상')
+    
+    IPS_DL_shap_values_values_2 = np.abs(IPS_DL_shap_values_values)
+    IPS_DL_shap_values_values_sum = np.sum(IPS_DL_shap_values_values_2)
+    
+    IPS_DL_shap_values_values_2_ratio = IPS_DL_shap_values_values_2 / IPS_DL_shap_values_values_sum
+    IPS_DL_shap_values_values_2_ratio = IPS_DL_shap_values_values_2_ratio * 100
+    IPS_DL_shap_values_values_2_ratio = np.round(IPS_DL_shap_values_values_2_ratio, 2)
+    
+    dl_xai_df['피처 중요도(%)'] = IPS_DL_shap_values_values_2_ratio
+    dl_xai_df['AI 예측 방향'] = dl_shap_values_direction
+
+    dl_xai_df = dl_xai_df.sort_values(ascending = False, by = '피처 중요도(%)')
+    top10_dl_xai = dl_xai_df.head(10)
+        
+    top10_dl_xai = top10_dl_xai[['AI 탐지 키워드', 'AI 예측 방향', '피처 중요도(%)']]
+    # print(top10_dl_xai)
+    
+    top10_dl_xai_html = top10_dl_xai.to_html(index=False, justify='center')
+
+    
+    dl_summary_plot = px.bar(top10_dl_xai, x="피처 중요도(%)", y="AI 탐지 키워드", 
+                color='AI 예측 방향', color_discrete_map={'공격': '#FF0000', '정상': '#00FF00', '기타': '#0000FF'},
+                text = '피처 중요도(%)',
+                orientation='h', hover_data={'피처 중요도(%)': False, 'AI 예측 방향': False,
+                                             'AI 탐지 키워드': False},
+                template='plotly_white',
+            )
+    
+    dl_summary_plot.update_layout(xaxis_fixedrange=True, yaxis_fixedrange=True,
+                            yaxis = dict(autorange="reversed"),
+                            yaxis_categoryorder = 'total descending',
+                            legend_itemclick = False, legend_itemdoubleclick = False,
+                            title_text='AI 예측 상위 10개 딥러닝 피처 중요도', title_x=0.5,
+                            yaxis_title = None
+                            )
+    
+    # plotly to html and all config false
+    dl_summary_html = dl_summary_plot.to_html(full_html=False, include_plotlyjs=True,
+                                config = {'displaylogo': False,
+                                'modeBarButtonsToRemove': ['zoom', 'pan', 'zoomin', 'zoomout', 'autoscale', 'select2d', 'lasso2d',
+                                'resetScale2d', 'toImage']
+                                }
+                                )
+    ####################################################################################
+
     try:
         # IGLOO XAI 리포트 작성
         start = time.time()
@@ -1627,6 +1701,13 @@ def IPS_XAI_result():
         end = time.time()
         print('CVE 추천: %.2f (초)' % (end - start))
 
+        # IGLOO XAI 딥러닝 리포트 작성
+        start = time.time()
+        dl_xai_report_html = chatgpt_xai_explain(top10_dl_xai_html)
+
+        end = time.time()
+        print('IGLOO XAI 딥러닝 리포트 작성: %.2f (초)' %(end - start))
+
 
         q_and_a_1_df = pd.DataFrame([
                 ['공격 판단 근거', init_answer_string_1],
@@ -1647,7 +1728,8 @@ def IPS_XAI_result():
         xai_report_html = '질의 응답 과정에서 오류가 발생했습니다.'
         q_and_a_1_html = '질의에 대한 답변을 생성하는데 실패했습니다.'
         q_and_a_2_html = '질의에 대한 답변을 생성하는데 실패했습니다.'
-        
+        dl_xai_report_html = '질의에 대한 답변을 생성하는데 실패했습니다.'
+
 
     return render_template('IPS_XAI_output.html', payload_raw_data = request.form['raw_data_str'],  
                                 payload_anonymize_highlight_html = payload_anonymize_highlight_html,
@@ -1664,7 +1746,12 @@ def IPS_XAI_result():
                                 sig_df_html = sig_df_html,
                                 xai_report_html = xai_report_html,
                                 q_and_a_1_html = q_and_a_1_html,
-                                q_and_a_2_html = q_and_a_2_html
+                                q_and_a_2_html = q_and_a_2_html,
+                                text_html = text_html,
+                                pipe_result_label = pipe_result_label,
+                                pipe_result_score = pipe_result_score,
+                                dl_summary_html = dl_summary_html,
+                                dl_xai_report_html = dl_xai_report_html
                                 )
 
 
