@@ -42,7 +42,7 @@ WAF_model = pickle.load(open(new_WAF_model_path, 'rb'))
 
 ####################################################################################
 # IPS 딥러닝 모델 호출
-IPS_DL_path = '/home/xai/xai_flask/save_model/IPS_DistilBERT_20230627'
+IPS_DL_path = 'save_model/IPS_DistilBERT_20230627'
 
 IPS_DL_model = AutoModelForSequenceClassification.from_pretrained(IPS_DL_path)
 IPS_DL_tokenizer = AutoTokenizer.from_pretrained(IPS_DL_path)
@@ -81,7 +81,7 @@ IPS_DL_XAI = shap.Explainer(ips_bert_predict, masker)
 
 ####################################################################################
 # WAF 딥러닝 모델 호출
-WAF_DL_path = '/home/xai/xai_flask/save_model/WAF_DistilBERT_20230626'
+WAF_DL_path = 'save_model/WAF_DistilBERT_20230626'
 
 WAF_DL_model = AutoModelForSequenceClassification.from_pretrained(WAF_DL_path)
 WAF_DL_tokenizer = AutoTokenizer.from_pretrained(WAF_DL_path)
