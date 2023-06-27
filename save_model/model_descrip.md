@@ -1,5 +1,6 @@
 - IPS model: DSS_IPS_LGB_20230615.pkl
 - IPS XAI: DSS_IPS_LGB_explainer_20230615.pkl
+- IPS Deep Learning: IPS_DistilBERT_20230627
 - IPS 피처 정의서: IPS_피처생성정의서_v202306.xlsx
 - WAF model: DSS_WAF_LGB_20230615.pkl
 - WAF XAI: DSS_WAF_LGB_explainer_20230615.pkl
