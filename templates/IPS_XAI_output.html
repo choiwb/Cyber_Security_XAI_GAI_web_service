@@ -17,6 +17,11 @@
 
   <br><br>
 
+  <h3> Payload 파싱 결과 <br></h3>
+  <iframe width = "1500", height = "250" srcdoc="{{payload_parsing_result_html}}" ></iframe>
+  <h5> {{payload_parsing_comment}}</h5>
+  <iframe width = "1500", height = "100" srcdoc="{{q_and_a_2_html}}" ></iframe>
+
   <h3> XAI 리포트 <br></h3>
   <!--
   <iframe width = "1000", height = "170" srcdoc="{{force_html}}" ></iframe>
@@ -35,6 +40,14 @@
   <h3> Open AI - ChatGPT 기반 리포트 <br></h3>
   <h5> {{xai_report_html}}</h5>
 
+  <h3> 딥러닝 피처 중요도 <br></h3>
+  <h5> 딥러닝 예측 라벨: {{pipe_result_label}}</h5>
+  <h5> 딥러닝 예측 스코어(%): {{pipe_result_score}}</h5>
+  <iframe width = "1000", height = "500" srcdoc="{{text_html}}" ></iframe>
+  <iframe width = "1000", height = "500" srcdoc="{{dl_summary_html}}" ></iframe>
+  <h3> Open AI - ChatGPT 기반 리포트 <br></h3>
+  <h5> {{dl_xai_report_html}}</h5>
+
   <!--
   <iframe width = "1000", height = "500" srcdoc="{{pie_html}}" ></iframe>
   -->
@@ -46,7 +59,7 @@
   <br><br><br>
 
   <h3> Open AI - ChatGPT API 분석 결과 <br></h3>
-  <iframe width = "1500", height = "600" srcdoc="{{q_and_a_2_html}}" ></iframe>
+  <iframe width = "1500", height = "600" srcdoc="{{q_and_a_3_html}}" ></iframe>
   <br><br>
 
   <a href='/'>go back to home page</a>
