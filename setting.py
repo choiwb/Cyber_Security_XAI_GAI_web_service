@@ -41,23 +41,66 @@ WAF_model = pickle.load(open(new_WAF_model_path, 'rb'))
 
 
 ####################################################################################
+# IPS 딥러닝 모델 호출
+IPS_DL_path = '/home/xai/xai_flask/save_model/IPS_DistilBERT_20230627'
+
+IPS_DL_model = AutoModelForSequenceClassification.from_pretrained(IPS_DL_path)
+IPS_DL_tokenizer = AutoTokenizer.from_pretrained(IPS_DL_path)
+IPS_DL_model.eval()
+
+# XAI 서버에 NVIDIA 드라이버 설치 시, 각 모델 별, (IPS, WAF, WEB) 에 대한 디바이스 지정 필요해 보임 !!!!!!
+# 드라이버 분할 지정하지 않는다면, 'cuda:0' 이나 'cuda' 해도 상관 없음.
+ips_device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+
+ips_dl_pipe = pipeline(task = "text-classification",
+                model = IPS_DL_model,
+                tokenizer =IPS_DL_tokenizer,
+                device = ips_device)
+
+print('IPS 딥러닝 모델 디바이스: ', ips_dl_pipe.device)
+
+# define a prediction function
+def ips_bert_predict(x):
+    tv = torch.tensor([IPS_DL_tokenizer.encode(v, padding='max_length', max_length=64, truncation=True) for v in x]).to(ips_device)
+
+    # outputs = model(tv)[0].detach().cpu().numpy()
+    outputs = IPS_DL_model(tv)[0].detach().cpu().numpy()
+
+    scores = (np.exp(outputs).T / np.exp(outputs).sum(-1)).T
+    val = sp.special.logit(scores[:,1]) # use one vs rest logit units
+
+    return val
+
+# payload의 특정 패턴 기준으로 분할 regex
+masker = shap.maskers.Text(tokenizer = r"(\s|%20|\+|\/|%2f|HTTP/1.1|\?|\n|\r|\t)")
+# masker = shap.maskers.Text(tokenizer = r"(\s|%20|\+|%2f|HTTP/1.1|\?|\n|\r|\t)")
+
+IPS_DL_XAI = shap.Explainer(ips_bert_predict, masker)
+
+####################################################################################
+
+####################################################################################
 # WAF 딥러닝 모델 호출
-WAF_DL_path = 'save_model/WAF_DistilBERT_20230626'
+WAF_DL_path = '/home/xai/xai_flask/save_model/WAF_DistilBERT_20230626'
 
 WAF_DL_model = AutoModelForSequenceClassification.from_pretrained(WAF_DL_path)
 WAF_DL_tokenizer = AutoTokenizer.from_pretrained(WAF_DL_path)
 WAF_DL_model.eval()
 
-device = torch.device('mps' if torch.backends.mps.is_available() else 'cpu')
+# XAI 서버에 NVIDIA 드라이버 설치 시, 각 모델 별, (IPS, WAF, WEB) 에 대한 디바이스 지정 필요해 보임 !!!!!!
+# 드라이버 분할 지정하지 않는다면, 'cuda:0' 이나 'cuda' 해도 상관 없음.
+waf_device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
 waf_dl_pipe = pipeline(task = "text-classification",
                 model = WAF_DL_model,
                 tokenizer = WAF_DL_tokenizer,
-                device = device)
+                device = waf_device)
+
+print('WAF 딥러닝 모델 디바이스: ', waf_dl_pipe.device)
 
 # define a prediction function
-def bert_predict(x):
-    tv = torch.tensor([WAF_DL_tokenizer.encode(v, padding='max_length', max_length=64, truncation=True) for v in x]).to(device)
+def waf_bert_predict(x):
+    tv = torch.tensor([WAF_DL_tokenizer.encode(v, padding='max_length', max_length=64, truncation=True) for v in x]).to(waf_device)
 
     # outputs = model(tv)[0].detach().cpu().numpy()
     outputs = WAF_DL_model(tv)[0].detach().cpu().numpy()
@@ -69,9 +112,12 @@ def bert_predict(x):
 
 # payload의 특정 패턴 기준으로 분할 regex
 masker = shap.maskers.Text(tokenizer = r"(\s|%20|\+|\/|%2f|HTTP/1.1|\?|\n|\r|\t)")
-WAF_DL_XAI = shap.Explainer(bert_predict, masker)
+# masker = shap.maskers.Text(tokenizer = r"(\s|%20|\+|%2f|HTTP/1.1|\?|\n|\r|\t)")
+
+WAF_DL_XAI = shap.Explainer(waf_bert_predict, masker)
 
 ####################################################################################
+
 
 
 
