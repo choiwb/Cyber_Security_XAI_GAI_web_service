@@ -2959,6 +2959,107 @@ def WEB_XAI_result():
         useragent_pred_explain = 'WEB 로그가 아닙니다.'
         start_ip_country_explain = 'WEB 로그가 아닙니다.'
 
+    ####################################################################################
+    # 딥러닝 기반 XAI
+    
+    # web log 파싱 후, http_method 컬럼부터 추출하여 딥러닝 
+    # 학습 데이터 상에서, http_method부터 있었기 때문에, 최대한 예측에 대한 편차를 줄이기 위함 임.
+    # after_method_raw_data_str는 raw_data_str에서 web_parsing_result 데이터 프레임의 http_method 컬럼의 값부터 시작하는 것을 split하여 추출
+    after_method_raw_data_str = web_parsing_result['http_method'][0] + raw_data_str.split(web_parsing_result['http_method'][0])[1]
+
+    payload_text_df = pd.DataFrame([after_method_raw_data_str], columns = ['payload'])
+
+    pipe_result = web_dl_pipe(payload_text_df.iloc[0,0])
+    pipe_result_label = pipe_result[0]['label']
+
+    if pipe_result_label == 'LABEL_0':
+        pipe_result_label = 'CMD Injection'
+        not_pipe_result_label = '기타 (SQL, XSS, 정상)'
+    elif pipe_result_label == 'LABEL_1':
+        pipe_result_label = '정상'
+        not_pipe_result_label = '기타 (CMD, SQL, XSS)'
+    elif pipe_result_label == 'LABEL_2':
+        pipe_result_label = 'SQL Injection'
+        not_pipe_result_label = '기타 (CMD, XSS, 정상)'
+    else: 
+        # LABEL_3
+        pipe_result_label = 'XSS'
+        not_pipe_result_label = '기타 (CMD, SQL, 정상)'
+
+    pipe_result_score = pipe_result[0]['score']
+    # 소수점 4자리까지 표시
+    pipe_result_score = round(pipe_result_score, 4)
+    pipe_result_score = pipe_result_score * 100
+
+    ####################################################################################
+    WEB_DL_XAI = shap.Explainer(lambda x: web_bert_predict(x, pipe_result_label), masker)
+    ####################################################################################
+
+    WEB_DL_shap_values = WEB_DL_XAI(payload_text_df['payload'], fixed_context=1, batch_size=1)
+    # print(WEB_DL_shap_values)
+
+    text_html = shap.text_plot(WEB_DL_shap_values, display = False)
+        
+    WEB_DL_shap_values_data = WEB_DL_shap_values.data[0]
+    WEB_DL_shap_values_values = WEB_DL_shap_values.values[0]
+
+    dl_xai_df = pd.DataFrame({'AI 탐지 키워드': WEB_DL_shap_values_data,
+                        'shap_values': WEB_DL_shap_values_values})
+
+    dl_shap_values_direction = np.where(WEB_DL_shap_values_values >= 0, pipe_result_label, not_pipe_result_label)
+
+    WEB_DL_shap_values_values_2 = np.abs(WEB_DL_shap_values_values)
+    WEB_DL_shap_values_values_sum = np.sum(WEB_DL_shap_values_values_2)
+    
+    WEB_DL_shap_values_values_2_ratio = WEB_DL_shap_values_values_2 / WEB_DL_shap_values_values_sum
+    WEB_DL_shap_values_values_2_ratio = WEB_DL_shap_values_values_2_ratio * 100
+    WEB_DL_shap_values_values_2_ratio = np.round(WEB_DL_shap_values_values_2_ratio, 2)
+    
+    dl_xai_df['피처 중요도(%)'] = WEB_DL_shap_values_values_2_ratio
+    dl_xai_df['AI 예측 방향'] = dl_shap_values_direction
+
+    dl_xai_df = dl_xai_df.sort_values(ascending = False, by = '피처 중요도(%)')
+    top10_dl_xai = dl_xai_df.head(10)
+        
+    top10_dl_xai = top10_dl_xai[['AI 탐지 키워드', 'AI 예측 방향', '피처 중요도(%)']]
+    # print(top10_dl_xai)
+    
+    top10_dl_xai_html = top10_dl_xai.to_html(index=False, justify='center')
+
+        
+    if pipe_result_label != '정상':
+        dl_summary_plot = px.bar(top10_dl_xai, x="피처 중요도(%)", y="AI 탐지 키워드", 
+                    color = 'AI 예측 방향', color_discrete_map = {pipe_result_label: '#FF0000', not_pipe_result_label: '#0000FF'},
+                    text = '피처 중요도(%)', orientation='h', hover_data = {'피처 중요도(%)': False, 'AI 예측 방향': False,
+                                                                        'AI 탐지 키워드': False},
+                    template = 'plotly_white',
+                    )
+    
+    else:
+        dl_summary_plot = px.bar(top10_dl_xai, x="피처 중요도(%)", y="AI 탐지 키워드", 
+                    color = 'AI 예측 방향', color_discrete_map = {pipe_result_label: '#00FF00', not_pipe_result_label: '#0000FF'},
+                    text = '피처 중요도(%)', orientation='h', hover_data = {'피처 중요도(%)': False, 'AI 예측 방향': False,
+                                                                        'AI 탐지 키워드': False},
+                    template = 'plotly_white',
+                    )
+    
+    dl_summary_plot.update_layout(xaxis_fixedrange=True, yaxis_fixedrange=True,
+                            yaxis = dict(autorange="reversed"),
+                            yaxis_categoryorder = 'total descending',
+                            legend_itemclick = False, legend_itemdoubleclick = False,
+                            title_text='AI 예측 상위 10개 딥러닝 피처 중요도', title_x=0.5,
+                            yaxis_title = None
+                            )
+    
+    # plotly to html and all config false
+    dl_summary_html = dl_summary_plot.to_html(full_html=False, include_plotlyjs=True,
+                                config = {'displaylogo': False,
+                                'modeBarButtonsToRemove': ['zoom', 'pan', 'zoomin', 'zoomout', 'autoscale', 'select2d', 'lasso2d',
+                                'resetScale2d', 'toImage']
+                                }
+                                )
+    ####################################################################################
+
 
     try:
         # IGLOO XAI 리포트 작성
