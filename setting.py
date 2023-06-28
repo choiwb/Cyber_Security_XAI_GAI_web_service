@@ -118,7 +118,57 @@ WAF_DL_XAI = shap.Explainer(waf_bert_predict, masker)
 
 ####################################################################################
 
+####################################################################################
+# WEB 딥러닝 모델 호출
+WEB_DL_path = '/home/xai/xai_flask/save_model/WEB_DistilBERT_20230628'
 
+WEB_DL_model = AutoModelForSequenceClassification.from_pretrained(WEB_DL_path)
+WEB_DL_tokenizer = AutoTokenizer.from_pretrained(WEB_DL_path)
+WEB_DL_model.eval()
+
+# XAI 서버에 NVIDIA 드라이버 설치 시, 각 모델 별, (IPS, WAF, WEB) 에 대한 디바이스 지정 필요해 보임 !!!!!!
+# 드라이버 분할 지정하지 않는다면, 'cuda:0' 이나 'cuda' 해도 상관 없음.
+web_device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+
+web_dl_pipe = pipeline(task = "text-classification",
+                model = WEB_DL_model,
+                tokenizer = WEB_DL_tokenizer,
+                device = web_device)
+
+print('WEB 딥러닝 모델 디바이스: ', web_dl_pipe.device)
+
+# define a prediction function
+def web_bert_predict(x, pipe_result_label):
+    tv = torch.tensor([WEB_DL_tokenizer.encode(v, padding='max_length', max_length=64, truncation=True) for v in x]).to(web_device)
+
+    # outputs = model(tv)[0].detach().cpu().numpy()
+    outputs = WEB_DL_model(tv)[0].detach().cpu().numpy()
+    scores = (np.exp(outputs).T / np.exp(outputs).sum(-1)).T
+
+    # 라벨 별 인덱스 매칭
+    if pipe_result_label == 'CMD Injection':
+        pred_label_index = 0
+    elif pipe_result_label == 'SQL Injection':
+        pred_label_index = 2
+    elif pipe_result_label == 'XSS':
+        pred_label_index = 3
+    else:
+        # '정상'
+        pred_label_index = 1
+    
+    val = sp.special.logit(scores[:,pred_label_index]) # use one vs rest logit units
+
+    return val
+
+# payload의 특정 패턴 기준으로 분할 regex
+masker = shap.maskers.Text(tokenizer = r"(\s|%20|\+|\/|%2f|HTTP/1.1|\?|\n|\r|\t)")
+# masker = shap.maskers.Text(tokenizer = r"(\s|%20|\+|%2f|HTTP/1.1|\?|\n|\r|\t)")
+
+# 공격/정상인 경우, bert_predict 함수에 '1'로 index를 지정할 수 있으나, web log의 경우, 다중 분류이므로, 예측 값에 따라 달라지므로,
+# runserver.py 에서 pipe_result_label 에 따라서, 해당 라벨에 대한 index를 지정해 줌.
+# WEB_DL_XAI = shap.Explainer(lambda x: web_bert_predict(x, pipe_result_label), masker)
+
+####################################################################################
 
 
 # 2023/04/04 WEB 모델 - Light GBM
