@@ -2,16 +2,20 @@
 - IPS XAI: DSS_IPS_LGB_explainer_20230615.pkl
 - IPS Deep Learning: IPS_DistilBERT_20230627
 - IPS 피처 정의서: IPS_피처생성정의서_v202306.xlsx
+----
 - WAF model: DSS_WAF_LGB_20230615.pkl
 - WAF XAI: DSS_WAF_LGB_explainer_20230615.pkl
 - WAF model (Spark SQL + TF-IDF): DSS_WAF_sql_tfidf_LGB_20230622.pkl
 - WAF XAI (Spark SQL + TF-IDF): DSS_WAF_sql_tfidf_LGB_explainer_20230622.pkl
 - WAF Deep Learning: WAF_DistilBERT_20230626
 - WAF 피처 정의서: WAF_피처생성정의서_v202306.xlsx
+----
 - WEB model: DSS_WEB_LGB_20230404.pkl
 - WEB XAI: DSS_WEB_LGB_explainer_20230404.pkl
 - WEB Deep Learning: WEB_DistilBERT_20230628
+----
 - WEB useragent modek: DSS_WEB_useragent_LGB_20230413.pkl
 - WEB useragent TF-IDF word: useragent_tfidf_word.csv
+----
 - signature pattern: signature_pattern_list.csv
 - GeoIP2 DB Country name: GeoLite2_Country_20230419.mmdb
