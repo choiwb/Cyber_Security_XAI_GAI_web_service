@@ -625,7 +625,8 @@ def dl_highlight_text(text, signature, dl_ai_field):
     # 시그니처 패턴 또는 AI 생성 필드 인 경우, highlight 처리
     # re.escape() : 특수문자를 이스케이프 처리
     text = re.sub("(" + "|".join(map(re.escape, signature)) + ")", replacement, text, flags=re.I)
-    text = re.sub("(" + "|".join(dl_ai_field) + ")", replacement_2, text, flags=re.I)
+    # + 문자열에 대한 이스케이프 처리
+    text = re.sub("(" + "|".join(map(re.escape, dl_ai_field)) + ")", replacement_2, text, flags=re.I)
 
     regex = re.compile('\x1b\[103m(.*?)\x1b\[49m')
 
