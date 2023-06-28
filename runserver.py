@@ -3202,14 +3202,14 @@ def WEB_XAI_result():
         q_and_a_1_html = q_and_a_1_df.to_html(index=False, justify='center')
         q_and_a_2_html = q_and_a_2_df.to_html(index=False, justify='center')
         q_and_a_3_html = q_and_a_3_df.to_html(index=False, justify='center')
-
-        # q_and_a_html = q_and_a_html.replace('\\n', ' ')
         q_and_a_3_html = q_and_a_3_html.replace('description:', '<br>description:').replace('logsource:', '<br>logsource:').replace('detection:', '<br>detection:').replace('falsepositives:', '<br>falsepositives:').replace('level:', '<br>level:')
+            
     except:
         xai_report_html = '질의 응답 과정에서 오류가 발생했습니다.'
         q_and_a_1_html = '질의 응답 과정에서 오류가 발생했습니다.'
         q_and_a_2_html = '질의 응답 과정에서 오류가 발생했습니다.'
         q_and_a_3_html = '질의 응답 과정에서 오류가 발생했습니다.'
+        dl_xai_report_html = '질의에 대한 답변을 생성하는데 실패했습니다.'
 
     return render_template('WEB_XAI_output.html', payload_raw_data = request.form['raw_data_str'],  
                                 # payload_anonymize_highlight_html = payload_anonymize_highlight_html,
@@ -3230,7 +3230,12 @@ def WEB_XAI_result():
                                 web_parsing_result_html = web_parsing_result_html,
                                 weblog_type_comment = weblog_type_comment,
                                 useragent_pred_explain = useragent_pred_explain,
-                                start_ip_country_explain = start_ip_country_explain
+                                start_ip_country_explain = start_ip_country_explain,
+                                text_html = text_html,
+                                pipe_result_label = pipe_result_label,
+                                pipe_result_score = pipe_result_score,
+                                dl_summary_html = dl_summary_html,
+                                dl_xai_report_html = dl_xai_report_html
                                 )
 
 
