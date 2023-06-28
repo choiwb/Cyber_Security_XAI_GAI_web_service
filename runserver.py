@@ -3174,6 +3174,13 @@ def WEB_XAI_result():
         end = time.time()
         print('CVE 추천: %.2f (초)' % (end - start))
 
+        # IGLOO XAI 딥러닝 리포트 작성
+        start = time.time()
+        dl_xai_report_html = chatgpt_xai_explain(top10_dl_xai_html)
+
+        end = time.time()
+        print('IGLOO XAI 딥러닝 리포트 작성: %.2f (초)' %(end - start))
+
 
         q_and_a_1_df = pd.DataFrame([
                 ['공격 판단 근거', init_answer_string_1],
