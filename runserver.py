@@ -631,19 +631,47 @@ def web_highlight_text(text, signature, web_ai_field):
     return text, sig_pattern_df
 
 
-def dl_highlight_text(text, dl_ai_field):
+def dl_highlight_text(text, signature, dl_ai_field):
 
     # ai_field의 경우 상위10개 키워드에 컬럼에 대한 선언
-    
+    # 특수문자 => [\\특수문자] 로 변경
+    dl_ai_field = [re.sub(r'([^\w\s])', r'[\\\1]', x) for x in dl_ai_field]
+    print(dl_ai_field)
+
+    # background yellow - 시그니처 패턴
+    replacement = "\033[103m" + "\\1" + "\033[49m"
     # foreground red - AI 생성 필드
     replacement_2 = "\033[91m" + "\\1" + "\033[39m"
 
     # 시그니처 패턴 또는 AI 생성 필드 인 경우, highlight 처리
     # re.escape() : 특수문자를 이스케이프 처리
-    text = re.sub("(" + "|".join(map(re.escape, dl_ai_field)) + ")", replacement_2, text, flags=re.I)
+    text = re.sub("(" + "|".join(map(re.escape, signature)) + ")", replacement, text, flags=re.I)
+    text = re.sub("(" + "|".join(dl_ai_field) + ")", replacement_2, text, flags=re.I)
     
-    return text
+    regex = re.compile('\x1b\[103m(.*?)\x1b\[49m')
 
+    matches = [regex.match(text[i:]) for i in range(len(text))] 
+    sig_pattern_prep = [m.group(0) for m in matches if m] 
+
+    sig_pattern = [re.sub(r'\x1b\[103m|\x1b\[49m', '', i) for i in sig_pattern_prep]
+    sig_pattern = [re.sub(r'\x1b\[91m|\x1b\[39m', '', i) for i in sig_pattern]
+
+    sig_pattern_df = pd.DataFrame(columns = ['탐지 순서', '제조사', '장비 명', '탐지 명', '설명', '대응 방안'])
+    count = 0
+    for i in sig_pattern:
+        # 시그니처 탐지 패턴의 경우, 소문자화
+        i = i.lower()
+        count = count + 1
+
+        if i in signature_list:
+            j = signature_list.index(i)
+            # print('%d 번째 시그니처 패턴 공격명: %s' %(count, method_list[j]))
+            one_row_df = pd.DataFrame([[count, vendor_list[j], equip_list[j], method_list[j], descrip_list[j], response_list[j]]], 
+                                columns = ['탐지 순서', '제조사', '장비 명', '탐지 명', '설명', '대응 방안'])
+            sig_pattern_df = pd.concat([sig_pattern_df, one_row_df], axis = 0)
+    
+    return text, sig_pattern_df
+    
 @app.route('/WAF_payload_parsing', methods = ['POST'])
 def WAF_payload_parsing():
     raw_data_str = request.form['raw_data_str']
@@ -1616,7 +1644,7 @@ def IPS_XAI_result():
     # 보안 시그니처 패턴 리스트 highlight
     dl_ai_field = top10_dl_xai['AI 탐지 키워드'].tolist()
     print(dl_ai_field)
-    dl_sig_ai_pattern = dl_highlight_text(raw_data_str, dl_ai_field)
+    dl_sig_ai_pattern, dl_sig_df = dl_highlight_text(raw_data_str, signature_list, dl_ai_field)
     print(dl_sig_ai_pattern)
 
     # HTML 형태 payload 의 경우, 소괄호 치환 필요
@@ -1624,10 +1652,13 @@ def IPS_XAI_result():
     dl_sig_ai_pattern = re.sub(r'[\\>]', r'&gt;', dl_sig_ai_pattern)
 
     foreground_regex = r'\x1b\[91m(.*?)\x1b\[39m'
+    background_regex = r'\x1b\[103m(.*?)\x1b\[49m'
     
     dl_sig_ai_pattern = re.sub(foreground_regex, r'<font color = "red">\1</font>', dl_sig_ai_pattern)
+    dl_sig_ai_pattern = re.sub(background_regex, r'<span style = "background-color:yellow;">\1</span>', dl_sig_ai_pattern)
 
     dl_sig_pattern_html = f"<head>{dl_sig_ai_pattern}</head>"        
+    dl_sig_df_html = dl_sig_df.to_html(index=False, justify='center')
     ####################################################################################
 
     try:
@@ -1790,7 +1821,8 @@ def IPS_XAI_result():
                                 pipe_result_score = pipe_result_score,
                                 dl_summary_html = dl_summary_html,
                                 dl_xai_report_html = dl_xai_report_html,
-                                dl_sig_pattern_html = dl_sig_pattern_html
+                                dl_sig_pattern_html = dl_sig_pattern_html,
+                                dl_sig_df_html = dl_sig_df_html
                                 )
 
 
@@ -2375,7 +2407,7 @@ def WAF_XAI_result():
     # 보안 시그니처 패턴 리스트 highlight
     dl_ai_field = top10_dl_xai['AI 탐지 키워드'].tolist()
     print(dl_ai_field)
-    dl_sig_ai_pattern = dl_highlight_text(raw_data_str, dl_ai_field)
+    dl_sig_ai_pattern , dl_sig_df = dl_highlight_text(raw_data_str, signature_list, dl_ai_field)
     print(dl_sig_ai_pattern)
 
     # HTML 형태 payload 의 경우, 소괄호 치환 필요
@@ -2383,10 +2415,13 @@ def WAF_XAI_result():
     dl_sig_ai_pattern = re.sub(r'[\\>]', r'&gt;', dl_sig_ai_pattern)
 
     foreground_regex = r'\x1b\[91m(.*?)\x1b\[39m'
+    background_regex = r'\x1b\[103m(.*?)\x1b\[49m'
     
     dl_sig_ai_pattern = re.sub(foreground_regex, r'<font color = "red">\1</font>', dl_sig_ai_pattern)
+    dl_sig_ai_pattern = re.sub(background_regex, r'<span style = "background-color:yellow;">\1</span>', dl_sig_ai_pattern)
 
     dl_sig_pattern_html = f"<head>{dl_sig_ai_pattern}</head>"        
+    dl_sig_df_html = dl_sig_df.to_html(index=False, justify='center')
     ####################################################################################
 
     try:
@@ -2561,7 +2596,8 @@ def WAF_XAI_result():
                                 pipe_result_score = pipe_result_score,
                                 dl_summary_html = dl_summary_html,
                                 dl_xai_report_html = dl_xai_report_html,
-                                dl_sig_pattern_html = dl_sig_pattern_html
+                                dl_sig_pattern_html = dl_sig_pattern_html,
+                                dl_sig_df_html = dl_sig_df_html
                                 )
 
 
@@ -3296,7 +3332,8 @@ def WEB_XAI_result():
                                 pipe_result_score = pipe_result_score,
                                 dl_summary_html = dl_summary_html,
                                 dl_xai_report_html = dl_xai_report_html,
-                                dl_sig_pattern_html = dl_sig_pattern_html
+                                dl_sig_pattern_html = dl_sig_pattern_html,
+                                dl_sig_df_html = dl_sig_df_html
                                 )
 
 
