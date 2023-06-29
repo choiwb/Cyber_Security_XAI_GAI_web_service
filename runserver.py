@@ -70,6 +70,23 @@ def payload_anonymize(raw_data_str):
     return output_str
 
 
+def payload_anonymize_highlight(raw_data_str):
+    
+    # 비식별 하이라이트 처리 - background black & foreground white
+    replacement = "\033[40m\033[37m" + "\\1" + "\033[0m"
+
+    # raw_data_str의 '10.10.123.123' 과 '*****' 애 replacement 적용
+    ip_anony = '10.10.123.123'
+    host_anony = '*****'
+    anony_list = [ip_anony, host_anony]
+    payload_anonymize_highlight = re.sub("(" + "|".join(map(re.escape, anony_list)) + ")", replacement, raw_data_str, flags=re.I)
+    print(payload_anonymize_highlight)
+    
+    background_black_foreground_white_regex = r'\x1b\[40m\x1b\[37m(.*?)\x1b\[0m'
+
+    payload_anonymize_highlight_html = re.sub(background_black_foreground_white_regex, r'<span style = "background-color:black; color:white">\1</span>', payload_anonymize_highlight)
+    return payload_anonymize_highlight_html
+
 
 def IPS_predict_UI_sql_result():
     raw_data_str = request.form['raw_data_str']
@@ -1061,23 +1078,8 @@ def IPS_XAI_result():
     # 비식별
     raw_data_str = payload_anonymize(raw_data_str)
 
-    # 비식별 하이라이트 처리 - background red
-    # replacement = "\033[101m" + "\\1" + "\033[49m"
-    # 비식별 하이라이트 처리 - background black & foreground white
-    replacement = "\033[40m\033[37m" + "\\1" + "\033[0m"
-
-    # raw_data_str의 '10.10.123.123' 과 '*****' 애 replacement 적용
-
-    ip_anony = '10.10.123.123'
-    host_anony = '*****'
-    anony_list = [ip_anony, host_anony]
-    payload_anonymize_highlight = re.sub("(" + "|".join(map(re.escape, anony_list)) + ")", replacement, raw_data_str, flags=re.I)
-    print(payload_anonymize_highlight)
-    
-    # background_red_regex = r'\x1b\[101m(.*?)\x1b\[49m'
-    background_black_foreground_white_regex = r'\x1b\[40m\x1b\[37m(.*?)\x1b\[0m'
-
-    payload_anonymize_highlight_html = re.sub(background_black_foreground_white_regex, r'<span style = "background-color:black; color:white">\1</span>', payload_anonymize_highlight)
+    # 비식별 하이라이트
+    payload_anonymize_highlight_html = payload_anonymize_highlight(raw_data_str)
     
     payload_df = IPS_web_UI_preprocess()
     payload_arr = np.array(payload_df)
@@ -1803,23 +1805,8 @@ def WAF_XAI_result():
     # 비식별
     raw_data_str = payload_anonymize(raw_data_str)
 
-    # 비식별 하이라이트 처리 - background red
-    # replacement = "\033[101m" + "\\1" + "\033[49m"
-    # 비식별 하이라이트 처리 - background black & foreground white
-    replacement = "\033[40m\033[37m" + "\\1" + "\033[0m"
-
-    # raw_data_str의 '10.10.123.123' 과 '*****' 애 replacement 적용
-
-    ip_anony = '10.10.123.123'
-    host_anony = '*****'
-    anony_list = [ip_anony, host_anony]
-    payload_anonymize_highlight = re.sub("(" + "|".join(map(re.escape, anony_list)) + ")", replacement, raw_data_str, flags=re.I)
-    print(payload_anonymize_highlight)
-    
-    # background_red_regex = r'\x1b\[101m(.*?)\x1b\[49m'
-    background_black_foreground_white_regex = r'\x1b\[40m\x1b\[37m(.*?)\x1b\[0m'
-
-    payload_anonymize_highlight_html = re.sub(background_black_foreground_white_regex, r'<span style = "background-color:black; color:white">\1</span>', payload_anonymize_highlight)
+    # 비식별 하이라이트
+    payload_anonymize_highlight_html = payload_anonymize_highlight(raw_data_str)
 
     payload_df = WAF_web_UI_preprocess()
     payload_arr = np.array(payload_df)
@@ -2590,32 +2577,14 @@ def WEB_XAI_result():
     ip_pattern = r'((?<!\w\/)(?<!\w\/[0-9])(?<!\w\/[0-9][0-9])(?:[0-9]{1,3}\.){3}[0-9]{1,3})'
     start_ip = re.findall(ip_pattern, raw_data_str)
         
-        
     # encode to decode
     raw_data_str = payload_decode(raw_data_str)
 
     # 비식별
     # raw_data_str = payload_anonymize(raw_data_str)
 
-    '''
-    # 비식별 하이라이트 처리 - background red
-    # replacement = "\033[101m" + "\\1" + "\033[49m"
-    # 비식별 하이라이트 처리 - background black & foreground white
-    replacement = "\033[40m\033[37m" + "\\1" + "\033[0m"
-
-    # raw_data_str의 '10.10.123.123' 과 '*****' 애 replacement 적용
-
-    ip_anony = '10.10.123.123'
-    host_anony = '*****'
-    anony_list = [ip_anony, host_anony]
-    payload_anonymize_highlight = re.sub("(" + "|".join(map(re.escape, anony_list)) + ")", replacement, raw_data_str, flags=re.I)
-    print(payload_anonymize_highlight)
-    
-    # background_red_regex = r'\x1b\[101m(.*?)\x1b\[49m'
-    background_black_foreground_white_regex = r'\x1b\[40m\x1b\[37m(.*?)\x1b\[0m'
-
-    payload_anonymize_highlight_html = re.sub(background_black_foreground_white_regex, r'<span style = "background-color:black; color:white">\1</span>', payload_anonymize_highlight)
-    '''
+    # 비식별 하이라이트
+    # payload_anonymize_highlight_html = payload_anonymize_highlight(raw_data_str)
     
     payload_df = WEB_web_UI_preprocess()
     payload_arr = np.array(payload_df)
