@@ -1538,8 +1538,12 @@ def IPS_XAI_result():
     # 딥러닝 기반 XAI
     payload_text_df = pd.DataFrame([raw_data_str], columns = ['payload'])
     
-    IPS_DL_shap_values = IPS_DL_XAI(payload_text_df['payload'], fixed_context=1, batch_size=1)
-    print(IPS_DL_shap_values)
+    if '\s|%20|\+|\/|%2f|HTTP/1.1|\?|\n|\r|\t' in payload_text_df['payload'][0]:
+        IPS_DL_shap_values = IPS_DL_XAI(payload_text_df['payload'], fixed_context=1, batch_size=1)
+    else:
+        # payload 와 유사하지 않는 이상치에 대한 XAI 재생성
+        IPS_DL_XAI_2 = shap.Explainer(ips_bert_predict, IPS_DL_tokenizer)
+        IPS_DL_shap_values = IPS_DL_XAI_2(payload_text_df['payload'], fixed_context=1, batch_size=1)
     
     text_html = shap.text_plot(IPS_DL_shap_values, display = False)
 
@@ -2291,8 +2295,12 @@ def WAF_XAI_result():
     # 딥러닝 기반 XAI
     payload_text_df = pd.DataFrame([raw_data_str], columns = ['payload'])
     
-    WAF_DL_shap_values = WAF_DL_XAI(payload_text_df['payload'], fixed_context=1, batch_size=1)
-    print(WAF_DL_shap_values)
+    if '\s|%20|\+|\/|%2f|HTTP/1.1|\?|\n|\r|\t' in payload_text_df['payload'][0]:
+        WAF_DL_shap_values = WAF_DL_XAI(payload_text_df['payload'], fixed_context=1, batch_size=1)
+    else:
+        # payload 와 유사하지 않는 이상치에 대한 XAI 재생성
+        WAF_DL_XAI_2 = shap.Explainer(waf_bert_predict, WAF_DL_tokenizer)
+        WAF_DL_shap_values = WAF_DL_XAI_2(payload_text_df['payload'], fixed_context=1, batch_size=1)
     
     text_html = shap.text_plot(WAF_DL_shap_values, display = False)
 
@@ -2982,7 +2990,12 @@ def WEB_XAI_result():
     # web log 파싱 후, http_method 컬럼부터 추출하여 딥러닝 
     # 학습 데이터 상에서, http_method부터 있었기 때문에, 최대한 예측에 대한 편차를 줄이기 위함 임.
     # after_method_raw_data_str는 raw_data_str에서 web_parsing_result 데이터 프레임의 http_method 컬럼의 값부터 시작하는 것을 split하여 추출
-    after_method_raw_data_str = web_parsing_result['http_method'][0] + raw_data_str.split(web_parsing_result['http_method'][0])[1]
+    
+    # web_parsing_result에 'http_method' 컬럼이 있는 경우, 즉 정상적으로 파싱 된 경우,
+    if 'http_method' in web_parsing_result.columns:
+        after_method_raw_data_str = web_parsing_result['http_method'][0] + raw_data_str.split(web_parsing_result['http_method'][0])[1]
+    else:
+        after_method_raw_data_str = raw_data_str
 
     payload_text_df = pd.DataFrame([after_method_raw_data_str], columns = ['payload'])
 
@@ -3008,12 +3021,19 @@ def WEB_XAI_result():
     pipe_result_score = round(pipe_result_score, 4)
     pipe_result_score = pipe_result_score * 100
 
-    ####################################################################################
-    WEB_DL_XAI = shap.Explainer(lambda x: web_bert_predict(x, pipe_result_label), masker)
-    ####################################################################################
+    if '\s|%20|\+|\/|%2f|HTTP/1.1|\?|\n|\r|\t' in payload_text_df['payload'][0]:
 
-    WEB_DL_shap_values = WEB_DL_XAI(payload_text_df['payload'], fixed_context=1, batch_size=1)
-    # print(WEB_DL_shap_values)
+        ####################################################################################
+        WEB_DL_XAI = shap.Explainer(lambda x: web_bert_predict(x, pipe_result_label), masker)
+        ####################################################################################
+
+        WEB_DL_shap_values = WEB_DL_XAI(payload_text_df['payload'], fixed_context=1, batch_size=1)
+    else:
+        # payload 와 유사하지 않는 이상치에 대한 XAI 재생성
+        ####################################################################################
+        WEB_DL_XAI_2 = shap.Explainer(lambda x: web_bert_predict(x, pipe_result_label), WEB_DL_tokenizer)
+        ####################################################################################
+        WEB_DL_shap_values = WEB_DL_XAI_2(payload_text_df['payload'], fixed_context=1, batch_size=1)
 
     text_html = shap.text_plot(WEB_DL_shap_values, display = False)
         
@@ -3075,11 +3095,11 @@ def WEB_XAI_result():
                                 'resetScale2d', 'toImage']
                                 }
                                 )
-
+    
     # 보안 시그니처 패턴 리스트 highlight
     dl_ai_field = top10_dl_xai['AI 탐지 키워드'].tolist()
     print(dl_ai_field)
-    dl_sig_ai_pattern = dl_highlight_text(raw_data_str, dl_ai_field)
+    dl_sig_ai_pattern, dl_sig_df = dl_highlight_text(raw_data_str, signature_list, dl_ai_field)
     print(dl_sig_ai_pattern)
 
     # HTML 형태 payload 의 경우, 소괄호 치환 필요
@@ -3087,10 +3107,13 @@ def WEB_XAI_result():
     dl_sig_ai_pattern = re.sub(r'[\\>]', r'&gt;', dl_sig_ai_pattern)
 
     foreground_regex = r'\x1b\[91m(.*?)\x1b\[39m'
+    background_regex = r'\x1b\[103m(.*?)\x1b\[49m'
     
     dl_sig_ai_pattern = re.sub(foreground_regex, r'<font color = "red">\1</font>', dl_sig_ai_pattern)
+    dl_sig_ai_pattern = re.sub(background_regex, r'<span style = "background-color:yellow;">\1</span>', dl_sig_ai_pattern)
 
     dl_sig_pattern_html = f"<head>{dl_sig_ai_pattern}</head>"        
+    dl_sig_df_html = dl_sig_df.to_html(index=False, justify='center')
     ####################################################################################
 
 
