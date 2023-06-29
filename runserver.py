@@ -1538,7 +1538,9 @@ def IPS_XAI_result():
     # 딥러닝 기반 XAI
     payload_text_df = pd.DataFrame([raw_data_str], columns = ['payload'])
     
-    if '\s|%20|\+|\/|%2f|HTTP/1.1|\?|\n|\r|\t' in payload_text_df['payload'][0]:
+    masker_check_pattern =  r"\s|%20|\+|\/|%2f|HTTP/1.1|\?|\n|\r|\t"
+
+    if re.search(masker_check_pattern, payload_text_df['payload'][0]):
         IPS_DL_shap_values = IPS_DL_XAI(payload_text_df['payload'], fixed_context=1, batch_size=1)
     else:
         # payload 와 유사하지 않는 이상치에 대한 XAI 재생성
@@ -2295,7 +2297,9 @@ def WAF_XAI_result():
     # 딥러닝 기반 XAI
     payload_text_df = pd.DataFrame([raw_data_str], columns = ['payload'])
     
-    if '\s|%20|\+|\/|%2f|HTTP/1.1|\?|\n|\r|\t' in payload_text_df['payload'][0]:
+    masker_check_pattern =  r"\s|%20|\+|\/|%2f|HTTP/1.1|\?|\n|\r|\t"
+    
+    if re.search(masker_check_pattern, payload_text_df['payload'][0]):
         WAF_DL_shap_values = WAF_DL_XAI(payload_text_df['payload'], fixed_context=1, batch_size=1)
     else:
         # payload 와 유사하지 않는 이상치에 대한 XAI 재생성
@@ -3021,12 +3025,12 @@ def WEB_XAI_result():
     pipe_result_score = round(pipe_result_score, 4)
     pipe_result_score = pipe_result_score * 100
 
-    if '\s|%20|\+|\/|%2f|HTTP/1.1|\?|\n|\r|\t' in payload_text_df['payload'][0]:
+    masker_check_pattern =  r"\s|%20|\+|\/|%2f|HTTP/1.1|\?|\n|\r|\t"
 
+    if re.search(masker_check_pattern, payload_text_df['payload'][0]):
         ####################################################################################
         WEB_DL_XAI = shap.Explainer(lambda x: web_bert_predict(x, pipe_result_label), masker)
         ####################################################################################
-
         WEB_DL_shap_values = WEB_DL_XAI(payload_text_df['payload'], fixed_context=1, batch_size=1)
     else:
         # payload 와 유사하지 않는 이상치에 대한 XAI 재생성
