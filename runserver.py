@@ -636,7 +636,6 @@ def dl_highlight_text(text, signature, dl_ai_field):
     # ai_field의 경우 상위10개 키워드에 컬럼에 대한 선언
     # 특수문자 => [\\특수문자] 로 변경
     dl_ai_field = [re.sub(r'([^\w\s])', r'[\\\1]', x) for x in dl_ai_field]
-    print(dl_ai_field)
 
     # background yellow - 시그니처 패턴
     replacement = "\033[103m" + "\\1" + "\033[49m"
@@ -645,8 +644,11 @@ def dl_highlight_text(text, signature, dl_ai_field):
 
     # 시그니처 패턴 또는 AI 생성 필드 인 경우, highlight 처리
     # re.escape() : 특수문자를 이스케이프 처리
-    text = re.sub("(" + "|".join(map(re.escape, signature)) + ")", replacement, text, flags=re.I)
     text = re.sub("(" + "|".join(dl_ai_field) + ")", replacement_2, text, flags=re.I)
+    # 39m 91m이 붙어 있는 경우 제거 !!!!!!!! 왜냐하면 단일처리를 위해, 빨간색 폰트 끝과 시작이 붙어 있으면 연속 키워드로 인식하기 위함.
+    text = re.sub(r'\x1b\[39m\x1b\[91m', '', text)
+
+    text = re.sub("(" + "|".join(map(re.escape, signature)) + ")", replacement, text, flags=re.I)
     
     regex = re.compile('\x1b\[103m(.*?)\x1b\[49m')
 
@@ -671,6 +673,7 @@ def dl_highlight_text(text, signature, dl_ai_field):
             sig_pattern_df = pd.concat([sig_pattern_df, one_row_df], axis = 0)
     
     return text, sig_pattern_df
+    
     
 @app.route('/WAF_payload_parsing', methods = ['POST'])
 def WAF_payload_parsing():
