@@ -861,7 +861,6 @@ def WEB_payload_parsing():
             else:
                 not_m_idx.append(i)
 
-
         df_m = pre_df.iloc[m_idx].reset_index(drop=True)
         df_nm = pre_df.iloc[not_m_idx].reset_index(drop=True)
 
@@ -920,73 +919,70 @@ def WEB_payload_parsing():
             df_m['agent_etc'][0] = df_m['agent_etc'][0][2:]
 
         df_m['user_agent'] = [str(x).split('"', maxsplit=1)[0] for x in df_m['agent_etc']]
-        df_m['except_agent'] = [str(x).split('"', maxsplit=1)[1] for x in df_m['agent_etc']]
 
         # xforwarded_for 및 request_body 있는 경우, NGINX 임.
-        if df_m.iloc[0,-1].count('"') >= 1:
+        # if df_m.iloc[0,-1].count('"') >= 1:
         # 2022/11/14 기준 APACHE & NGINX 구분 로직 TO DO
         # 1. NGINX 처럼 APACHE, IIS에 xforwarded_for 및 request_body 필드 추가 (null 값으로)
         # 2. APACHE 이면서, SIEM RAW 필드에 'nginx' 문자열 있는 경우,  NGINX 아니면, APACHE => 이 경우, NGINX에 xforwarded_for, request_body 추가하지 않음.
         # 3. http_version 이후를, http_body 필드를 생성하여 필드 통합.
 
-            df_m['except_agent'] = [str(x).split('"', maxsplit=1)[1] for x in df_m['except_agent']]
-            df_m['xforwarded_for'] = [str(x).split('"', maxsplit=1)[0] for x in df_m['except_agent']]
+        # df_m['except_agent'] = [str(x).split('"', maxsplit=1)[1] for x in df_m['except_agent']]
+        # df_m['xforwarded_for'] = [str(x).split('"', maxsplit=1)[0] for x in df_m['except_agent']]
 
-            df_m['except_xforwarded'] = [str(x).split('"', maxsplit=1)[1] for x in df_m['except_agent']]
-            df_m['request_body'] = [str(x).split('"', maxsplit=1)[1] for x in df_m['except_xforwarded']]
+        # df_m['except_xforwarded'] = [str(x).split('"', maxsplit=1)[1] for x in df_m['except_agent']]
 
-            final_df = df_m[['http_method', 'http_url', 'http_query', 'http_version', 'http_status', 'pkt_bytes', 'referer', 'user_agent', 'xforwarded_for', 'request_body']]
+        # df_m['request_body'] = [str(x).split('"', maxsplit=1)[1] for x in df_m['except_xforwarded']]
         
-            final_np = np.where(final_df.iloc[:,:] == '', '-', final_df.iloc[:,:])
-            final_df = pd.DataFrame(final_np, columns = final_df.columns)
+        final_df = df_m[['http_method', 'http_url', 'http_query', 'http_version', 'user_agent']]
+    
+        final_np = np.where(final_df.iloc[:,:] == '', '-', final_df.iloc[:,:])
+        final_df = pd.DataFrame(final_np, columns = final_df.columns)
 
-            # http_query 필드의 첫 글자가 '?' 인 경우, '' 처리
-            if final_df.iloc[0,2].startswith('?') == True:
-                final_df['http_query'] = final_df['http_query'].str[1:]
-            
-            # final_df의 컬럼별 값에서 '"' 가 있는 경우, '' 처리
-            final_df = final_df.apply(lambda x: x.str.replace('"', ''))
-            # final_df의 '' 값은 '-' 로 변경
-            final_df = final_df.replace('', '-')
-
-            # SIEM 기반 이 아닌 일반적인 WEB 로그 포괄을 위해 아래와 같은 주요 필드 5개 파싱.
-            final_df = final_df[['http_method', 'http_url', 'http_query', 'http_version', 'user_agent']]
-
-            # FLASK 적용
-            flask_html = final_df.to_html(index = False, justify = 'center')
-            # print(flask_df)
-            # CTI 적용
-            cti_json = final_df.to_json(orient = 'records')
-            # print(ctf_df)
-            # warning_statement = 'WEB_NGINX 로그 입니다.'
-            warning_statement = 'WEB 로그 입니다.'
+        # http_query 필드의 첫 글자가 '?' 인 경우, '' 처리
+        if final_df.iloc[0,2].startswith('?') == True:
+            final_df['http_query'] = final_df['http_query'].str[1:]
         
-        else:
-            final_df = df_m[['http_method', 'http_url', 'http_query', 'http_version', 'http_status', 'pkt_bytes', 'referer', 'user_agent']]
+        # final_df의 컬럼별 값에서 '"' 가 있는 경우, '' 처리
+        final_df = final_df.apply(lambda x: x.str.replace('"', ''))
+        # final_df의 '' 값은 '-' 로 변경
+        final_df = final_df.replace('', '-')
+        
+        # FLASK 적용
+        flask_html = final_df.to_html(index = False, justify = 'center')
+        # print(flask_df)
+        # CTI 적용
+        cti_json = final_df.to_json(orient = 'records')
+        # print(ctf_df)
+        # warning_statement = 'WEB_NGINX 로그 입니다.'
+        warning_statement = 'WEB 로그 입니다.'
+        
+        # else:
+        # final_df = df_m[['http_method', 'http_url', 'http_query', 'http_version', 'http_status', 'pkt_bytes', 'referer', 'user_agent']]
 
-            final_np = np.where(final_df.iloc[:,:] == '', '-', final_df.iloc[:,:])
-            final_df = pd.DataFrame(final_np, columns = final_df.columns)
+        # final_np = np.where(final_df.iloc[:,:] == '', '-', final_df.iloc[:,:])
+        # final_df = pd.DataFrame(final_np, columns = final_df.columns)
 
-            # http_query 필드의 첫 글자가 '?' 인 경우, '' 처리
-            if final_df.iloc[0,2].startswith('?') == True:
-                final_df['http_query'] = final_df['http_query'].str[1:]
-            
-            # final_df의 컬럼별 값에서 '"' 가 있는 경우, '' 처리
-            final_df = final_df.apply(lambda x: x.str.replace('"', ''))
-            # final_df의 '' 값은 '-' 로 변경
-            final_df = final_df.replace('', '-')
+        # http_query 필드의 첫 글자가 '?' 인 경우, '' 처리
+        # if final_df.iloc[0,2].startswith('?') == True:
+        #    final_df['http_query'] = final_df['http_query'].str[1:]
+        
+        # final_df의 컬럼별 값에서 '"' 가 있는 경우, '' 처리
+        # final_df = final_df.apply(lambda x: x.str.replace('"', ''))
+        # final_df의 '' 값은 '-' 로 변경
+        # final_df = final_df.replace('', '-')
 
-            # SIEM 기반 이 아닌 일반적인 WEB 로그 포괄을 위해 아래와 같은 주요 필드 5개 파싱.
-            final_df = final_df[['http_method', 'http_url', 'http_query', 'http_version', 'user_agent']]
+        # SIEM 기반 이 아닌 일반적인 WEB 로그 포괄을 위해 아래와 같은 주요 필드 5개 파싱.
+        # final_df = final_df[['http_method', 'http_url', 'http_query', 'http_version', 'user_agent']]
 
-            # FLASK 적
-            flask_html = final_df.to_html(index = False, justify = 'center')
-            # print(flask_df)
-            # CTI 적용
-            cti_json = final_df.to_json(orient = 'records')
-            # print(ctf_df)
-            # warning_statement = 'WEB_APACHE 로그 입니다.'
-            warning_statement = 'WEB 로그 입니다.'
+        # FLASK 적
+        # flask_html = final_df.to_html(index = False, justify = 'center')
+        # print(flask_df)
+        # CTI 적용
+        # cti_json = final_df.to_json(orient = 'records')
+        # print(ctf_df)
+        # warning_statement = 'WEB_APACHE 로그 입니다.'
+        # warning_statement = 'WEB 로그 입니다.'
 
     else:
         try:
@@ -1052,16 +1048,16 @@ def WEB_payload_parsing():
             df_m['except_version'] = [str(x).split(' ', maxsplit=1)[1] for x in df_m['start_version']]
             df_m['user_agent'] = [str(x).split(' ', maxsplit=1)[0] for x in df_m['except_version']]
             
-            df_m['except_agent'] = [str(x).split(' ', maxsplit=1)[1] for x in df_m['except_version']]
-            df_m['referer'] = [str(x).split(' ', maxsplit=1)[0] for x in df_m['except_agent']]
+            # df_m['except_agent'] = [str(x).split(' ', maxsplit=1)[1] for x in df_m['except_version']]
+            # df_m['referer'] = [str(x).split(' ', maxsplit=1)[0] for x in df_m['except_agent']]
 
-            df_m['except_referer'] =  [str(x).split(' ', maxsplit=1)[1] for x in df_m['except_agent']]
-            df_m['http_status'] = [str(x).split(' ', maxsplit=1)[0] for x in df_m['except_referer']]
+            # df_m['except_referer'] =  [str(x).split(' ', maxsplit=1)[1] for x in df_m['except_agent']]
+            # df_m['http_status'] = [str(x).split(' ', maxsplit=1)[0] for x in df_m['except_referer']]
 
-            df_m['except_status'] = [str(x).split(' ', maxsplit=1)[1] for x in df_m['except_referer']]
-            df_m['sent_bytes'] = [str(x).split(' ', maxsplit=1)[0] for x in df_m['except_status']]
+            # df_m['except_status'] = [str(x).split(' ', maxsplit=1)[1] for x in df_m['except_referer']]
+            # df_m['sent_bytes'] = [str(x).split(' ', maxsplit=1)[0] for x in df_m['except_status']]
 
-            final_df = df_m[['http_method', 'http_url', 'http_query', 'http_version', 'user_agent', 'referer', 'http_status', 'sent_bytes']]
+            final_df = df_m[['http_method', 'http_url', 'http_query', 'http_version', 'user_agent']]
 
             # http_query 필드의 첫 글자가 '?' 인 경우, '' 처리
             if final_df.iloc[0,2].startswith('?') == True:
@@ -1071,9 +1067,6 @@ def WEB_payload_parsing():
             final_df = final_df.apply(lambda x: x.str.replace('"', ''))
             # final_df의 '' 값은 '-' 로 변경
             final_df = final_df.replace('', '-')
-
-            # SIEM 기반 이 아닌 일반적인 WEB 로그 포괄을 위해 아래와 같은 주요 필드 5개 파싱.
-            final_df = final_df[['http_method', 'http_url', 'http_query', 'http_version', 'user_agent']]
 
             # FLASK 적용
             flask_html = final_df.to_html(index = False, justify = 'center')
@@ -1090,6 +1083,7 @@ def WEB_payload_parsing():
             warning_statement = 'WEB 로그가 아닙니다.'
 
     return final_df, warning_statement
+
 
 
 @app.route('/IPS_XAI_result', methods = ['POST'])
