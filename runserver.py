@@ -1127,21 +1127,9 @@ def IPS_XAI_result():
     shap_values_sql_direction = np.where(shap_values_sql[1] >= 0, '공격', '정상')
     print(shap_values_sql_direction)
     shap_values_sql_2 = np.abs(shap_values_sql[1]).mean(0)
-    # shap_values_sql_2 합계 도출
-    shap_values_sql_2_sum = np.sum(shap_values_sql_2)
-    # print(shap_values_sql_2_sum)
-    # shap_values_sql_2 합계를 기준으로 shap_values_sql_2의 비율 도출
-    shap_values_sql_2_ratio = shap_values_sql_2 / shap_values_sql_2_sum
+    shap_values_sql_2_ratio = shap_logit(shap_values_sql_2)
     shap_values_sql_2_ratio = np.round(shap_values_sql_2_ratio, 4)
     print(shap_values_sql_2_ratio)
-    shap_values_sql_2_ratio_sum = np.sum(shap_values_sql_2_ratio)
-    # print(shap_values_sql_2_ratio_sum)
-
-
-    # shap_values_sql_logit = shap_logit(shap_values_sql)
-    shap_values_sql_logit = shap_logit(shap_values_sql[1])
-
-    print('sql SHAP values (logit 적용 함): ', shap_values_sql_logit)
 
     shap_values_sql_direction = np.array(shap_values_sql_direction).flatten()
     mean_shap_value_df = pd.DataFrame(list(zip(payload_df.columns, shap_values_sql_2_ratio, shap_values_sql_direction)),
@@ -1864,21 +1852,9 @@ def WAF_XAI_result():
     shap_values_sql_direction = np.where(shap_values_sql[1] >= 0, '공격', '정상')
     print(shap_values_sql_direction)
     shap_values_sql_2 = np.abs(shap_values_sql[1]).mean(0)
-    # shap_values_sql_2 합계 도출
-    shap_values_sql_2_sum = np.sum(shap_values_sql_2)
-    # print(shap_values_sql_2_sum)
-    # shap_values_sql_2 합계를 기준으로 shap_values_sql_2의 비율 도출
-    shap_values_sql_2_ratio = shap_values_sql_2 / shap_values_sql_2_sum
+    shap_values_sql_2_ratio = shap_logit(shap_values_sql_2)
     shap_values_sql_2_ratio = np.round(shap_values_sql_2_ratio, 4)
     print(shap_values_sql_2_ratio)
-    shap_values_sql_2_ratio_sum = np.sum(shap_values_sql_2_ratio)
-    # print(shap_values_sql_2_ratio_sum)
-
-
-    # shap_values_sql_logit = shap_logit(shap_values_sql)
-    shap_values_sql_logit = shap_logit(shap_values_sql[1])
-
-    print('sql SHAP values (logit 적용 함): ', shap_values_sql_logit)
 
     shap_values_sql_direction = np.array(shap_values_sql_direction).flatten()
     mean_shap_value_df = pd.DataFrame(list(zip(payload_df.columns, shap_values_sql_2_ratio, shap_values_sql_direction)),
@@ -2673,21 +2649,16 @@ def WEB_XAI_result():
     # print('sql SHAP 기댓값 (logit 적용 함): ', expected_value_sql_logit)
     # expected_value_sql_logit = expected_value_sql_logit[0]
     # expected_value_sql_logit = np.round(expected_value_sql_logit, 4) * 100
-    
+
+    # 다중 분류 모델의 경우, expected_value 를 TreeExplainer를 모델 구조상 알 수가 없으므로, None 으로 지정 !!!!!!!    
     shap_values_sql = WEB_total_explainer.shap_values(payload_arr)
     shap_values_sql = np.array(shap_values_sql)
-
 
     shap_values_sql_direction = np.where(shap_values_sql[pred] >= 0, db_ai, not_db_ai)
     shap_values_sql_2 = np.abs(shap_values_sql[pred]).mean(0)
 
-    # shap_values_sql_2 합계 도출
-    shap_values_sql_2_sum = np.sum(shap_values_sql_2)
-    # print(shap_values_sql_2_sum)
-    # shap_values_sql_2 합계를 기준으로 shap_values_sql_2의 비율 도출
-    shap_values_sql_2_ratio = shap_values_sql_2 / shap_values_sql_2_sum
+    shap_values_sql_2_ratio = shap_logit(shap_values_sql_2)
     shap_values_sql_2_ratio = np.round(shap_values_sql_2_ratio, 4)
-
 
     shap_values_sql_direction = np.array(shap_values_sql_direction).flatten()
     mean_shap_value_df = pd.DataFrame(list(zip(payload_df.columns, shap_values_sql_2_ratio, shap_values_sql_direction)),
