@@ -1112,13 +1112,6 @@ def IPS_XAI_result():
 
     IPS_total_explainer = pickle.load(open(IPS_explainer_path, 'rb'))
 
-    expected_value_sql = IPS_total_explainer.expected_value
-    expected_value_sql = np.array(expected_value_sql)
-    expected_value_sql_logit = shap_logit(expected_value_sql)
-    print('sql SHAP 기댓값 (logit 적용 함): ', expected_value_sql_logit)
-    expected_value_sql_logit = expected_value_sql_logit[0]
-    expected_value_sql_logit = np.round(expected_value_sql_logit, 4) * 100
-    
     # anomalies : shap_values[1], normal: shap_values[0]
     shap_values_sql = IPS_total_explainer.shap_values(payload_arr)
     shap_values_sql = np.array(shap_values_sql)
@@ -1837,13 +1830,6 @@ def WAF_XAI_result():
 
     WAF_total_explainer = pickle.load(open(WAF_explainer_path, 'rb'))
 
-    expected_value_sql = WAF_total_explainer.expected_value
-    expected_value_sql = np.array(expected_value_sql)
-    expected_value_sql_logit = shap_logit(expected_value_sql)
-    print('sql SHAP 기댓값 (logit 적용 함): ', expected_value_sql_logit)
-    expected_value_sql_logit = expected_value_sql_logit[0]
-    expected_value_sql_logit = np.round(expected_value_sql_logit, 4) * 100
-    
     # anomalies : shap_values[1], normal: shap_values[0]
     shap_values_sql = WAF_total_explainer.shap_values(payload_arr)
     shap_values_sql = np.array(shap_values_sql)
@@ -2636,19 +2622,6 @@ def WEB_XAI_result():
         db_ai = 'XSS'
         not_db_ai = '기타 (CMD, SQL, 정상)'
 
-
-    # 다중 분류 모델의 경우, expected_value 를 TreeExplainer를 모델 구조상 알 수가 없으므로, None 으로 지정 !!!!!!!
-
-    # expected_value_sql = WEB_total_explainer.expected_value
-    # print(expected_value_sql)
-    # 예측 라벨의 inddex 지정 !!!!!
-    # expected_value_sql = expected_value_sql[pred]
-
-    # expected_value_sql = np.array(expected_value_sql)
-    # expected_value_sql_logit = shap_logit(expected_value_sql)
-    # print('sql SHAP 기댓값 (logit 적용 함): ', expected_value_sql_logit)
-    # expected_value_sql_logit = expected_value_sql_logit[0]
-    # expected_value_sql_logit = np.round(expected_value_sql_logit, 4) * 100
 
     # 다중 분류 모델의 경우, expected_value 를 TreeExplainer를 모델 구조상 알 수가 없으므로, None 으로 지정 !!!!!!!    
     shap_values_sql = WEB_total_explainer.shap_values(payload_arr)
