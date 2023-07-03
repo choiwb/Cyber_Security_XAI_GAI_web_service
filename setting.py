@@ -52,11 +52,15 @@ IPS_DL_model.eval()
 # 드라이버 분할 지정하지 않는다면, 'cuda:0' 이나 'cuda' 해도 상관 없음.
 ips_device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
-ips_dl_pipe = pipeline(task = "text-classification",
-                model = IPS_DL_model,
-                tokenizer =IPS_DL_tokenizer,
-                device = ips_device)
+# token 수 512개 제한 - IPS / WAF/ WEB 모두 DistilBERT의 기본 토큰 수로 학습 되어있으므로 512개 제한
+# 추 후, 장비 별, 모델 학습 시, 1024 개 이상으로 학습 필요해 보임. (학습 시, GPU 고려 또한 해야 함.)
+max_length = 512
+def ips_truncate_text(text, max_length=max_length):
+    # CLS, SEP 토큰을 고려해야 하기 때문에 -2
+    encoding = IPS_DL_tokenizer.encode_plus(text, max_length=max_length-2, truncation=True, padding='max_length')
+    return IPS_DL_tokenizer.decode(encoding["input_ids"])
 
+ips_dl_pipe = pipeline('text-classification', model=IPS_DL_model, tokenizer=IPS_DL_tokenizer, device=ips_device)
 print('IPS 딥러닝 모델 디바이스: ', ips_dl_pipe.device)
 
 # define a prediction function
@@ -91,11 +95,15 @@ WAF_DL_model.eval()
 # 드라이버 분할 지정하지 않는다면, 'cuda:0' 이나 'cuda' 해도 상관 없음.
 waf_device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
-waf_dl_pipe = pipeline(task = "text-classification",
-                model = WAF_DL_model,
-                tokenizer = WAF_DL_tokenizer,
-                device = waf_device)
+# token 수 512개 제한 - IPS / WAF/ WEB 모두 DistilBERT의 기본 토큰 수로 학습 되어있으므로 512개 제한
+# 추 후, 장비 별, 모델 학습 시, 1024 개 이상으로 학습 필요해 보임. (학습 시, GPU 고려 또한 해야 함.)
+max_length = 512
+def waf_truncate_text(text, max_length=max_length):
+    # CLS, SEP 토큰을 고려해야 하기 때문에 -2
+    encoding = WAF_DL_tokenizer.encode_plus(text, max_length=max_length-2, truncation=True, padding='max_length')
+    return WAF_DL_tokenizer.decode(encoding["input_ids"])
 
+waf_dl_pipe = pipeline('text-classification', model=WAF_DL_model, tokenizer=WAF_DL_tokenizer, device=waf_device)
 print('WAF 딥러닝 모델 디바이스: ', waf_dl_pipe.device)
 
 # define a prediction function
@@ -115,7 +123,6 @@ masker = shap.maskers.Text(tokenizer = r"(\s|%20|\+|\/|%2f|HTTP/1.1|\?|\n|\r|\t)
 # masker = shap.maskers.Text(tokenizer = r"(\s|%20|\+|%2f|HTTP/1.1|\?|\n|\r|\t)")
 
 WAF_DL_XAI = shap.Explainer(waf_bert_predict, masker)
-
 ####################################################################################
 
 ####################################################################################
@@ -130,11 +137,15 @@ WEB_DL_model.eval()
 # 드라이버 분할 지정하지 않는다면, 'cuda:0' 이나 'cuda' 해도 상관 없음.
 web_device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
-web_dl_pipe = pipeline(task = "text-classification",
-                model = WEB_DL_model,
-                tokenizer = WEB_DL_tokenizer,
-                device = web_device)
+# token 수 512개 제한 - IPS / WAF/ WEB 모두 DistilBERT의 기본 토큰 수로 학습 되어있으므로 512개 제한
+# 추 후, 장비 별, 모델 학습 시, 1024 개 이상으로 학습 필요해 보임. (학습 시, GPU 고려 또한 해야 함.)
+max_length = 512
+def web_truncate_text(text, max_length=max_length):
+    # CLS, SEP 토큰을 고려해야 하기 때문에 -2
+    encoding = WEB_DL_tokenizer.encode_plus(text, max_length=max_length-2, truncation=True, padding='max_length')
+    return WEB_DL_tokenizer.decode(encoding["input_ids"])
 
+web_dl_pipe = pipeline('text-classification', model=WEB_DL_model, tokenizer=WEB_DL_tokenizer, device=web_device)
 print('WEB 딥러닝 모델 디바이스: ', web_dl_pipe.device)
 
 # define a prediction function
