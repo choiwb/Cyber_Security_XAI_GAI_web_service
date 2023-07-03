@@ -469,7 +469,8 @@ def WEB_web_UI_predict():
 # log odds 형태 라벨 값을 확률 값으로 변환
 def shap_logit(x):
     logit_result = 1 / (1 + np.exp(-x))
-    return logit_result
+    normalized_result = logit_result / np.sum(logit_result)
+    return normalized_result
 ###############################################
 
 
@@ -1562,19 +1563,9 @@ def IPS_XAI_result():
     ####################################################################################
     # 딥러닝 기반 XAI
     payload_text_df = pd.DataFrame([raw_data_str], columns = ['payload'])
-    
-    masker_check_pattern =  r"\s|%20|\+|\/|%2f|HTTP/1.1|\?|\n|\r|\t"
 
-    if re.search(masker_check_pattern, payload_text_df['payload'][0]):
-        IPS_DL_shap_values = IPS_DL_XAI(payload_text_df['payload'], fixed_context=1, batch_size=1)
-    else:
-        # payload 와 유사하지 않는 이상치에 대한 XAI 재생성
-        IPS_DL_XAI_2 = shap.Explainer(ips_bert_predict, IPS_DL_tokenizer)
-        IPS_DL_shap_values = IPS_DL_XAI_2(payload_text_df['payload'], fixed_context=1, batch_size=1)
-    
-    text_html = shap.text_plot(IPS_DL_shap_values, display = False)
-
-    pipe_result = ips_dl_pipe(payload_text_df.iloc[0,0])
+    truncated_text = ips_truncate_text(payload_text_df.iloc[0,0])
+    pipe_result = ips_dl_pipe(truncated_text)
     pipe_result_label = pipe_result[0]['label']
     
     if pipe_result_label == 'POSITIVE':
@@ -1586,7 +1577,18 @@ def IPS_XAI_result():
     # 소수점 4자리까지 표시
     pipe_result_score = round(pipe_result_score, 4)
     pipe_result_score = pipe_result_score * 100
-    
+
+    masker_check_pattern =  r"\s|%20|\+|\/|%2f|HTTP/1.1|\?|\n|\r|\t"
+
+    if re.search(masker_check_pattern, payload_text_df['payload'][0]):
+        IPS_DL_shap_values = IPS_DL_XAI(payload_text_df['payload'], fixed_context=1, batch_size=1)
+    else:
+        # payload 와 유사하지 않는 이상치에 대한 XAI 재생성
+        IPS_DL_XAI_2 = shap.Explainer(ips_bert_predict, IPS_DL_tokenizer)
+        IPS_DL_shap_values = IPS_DL_XAI_2(payload_text_df['payload'], fixed_context=1, batch_size=1)
+
+    text_html = shap.text_plot(IPS_DL_shap_values, display = False)
+
     IPS_DL_shap_values_data = IPS_DL_shap_values.data[0]
     IPS_DL_shap_values_values = IPS_DL_shap_values.values[0]
 
@@ -1596,9 +1598,8 @@ def IPS_XAI_result():
     dl_shap_values_direction = np.where(IPS_DL_shap_values_values >= 0, '공격', '정상')
     
     IPS_DL_shap_values_values_2 = np.abs(IPS_DL_shap_values_values)
-    IPS_DL_shap_values_values_sum = np.sum(IPS_DL_shap_values_values_2)
     
-    IPS_DL_shap_values_values_2_ratio = IPS_DL_shap_values_values_2 / IPS_DL_shap_values_values_sum
+    IPS_DL_shap_values_values_2_ratio = shap_logit(IPS_DL_shap_values_values_2)
     IPS_DL_shap_values_values_2_ratio = IPS_DL_shap_values_values_2_ratio * 100
     IPS_DL_shap_values_values_2_ratio = np.round(IPS_DL_shap_values_values_2_ratio, 2)
     
@@ -1637,7 +1638,7 @@ def IPS_XAI_result():
                                 'resetScale2d', 'toImage']
                                 }
                                 )
-
+    
     # 보안 시그니처 패턴 리스트 highlight
     dl_ai_field = top10_dl_xai['AI 탐지 키워드'].tolist()
     print(dl_ai_field)
@@ -2326,18 +2327,8 @@ def WAF_XAI_result():
     # 딥러닝 기반 XAI
     payload_text_df = pd.DataFrame([raw_data_str], columns = ['payload'])
     
-    masker_check_pattern =  r"\s|%20|\+|\/|%2f|HTTP/1.1|\?|\n|\r|\t"
-    
-    if re.search(masker_check_pattern, payload_text_df['payload'][0]):
-        WAF_DL_shap_values = WAF_DL_XAI(payload_text_df['payload'], fixed_context=1, batch_size=1)
-    else:
-        # payload 와 유사하지 않는 이상치에 대한 XAI 재생성
-        WAF_DL_XAI_2 = shap.Explainer(waf_bert_predict, WAF_DL_tokenizer)
-        WAF_DL_shap_values = WAF_DL_XAI_2(payload_text_df['payload'], fixed_context=1, batch_size=1)
-    
-    text_html = shap.text_plot(WAF_DL_shap_values, display = False)
-
-    pipe_result = waf_dl_pipe(payload_text_df.iloc[0,0])
+    truncated_text = waf_truncate_text(payload_text_df.iloc[0,0])
+    pipe_result = waf_dl_pipe(truncated_text)
     pipe_result_label = pipe_result[0]['label']
     
     if pipe_result_label == 'POSITIVE':
@@ -2349,7 +2340,18 @@ def WAF_XAI_result():
     # 소수점 4자리까지 표시
     pipe_result_score = round(pipe_result_score, 4)
     pipe_result_score = pipe_result_score * 100
+
+    masker_check_pattern =  r"\s|%20|\+|\/|%2f|HTTP/1.1|\?|\n|\r|\t"
     
+    if re.search(masker_check_pattern, payload_text_df['payload'][0]):
+        WAF_DL_shap_values = WAF_DL_XAI(payload_text_df['payload'], fixed_context=1, batch_size=1)
+    else:
+        # payload 와 유사하지 않는 이상치에 대한 XAI 재생성
+        WAF_DL_XAI_2 = shap.Explainer(waf_bert_predict, WAF_DL_tokenizer)
+        WAF_DL_shap_values = WAF_DL_XAI_2(payload_text_df['payload'], fixed_context=1, batch_size=1)
+    
+    text_html = shap.text_plot(WAF_DL_shap_values, display = False)
+
     WAF_DL_shap_values_data = WAF_DL_shap_values.data[0]
     WAF_DL_shap_values_values = WAF_DL_shap_values.values[0]
 
@@ -2359,9 +2361,8 @@ def WAF_XAI_result():
     dl_shap_values_direction = np.where(WAF_DL_shap_values_values >= 0, '공격', '정상')
     
     WAF_DL_shap_values_values_2 = np.abs(WAF_DL_shap_values_values)
-    WAF_DL_shap_values_values_sum = np.sum(WAF_DL_shap_values_values_2)
     
-    WAF_DL_shap_values_values_2_ratio = WAF_DL_shap_values_values_2 / WAF_DL_shap_values_values_sum
+    WAF_DL_shap_values_values_2_ratio = shap_logit(WAF_DL_shap_values_values_2)
     WAF_DL_shap_values_values_2_ratio = WAF_DL_shap_values_values_2_ratio * 100
     WAF_DL_shap_values_values_2_ratio = np.round(WAF_DL_shap_values_values_2_ratio, 2)
     
@@ -2400,7 +2401,7 @@ def WAF_XAI_result():
                                 'resetScale2d', 'toImage']
                                 }
                                 )
-
+    
     # 보안 시그니처 패턴 리스트 highlight
     dl_ai_field = top10_dl_xai['AI 탐지 키워드'].tolist()
     print(dl_ai_field)
@@ -3036,7 +3037,8 @@ def WEB_XAI_result():
 
     payload_text_df = pd.DataFrame([after_method_raw_data_str], columns = ['payload'])
 
-    pipe_result = web_dl_pipe(payload_text_df.iloc[0,0])
+    truncated_text = web_truncate_text(payload_text_df.iloc[0,0])
+    pipe_result = web_dl_pipe(truncated_text)
     pipe_result_label = pipe_result[0]['label']
 
     if pipe_result_label == 'LABEL_0':
@@ -3065,6 +3067,7 @@ def WEB_XAI_result():
         WEB_DL_XAI = shap.Explainer(lambda x: web_bert_predict(x, pipe_result_label), masker)
         ####################################################################################
         WEB_DL_shap_values = WEB_DL_XAI(payload_text_df['payload'], fixed_context=1, batch_size=1)
+
     else:
         # payload 와 유사하지 않는 이상치에 대한 XAI 재생성
         ####################################################################################
@@ -3083,9 +3086,8 @@ def WEB_XAI_result():
     dl_shap_values_direction = np.where(WEB_DL_shap_values_values >= 0, pipe_result_label, not_pipe_result_label)
 
     WEB_DL_shap_values_values_2 = np.abs(WEB_DL_shap_values_values)
-    WEB_DL_shap_values_values_sum = np.sum(WEB_DL_shap_values_values_2)
     
-    WEB_DL_shap_values_values_2_ratio = WEB_DL_shap_values_values_2 / WEB_DL_shap_values_values_sum
+    WEB_DL_shap_values_values_2_ratio = shap_logit(WEB_DL_shap_values_values_2)
     WEB_DL_shap_values_values_2_ratio = WEB_DL_shap_values_values_2_ratio * 100
     WEB_DL_shap_values_values_2_ratio = np.round(WEB_DL_shap_values_values_2_ratio, 2)
     
@@ -3139,6 +3141,7 @@ def WEB_XAI_result():
     dl_sig_ai_pattern, dl_sig_df = dl_highlight_text(raw_data_str, signature_list, dl_ai_field)
     print(dl_sig_ai_pattern)
 
+
     # HTML 형태 payload 의 경우, 소괄호 치환 필요
     dl_sig_ai_pattern = re.sub(r'[\\<]', r'&lt;', dl_sig_ai_pattern)
     dl_sig_ai_pattern = re.sub(r'[\\>]', r'&gt;', dl_sig_ai_pattern)
@@ -3149,7 +3152,7 @@ def WEB_XAI_result():
     dl_sig_ai_pattern = re.sub(foreground_regex, r'<font color = "red">\1</font>', dl_sig_ai_pattern)
     dl_sig_ai_pattern = re.sub(background_regex, r'<span style = "background-color:yellow;">\1</span>', dl_sig_ai_pattern)
 
-    dl_sig_pattern_html = f"<head>{dl_sig_ai_pattern}</head>"        
+    dl_sig_pattern_html = f"<head>{dl_sig_ai_pattern}</head>"
     dl_sig_df_html = dl_sig_df.to_html(index=False, justify='center')
     ####################################################################################
 
