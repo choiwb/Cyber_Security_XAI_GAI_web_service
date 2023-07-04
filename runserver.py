@@ -25,27 +25,30 @@ app = Flask(__name__)
 
 
 # URL Encoding (percent encoding) & Base64 Encoding to decoding
+# 아래 함수의 경우, 비식별 함수 진행 전 삽입 !!!!!
 def payload_decode(raw_data_str):
+
+    segments = re.split('%\w\w', raw_data_str)
+    for i in range(len(segments)):
+        segment = segments[i]
+
+        try:
+            # Base64 디코딩 시도
+            base64_decoded_bytes = base64.b64decode(segment)
+            base64_decoded_str = base64_decoded_bytes.decode('utf-8')
+
+            if len(base64_decoded_str) > 0:
+                raw_data_str = raw_data_str.replace(segment, base64_decoded_str)
+            else:
+                raw_data_str = raw_data_str.replace(segment, segment + base64_decoded_str)
+
+        except:
+            pass
+
     raw_data_str = urllib.parse.unquote(raw_data_str)
     # 2중 디코딩 필요 (..%252f => ..%2f => ../)
     # 즉, % => %25 로 되어 있는 경우 !!!!!
     raw_data_str = urllib.parse.unquote(raw_data_str)
-
-    # Authorization: Basic dG9tY2F0OnMzY3JldA==
-    base64_encode_list = []
-    base64_encode_str1 = 'dG9tY2F0OnMzY3JldA=='
-    base64_encode_str2 = 'L2NnaS1iaW4v'
-    base64_encode_list.append(base64_encode_str1)
-    base64_encode_list.append(base64_encode_str2)
-
-
-    # 위 코드의 base64_encode_list를 for문으로 작성
-    for base64_encode_str in base64_encode_list:
-        # base64 디코딩
-        base64_decode_byte = base64.b64decode(base64_encode_str)
-        # 디코딩된 바이트열을 문자열로 변환
-        base64_decode_str = base64_decode_byte.decode("utf-8")
-        raw_data_str = raw_data_str.replace(base64_encode_str, base64_decode_str)   
 
     return raw_data_str
 
