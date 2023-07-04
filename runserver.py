@@ -3008,7 +3008,7 @@ def WEB_XAI_result():
 
     if re.search(masker_check_pattern, payload_text_df['payload'][0]):
         ####################################################################################
-        WEB_DL_XAI = shap.Explainer(lambda x: web_bert_predict(x, pipe_result_label), masker)
+        WEB_DL_XAI = shap.Explainer(lambda x: web_bert_predict(x, pipe_result_label), web_masker)
         ####################################################################################
         WEB_DL_shap_values = WEB_DL_XAI(payload_text_df['payload'], fixed_context=1, batch_size=1)
 
