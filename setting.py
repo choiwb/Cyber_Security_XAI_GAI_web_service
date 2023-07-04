@@ -76,10 +76,10 @@ def ips_bert_predict(x):
     return val
 
 # payload의 특정 패턴 기준으로 분할 regex
-masker = shap.maskers.Text(tokenizer = r"(\s|%20|\+|\/|%2f|HTTP/1.1|\?|\n|\r|\t)")
+ips_masker = shap.maskers.Text(tokenizer = r"(\s|%20|\+|\/|%2f|HTTP/1.1|\?|\n|\r|\t)")
 # masker = shap.maskers.Text(tokenizer = r"(\s|%20|\+|%2f|HTTP/1.1|\?|\n|\r|\t)")
 
-IPS_DL_XAI = shap.Explainer(ips_bert_predict, masker)
+IPS_DL_XAI = shap.Explainer(ips_bert_predict, ips_masker)
 
 ####################################################################################
 
@@ -119,10 +119,10 @@ def waf_bert_predict(x):
     return val
 
 # payload의 특정 패턴 기준으로 분할 regex
-masker = shap.maskers.Text(tokenizer = r"(\s|%20|\+|\/|%2f|HTTP/1.1|\?|\n|\r|\t)")
+waf_masker = shap.maskers.Text(tokenizer = r"(\s|%20|\+|\/|%2f|HTTP/1.1|\?|\n|\r|\t)")
 # masker = shap.maskers.Text(tokenizer = r"(\s|%20|\+|%2f|HTTP/1.1|\?|\n|\r|\t)")
 
-WAF_DL_XAI = shap.Explainer(waf_bert_predict, masker)
+WAF_DL_XAI = shap.Explainer(waf_bert_predict, waf_masker)
 ####################################################################################
 
 ####################################################################################
@@ -172,7 +172,7 @@ def web_bert_predict(x, pipe_result_label):
     return val
 
 # payload의 특정 패턴 기준으로 분할 regex
-masker = shap.maskers.Text(tokenizer = r"(\s|%20|\+|\/|%2f|HTTP/1.1|\?|\n|\r|\t)")
+web_masker = shap.maskers.Text(tokenizer = r"(\s|%20|\+|\/|%2f|HTTP/1.1|\?|\n|\r|\t)")
 # masker = shap.maskers.Text(tokenizer = r"(\s|%20|\+|%2f|HTTP/1.1|\?|\n|\r|\t)")
 
 # 공격/정상인 경우, bert_predict 함수에 '1'로 index를 지정할 수 있으나, web log의 경우, 다중 분류이므로, 예측 값에 따라 달라지므로,
