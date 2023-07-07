@@ -2923,6 +2923,7 @@ def WEB_XAI_result():
     web_parsing_result_html = web_parsing_result.to_html(index = False, justify = 'center')
     
     if weblog_type_comment != 'WEB 로그가 아닙니다.':
+        useragent_parsing_result_ori = web_parsing_result['user_agent'][0]
 
         # 영어 이외의 모든 문자열 제거
         web_parsing_result['user_agent'] = web_parsing_result.apply(lambda x: re.sub(r'[^a-zA-Z]+', ' ', x['user_agent']), axis = 1)
@@ -2950,7 +2951,7 @@ def WEB_XAI_result():
         else:
             useragent_pred[0] = '애플리케이션'
 
-        useragent_pred_explain = '입력된 WEB Log의 User-Agent는 %s에 해당합니다.' %(useragent_pred[0])
+        useragent_pred_explain = '입력된 WEB Log의 User-Agent는 %s이고, %s에 해당합니다.' %(useragent_parsing_result_ori, useragent_pred[0])
 
         print('출발지 IP: ', start_ip[0])
 
