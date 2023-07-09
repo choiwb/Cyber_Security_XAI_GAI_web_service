@@ -541,10 +541,6 @@ def highlight_text(text, signature, ai_field):
     # foreground red - AI 생성 필드
     replacement_2 = "\033[91m" + "\\1" + "\033[39m"
 
-    # 시그니처 패턴 또는 AI 생성 필드 인 경우, highlight 처리
-    # re.escape() : 특수문자를 이스케이프 처리
-    text = re.sub("(" + "|".join(map(re.escape, signature)) + ")", replacement, text, flags=re.I)
-
     # ai_field에서 cmd, sql, user_agent 제외
     not_cmd_sql_user_agent_field = [i for i in ai_field if i not in cmd_1_field and i not in sql_1_field and i not in sql_2_field and i not in useragent_field]
     # ai_field에서 cmd, sql 인 경우
@@ -561,6 +557,13 @@ def highlight_text(text, signature, ai_field):
         text = re.sub("(" + "|".join(cmd_sql) + ")", replacement_2, text.split('HTTP/1.0')[0], flags=re.I) + 'HTTP/1.0' + text.split('HTTP/1.0')[1]
         text = text.split('HTTP/1.0')[0] + 'HTTP/1.0' + re.sub("(" + "|".join(useragent_field) + ")", replacement_2, text.split('HTTP/1.0')[1], flags=re.I)
 
+    # 39m 91m이 붙어 있는 경우 제거 !!!!!!!! 왜냐하면 단일처리를 위해, 빨간색 폰트 끝과 시작이 붙어 있으면 연속 키워드로 인식하기 위함.
+    text = re.sub(r'\x1b\[39m\x1b\[91m', '', text)
+    
+    # 시그니처 패턴 또는 AI 생성 필드 인 경우, highlight 처리
+    # re.escape() : 특수문자를 이스케이프 처리
+    text = re.sub("(" + "|".join(map(re.escape, signature)) + ")", replacement, text, flags=re.I)
+    
     regex = re.compile('\x1b\[103m(.*?)\x1b\[49m')
 
     matches = [regex.match(text[i:]) for i in range(len(text))] 
@@ -593,10 +596,6 @@ def web_highlight_text(text, signature, web_ai_field):
     # foreground red - AI 생성 필드
     replacement_2 = "\033[91m" + "\\1" + "\033[39m"
 
-    # 시그니처 패턴 또는 AI 생성 필드 인 경우, highlight 처리
-    # re.escape() : 특수문자를 이스케이프 처리
-    text = re.sub("(" + "|".join(map(re.escape, signature)) + ")", replacement, text, flags=re.I)
-
     # ai_field에서 cmd, sql 제외
     not_cmd_sql_field = [i for i in web_ai_field if i not in web_cmd_1 and i not in web_cmd_2 and i not in web_cmd_3 and i not in web_sql_1 and i not in web_sql_2 and i not in web_sql_3 and i not in web_sql_4 and i not in web_sql_5]
     # ai_field에서 cmd, sql 인 경우
@@ -610,6 +609,13 @@ def web_highlight_text(text, signature, web_ai_field):
     elif 'HTTP/1.0' in text and text.count('HTTP/1.0') == 1:
         text = re.sub("(" + "|".join(cmd_sql) + ")", replacement_2, text.split('HTTP/1.0')[0], flags=re.I) + 'HTTP/1.0' + text.split('HTTP/1.0')[1]
 
+    # 39m 91m이 붙어 있는 경우 제거 !!!!!!!! 왜냐하면 단일처리를 위해, 빨간색 폰트 끝과 시작이 붙어 있으면 연속 키워드로 인식하기 위함.
+    text = re.sub(r'\x1b\[39m\x1b\[91m', '', text)
+    
+    # 시그니처 패턴 또는 AI 생성 필드 인 경우, highlight 처리
+    # re.escape() : 특수문자를 이스케이프 처리
+    text = re.sub("(" + "|".join(map(re.escape, signature)) + ")", replacement, text, flags=re.I)
+    
     regex = re.compile('\x1b\[103m(.*?)\x1b\[49m')
 
     matches = [regex.match(text[i:]) for i in range(len(text))] 
