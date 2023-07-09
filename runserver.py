@@ -1356,7 +1356,7 @@ def IPS_XAI_result():
 
 
    
-    if first_feature != 'payload_whitelist' and first_feature != 'payload_dir_access_comb_02':
+    if first_feature != 'payload_whitelist' and first_feature != 'payload_dir_count':
         if first_fv == 1:
             first_fv_result = '공격 탐지'
             first_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(first_feature, first_fv_result, first_word)
@@ -1371,7 +1371,7 @@ def IPS_XAI_result():
     else:
         first_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % first_fv       
 
-    if second_feature != 'payload_whitelist' and second_feature != 'payload_dir_access_comb_02':
+    if second_feature != 'payload_whitelist' and second_feature != 'payload_dir_count':
         if second_fv == 1:
             second_fv_result = '공격 탐지'
             second_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(second_feature, second_fv_result, second_word)
@@ -1386,7 +1386,7 @@ def IPS_XAI_result():
     else:
         second_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % second_fv      
 
-    if third_feature != 'payload_whitelist' and third_feature != 'payload_dir_access_comb_02':
+    if third_feature != 'payload_whitelist' and third_feature != 'payload_dir_count':
         if third_fv == 1:
             third_fv_result = '공격 탐지'
             third_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(third_feature, third_fv_result, third_word)
@@ -2092,7 +2092,7 @@ def WAF_XAI_result():
 
 
     if first_feature.startswith("payload_"):
-        if first_feature != 'payload_dir_access_comb_02':
+        if first_feature != 'payload_dir_count':
             if first_fv == 1:
                 first_fv_result = '공격 탐지'
                 first_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(first_feature, first_fv_result, first_word)
@@ -2109,7 +2109,7 @@ def WAF_XAI_result():
 
 
     if second_feature.startswith("payload_"):
-        if second_feature != 'payload_dir_access_comb_02':
+        if second_feature != 'payload_dir_count':
             if second_fv == 1:
                 second_fv_result = '공격 탐지'
                 second_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(second_feature, second_fv_result, second_word)
@@ -2126,7 +2126,7 @@ def WAF_XAI_result():
 
 
     if third_feature.startswith("payload_"):
-        if third_feature != 'payload_dir_access_comb_02':
+        if third_feature != 'payload_dir_count':
             if third_fv == 1:
                 third_fv_result = '공격 탐지'
                 third_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(third_feature, third_fv_result, third_word)
