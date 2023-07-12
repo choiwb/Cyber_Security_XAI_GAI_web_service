@@ -12,7 +12,7 @@
 ----
 - WEB model: DSS_WEB_LGB_20230404.pkl
 - WEB XAI: DSS_WEB_LGB_explainer_20230404.pkl
-- WEB Deep Learning: WEB_DistilBERT_20230628
+- WEB Deep Learning: WEB_DistilBERT_20230713
 ----
 - WEB useragent modek: DSS_WEB_useragent_LGB_20230413.pkl
 - WEB useragent TF-IDF word: useragent_tfidf_word.csv
