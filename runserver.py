@@ -219,7 +219,7 @@ def WEB_predict_UI_sql_result():
 
     return sql_result_df
 
-
+'''
 def IPS_web_UI_preprocess():   
     payload_df = IPS_predict_UI_sql_result()
     # payload_arr = np.array(payload_df)
@@ -237,7 +237,7 @@ def WEB_web_UI_preprocess():
     # payload_arr = np.array(payload_df)
 
     return payload_df
-
+'''
 
 @app.route('/')
 def input():
@@ -393,7 +393,7 @@ def chatgpt_xai_explain(xai_result):
     return xai_explain
 
 
-
+'''
 @app.route('/IPS_web_UI_predict', methods=['POST'])
 def IPS_web_UI_predict():
 
@@ -444,12 +444,12 @@ def WEB_web_UI_predict():
     normal_proba = 100 - cmd_proba - sql_proba - xss_proba
 
     total_proba_list = [cmd_proba, normal_proba, sql_proba, xss_proba]
-    '''
-    pred = 0 이면, CMD Injection
-    1이면, 정상
-    2이면, SQL Injection
-    3이면, XSS
-    '''
+    
+    # pred = 0 이면, CMD Injection
+    # 1이면, 정상
+    # 2이면, SQL Injection
+    # 3이면, XSS
+    
     if pred == 0:
         pred_label = 'CMD Injection'
     elif pred == 1:
@@ -467,6 +467,7 @@ def WEB_web_UI_predict():
     return render_template('WEB_server_output.html', data = [pred, cmd_proba, normal_proba, sql_proba, xss_proba],
                                                 # method_str = method_str
                                                 )
+'''
 
 ###############################################
 # log odds 형태 라벨 값을 확률 값으로 변환
@@ -1116,9 +1117,17 @@ def IPS_XAI_result():
     # 비식별 하이라이트
     payload_anonymize_highlight_html = payload_anonymize_highlight(raw_data_str)
     
-    payload_df = IPS_web_UI_preprocess()
-    payload_arr = np.array(payload_df)
+    # payload_df = IPS_web_UI_preprocess()
+    payload_df = IPS_predict_UI_sql_result()
 
+    payload_arr = np.array(payload_df)
+    
+    pred = IPS_model.predict(payload_arr)
+    pred_proba = IPS_model.predict_proba(payload_arr)
+
+    # normal_proba = int(np.round(pred_proba[:, 0], 2) * 100)
+    anomalies_proba = int(np.round(pred_proba[:, 1], 2) * 100)
+    
     IPS_total_explainer = pickle.load(open(IPS_explainer_path, 'rb'))
 
     # anomalies : shap_values[1], normal: shap_values[0]
@@ -1136,16 +1145,14 @@ def IPS_XAI_result():
     shap_values_sql_direction = np.array(shap_values_sql_direction).flatten()
     mean_shap_value_df = pd.DataFrame(list(zip(payload_df.columns, shap_values_sql_2_ratio, shap_values_sql_direction)),
                                    columns=['피처 명','피처 중요도', 'AI 예측 방향'])
-
     
-    pred = IPS_model.predict(payload_arr)
     if pred == 1:
         db_ai = '공격'
     else:
         db_ai = '정상'
 
-    proba = IPS_model.predict_proba(payload_arr)
-    attack_proba = int(np.round(proba[:, 1], 2) * 100)
+    # proba = IPS_model.predict_proba(payload_arr)
+    # attack_proba = int(np.round(proba[:, 1], 2) * 100)
 
     train_mean_df = pd.DataFrame([['모델 평균', expected_value_sql_logit, '기준'], ['예측', attack_proba, attack_proba - expected_value_sql_logit]], 
                         columns = ['모델 평균/예측', '위험도(%)', '위험도(%) 증감'])
@@ -1564,9 +1571,8 @@ def IPS_XAI_result():
         pipe_result_label = '정상'
         
     pipe_result_score = pipe_result[0]['score']
-    # 소수점 4자리까지 표시
-    pipe_result_score = round(pipe_result_score, 4)
-    pipe_result_score = pipe_result_score * 100
+    # 정수 표시
+    pipe_result_score = int(np.round(pipe_result_score, 2) * 100)
 
     masker_check_pattern =  r"\s|%20|\+|\/|%2f|HTTP/1.1|\?|\n|\r|\t"
 
@@ -1790,6 +1796,8 @@ def IPS_XAI_result():
 
     return render_template('IPS_XAI_output.html', payload_raw_data = request.form['raw_data_str'],  
                                 payload_anonymize_highlight_html = payload_anonymize_highlight_html,
+                                db_ai = db_ai,
+                                anomalies_proba = anomalies_proba,
                                 train_mean_proba_html = train_mean_proba_html,
                                 force_html = force_html,
                                 summary_html = summary_html,
@@ -1834,9 +1842,17 @@ def WAF_XAI_result():
     # 비식별 하이라이트
     payload_anonymize_highlight_html = payload_anonymize_highlight(raw_data_str)
 
-    payload_df = WAF_web_UI_preprocess()
+    # payload_df = WAF_web_UI_preprocess()
+    payload_df = WAF_predict_UI_sql_result()
+
     payload_arr = np.array(payload_df)
 
+    pred = WAF_model.predict(payload_arr)
+    pred_proba = WAF_model.predict_proba(payload_arr)
+
+    # normal_proba = int(np.round(pred_proba[:, 0], 2) * 100)
+    anomalies_proba = int(np.round(pred_proba[:, 1], 2) * 100)
+    
     WAF_total_explainer = pickle.load(open(WAF_explainer_path, 'rb'))
 
     # anomalies : shap_values[1], normal: shap_values[0]
@@ -1855,15 +1871,13 @@ def WAF_XAI_result():
     mean_shap_value_df = pd.DataFrame(list(zip(payload_df.columns, shap_values_sql_2_ratio, shap_values_sql_direction)),
                                    columns=['피처 명','피처 중요도', 'AI 예측 방향'])
 
-    
-    pred = WAF_model.predict(payload_arr)
     if pred == 1:
         db_ai = '공격'
     else:
         db_ai = '정상'
 
-    proba = WAF_model.predict_proba(payload_arr)
-    attack_proba = int(np.round(proba[:, 1], 2) * 100)
+    # proba = WAF_model.predict_proba(payload_arr)
+    # attack_proba = int(np.round(proba[:, 1], 2) * 100)
 
     train_mean_df = pd.DataFrame([['모델 평균', expected_value_sql_logit, '기준'], ['예측', attack_proba, attack_proba - expected_value_sql_logit]], 
                         columns = ['모델 평균/예측', '위험도(%)', '위험도(%) 증감'])
@@ -2308,9 +2322,8 @@ def WAF_XAI_result():
         pipe_result_label = '정상'
         
     pipe_result_score = pipe_result[0]['score']
-    # 소수점 4자리까지 표시
-    pipe_result_score = round(pipe_result_score, 4)
-    pipe_result_score = pipe_result_score * 100
+    # 정수 표시
+    pipe_result_score = int(np.round(pipe_result_score, 2) * 100)
 
     masker_check_pattern =  r"\s|%20|\+|\/|%2f|HTTP/1.1|\?|\n|\r|\t"
     
@@ -2543,6 +2556,8 @@ def WAF_XAI_result():
 
     return render_template('WAF_XAI_output.html', payload_raw_data = request.form['raw_data_str'],  
                                 payload_anonymize_highlight_html = payload_anonymize_highlight_html,
+                                db_ai = db_ai,
+                                anomalies_proba = anomalies_proba,
                                 train_mean_proba_html = train_mean_proba_html,
                                 force_html = force_html,
                                 summary_html = summary_html,
@@ -2603,10 +2618,23 @@ def WEB_XAI_result():
     # 비식별 하이라이트
     # payload_anonymize_highlight_html = payload_anonymize_highlight(raw_data_str)
     
-    payload_df = WEB_web_UI_preprocess()
+    # payload_df = WEB_web_UI_preprocess()
+    payload_df = WEB_predict_UI_sql_result()
+
     payload_arr = np.array(payload_df)
 
-    WEB_total_explainer = pickle.load(open(WEB_explainer_path, 'rb'))
+    pred = WEB_model.predict(payload_arr)
+    pred = pred[0]
+
+    pred_proba = WEB_model.predict_proba(payload_arr)
+
+    cmd_proba = int(np.round(pred_proba[:, 0], 2) * 100)
+    sql_proba = int(np.round(pred_proba[:, 2], 2) * 100)
+    xss_proba = int(np.round(pred_proba[:, 3], 2) * 100)
+    normal_proba = 100 - cmd_proba - sql_proba - xss_proba
+    
+    total_proba_list = [cmd_proba, normal_proba, sql_proba, xss_proba]
+    
     '''
     shap_values_sql 총 4개를 아래 라벨 인덱스별로 파라미터화 !!!!!!!
     변경 필요 !!!!!!!!
@@ -2615,8 +2643,6 @@ def WEB_XAI_result():
     2: SQL_Inj
     3: XSS
     '''
-    pred = WEB_model.predict(payload_arr)
-    pred = pred[0]
 
     if pred == 0:
         db_ai = 'CMD Injection'
@@ -2631,6 +2657,10 @@ def WEB_XAI_result():
         db_ai = 'XSS'
         not_db_ai = '기타 (CMD, SQL, 정상)'
 
+    pred_max_proba = max(total_proba_list)
+    # print(pred_max_proba)
+    
+    WEB_total_explainer = pickle.load(open(WEB_explainer_path, 'rb'))
 
     # 다중 분류 모델의 경우, expected_value 를 TreeExplainer를 모델 구조상 알 수가 없으므로, None 으로 지정 !!!!!!!    
     shap_values_sql = WEB_total_explainer.shap_values(payload_arr)
@@ -3010,9 +3040,8 @@ def WEB_XAI_result():
         not_pipe_result_label = '기타 (CMD, SQL, 정상)'
 
     pipe_result_score = pipe_result[0]['score']
-    # 소수점 4자리까지 표시
-    pipe_result_score = round(pipe_result_score, 4)
-    pipe_result_score = pipe_result_score * 100
+    # 정수 표시
+    pipe_result_score = int(np.round(pipe_result_score, 2) * 100)
 
     masker_check_pattern =  r"\s|%20|\+|\/|%2f|HTTP/1.1|\?|\n|\r|\t"
 
@@ -3265,6 +3294,8 @@ def WEB_XAI_result():
                                 # payload_anonymize_highlight_html = payload_anonymize_highlight_html,
                                 # train_mean_proba_html = train_mean_proba_html,
                                 # force_html = force_html,
+                                db_ai = db_ai,
+                                pred_max_proba = pred_max_proba,
                                 summary_html = summary_html,
                                 # pie_html = pie_html,
                                 first_statement = first_statement,
