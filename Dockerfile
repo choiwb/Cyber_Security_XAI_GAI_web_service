@@ -25,7 +25,7 @@ COPY static /app/static
 COPY save_model /app/save_model
 COPY save_model/WAF_DistilBERT_20230626 /app/save_model/WAF_DistilBERT_20230626
 COPY save_model/IPS_DistilBERT_20230627 /app/save_model/IPS_DistilBERT_20230627
-COPY save_model/WEB_DistilBERT_20230628 /app/save_model/WEB_DistilBERT_20230628
+COPY save_model/WEB_DistilBERT_20230713 /app/save_model/WEB_DistilBERT_20230713
 COPY chat_gpt_context /app/chat_gpt_context
 
 # Install dependencies
