@@ -127,7 +127,7 @@ WAF_DL_XAI = shap.Explainer(waf_bert_predict, waf_masker)
 
 ####################################################################################
 # WEB 딥러닝 모델 호출
-WEB_DL_path = 'save_model/WEB_DistilBERT_20230628'
+WEB_DL_path = 'save_model/WEB_DistilBERT_20230713'
 
 WEB_DL_model = AutoModelForSequenceClassification.from_pretrained(WEB_DL_path)
 WEB_DL_tokenizer = AutoTokenizer.from_pretrained(WEB_DL_path)
