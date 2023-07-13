@@ -10,9 +10,10 @@
 - WAF Deep Learning: WAF_DistilBERT_20230626
 - WAF 피처 정의서: WAF_피처생성정의서_v202306.xlsx
 ----
-- WEB model: DSS_WEB_LGB_20230404.pkl
-- WEB XAI: DSS_WEB_LGB_explainer_20230404.pkl
+- WEB model: DSS_WEB_LGB_20230713.pkl
+- WEB XAI: DSS_WEB_LGB_explainer_20230713.pkl
 - WEB Deep Learning: WEB_DistilBERT_20230713
+- WEB 피처 정의서: WEB_피처생성정의서_v202307.xlsx
 ----
 - WEB useragent modek: DSS_WEB_useragent_LGB_20230413.pkl
 - WEB useragent TF-IDF word: useragent_tfidf_word.csv
