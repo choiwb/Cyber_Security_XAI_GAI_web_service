@@ -182,10 +182,10 @@ web_masker = shap.maskers.Text(tokenizer = r"(\s|%20|\+|\/|%2f|HTTP/1.1|\?|\n|\r
 ####################################################################################
 
 
-# 2023/04/04 WEB 모델 - Light GBM
-WEB_model_path = 'save_model/DSS_WEB_LGB_20230404.pkl'
+# 2023/07/13 WEB 모델 - Light GBM
+WEB_model_path = 'save_model/DSS_WEB_LGB_20230713.pkl'
 # 위 모델을, SHAP의 TreeExplainer 연산 및 저장
-WEB_explainer_path = 'save_model/DSS_WEB_LGB_explainer_20230404.pkl'
+WEB_explainer_path = 'save_model/DSS_WEB_LGB_explainer_20230713.pkl'
 
 WEB_model = pickle.load(open(WEB_model_path, 'rb'))
 
