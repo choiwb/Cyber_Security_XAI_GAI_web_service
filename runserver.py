@@ -519,20 +519,9 @@ waf_feature_file = 'save_model/WAF_피처생성정의서_v202306.xlsx'
 waf_feature_df = pd.read_excel(waf_feature_file)
 waf_feature_df = waf_feature_df[['피처 명', '피처 설명']]
 
-
-web_feature_df = pd.DataFrame([['weblog_sql_comb_01', 'web log에 SQL-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['weblog_sql_comb_02', 'web log에 SQL-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['weblog_sql_comb_03', 'web log에 SQL-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['weblog_sql_comb_04', 'web log에 SQL-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['weblog_sql_comb_05', 'web log에 SQL-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['weblog_xss_comb_01', 'web log에 XSS 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['weblog_cmd_comb_01', 'web log에 CMD-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['weblog_cmd_comb_02', 'web log에 CMD-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['weblog_cmd_comb_03', 'web log에 CMD-I 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['weblog_dir_access_comb_01', 'web log에 디렉토리 접근 관련 키워드 조합이 포함되는 경우에 대한 표현'],
-                                ['weblog_dir_access_comb_02', 'web log에 디렉토리 접근 관련 키워드 조합이 포함되는 경우에 대한 표현']
-                              ]
-                                , columns=['피처 명', '피처 설명'])
+web_feature_file = 'save_model/WEB_피처생성정의서_v202307.xlsx'
+web_feature_df = pd.read_excel(web_feature_file)
+web_feature_df = web_feature_df[['피처 명', '피처 설명']]
 
 
 def highlight_text(text, signature, ai_field):
@@ -2736,47 +2725,47 @@ def WEB_XAI_result():
     for x in ai_detect_list:
         for y in web_sql_1:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('weblog_sql_comb_01')
+                ai_feature_list.append('weblog_sql_01_comb')
                 ai_pattern_list.append(y)
         for y in web_sql_2:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('weblog_sql_comb_02')
+                ai_feature_list.append('weblog_sql_02_comb')
                 ai_pattern_list.append(y)
         for y in web_sql_3:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('weblog_sql_comb_03')
+                ai_feature_list.append('weblog_sql_03_comb')
                 ai_pattern_list.append(y)
         for y in web_sql_4:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('weblog_sql_comb_04')
+                ai_feature_list.append('weblog_sql_04_comb')
                 ai_pattern_list.append(y)
         for y in web_sql_5:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('weblog_sql_comb_05')
+                ai_feature_list.append('weblog_sql_05_comb')
                 ai_pattern_list.append(y)
         for y in web_xss:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('weblog_xss_comb_01')
+                ai_feature_list.append('weblog_xss_01_comb')
                 ai_pattern_list.append(y)
         for y in web_cmd_1:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('weblog_cmd_comb_01')
+                ai_feature_list.append('weblog_cmd_01_comb')
                 ai_pattern_list.append(y)
         for y in web_cmd_2:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('weblog_cmd_comb_02')
+                ai_feature_list.append('weblog_cmd_02_comb')
                 ai_pattern_list.append(y)
         for y in web_cmd_3:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('weblog_cmd_comb_03')
+                ai_feature_list.append('weblog_cmd_03_comb')
                 ai_pattern_list.append(y)
         for y in web_dir_access_1:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('weblog_dir_access_comb_01')
+                ai_feature_list.append('weblog_dir_01_comb')
                 ai_pattern_list.append(y)
         for y in web_dir_access_2:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('weblog_dir_access_comb_02')
+                ai_feature_list.append('weblog_dir_count')
                 ai_pattern_list.append(y)
 
 
@@ -2830,7 +2819,7 @@ def WEB_XAI_result():
     third_word = top10_shap_values.iloc[2,-1]
 
 
-    if first_feature != 'weblog_dir_access_comb_02':
+    if first_feature != 'weblog_dir_count':
         if first_fv == 1:
             first_fv_result = '공격 탐지'
             first_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(first_feature, first_fv_result, first_word)
@@ -2841,7 +2830,7 @@ def WEB_XAI_result():
         first_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % first_fv       
 
 
-    if second_feature != 'weblog_dir_access_comb_02':
+    if second_feature != 'weblog_dir_count':
         if second_fv == 1:
             second_fv_result = '공격 탐지'
             second_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(second_feature, second_fv_result, second_word)
@@ -2851,7 +2840,7 @@ def WEB_XAI_result():
     else:
         second_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % second_fv       
 
-    if third_feature != 'weblog_dir_access_comb_02':
+    if third_feature != 'weblog_dir_count':
         if third_fv == 1:
             third_fv_result = '공격 탐지'
             third_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(third_feature, third_fv_result, third_word)
