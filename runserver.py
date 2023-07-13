@@ -1561,8 +1561,15 @@ def IPS_XAI_result():
     # 딥러닝 기반 XAI
     payload_text_df = pd.DataFrame([raw_data_str], columns = ['payload'])
 
-    truncated_text = ips_truncate_text(payload_text_df.iloc[0,0])
-    pipe_result = ips_dl_pipe(truncated_text)
+    try:
+        # 512개 이하 토큰
+        truncated_text = payload_text_df.iloc[0,0]
+        pipe_result = ips_dl_pipe(truncated_text)
+    except:
+        # error 발생 시, 512개 이하 토큰으로 자르기
+        truncated_text = ips_truncate_text(payload_text_df.iloc[0,0])
+        pipe_result = ips_dl_pipe(truncated_text)
+        
     pipe_result_label = pipe_result[0]['label']
     
     if pipe_result_label == 'POSITIVE':
@@ -2312,8 +2319,15 @@ def WAF_XAI_result():
     # 딥러닝 기반 XAI
     payload_text_df = pd.DataFrame([raw_data_str], columns = ['payload'])
     
-    truncated_text = waf_truncate_text(payload_text_df.iloc[0,0])
-    pipe_result = waf_dl_pipe(truncated_text)
+    try:
+        # 512개 이하 토큰
+        truncated_text = payload_text_df.iloc[0,0]
+        pipe_result = waf_dl_pipe(truncated_text)
+    except:
+        # error 발생 시, 512개 이하 토큰으로 자르기
+        truncated_text = waf_truncate_text(payload_text_df.iloc[0,0])
+        pipe_result = waf_dl_pipe(truncated_text)
+        
     pipe_result_label = pipe_result[0]['label']
     
     if pipe_result_label == 'POSITIVE':
@@ -3021,8 +3035,15 @@ def WEB_XAI_result():
 
     payload_text_df = pd.DataFrame([after_method_raw_data_str], columns = ['payload'])
 
-    truncated_text = web_truncate_text(payload_text_df.iloc[0,0])
-    pipe_result = web_dl_pipe(truncated_text)
+    try:
+        # 512개 이하 토큰
+        truncated_text = payload_text_df.iloc[0,0]
+        pipe_result = web_dl_pipe(truncated_text)
+    except:
+        # error 발생 시, 512개 이하 토큰으로 자르기
+        truncated_text = web_truncate_text(payload_text_df.iloc[0,0])
+        pipe_result = web_dl_pipe(truncated_text)
+        
     pipe_result_label = pipe_result[0]['label']
 
     if pipe_result_label == 'LABEL_0':
