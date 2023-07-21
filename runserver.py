@@ -1091,6 +1091,9 @@ def IPS_XAI_result():
    # payload의 raw data 입력 값!
     raw_data_str = request.form['raw_data_str']
 
+    # payload의 개행문자 (\n|\r|\t) => ' ' 로 변경
+    raw_data_str = re.sub(r'(\n|\r|\t)', ' ', raw_data_str)
+
     ##########################################################
     # raw_data_str 변수에 XSS 관련 문구가 있어서 창이 나오는 이슈 해결 
     raw_data_str = re.sub(r'[\<]' , '&lt;', raw_data_str)
@@ -1822,6 +1825,9 @@ def IPS_XAI_result():
 def WAF_XAI_result(): 
    # payload의 raw data 입력 값!
     raw_data_str = request.form['raw_data_str']
+
+    # payload의 개행문자 (\n|\r|\t) => ' ' 로 변경
+    raw_data_str = re.sub(r'(\n|\r|\t)', ' ', raw_data_str)
 
     ##########################################################
     # raw_data_str 변수에 XSS 관련 문구가 있어서 창이 나오는 이슈 해결 
@@ -2592,6 +2598,9 @@ def WAF_XAI_result():
 def WEB_XAI_result(): 
    # payload의 raw data 입력 값!
     raw_data_str = request.form['raw_data_str']
+
+    # payload의 개행문자 (\n|\r|\t) => ' ' 로 변경
+    raw_data_str = re.sub(r'(\n|\r|\t)', ' ', raw_data_str)
 
     ##########################################################
     # raw_data_str 변수에 XSS 관련 문구가 있어서 창이 나오는 이슈 해결 
