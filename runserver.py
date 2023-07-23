@@ -1810,6 +1810,8 @@ def IPS_XAI_result():
 
     return render_template('IPS_XAI_output.html', payload_raw_data = request.form['raw_data_str'],  
                                 payload_anonymize_highlight_html = payload_anonymize_highlight_html,
+                                ip_anony_explain = ip_anony_explain,
+                                host_anony_explain = host_anony_explain,
                                 db_ai = db_ai,
                                 anomalies_proba = anomalies_proba,
                                 train_mean_proba_html = train_mean_proba_html,
@@ -2580,6 +2582,8 @@ def WAF_XAI_result():
 
     return render_template('WAF_XAI_output.html', payload_raw_data = request.form['raw_data_str'],  
                                 payload_anonymize_highlight_html = payload_anonymize_highlight_html,
+                                ip_anony_explain = ip_anony_explain,
+                                host_anony_explain = host_anony_explain,
                                 db_ai = db_ai,
                                 anomalies_proba = anomalies_proba,
                                 train_mean_proba_html = train_mean_proba_html,
@@ -3326,6 +3330,8 @@ def WEB_XAI_result():
 
     return render_template('WEB_XAI_output.html', payload_raw_data = request.form['raw_data_str'],  
                                 # payload_anonymize_highlight_html = payload_anonymize_highlight_html,
+                                # ip_anony_explain = ip_anony_explain,
+                                # host_anony_explain = host_anony_explain,
                                 # train_mean_proba_html = train_mean_proba_html,
                                 # force_html = force_html,
                                 db_ai = db_ai,
