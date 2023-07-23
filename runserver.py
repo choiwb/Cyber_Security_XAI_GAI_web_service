@@ -62,15 +62,30 @@ def payload_anonymize(raw_data_str):
     예 임의의 영단어 \w\/ 인경우 
     '''    
     ip_pattern = r'((?<!\w\/)(?<!\w\/[0-9])(?<!\w\/[0-9][0-9])(?:[0-9]{1,3}\.){3}[0-9]{1,3})'
+    # ip 비식별 대상
+    ip_anony = re.findall(ip_pattern, raw_data_str, flags = re.I)
+    # print('IP 비식별 전: ', ip_anony)
+    ip_anony_str = ', '.join(ip_anony)
+    if len(ip_anony) > 0:
+        ip_anony_explain = 'IP 관련 비식별 대상이 %s 존재하여 10.10.123.123 으로 비식별 처리 하였습니다.' %(ip_anony_str)
+    else:
+        ip_anony_explain = 'IP 관련 비식별 대상이 존재하지 않습니다.'
     output_str = re.sub(ip_pattern, '10.10.123.123', raw_data_str, flags = re.I)
 
     # HOST
     # host: 또는 :// 또는 %3a%2f%2f 또는 www.  ~ .go.kr 또는 .or.kr 또는 .com 또는 .co.kr
     host_pattern = r"(?:(?<=:\/\/)|(?<=%3a%2f%2f)|(?<=www\.)|(?<=host: ))((?!10\.10\.123\.123).*?)(?=\.go\.kr|\.or\.kr|\.com|\.co\.kr)"
-
+    # host 비식별 대상
+    host_anony = re.findall(host_pattern, output_str, flags = re.I)
+    # print('HOST 비식별 전: ', host_anony)
+    host_anony_str = ', '.join(host_anony)
+    if len(host_anony) > 0:
+        host_anony_explain = 'HOST 관련 비식별 대상이 %s 존재하여 ***** 으로 비식별 처리 하였습니다.' %(host_anony_str)
+    else:
+        host_anony_explain = 'HOST 관련 비식별 대상이 존재하지 않습니다.'
     output_str = re.sub(host_pattern, '*****', output_str, flags = re.I)
-
-    return output_str
+    
+    return output_str, ip_anony_explain, host_anony_explain
 
 
 def payload_anonymize_highlight(raw_data_str):
