@@ -1893,14 +1893,6 @@ def WAF_XAI_result():
     mean_shap_value_df = pd.DataFrame(list(zip(payload_df.columns, shap_values_sql_2_ratio, shap_values_sql_direction)),
                                    columns=['피처 명','피처 중요도', 'AI 예측 방향'])
 
-    if pred == 1:
-        db_ai = '공격'
-    else:
-        db_ai = '정상'
-
-    # proba = WAF_model.predict_proba(payload_arr)
-    # attack_proba = int(np.round(proba[:, 1], 2) * 100)
-
     train_mean_df = pd.DataFrame([['모델 평균', expected_value_sql_logit, '기준'], ['예측', attack_proba, attack_proba - expected_value_sql_logit]], 
                         columns = ['모델 평균/예측', '위험도(%)', '위험도(%) 증감'])
     train_mean_df['위험도(%) 증감'][1] = np.round(train_mean_df['위험도(%) 증감'][1], 2)
