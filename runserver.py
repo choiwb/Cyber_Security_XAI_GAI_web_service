@@ -1132,8 +1132,14 @@ def IPS_XAI_result():
     pred = IPS_model.predict(payload_arr)
     pred_proba = IPS_model.predict_proba(payload_arr)
 
-    # normal_proba = int(np.round(pred_proba[:, 0], 2) * 100)
-    anomalies_proba = int(np.round(pred_proba[:, 1], 2) * 100)
+    if pred == 1:
+        db_ai = '공격'
+        pred_proba = int(np.round(pred_proba[:, 1], 2) * 100)
+    else:
+        db_ai = '정상'
+        pred_proba = int(np.round(pred_proba[:, 0], 2) * 100)
+
+    ml_pred_comment = '인공지능에서 예측한 결과 %s으로 예측할 확률이 %s%%입니다.' %(db_ai, pred_proba)
     
     IPS_total_explainer = pickle.load(open(IPS_explainer_path, 'rb'))
 
@@ -1153,14 +1159,6 @@ def IPS_XAI_result():
     mean_shap_value_df = pd.DataFrame(list(zip(payload_df.columns, shap_values_sql_2_ratio, shap_values_sql_direction)),
                                    columns=['피처 명','피처 중요도', 'AI 예측 방향'])
     
-    if pred == 1:
-        db_ai = '공격'
-    else:
-        db_ai = '정상'
-
-    # proba = IPS_model.predict_proba(payload_arr)
-    # attack_proba = int(np.round(proba[:, 1], 2) * 100)
-
     train_mean_df = pd.DataFrame([['모델 평균', expected_value_sql_logit, '기준'], ['예측', attack_proba, attack_proba - expected_value_sql_logit]], 
                         columns = ['모델 평균/예측', '위험도(%)', '위험도(%) 증감'])
     train_mean_df['위험도(%) 증감'][1] = np.round(train_mean_df['위험도(%) 증감'][1], 2)
@@ -1587,6 +1585,7 @@ def IPS_XAI_result():
     pipe_result_score = pipe_result[0]['score']
     # 정수 표시
     pipe_result_score = int(np.round(pipe_result_score, 2) * 100)
+    dl_pred_comment = '인공지능에서 예측한 결과 %s으로 예측할 확률이 %s%%입니다.' %(pipe_result_label, pipe_result_score)
 
     masker_check_pattern =  r"\s|%20|\+|\/|%2f|HTTP/1.1|\?|\n|\r|\t"
 
@@ -1812,8 +1811,7 @@ def IPS_XAI_result():
                                 payload_anonymize_highlight_html = payload_anonymize_highlight_html,
                                 ip_anony_explain = ip_anony_explain,
                                 host_anony_explain = host_anony_explain,
-                                db_ai = db_ai,
-                                anomalies_proba = anomalies_proba,
+                                ml_pred_comment = ml_pred_comment,
                                 train_mean_proba_html = train_mean_proba_html,
                                 force_html = force_html,
                                 summary_html = summary_html,
@@ -1829,8 +1827,7 @@ def IPS_XAI_result():
                                 q_and_a_1_html = q_and_a_1_html,
                                 q_and_a_2_html = q_and_a_2_html,
                                 text_html = text_html,
-                                pipe_result_label = pipe_result_label,
-                                pipe_result_score = pipe_result_score,
+                                dl_pred_comment = dl_pred_comment,
                                 dl_summary_html = dl_summary_html,
                                 dl_xai_report_html = dl_xai_report_html,
                                 dl_sig_pattern_html = dl_sig_pattern_html,
@@ -1869,8 +1866,14 @@ def WAF_XAI_result():
     pred = WAF_model.predict(payload_arr)
     pred_proba = WAF_model.predict_proba(payload_arr)
 
-    # normal_proba = int(np.round(pred_proba[:, 0], 2) * 100)
-    anomalies_proba = int(np.round(pred_proba[:, 1], 2) * 100)
+    if pred == 1:
+        db_ai = '공격'
+        pred_proba = int(np.round(pred_proba[:, 1], 2) * 100)
+    else:
+        db_ai = '정상'
+        pred_proba = int(np.round(pred_proba[:, 0], 2) * 100)
+
+    ml_pred_comment = '인공지능에서 예측한 결과 %s으로 예측할 확률이 %s%%입니다.' %(db_ai, pred_proba)
     
     WAF_total_explainer = pickle.load(open(WAF_explainer_path, 'rb'))
 
@@ -2350,6 +2353,7 @@ def WAF_XAI_result():
     pipe_result_score = pipe_result[0]['score']
     # 정수 표시
     pipe_result_score = int(np.round(pipe_result_score, 2) * 100)
+    dl_pred_comment = '인공지능에서 예측한 결과 %s으로 예측할 확률이 %s%%입니다.' %(pipe_result_label, pipe_result_score)
 
     masker_check_pattern =  r"\s|%20|\+|\/|%2f|HTTP/1.1|\?|\n|\r|\t"
     
@@ -2584,8 +2588,7 @@ def WAF_XAI_result():
                                 payload_anonymize_highlight_html = payload_anonymize_highlight_html,
                                 ip_anony_explain = ip_anony_explain,
                                 host_anony_explain = host_anony_explain,
-                                db_ai = db_ai,
-                                anomalies_proba = anomalies_proba,
+                                ml_pred_comment = ml_pred_comment,
                                 train_mean_proba_html = train_mean_proba_html,
                                 force_html = force_html,
                                 summary_html = summary_html,
@@ -2604,8 +2607,7 @@ def WAF_XAI_result():
                                 payload_parsing_result_html = payload_parsing_result_html,
                                 payload_parsing_comment = payload_parsing_comment,
                                 text_html = text_html,
-                                pipe_result_label = pipe_result_label,
-                                pipe_result_score = pipe_result_score,
+                                dl_pred_comment = dl_pred_comment,
                                 dl_summary_html = dl_summary_html,
                                 dl_xai_report_html = dl_xai_report_html,
                                 dl_sig_pattern_html = dl_sig_pattern_html,
@@ -2690,7 +2692,12 @@ def WEB_XAI_result():
 
     pred_max_proba = max(total_proba_list)
     # print(pred_max_proba)
-    
+
+    if pred != 1:
+        ml_pred_comment = '인공지능에서 예측한 결과 %s 공격으로 예측할 확률이 %s%%입니다.' %(db_ai, pred_max_proba)
+    else:
+        ml_pred_comment = '인공지능에서 예측한 결과 %s으로 예측할 확률이 %s%%입니다.' %(db_ai, pred_max_proba)
+
     WEB_total_explainer = pickle.load(open(WEB_explainer_path, 'rb'))
 
     # 다중 분류 모델의 경우, expected_value 를 TreeExplainer를 모델 구조상 알 수가 없으므로, None 으로 지정 !!!!!!!    
@@ -3080,6 +3087,10 @@ def WEB_XAI_result():
     pipe_result_score = pipe_result[0]['score']
     # 정수 표시
     pipe_result_score = int(np.round(pipe_result_score, 2) * 100)
+    if pipe_result_label != '정상':
+        dl_pred_comment = '인공지능에서 예측한 결과 %s 공격으로 예측할 확률이 %s%%입니다.' %(pipe_result_label, pipe_result_score)
+    else:
+        dl_pred_comment = '인공지능에서 예측한 결과 %s으로 예측할 확률이 %s%%입니다.' %(pipe_result_label, pipe_result_score)
 
     masker_check_pattern =  r"\s|%20|\+|\/|%2f|HTTP/1.1|\?|\n|\r|\t"
 
@@ -3334,8 +3345,7 @@ def WEB_XAI_result():
                                 # host_anony_explain = host_anony_explain,
                                 # train_mean_proba_html = train_mean_proba_html,
                                 # force_html = force_html,
-                                db_ai = db_ai,
-                                pred_max_proba = pred_max_proba,
+                                ml_pred_comment = ml_pred_comment,
                                 summary_html = summary_html,
                                 # pie_html = pie_html,
                                 first_statement = first_statement,
@@ -3353,8 +3363,7 @@ def WEB_XAI_result():
                                 useragent_pred_explain = useragent_pred_explain,
                                 start_ip_country_explain = start_ip_country_explain,
                                 text_html = text_html,
-                                pipe_result_label = pipe_result_label,
-                                pipe_result_score = pipe_result_score,
+                                dl_pred_comment = dl_pred_comment,
                                 dl_summary_html = dl_summary_html,
                                 dl_xai_report_html = dl_xai_report_html,
                                 dl_sig_pattern_html = dl_sig_pattern_html,
