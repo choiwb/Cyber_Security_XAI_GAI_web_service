@@ -1641,7 +1641,8 @@ def IPS_XAI_result():
                             yaxis_categoryorder = 'total descending',
                             legend_itemclick = False, legend_itemdoubleclick = False,
                             title_text='AI 예측 상위 10개 딥러닝 피처 중요도', title_x=0.5,
-                            yaxis_title = None
+                            yaxis_title = None,
+                            hovermode = False
                             )
     
     # plotly to html and all config false
@@ -2405,7 +2406,8 @@ def WAF_XAI_result():
                             yaxis_categoryorder = 'total descending',
                             legend_itemclick = False, legend_itemdoubleclick = False,
                             title_text='AI 예측 상위 10개 딥러닝 피처 중요도', title_x=0.5,
-                            yaxis_title = None
+                            yaxis_title = None,
+                            hovermode = False
                             )
     
     # plotly to html and all config false
@@ -3160,7 +3162,8 @@ def WEB_XAI_result():
                             yaxis_categoryorder = 'total descending',
                             legend_itemclick = False, legend_itemdoubleclick = False,
                             title_text='AI 예측 상위 10개 딥러닝 피처 중요도', title_x=0.5,
-                            yaxis_title = None
+                            yaxis_title = None,
+                            hovermode = False
                             )
     
     # plotly to html and all config false
