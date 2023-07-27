@@ -1439,6 +1439,8 @@ def IPS_XAI_result():
     
     # 피처 중요도에 따른 sort reverse !!!!!
     # 피처 중요도 기준 내림 차순 정렬
+    summary_plot.update_traces(textposition="outside")
+    
     summary_plot.update_layout(xaxis_fixedrange=True, yaxis_fixedrange=True,
                             yaxis = dict(autorange="reversed"),
                             yaxis_categoryorder = 'total descending',
@@ -1631,7 +1633,9 @@ def IPS_XAI_result():
                                              'AI 탐지 키워드': False},
                 template='plotly_white',
             )
-    
+
+    dl_summary_plot.update_traces(textposition="outside")
+
     dl_summary_plot.update_layout(xaxis_fixedrange=True, yaxis_fixedrange=True,
                             yaxis = dict(autorange="reversed"),
                             yaxis_categoryorder = 'total descending',
@@ -2198,6 +2202,8 @@ def WAF_XAI_result():
     
     # 피처 중요도에 따른 sort reverse !!!!!
     # 피처 중요도 기준 내림 차순 정렬
+    summary_plot.update_traces(textposition="outside")
+    
     summary_plot.update_layout(xaxis_fixedrange=True, yaxis_fixedrange=True,
                             yaxis = dict(autorange="reversed"),
                             yaxis_categoryorder = 'total descending',
@@ -2391,6 +2397,8 @@ def WAF_XAI_result():
                                              'AI 탐지 키워드': False},
                 template='plotly_white',
             )
+
+    dl_summary_plot.update_traces(textposition="outside")
     
     dl_summary_plot.update_layout(xaxis_fixedrange=True, yaxis_fixedrange=True,
                             yaxis = dict(autorange="reversed"),
@@ -2906,6 +2914,8 @@ def WEB_XAI_result():
     
     # 피처 중요도에 따른 sort reverse !!!!!
     # 피처 중요도 기준 내림 차순 정렬
+    summary_plot.update_traces(textposition="outside")
+    
     summary_plot.update_layout(xaxis_fixedrange=True, yaxis_fixedrange=True,
                             yaxis = dict(autorange="reversed"),
                             yaxis_categoryorder = 'total descending',
@@ -3142,6 +3152,8 @@ def WEB_XAI_result():
                                                                         'AI 탐지 키워드': False},
                     template = 'plotly_white',
                     )
+
+    dl_summary_plot.update_traces(textposition="outside")
     
     dl_summary_plot.update_layout(xaxis_fixedrange=True, yaxis_fixedrange=True,
                             yaxis = dict(autorange="reversed"),
