@@ -1139,7 +1139,7 @@ def IPS_XAI_result():
         db_ai = '정상'
         pred_proba = int(np.round(pred_proba[:, 0], 2) * 100)
 
-    ml_pred_comment = '인공지능에서 예측한 결과 %s으로 예측할 확률이 %s%%입니다.' %(db_ai, pred_proba)
+    ml_pred_comment = '인공지능에서 예측한 결과 %s일 확률이 %s%%입니다.' %(db_ai, pred_proba)
     
     IPS_total_explainer = pickle.load(open(IPS_explainer_path, 'rb'))
 
@@ -1585,7 +1585,7 @@ def IPS_XAI_result():
     pipe_result_score = pipe_result[0]['score']
     # 정수 표시
     pipe_result_score = int(np.round(pipe_result_score, 2) * 100)
-    dl_pred_comment = '인공지능에서 예측한 결과 %s으로 예측할 확률이 %s%%입니다.' %(pipe_result_label, pipe_result_score)
+    dl_pred_comment = '인공지능에서 예측한 결과 %s일 확률이 %s%%입니다.' %(pipe_result_label, pipe_result_score)
 
     masker_check_pattern =  r"\s|%20|\+|\/|%2f|HTTP/1.1|\?|\n|\r|\t"
 
@@ -1873,7 +1873,7 @@ def WAF_XAI_result():
         db_ai = '정상'
         pred_proba = int(np.round(pred_proba[:, 0], 2) * 100)
 
-    ml_pred_comment = '인공지능에서 예측한 결과 %s으로 예측할 확률이 %s%%입니다.' %(db_ai, pred_proba)
+    ml_pred_comment = '인공지능에서 예측한 결과 %s일 확률이 %s%%입니다.' %(db_ai, pred_proba)
     
     WAF_total_explainer = pickle.load(open(WAF_explainer_path, 'rb'))
 
@@ -2345,7 +2345,7 @@ def WAF_XAI_result():
     pipe_result_score = pipe_result[0]['score']
     # 정수 표시
     pipe_result_score = int(np.round(pipe_result_score, 2) * 100)
-    dl_pred_comment = '인공지능에서 예측한 결과 %s으로 예측할 확률이 %s%%입니다.' %(pipe_result_label, pipe_result_score)
+    dl_pred_comment = '인공지능에서 예측한 결과 %s일 확률이 %s%%입니다.' %(pipe_result_label, pipe_result_score)
 
     masker_check_pattern =  r"\s|%20|\+|\/|%2f|HTTP/1.1|\?|\n|\r|\t"
     
@@ -2686,9 +2686,9 @@ def WEB_XAI_result():
     # print(pred_max_proba)
 
     if pred != 1:
-        ml_pred_comment = '인공지능에서 예측한 결과 %s 공격으로 예측할 확률이 %s%%입니다.' %(db_ai, pred_max_proba)
+        ml_pred_comment = '인공지능에서 예측한 결과 %s 공격일 확률이 %s%%입니다.' %(db_ai, pred_max_proba)
     else:
-        ml_pred_comment = '인공지능에서 예측한 결과 %s으로 예측할 확률이 %s%%입니다.' %(db_ai, pred_max_proba)
+        ml_pred_comment = '인공지능에서 예측한 결과 %s일 확률이 %s%%입니다.' %(db_ai, pred_max_proba)
 
     WEB_total_explainer = pickle.load(open(WEB_explainer_path, 'rb'))
 
@@ -3080,9 +3080,9 @@ def WEB_XAI_result():
     # 정수 표시
     pipe_result_score = int(np.round(pipe_result_score, 2) * 100)
     if pipe_result_label != '정상':
-        dl_pred_comment = '인공지능에서 예측한 결과 %s 공격으로 예측할 확률이 %s%%입니다.' %(pipe_result_label, pipe_result_score)
+        dl_pred_comment = '인공지능에서 예측한 결과 %s 공격일 확률이 %s%%입니다.' %(pipe_result_label, pipe_result_score)
     else:
-        dl_pred_comment = '인공지능에서 예측한 결과 %s으로 예측할 확률이 %s%%입니다.' %(pipe_result_label, pipe_result_score)
+        dl_pred_comment = '인공지능에서 예측한 결과 %s일 확률이 %s%%입니다.' %(pipe_result_label, pipe_result_score)
 
     masker_check_pattern =  r"\s|%20|\+|\/|%2f|HTTP/1.1|\?|\n|\r|\t"
 
