@@ -170,10 +170,15 @@ def payload_anonymize_highlight(raw_data_str):
     # 비식별 하이라이트 처리 - background black & foreground white
     replacement = "\033[40m\033[37m" + "\\1" + "\033[0m"
 
-    # raw_data_str의 '10.10.123.123' 과 '*****' 애 replacement 적용
     ip_anony = '10.10.123.123'
     host_anony = '*****'
-    anony_list = [ip_anony, host_anony]
+    email_anony = 'abc@'
+    card_anony = '1234-XXXX-XXXX-XXXX'
+    number_anony = '010-XXXX-XXXX'
+    jumin_anony = '123456-*******'
+    name_anony = '홍길동'
+    
+    anony_list = [ip_anony, host_anony, email_anony, card_anony, number_anony, jumin_anony, name_anony]
     payload_anonymize_highlight = re.sub("(" + "|".join(map(re.escape, anony_list)) + ")", replacement, raw_data_str, flags=re.I)
     print(payload_anonymize_highlight)
     
