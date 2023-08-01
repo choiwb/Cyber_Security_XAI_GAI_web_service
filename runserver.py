@@ -230,7 +230,7 @@ def WAF_predict_UI_sql_result():
     raw_data_str = payload_decode(raw_data_str)
     
     # 비식별
-    raw_data_str, ip_anony_explain, host_anony_explain = payload_anonymize(raw_data_str)
+    raw_data_str = payload_anonymize(raw_data_str)
 
     conf = pyspark.SparkConf().setAppName('prep_data').setMaster('local')
     sc = pyspark.SparkContext.getOrCreate(conf = conf)
@@ -282,7 +282,7 @@ def WEB_predict_UI_sql_result():
     raw_data_str = payload_decode(raw_data_str)
     
     # 비식별
-    # raw_data_str, ip_anony_explain, host_anony_explain = payload_anonymize(raw_data_str)
+    # raw_data_str = payload_anonymize(raw_data_str)
 
     conf = pyspark.SparkConf().setAppName('prep_data').setMaster('local')
     sc = pyspark.SparkContext.getOrCreate(conf = conf)
@@ -781,7 +781,7 @@ def WAF_payload_parsing():
     raw_data_str = payload_decode(raw_data_str)
 
     # 비식별
-    raw_data_str, ip_anony_explain, host_anony_explain = payload_anonymize(raw_data_str)
+    raw_data_str = payload_anonymize(raw_data_str)
 
     pre_df = pd.DataFrame([raw_data_str], columns = ['payload'])
     pre_df['http_method'] = [str(x).split(' ')[0] for x in pre_df['payload']]
@@ -927,7 +927,7 @@ def WEB_payload_parsing():
     # raw_data_str = payload_decode(raw_data_str)
 
     # 비식별
-    # raw_data_str, ip_anony_explain, host_anony_explain = payload_anonymize(raw_data_str)
+    # raw_data_str = payload_anonymize(raw_data_str)
 
     # raw_data_str에 '"'가 4개 이상 (2쌍) 인 경우, APACHE, 아니면, IIS
     if raw_data_str.count('"') >= 4:
@@ -1196,7 +1196,7 @@ def IPS_XAI_result():
     raw_data_str = payload_decode(raw_data_str)
 
     # 비식별
-    raw_data_str, ip_anony_explain, host_anony_explain = payload_anonymize(raw_data_str)
+    raw_data_str = payload_anonymize(raw_data_str)
 
     # 비식별 하이라이트
     payload_anonymize_highlight_html = payload_anonymize_highlight(raw_data_str)
@@ -1935,7 +1935,7 @@ def WAF_XAI_result():
     raw_data_str = payload_decode(raw_data_str)
 
     # 비식별
-    raw_data_str, ip_anony_explain, host_anony_explain = payload_anonymize(raw_data_str)
+    raw_data_str = payload_anonymize(raw_data_str)
 
     # 비식별 하이라이트
     payload_anonymize_highlight_html = payload_anonymize_highlight(raw_data_str)
@@ -2725,7 +2725,7 @@ def WEB_XAI_result():
     raw_data_str = payload_decode(raw_data_str)
 
     # 비식별
-    # raw_data_str, ip_anony_explain, host_anony_explain = payload_anonymize(raw_data_str)
+    # raw_data_str = payload_anonymize(raw_data_str)
 
     # 비식별 하이라이트
     # payload_anonymize_highlight_html = payload_anonymize_highlight(raw_data_str)
