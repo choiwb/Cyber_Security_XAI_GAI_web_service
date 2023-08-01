@@ -190,7 +190,7 @@ def IPS_predict_UI_sql_result():
     raw_data_str = payload_decode(raw_data_str)
     
     # 비식별
-    raw_data_str, ip_anony_explain, host_anony_explain = payload_anonymize(raw_data_str)
+    raw_data_str = payload_anonymize(raw_data_str)
 
     conf = pyspark.SparkConf().setAppName('prep_data').setMaster('local')
     sc = pyspark.SparkContext.getOrCreate(conf = conf)
