@@ -25,10 +25,16 @@ app = Flask(__name__)
 
 
 # URL Encoding (percent encoding) & Base64 Encoding to decoding
+# hex to ascii => 미완성 !!!!!!!!!!!!!!!
 # 아래 함수의 경우, 비식별 함수 진행 전 삽입 !!!!!
 def payload_decode(raw_data_str):
 
     segments = re.split('%\w\w', raw_data_str)
+    # hex to ascii
+    # | ~ | 안에 있는 문자열을 기준으로 split
+    segments_2 = re.split(r'\|([0-9a-fA-F]+)\|', raw_data_str)
+    # print(segments_2)
+
     for i in range(len(segments)):
         segment = segments[i]
 
@@ -45,6 +51,16 @@ def payload_decode(raw_data_str):
         except:
             pass
 
+
+    for i in range(len(segments_2)):
+        segments_2 = segments_2[i]
+        try:
+            ascii_decoded_str = bytes.fromhex(segments_2).decode('ascii')
+            raw_data_str = raw_data_str.replace(segments_2, ascii_decoded_str)
+
+        except:
+            pass
+    
     raw_data_str = urllib.parse.unquote(raw_data_str)
     # 2중 디코딩 필요 (..%252f => ..%2f => ../)
     # 즉, % => %25 로 되어 있는 경우 !!!!!
