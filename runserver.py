@@ -579,7 +579,7 @@ def shap_logit(x):
 # 보안 시그니처 패턴 리스트 => highlight 처리
 # 시그니처 패턴 리스트 csv 호출 => 사용자 정의 & Web CGI 공격 & 패턴 블럭  sheet 참조! (단, Snort(사용자 패턴) 시트 제외!)
 sig_pattern_csv_path = 'save_model'
-df = pd.read_csv(os.path.join(sig_pattern_csv_path, 'signature_pattern_list.csv'))
+df = pd.read_excel(os.path.join(sig_pattern_csv_path, 'signature_pattern_list_20230803.xlsx'))
 # print('@@@@@@@@@@@@@@')
 # 총 3435 개
 # print('시그니처 패턴 총 개수: ', df.shape[0])
@@ -594,9 +594,11 @@ signature_list = [re.sub(r'[\>]' , '&gt;', x) for x in signature_list]
 
 df['제조사'] = df.apply(lambda x: 'W사' if x['제조사'] == 'SPECIFIC VENDOR !!!!!!!' 
                                     else 'S사' if x['제조사'] == 'SPECIFIC VENDOR !!!!!!!'
+                                    else 'I사' if x['제조사'] == 'SPECIFIC VENDOR !!!!!!!'
                                     else '', axis = 1)
 df['장비 명'] = df.apply(lambda x: 'S제품' if x['장비 명'] == 'SPECIFIC PRODUCT !!!!!!!' 
                                     else 'M제품' if x['장비 명'] == 'SPECIFIC PRODUCT !!!!!!!'
+                                    else 'N제품' if x['장비 명'] == 'SPECIFIC PRODUCT !!!!!!!'
                                     else '', axis = 1)
 
 vendor_list = df['제조사'].tolist()
