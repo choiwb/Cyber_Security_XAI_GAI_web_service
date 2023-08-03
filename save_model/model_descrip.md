@@ -18,5 +18,5 @@
 - WEB useragent modek: DSS_WEB_useragent_LGB_20230413.pkl
 - WEB useragent TF-IDF word: useragent_tfidf_word.csv
 ----
-- signature pattern: signature_pattern_list.csv
+- signature pattern: signature_pattern_list_20230803.xlsx
 - GeoIP2 DB Country name: GeoLite2_Country_20230419.mmdb
