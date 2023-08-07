@@ -2011,6 +2011,7 @@ def IPS_XAI_result():
 
     return render_template('IPS_XAI_output.html', payload_raw_data = request.form['raw_data_str'],  
                                 payload_anonymize_highlight_html = payload_anonymize_highlight_html,
+                                anony_raw_data = raw_data_str,
                                 ml_pred_comment = ml_pred_comment,
                                 train_mean_proba_html = train_mean_proba_html,
                                 force_html = force_html,
@@ -2783,6 +2784,7 @@ def WAF_XAI_result():
 
     return render_template('WAF_XAI_output.html', payload_raw_data = request.form['raw_data_str'],  
                                 payload_anonymize_highlight_html = payload_anonymize_highlight_html,
+                                anony_raw_data = raw_data_str,
                                 ml_pred_comment = ml_pred_comment,
                                 train_mean_proba_html = train_mean_proba_html,
                                 force_html = force_html,
@@ -3541,6 +3543,7 @@ def WEB_XAI_result():
 
     return render_template('WEB_XAI_output.html', payload_raw_data = request.form['raw_data_str'],  
                                 payload_anonymize_highlight_html = payload_anonymize_highlight_html,
+                                anony_raw_data = raw_data_str,
                                 # train_mean_proba_html = train_mean_proba_html,
                                 # force_html = force_html,
                                 ml_pred_comment = ml_pred_comment,
