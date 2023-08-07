@@ -181,6 +181,87 @@ def payload_anonymize(raw_data_str):
     return output_str
 
 
+def web_payload_anonymize(raw_data_str):
+    # E-mail
+    # xxxxx@xxx. 형태로 있으면, 아이디 부분만 abc 으로 변경
+    email_pattern = r'([a-zA-Z0-9_.-]+)@([a-zA-Z0-9_-]+\.)'
+
+    # e-mail 비식별 대상
+    email_anony = re.findall(email_pattern, raw_data_str, flags = re.I)
+    # email_anony의 짝수번 째 값 제거
+    email_anony = [item[0] for item in email_anony]
+
+    email_anony_str = ', '.join(email_anony)
+    if len(email_anony) > 0:
+        email_anony_explain = 'E-mail 관련 비식별 대상이 %s 존재하여 abc 으로 비식별 처리 하였습니다.' %(email_anony_str)
+    else:
+        email_anony_explain = 'E-mail 관련 비식별 대상이 존재하지 않습니다.'
+        
+    output_str = re.sub(email_pattern, r'abc@\2', raw_data_str, flags=re.I)
+
+    # 카드번호
+    # 숫자 4자리-숫자 4자리-숫자 4자리-숫자 4자리 => 숫자 4자리 유지 1234-XXXX-XXXX-XXXX 으로 변경
+    card_pattern = r'(\d{4}-\d{4}-\d{4}-\d{4})'
+
+    # card 비식별 대상
+    card_anony = re.findall(card_pattern, output_str, flags = re.I)
+    card_anony_str = ', '.join(card_anony)
+    if len(card_anony) > 0:
+        card_anony_explain = '카드번호 관련 비식별 대상이 %s 존재하여 1234-XXXX-XXXX-XXXX 으로 비식별 처리 하였습니다.' %(card_anony_str)
+    else:
+        card_anony_explain = '카드번호 관련 비식별 대상이 존재하지 않습니다.'
+    
+    output_str = re.sub(card_pattern, '1234-XXXX-XXXX-XXXX', output_str, flags = re.I)
+
+    # 휴대폰(전화)번호
+    # 숫자 2,3자리-숫자 3,4자리-숫자 4자리 => 숫자 2,3자리 유지 010-XXXX-XXXX 으로 변경
+    number_pattern = r'(\d{2,3}-\d{3,4}-\d{4})'
+    # number 비식별 대상
+    number_anony = re.findall(number_pattern, output_str, flags = re.I)
+    number_anony_str = ', '.join(number_anony)
+    if len(number_anony) > 0:
+        number_anony_explain = '휴대폰(전화)번호 관련 비식별 대상이 %s 존재하여 02-XXXX-XXXX 으로 비식별 처리 하였습니다.' %(number_anony_str)
+    else:
+        number_anony_explain = '휴대폰(전화)번호 관련 비식별 대상이 존재하지 않습니다.'
+
+    output_str = re.sub(number_pattern, '010-XXXX-XXXX', output_str, flags = re.I)
+
+    # 주민등록번호
+    # 숫자 6자리-숫자 7자리 => 숫자 6자리 유지 123456-XXXXXXX 으로 변경
+    jumin_pattern = r'(\d{6}-\d{7})'
+    # jumin 비식별 대상
+    jumin_anony = re.findall(jumin_pattern, output_str, flags = re.I)
+    jumin_anony_str = ', '.join(jumin_anony)
+    if len(jumin_anony) > 0:
+        jumin_anony_explain = '주민등록번호 관련 비식별 대상이 %s 존재하여 123456-******* 으로 비식별 처리 하였습니다.' %(jumin_anony_str)
+    else:
+        jumin_anony_explain = '주민등록번호 관련 비식별 대상이 존재하지 않습니다.'
+
+    output_str = re.sub(jumin_pattern, '123456-*******', output_str, flags = re.I)
+    
+    # 이름
+    # 한글 2~4자리 => 홍길동 으로 변경
+    name_pattern = r'[가-힣]{2,4}'
+
+    # name 비식별 대상
+    name_anony = re.findall(name_pattern, output_str, flags = re.I)
+    name_anony_str = ', '.join(name_anony)
+    if len(name_anony) > 0:
+        name_anony_explain = '이름 관련 비식별 대상이 %s 존재하여 홍길동 으로 비식별 처리 하였습니다.' %(name_anony_str)
+    else:
+        name_anony_explain = '이름 관련 비식별 대상이 존재하지 않습니다.'
+    
+    output_str = re.sub(name_pattern, '홍길동', output_str, flags = re.I)
+
+    print(email_anony_explain)
+    print(card_anony_explain)
+    print(number_anony_explain)
+    print(jumin_anony_explain)
+    print(name_anony_explain)
+
+    return output_str
+
+
 def payload_anonymize_highlight(raw_data_str):
     
     # 비식별 하이라이트 처리 - background black & foreground white
@@ -203,6 +284,25 @@ def payload_anonymize_highlight(raw_data_str):
     payload_anonymize_highlight_html = re.sub(background_black_foreground_white_regex, r'<span style = "background-color:black; color:white">\1</span>', payload_anonymize_highlight)
     return payload_anonymize_highlight_html
 
+def payload_anonymize_highlight(raw_data_str):
+    
+    # 비식별 하이라이트 처리 - background black & foreground white
+    replacement = "\033[40m\033[37m" + "\\1" + "\033[0m"
+
+    email_anony = 'abc@'
+    card_anony = '1234-XXXX-XXXX-XXXX'
+    number_anony = '010-XXXX-XXXX'
+    jumin_anony = '123456-*******'
+    name_anony = '홍길동'
+    
+    anony_list = [email_anony, card_anony, number_anony, jumin_anony, name_anony]
+    payload_anonymize_highlight = re.sub("(" + "|".join(map(re.escape, anony_list)) + ")", replacement, raw_data_str, flags=re.I)
+    print(payload_anonymize_highlight)
+    
+    background_black_foreground_white_regex = r'\x1b\[40m\x1b\[37m(.*?)\x1b\[0m'
+
+    payload_anonymize_highlight_html = re.sub(background_black_foreground_white_regex, r'<span style = "background-color:black; color:white">\1</span>', payload_anonymize_highlight)
+    return payload_anonymize_highlight_html
 
 def IPS_predict_UI_sql_result():
     raw_data_str = request.form['raw_data_str']
