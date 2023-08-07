@@ -284,7 +284,7 @@ def payload_anonymize_highlight(raw_data_str):
     payload_anonymize_highlight_html = re.sub(background_black_foreground_white_regex, r'<span style = "background-color:black; color:white">\1</span>', payload_anonymize_highlight)
     return payload_anonymize_highlight_html
 
-def payload_anonymize_highlight(raw_data_str):
+def web_payload_anonymize_highlight(raw_data_str):
     
     # 비식별 하이라이트 처리 - background black & foreground white
     replacement = "\033[40m\033[37m" + "\\1" + "\033[0m"
