@@ -403,7 +403,7 @@ def WEB_predict_UI_sql_result():
     raw_data_str = payload_decode(raw_data_str)
     
     # 비식별
-    # raw_data_str = payload_anonymize(raw_data_str)
+    raw_data_str = web_payload_anonymize(raw_data_str)
 
     conf = pyspark.SparkConf().setAppName('prep_data').setMaster('local')
     sc = pyspark.SparkContext.getOrCreate(conf = conf)
@@ -1047,7 +1047,7 @@ def WEB_payload_parsing():
     # raw_data_str = payload_decode(raw_data_str)
 
     # 비식별
-    # raw_data_str = payload_anonymize(raw_data_str)
+    raw_data_str = web_payload_anonymize(raw_data_str)
 
     # raw_data_str에 '"'가 4개 이상 (2쌍) 인 경우, APACHE, 아니면, IIS
     if raw_data_str.count('"') >= 4:
@@ -2841,10 +2841,10 @@ def WEB_XAI_result():
     raw_data_str = payload_decode(raw_data_str)
 
     # 비식별
-    # raw_data_str = payload_anonymize(raw_data_str)
+    raw_data_str = web_payload_anonymize(raw_data_str)
 
     # 비식별 하이라이트
-    # payload_anonymize_highlight_html = payload_anonymize_highlight(raw_data_str)
+    payload_anonymize_highlight_html = web_payload_anonymize_highlight(raw_data_str)
     
     # payload_df = WEB_web_UI_preprocess()
     payload_df = WEB_predict_UI_sql_result()
@@ -3540,7 +3540,7 @@ def WEB_XAI_result():
         dl_xai_report_html = '질의에 대한 답변을 생성하는데 실패했습니다.'
 
     return render_template('WEB_XAI_output.html', payload_raw_data = request.form['raw_data_str'],  
-                                # payload_anonymize_highlight_html = payload_anonymize_highlight_html,
+                                payload_anonymize_highlight_html = payload_anonymize_highlight_html,
                                 # train_mean_proba_html = train_mean_proba_html,
                                 # force_html = force_html,
                                 ml_pred_comment = ml_pred_comment,
