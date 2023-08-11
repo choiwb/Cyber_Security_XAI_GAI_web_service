@@ -1442,83 +1442,83 @@ def IPS_XAI_result():
     for x in ai_detect_list:
         for y in auth_field: 
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_auth_comb')
+                ai_feature_list.append(ips_attack_feature_list[0])
                 ai_pattern_list.append(y)
         for y in bof_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_bof_comb')
+                ai_feature_list.append(ips_attack_feature_list[1])
                 ai_pattern_list.append(y)
         for y in cmd_1_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_cmd_01_comb')
+                ai_feature_list.append(ips_attack_feature_list[2])
                 ai_pattern_list.append(y)
         for y in cmd_2_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_cmd_02_comb')
+                ai_feature_list.append(ips_attack_feature_list[3])
                 ai_pattern_list.append(y)
         for y in code_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_code_comb')
+                ai_feature_list.append(ips_attack_feature_list[4])
                 ai_pattern_list.append(y)
         for y in dir_1_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_dir_01_comb')
+                ai_feature_list.append(ips_attack_feature_list[5])
                 ai_pattern_list.append(y)
         for y in dir_2_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_dir_02_comb')
+                ai_feature_list.append(ips_attack_feature_list[6])
                 ai_pattern_list.append(y)
         for y in dir_count_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_dir_count')
+                ai_feature_list.append(ips_attack_feature_list[7])
                 ai_pattern_list.append(y)
         for y in cgi_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_cgi_comb')
+                ai_feature_list.append(ips_attack_feature_list[8])
                 ai_pattern_list.append(y)
         for y in wp_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_wp_comb')
+                ai_feature_list.append(ips_attack_feature_list[9])
                 ai_pattern_list.append(y)
         for y in error_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_error_comb')
+                ai_feature_list.append(ips_attack_feature_list[10])
                 ai_pattern_list.append(y)
         for y in file_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_file_comb')
+                ai_feature_list.append(ips_attack_feature_list[11])
                 ai_pattern_list.append(y)
         for y in http_method_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_http_method_comb')
+                ai_feature_list.append(ips_attack_feature_list[12])
                 ai_pattern_list.append(y)
         for y in malware_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_malware_comb')
+                ai_feature_list.append(ips_attack_feature_list[13])
                 ai_pattern_list.append(y)
         for y in rce_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_rce_comb')
+                ai_feature_list.append(ips_attack_feature_list[14])
                 ai_pattern_list.append(y)
         for y in sql_1_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_sql_01_comb')
+                ai_feature_list.append(ips_attack_feature_list[15])
                 ai_pattern_list.append(y)
         for y in sql_2_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_sql_02_comb')
+                ai_feature_list.append(ips_attack_feature_list[16])
                 ai_pattern_list.append(y)
         for y in useragent_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_useragent_comb')
+                ai_feature_list.append(ips_attack_feature_list[17])
                 ai_pattern_list.append(y)
         for y in php_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_php_comb')
+                ai_feature_list.append(ips_attack_feature_list[18])
                 ai_pattern_list.append(y)
         for y in xss_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_xss_comb')
+                ai_feature_list.append(ips_attack_feature_list[19])
                 ai_pattern_list.append(y)
 
 
@@ -1571,14 +1571,14 @@ def IPS_XAI_result():
 
 
    
-    if first_feature != 'payload_whitelist' and first_feature != 'payload_dir_count':
+    if first_feature != ips_whitelist_feature and first_feature != ips_attack_conti_feature:
         if first_fv == 1:
             first_fv_result = '공격 탐지'
             first_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(first_feature, first_fv_result, first_word)
         else:
             first_fv_result = '정상 인식'
             first_statement = '%s 가 %s 하였습니다.' %(first_feature, first_fv_result)
-    elif first_feature == 'payload_whitelist':
+    elif first_feature == ips_whitelist_feature:
         if first_fv == 1:
             first_statement = '로그 전송이 1건 이하 임에 따라 공격일 가능성이 있습니다.'     
         else:
@@ -1586,14 +1586,14 @@ def IPS_XAI_result():
     else:
         first_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % first_fv       
 
-    if second_feature != 'payload_whitelist' and second_feature != 'payload_dir_count':
+    if second_feature != ips_whitelist_feature and second_feature != ips_attack_conti_feature:
         if second_fv == 1:
             second_fv_result = '공격 탐지'
             second_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(second_feature, second_fv_result, second_word)
         else:
             second_fv_result = '정상 인식'
             second_statement = '%s 가 %s 하였습니다.' %(second_feature, second_fv_result)
-    elif second_feature == 'payload_whitelist':
+    elif second_feature == ips_whitelist_feature:
         if second_fv == 1:
             second_statement = '로그 전송이 1건 이하 임에 따라 공격일 가능성이 있습니다.'     
         else:
@@ -1601,14 +1601,14 @@ def IPS_XAI_result():
     else:
         second_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % second_fv      
 
-    if third_feature != 'payload_whitelist' and third_feature != 'payload_dir_count':
+    if third_feature != ips_whitelist_feature and third_feature != ips_attack_conti_feature:
         if third_fv == 1:
             third_fv_result = '공격 탐지'
             third_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(third_feature, third_fv_result, third_word)
         else:
             third_fv_result = '정상 인식'
             third_statement = '%s 가 %s 하였습니다.' %(third_feature, third_fv_result)
-    elif third_feature == 'payload_whitelist':
+    elif third_feature == ips_whitelist_feature:
         if third_fv == 1:
             third_statement = '로그 전송이 1건 이하 임에 따라 공격일 가능성이 있습니다.'     
         else:
@@ -2183,83 +2183,83 @@ def WAF_XAI_result():
     for x in ai_detect_list:
         for y in auth_field: 
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_auth_comb')
+                ai_feature_list.append(waf_feature_list[0])
                 ai_pattern_list.append(y)
         for y in bof_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_bof_comb')
+                ai_feature_list.append(waf_feature_list[1])
                 ai_pattern_list.append(y)
         for y in cmd_1_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_cmd_01_comb')
+                ai_feature_list.append(waf_feature_list[2])
                 ai_pattern_list.append(y)
         for y in cmd_2_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_cmd_02_comb')
+                ai_feature_list.append(waf_feature_list[3])
                 ai_pattern_list.append(y)
         for y in code_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_code_comb')
+                ai_feature_list.append(waf_feature_list[4])
                 ai_pattern_list.append(y)
         for y in dir_1_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_dir_01_comb')
+                ai_feature_list.append(waf_feature_list[5])
                 ai_pattern_list.append(y)
         for y in dir_2_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_dir_02_comb')
+                ai_feature_list.append(waf_feature_list[6])
                 ai_pattern_list.append(y)
         for y in dir_count_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_dir_count')
+                ai_feature_list.append(waf_feature_list[7])
                 ai_pattern_list.append(y)
         for y in cgi_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_cgi_comb')
+                ai_feature_list.append(waf_feature_list[8])
                 ai_pattern_list.append(y)
         for y in wp_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_wp_comb')
+                ai_feature_list.append(waf_feature_list[9])
                 ai_pattern_list.append(y)
         for y in error_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_error_comb')
+                ai_feature_list.append(waf_feature_list[10])
                 ai_pattern_list.append(y)
         for y in file_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_file_comb')
+                ai_feature_list.append(waf_feature_list[11])
                 ai_pattern_list.append(y)
         for y in http_method_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_http_method_comb')
+                ai_feature_list.append(waf_feature_list[12])
                 ai_pattern_list.append(y)
         for y in malware_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_malware_comb')
+                ai_feature_list.append(waf_feature_list[13])
                 ai_pattern_list.append(y)
         for y in rce_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_rce_comb')
+                ai_feature_list.append(waf_feature_list[14])
                 ai_pattern_list.append(y)
         for y in sql_1_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_sql_01_comb')
+                ai_feature_list.append(waf_feature_list[15])
                 ai_pattern_list.append(y)
         for y in sql_2_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_sql_02_comb')
+                ai_feature_list.append(waf_feature_list[16])
                 ai_pattern_list.append(y)
         for y in useragent_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_useragent_comb')
+                ai_feature_list.append(waf_feature_list[17])
                 ai_pattern_list.append(y)
         for y in php_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_php_comb')
+                ai_feature_list.append(waf_feature_list[18])
                 ai_pattern_list.append(y)
         for y in xss_field:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('payload_xss_comb')
+                ai_feature_list.append(waf_feature_list[19])
                 ai_pattern_list.append(y)
 
 
@@ -2327,7 +2327,7 @@ def WAF_XAI_result():
 
 
     if first_feature.startswith("payload_"):
-        if first_feature != 'payload_dir_count':
+        if first_feature != waf_attack_conti_feature:
             if first_fv == 1:
                 first_fv_result = '공격 탐지'
                 first_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(first_feature, first_fv_result, first_word)
@@ -2344,7 +2344,7 @@ def WAF_XAI_result():
 
 
     if second_feature.startswith("payload_"):
-        if second_feature != 'payload_dir_count':
+        if second_feature != waf_attack_conti_feature:
             if second_fv == 1:
                 second_fv_result = '공격 탐지'
                 second_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(second_feature, second_fv_result, second_word)
@@ -2361,7 +2361,7 @@ def WAF_XAI_result():
 
 
     if third_feature.startswith("payload_"):
-        if third_feature != 'payload_dir_count':
+        if third_feature != waf_attack_conti_feature:
             if third_fv == 1:
                 third_fv_result = '공격 탐지'
                 third_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(third_feature, third_fv_result, third_word)
@@ -2957,47 +2957,47 @@ def WEB_XAI_result():
     for x in ai_detect_list:
         for y in web_sql_1:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('weblog_sql_01_comb')
+                ai_feature_list.append(web_feature_list[0])
                 ai_pattern_list.append(y)
         for y in web_sql_2:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('weblog_sql_02_comb')
+                ai_feature_list.append(web_feature_list[1])
                 ai_pattern_list.append(y)
         for y in web_sql_3:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('weblog_sql_03_comb')
+                ai_feature_list.append(web_feature_list[2])
                 ai_pattern_list.append(y)
         for y in web_sql_4:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('weblog_sql_04_comb')
+                ai_feature_list.append(web_feature_list[3])
                 ai_pattern_list.append(y)
         for y in web_sql_5:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('weblog_sql_05_comb')
+                ai_feature_list.append(web_feature_list[4])
                 ai_pattern_list.append(y)
         for y in web_xss:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('weblog_xss_01_comb')
+                ai_feature_list.append(web_feature_list[5])
                 ai_pattern_list.append(y)
         for y in web_cmd_1:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('weblog_cmd_01_comb')
+                ai_feature_list.append(web_feature_list[6])
                 ai_pattern_list.append(y)
         for y in web_cmd_2:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('weblog_cmd_02_comb')
+                ai_feature_list.append(web_feature_list[7])
                 ai_pattern_list.append(y)
         for y in web_cmd_3:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('weblog_cmd_03_comb')
+                ai_feature_list.append(web_feature_list[8])
                 ai_pattern_list.append(y)
         for y in web_dir_access_1:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('weblog_dir_01_comb')
+                ai_feature_list.append(web_feature_list[9])
                 ai_pattern_list.append(y)
         for y in web_dir_access_2:
             if re.findall(y, x.lower()):
-                ai_feature_list.append('weblog_dir_count')
+                ai_feature_list.append(web_feature_list[10])
                 ai_pattern_list.append(y)
 
 
@@ -3051,7 +3051,7 @@ def WEB_XAI_result():
     third_word = top10_shap_values.iloc[2,-1]
 
 
-    if first_feature != 'weblog_dir_count':
+    if first_feature != web_attack_conti_feature:
         if first_fv == 1:
             first_fv_result = '공격 탐지'
             first_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(first_feature, first_fv_result, first_word)
@@ -3062,7 +3062,7 @@ def WEB_XAI_result():
         first_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % first_fv       
 
 
-    if second_feature != 'weblog_dir_count':
+    if second_feature != web_attack_conti_feature:
         if second_fv == 1:
             second_fv_result = '공격 탐지'
             second_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(second_feature, second_fv_result, second_word)
@@ -3072,7 +3072,7 @@ def WEB_XAI_result():
     else:
         second_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % second_fv       
 
-    if third_feature != 'weblog_dir_count':
+    if third_feature != web_attack_conti_feature:
         if third_fv == 1:
             third_fv_result = '공격 탐지'
             third_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(third_feature, third_fv_result, third_word)
