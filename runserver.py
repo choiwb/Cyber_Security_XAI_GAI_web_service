@@ -1423,7 +1423,7 @@ def IPS_XAI_result():
     # print(top10_shap_values)
 
     # 보안 시그니처 패턴 리스트 highlight
-    sig_ai_pattern, sig_df = highlight_text(raw_data_str, signature_list, ai_field)
+    sig_ai_pattern, sig_df = highlight_text(raw_data_str, signature_list, ips_ai_field)
     print(sig_ai_pattern)
 
     ai_detect_regex = r'\x1b\[91m(.*?)\x1b\[39m'
@@ -1440,83 +1440,83 @@ def IPS_XAI_result():
     ai_pattern_list = []
 
     for x in ai_detect_list:
-        for y in auth_field: 
+        for y in ips_auth_field: 
             if re.findall(y, x.lower()):
                 ai_feature_list.append(ips_attack_feature_list[0])
                 ai_pattern_list.append(y)
-        for y in bof_field:
+        for y in ips_bof_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(ips_attack_feature_list[1])
                 ai_pattern_list.append(y)
-        for y in cmd_1_field:
+        for y in ips_cmd_1_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(ips_attack_feature_list[2])
                 ai_pattern_list.append(y)
-        for y in cmd_2_field:
+        for y in ips_cmd_2_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(ips_attack_feature_list[3])
                 ai_pattern_list.append(y)
-        for y in code_field:
+        for y in ips_code_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(ips_attack_feature_list[4])
                 ai_pattern_list.append(y)
-        for y in dir_1_field:
+        for y in ips_dir_1_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(ips_attack_feature_list[5])
                 ai_pattern_list.append(y)
-        for y in dir_2_field:
+        for y in ips_dir_2_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(ips_attack_feature_list[6])
                 ai_pattern_list.append(y)
-        for y in dir_count_field:
+        for y in ips_dir_count_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(ips_attack_feature_list[7])
                 ai_pattern_list.append(y)
-        for y in cgi_field:
+        for y in ips_cgi_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(ips_attack_feature_list[8])
                 ai_pattern_list.append(y)
-        for y in wp_field:
+        for y in ips_wp_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(ips_attack_feature_list[9])
                 ai_pattern_list.append(y)
-        for y in error_field:
+        for y in ips_error_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(ips_attack_feature_list[10])
                 ai_pattern_list.append(y)
-        for y in file_field:
+        for y in ips_file_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(ips_attack_feature_list[11])
                 ai_pattern_list.append(y)
-        for y in http_method_field:
+        for y in ips_http_method_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(ips_attack_feature_list[12])
                 ai_pattern_list.append(y)
-        for y in malware_field:
+        for y in ips_malware_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(ips_attack_feature_list[13])
                 ai_pattern_list.append(y)
-        for y in rce_field:
+        for y in ips_rce_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(ips_attack_feature_list[14])
                 ai_pattern_list.append(y)
-        for y in sql_1_field:
+        for y in ips_sql_1_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(ips_attack_feature_list[15])
                 ai_pattern_list.append(y)
-        for y in sql_2_field:
+        for y in ips_sql_2_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(ips_attack_feature_list[16])
                 ai_pattern_list.append(y)
-        for y in useragent_field:
+        for y in ips_useragent_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(ips_attack_feature_list[17])
                 ai_pattern_list.append(y)
-        for y in php_field:
+        for y in ips_php_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(ips_attack_feature_list[18])
                 ai_pattern_list.append(y)
-        for y in xss_field:
+        for y in ips_xss_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(ips_attack_feature_list[19])
                 ai_pattern_list.append(y)
@@ -2164,7 +2164,7 @@ def WAF_XAI_result():
     top10_shap_values['피처 설명'] = top10_shap_values['피처 설명'].fillna('AI가 자동 생성한 피처')
     
     # 보안 시그니처 패턴 리스트 highlight
-    sig_ai_pattern, sig_df = highlight_text(raw_data_str, signature_list, ai_field)
+    sig_ai_pattern, sig_df = highlight_text(raw_data_str, signature_list, waf_ai_field)
     print(sig_ai_pattern)
 
     ai_detect_regex = r'\x1b\[91m(.*?)\x1b\[39m'
@@ -2181,83 +2181,83 @@ def WAF_XAI_result():
     ai_pattern_list = []
 
     for x in ai_detect_list:
-        for y in auth_field: 
+        for y in waf_auth_field: 
             if re.findall(y, x.lower()):
                 ai_feature_list.append(waf_feature_list[0])
                 ai_pattern_list.append(y)
-        for y in bof_field:
+        for y in waf_bof_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(waf_feature_list[1])
                 ai_pattern_list.append(y)
-        for y in cmd_1_field:
+        for y in waf_cmd_1_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(waf_feature_list[2])
                 ai_pattern_list.append(y)
-        for y in cmd_2_field:
+        for y in waf_cmd_2_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(waf_feature_list[3])
                 ai_pattern_list.append(y)
-        for y in code_field:
+        for y in waf_code_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(waf_feature_list[4])
                 ai_pattern_list.append(y)
-        for y in dir_1_field:
+        for y in waf_dir_1_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(waf_feature_list[5])
                 ai_pattern_list.append(y)
-        for y in dir_2_field:
+        for y in waf_dir_2_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(waf_feature_list[6])
                 ai_pattern_list.append(y)
-        for y in dir_count_field:
+        for y in waf_dir_count_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(waf_feature_list[7])
                 ai_pattern_list.append(y)
-        for y in cgi_field:
+        for y in waf_cgi_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(waf_feature_list[8])
                 ai_pattern_list.append(y)
-        for y in wp_field:
+        for y in waf_wp_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(waf_feature_list[9])
                 ai_pattern_list.append(y)
-        for y in error_field:
+        for y in waf_error_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(waf_feature_list[10])
                 ai_pattern_list.append(y)
-        for y in file_field:
+        for y in waf_file_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(waf_feature_list[11])
                 ai_pattern_list.append(y)
-        for y in http_method_field:
+        for y in waf_http_method_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(waf_feature_list[12])
                 ai_pattern_list.append(y)
-        for y in malware_field:
+        for y in waf_malware_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(waf_feature_list[13])
                 ai_pattern_list.append(y)
-        for y in rce_field:
+        for y in waf_rce_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(waf_feature_list[14])
                 ai_pattern_list.append(y)
-        for y in sql_1_field:
+        for y in waf_sql_1_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(waf_feature_list[15])
                 ai_pattern_list.append(y)
-        for y in sql_2_field:
+        for y in waf_sql_2_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(waf_feature_list[16])
                 ai_pattern_list.append(y)
-        for y in useragent_field:
+        for y in waf_useragent_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(waf_feature_list[17])
                 ai_pattern_list.append(y)
-        for y in php_field:
+        for y in waf_php_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(waf_feature_list[18])
                 ai_pattern_list.append(y)
-        for y in xss_field:
+        for y in waf_xss_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(waf_feature_list[19])
                 ai_pattern_list.append(y)
