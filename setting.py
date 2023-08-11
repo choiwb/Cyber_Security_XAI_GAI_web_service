@@ -680,24 +680,45 @@ web_attack_conti_feature_list = [x for x in web_feature_list if 'count' in x]
 web_attack_conti_feature = web_attack_conti_feature_list[0]
 
 
+# ips_query '\\n|\\r|\\t', 'http/1.' 는 제거, 단 regex = False
+ips_attack_query = ips_query.replace('\\n|\\r|\\t', '').replace('http/1.', '')
+# ips_attack_query 에서 ips_payload_whitelist  이후 추출
+ips_attack_query = ips_attack_query.split('ips_payload_whitelist')[1]
+
+# ips_attack_query의 '' 안에 있는 문자열들을 추출하여 리스트 생성, 
+ips_ai_field = re.findall(r'\'(.*?)\'', ips_attack_query)
+
+# ips_ai_field에서 'remove_string' 는 제거
+ips_ai_field = [x for x in ips_ai_field if x != '' and x != ' ']
+
+# ips_attack_new_sql_query 에서 'AS' 를 기준으로 분할
+ips_attack_new_sql_query_split = ips_attack_query.split('AS')
+ips_auth_field, ips_bof_field, ips_cmd_1_field ,ips_cmd_2_field, ips_code_field, ips_dir_1_field, ips_dir_2_field, ips_dir_count_field, ips_cgi_field, ips_wp_field, ips_error_field, ips_file_field, ips_http_method_field, ips_malware_field, ips_rce_field, ips_sql_1_field, ips_sql_2_field, ips_useragent_field, ips_php_field, ips_xss_field = ips_attack_new_sql_query_split[:20]
+
+ips_auth_field, ips_bof_field, ips_cmd_1_field ,ips_cmd_2_field, ips_code_field, ips_dir_1_field, ips_dir_2_field, ips_dir_count_field, ips_cgi_field, ips_wp_field, ips_error_field, ips_file_field, ips_http_method_field, ips_malware_field, ips_rce_field, ips_sql_1_field, ips_sql_2_field, ips_useragent_field, ips_php_field, ips_xss_field = list(map(lambda x: re.findall(r'\'(.*?)\'', x), 
+                                                                        [ips_auth_field, ips_bof_field, ips_cmd_1_field ,ips_cmd_2_field, ips_code_field, ips_dir_1_field, ips_dir_2_field, ips_dir_count_field, ips_cgi_field, ips_wp_field, ips_error_field, ips_file_field, ips_http_method_field, ips_malware_field, ips_rce_field, ips_sql_1_field, ips_sql_2_field, ips_useragent_field, ips_php_field, ips_xss_field]))
+ips_auth_field, ips_bof_field, ips_cmd_1_field ,ips_cmd_2_field, ips_code_field, ips_dir_1_field, ips_dir_2_field, ips_dir_count_field, ips_cgi_field, ips_wp_field, ips_error_field, ips_file_field, ips_http_method_field, ips_malware_field, ips_rce_field, ips_sql_1_field, ips_sql_2_field, ips_useragent_field, ips_php_field, ips_xss_field = list(map(lambda x: [y for y in x if y != '' and y != ' '],
+                                                                        [ips_auth_field, ips_bof_field, ips_cmd_1_field ,ips_cmd_2_field, ips_code_field, ips_dir_1_field, ips_dir_2_field, ips_dir_count_field, ips_cgi_field, ips_wp_field, ips_error_field, ips_file_field, ips_http_method_field, ips_malware_field, ips_rce_field, ips_sql_1_field, ips_sql_2_field, ips_useragent_field, ips_php_field, ips_xss_field])) 
+
+
 
 # waf_query '\\n|\\r|\\t', 'http/1.' 는 제거, 단 regex = False
-attack_query = waf_query.replace('\\n|\\r|\\t', '').replace('http/1.', '')
+waf_attack_query = waf_query.replace('\\n|\\r|\\t', '').replace('http/1.', '')
 
-# attack_query의 '' 안에 있는 문자열들을 추출하여 리스트 생성, 
-ai_field = re.findall(r'\'(.*?)\'', attack_query)
+# waf_attack_query의 '' 안에 있는 문자열들을 추출하여 리스트 생성, 
+waf_ai_field = re.findall(r'\'(.*?)\'', waf_attack_query)
 
-# ai_field에서 'remove_string' 는 제거
-ai_field = [x for x in ai_field if x != '' and x != ' ']
+# waf_ai_field에서 'remove_string' 는 제거
+waf_ai_field = [x for x in waf_ai_field if x != '' and x != ' ']
 
-# attack_new_sql_query 에서 'AS' 를 기준으로 분할
-attack_new_sql_query_split = attack_query.split('AS')
-auth_field, bof_field, cmd_1_field ,cmd_2_field, code_field, dir_1_field, dir_2_field, dir_count_field, cgi_field, wp_field, error_field, file_field, http_method_field, malware_field, rce_field, sql_1_field, sql_2_field, useragent_field, php_field, xss_field = attack_new_sql_query_split[:20]
+# waf_attack_new_sql_query 에서 'AS' 를 기준으로 분할
+waf_attack_new_sql_query_split = waf_attack_query.split('AS')
+waf_auth_field, waf_bof_field, waf_cmd_1_field ,waf_cmd_2_field, waf_code_field, waf_dir_1_field, waf_dir_2_field, waf_dir_count_field, waf_cgi_field, waf_wp_field, waf_error_field, waf_file_field, waf_http_method_field, waf_malware_field, waf_rce_field, waf_sql_1_field, waf_sql_2_field, waf_useragent_field, waf_php_field, waf_xss_field = waf_attack_new_sql_query_split[:20]
 
-auth_field, bof_field, cmd_1_field ,cmd_2_field, code_field, dir_1_field, dir_2_field, dir_count_field, cgi_field, wp_field, error_field, file_field, http_method_field, malware_field, rce_field, sql_1_field, sql_2_field, useragent_field, php_field, xss_field = list(map(lambda x: re.findall(r'\'(.*?)\'', x), 
-                                                                        [auth_field, bof_field, cmd_1_field ,cmd_2_field, code_field, dir_1_field, dir_2_field, dir_count_field, cgi_field, wp_field, error_field, file_field, http_method_field, malware_field, rce_field, sql_1_field, sql_2_field, useragent_field, php_field, xss_field]))
-auth_field, bof_field, cmd_1_field ,cmd_2_field, code_field, dir_1_field, dir_2_field, dir_count_field, cgi_field, wp_field, error_field, file_field, http_method_field, malware_field, rce_field, sql_1_field, sql_2_field, useragent_field, php_field, xss_field = list(map(lambda x: [y for y in x if y != '' and y != ' '],
-                                                                        [auth_field, bof_field, cmd_1_field ,cmd_2_field, code_field, dir_1_field, dir_2_field, dir_count_field, cgi_field, wp_field, error_field, file_field, http_method_field, malware_field, rce_field, sql_1_field, sql_2_field, useragent_field, php_field, xss_field])) 
+waf_auth_field, waf_bof_field, waf_cmd_1_field ,waf_cmd_2_field, waf_code_field, waf_dir_1_field, waf_dir_2_field, waf_dir_count_field, waf_cgi_field, waf_wp_field, waf_error_field, waf_file_field, waf_http_method_field, waf_malware_field, waf_rce_field, waf_sql_1_field, waf_sql_2_field, waf_useragent_field, waf_php_field, waf_xss_field = list(map(lambda x: re.findall(r'\'(.*?)\'', x), 
+                                                                        [waf_auth_field, waf_bof_field, waf_cmd_1_field ,waf_cmd_2_field, waf_code_field, waf_dir_1_field, waf_dir_2_field, waf_dir_count_field, waf_cgi_field, waf_wp_field, waf_error_field, waf_file_field, waf_http_method_field, waf_malware_field, waf_rce_field, waf_sql_1_field, waf_sql_2_field, waf_useragent_field, waf_php_field, waf_xss_field]))
+waf_auth_field, waf_bof_field, waf_cmd_1_field ,waf_cmd_2_field, waf_code_field, waf_dir_1_field, waf_dir_2_field, waf_dir_count_field, waf_cgi_field, waf_wp_field, waf_error_field, waf_file_field, waf_http_method_field, waf_malware_field, waf_rce_field, waf_sql_1_field, waf_sql_2_field, waf_useragent_field, waf_php_field, waf_xss_field = list(map(lambda x: [y for y in x if y != '' and y != ' '],
+                                                                        [waf_auth_field, waf_bof_field, waf_cmd_1_field ,waf_cmd_2_field, waf_code_field, waf_dir_1_field, waf_dir_2_field, waf_dir_count_field, waf_cgi_field, waf_wp_field, waf_error_field, waf_file_field, waf_http_method_field, waf_malware_field, waf_rce_field, waf_sql_1_field, waf_sql_2_field, waf_useragent_field, waf_php_field, waf_xss_field])) 
 
 
 
