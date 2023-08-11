@@ -657,13 +657,27 @@ SELECT
 ips_feature_list = re.findall(r'AS (.*?)[\,|\s]', ips_query)
 # ips_feature_lsit 의 'ips_' 제거
 ips_feature_list = [x.replace('ips_', '') for x in ips_feature_list]
-ips_feature_list = [x for x in ips_feature_list if x != 'payload_whitelist']
+# ips_feature_list에서 'whitelist' 를 포함하는 element 제거
+ips_attack_feature_list = [x for x in ips_feature_list if 'whitelist' not in x]
+ips_whitelist_feature_list = [x for x in ips_feature_list if 'whitelist' in x]
+ips_whitelist_feature = ips_whitelist_feature_list[0]
+'''연속형 피처 - 특수문자 개수 (&, |, ;), dir_count'''
+ips_attack_conti_feature_list = [x for x in ips_feature_list if 'count' in x]
+ips_attack_conti_feature = ips_attack_conti_feature_list[0]
+
 # waf_query의 'AS ' 부터 ',' 또는 ' ' 까지 추출하여 리스트 생성
 waf_feature_list = re.findall(r'AS (.*?)[\,|\s]', waf_query)
 # waf_feature_lsit 의 'waf_' 제거
 waf_feature_list = [x.replace('waf_', '') for x in waf_feature_list]
+'''연속형 피처 - 특수문자 개수 (&, |, ;), dir_count'''
+waf_attack_conti_feature_list = [x for x in waf_feature_list if 'count' in x]
+waf_attack_conti_feature = waf_attack_conti_feature_list[0]
+
 # web_query의 'AS ' 부터 ',' 또는 ' ' 까지 추출하여 리스트 생성
 web_feature_list = re.findall(r'AS (.*?)[\,|\s]', web_query)
+'''연속형 피처 - 특수문자 개수 (&, |, ;), dir_count'''
+web_attack_conti_feature_list = [x for x in web_feature_list if 'count' in x]
+web_attack_conti_feature = web_attack_conti_feature_list[0]
 
 
 
