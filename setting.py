@@ -653,6 +653,20 @@ SELECT
 
 
 
+# ips_query의 'AS ' 부터 ',' 또는 ' ' 까지 추출하여 리스트 생성
+ips_feature_list = re.findall(r'AS (.*?)[\,|\s]', ips_query)
+# ips_feature_lsit 의 'ips_' 제거
+ips_feature_list = [x.replace('ips_', '') for x in ips_feature_list]
+ips_feature_list = [x for x in ips_feature_list if x != 'payload_whitelist']
+# waf_query의 'AS ' 부터 ',' 또는 ' ' 까지 추출하여 리스트 생성
+waf_feature_list = re.findall(r'AS (.*?)[\,|\s]', waf_query)
+# waf_feature_lsit 의 'waf_' 제거
+waf_feature_list = [x.replace('waf_', '') for x in waf_feature_list]
+# web_query의 'AS ' 부터 ',' 또는 ' ' 까지 추출하여 리스트 생성
+web_feature_list = re.findall(r'AS (.*?)[\,|\s]', web_query)
+
+
+
 # waf_query '\\n|\\r|\\t', 'http/1.' 는 제거, 단 regex = False
 attack_query = waf_query.replace('\\n|\\r|\\t', '').replace('http/1.', '')
 
