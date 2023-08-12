@@ -747,6 +747,7 @@ def highlight_text(text, signature, ai_field):
     # re.escape() : 특수문자를 이스케이프 처리
     text = re.sub("(" + "|".join(map(re.escape, signature)) + ")", replacement, text, flags=re.I)
 
+    '''
     # ai_field에서 cmd, sql, user_agent 제외
     not_cmd_sql_user_agent_field = [i for i in ai_field if i not in cmd_1_field and i not in sql_1_field and i not in sql_2_field and i not in useragent_field]
     # ai_field에서 cmd, sql 인 경우
@@ -762,10 +763,14 @@ def highlight_text(text, signature, ai_field):
     elif 'HTTP/1.0' in text and text.count('HTTP/1.0') == 1:
         text = re.sub("(" + "|".join(cmd_sql) + ")", replacement_2, text.split('HTTP/1.0')[0], flags=re.I) + 'HTTP/1.0' + text.split('HTTP/1.0')[1]
         text = text.split('HTTP/1.0')[0] + 'HTTP/1.0' + re.sub("(" + "|".join(useragent_field) + ")", replacement_2, text.split('HTTP/1.0')[1], flags=re.I)
+    '''
 
+    
     # 39m 91m이 붙어 있는 경우 제거 !!!!!!!! 왜냐하면 단일처리를 위해, 빨간색 폰트 끝과 시작이 붙어 있으면 연속 키워드로 인식하기 위함.
     # text = re.sub(r'\x1b\[39m\x1b\[91m', '', text)
-    
+
+    text = re.sub("(" + "|".join(ai_field) + ")", replacement_2, text, flags=re.I)
+
     regex = re.compile('\x1b\[103m(.*?)\x1b\[49m')
 
     matches = [regex.match(text[i:]) for i in range(len(text))] 
@@ -790,7 +795,7 @@ def highlight_text(text, signature, ai_field):
 
     return text, sig_pattern_df
 
-
+'''
 def web_highlight_text(text, signature, web_ai_field):
 
     # background yellow - 시그니처 패턴
@@ -841,7 +846,7 @@ def web_highlight_text(text, signature, web_ai_field):
             sig_pattern_df = pd.concat([sig_pattern_df, one_row_df], axis = 0)
 
     return text, sig_pattern_df
-
+'''
 
 def dl_highlight_text(text, signature, dl_ai_field):
 
@@ -2937,7 +2942,9 @@ def WEB_XAI_result():
     # print(top10_shap_values)
 
     # 보안 시그니처 패턴 리스트 highlight
-    sig_ai_pattern, sig_df = web_highlight_text(raw_data_str, signature_list, web_ai_field)
+    # sig_ai_pattern, sig_df = web_highlight_text(raw_data_str, signature_list, web_ai_field)
+    sig_ai_pattern, sig_df = highlight_text(raw_data_str, signature_list, web_ai_field)
+
     print(sig_ai_pattern)
 
     ai_detect_regex = r'\x1b\[91m(.*?)\x1b\[39m'
