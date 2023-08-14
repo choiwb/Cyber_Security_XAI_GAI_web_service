@@ -1590,7 +1590,7 @@ def IPS_XAI_result():
         else:
             first_statement = '로그 전송이 2건 이상 임에 따라 정상 입니다.'
     elif first_feature == ips_attack_and_conti_feature or first_feature == ips_attack_semico_conti_feature:
-        if 'and' in first_feature.lower():
+        if 'ampersand' in first_feature.lower():
             first_statement = '& 특수문자가 총 %d건 입니다.' %(first_fv)
         else:
             first_statement = '; 특수문자가 총 %d건 입니다.' %(first_fv)
@@ -1610,7 +1610,7 @@ def IPS_XAI_result():
         else:
             second_statement = '로그 전송이 2건 이상 임에 따라 정상 입니다.'
     elif second_feature == ips_attack_and_conti_feature or second_feature == ips_attack_semico_conti_feature:
-        if 'and' in second_feature.lower():
+        if 'ampersand' in second_feature.lower():
             second_statement = '& 특수문자가 총 %d건 입니다.' %(second_fv)
         else:
             second_statement = '; 특수문자가 총 %d건 입니다.' %(second_fv)
@@ -1630,7 +1630,7 @@ def IPS_XAI_result():
         else:
             third_statement = '로그 전송이 2건 이상 임에 따라 정상 입니다.'
     elif third_feature == ips_attack_and_conti_feature or third_feature == ips_attack_semico_conti_feature:
-        if 'and' in third_feature.lower():
+        if 'ampersand' in third_feature.lower():
             third_statement = '& 특수문자가 총 %d건 입니다.' %(third_fv)
         else:
             third_statement = '; 특수문자가 총 %d건 입니다.' %(third_fv)
@@ -2351,7 +2351,7 @@ def WAF_XAI_result():
             first_fv_result = '정상 인식'
             first_statement = '%s 가 %s 하였습니다.' %(first_feature, first_fv_result)  
     elif first_feature == waf_attack_and_conti_feature or first_feature == waf_attack_semico_conti_feature:
-        if 'and' in first_feature.lower():
+        if 'ampersand' in first_feature.lower():
             first_statement = '& 특수문자가 총 %d건 입니다.' %(first_fv)
         else:
             first_statement = '; 특수문자가 총 %d건 입니다.' %(first_fv)
@@ -2366,7 +2366,7 @@ def WAF_XAI_result():
             second_fv_result = '정상 인식'
             second_statement = '%s 가 %s 하였습니다.' %(second_feature, second_fv_result)
     elif second_feature == waf_attack_and_conti_feature or second_feature == waf_attack_semico_conti_feature:
-        if 'and' in second_feature.lower():
+        if 'ampersand' in second_feature.lower():
             second_statement = '& 특수문자가 총 %d건 입니다.' %(second_fv)
         else:
             second_statement = '; 특수문자가 총 %d건 입니다.' %(second_fv)
@@ -2381,7 +2381,7 @@ def WAF_XAI_result():
             third_fv_result = '정상 인식'
             third_statement = '%s 가 %s 하였습니다.' %(third_feature, third_fv_result)
     elif third_feature == waf_attack_and_conti_feature or third_feature == waf_attack_semico_conti_feature:
-        if 'and' in third_feature.lower():
+        if 'ampersand' in third_feature.lower():
             third_statement = '& 특수문자가 총 %d건 입니다.' %(third_fv)
         else:
             third_statement = '; 특수문자가 총 %d건 입니다.' %(third_fv)
@@ -3073,7 +3073,7 @@ def WEB_XAI_result():
             first_fv_result = '정상 인식'
             first_statement = '%s 가 %s 하였습니다.' %(first_feature, first_fv_result)  
     elif first_feature == web_attack_and_conti_feature or first_feature == web_attack_semico_conti_feature:
-        if 'and' in first_feature.lower():
+        if 'ampersand' in first_feature.lower():
             first_statement = '& 특수문자가 총 %d건 입니다.' %(first_fv)
         else:
             first_statement = '; 특수문자가 총 %d건 입니다.' %(first_fv)
@@ -3088,7 +3088,7 @@ def WEB_XAI_result():
             second_fv_result = '정상 인식'
             second_statement = '%s 가 %s 하였습니다.' %(second_feature, second_fv_result)
     elif second_feature == web_attack_and_conti_feature or second_feature == web_attack_semico_conti_feature:
-        if 'and' in second_feature.lower():
+        if 'ampersand' in second_feature.lower():
             second_statement = '& 특수문자가 총 %d건 입니다.' %(second_fv)
         else:
             second_statement = '; 특수문자가 총 %d건 입니다.' %(second_fv)
@@ -3103,7 +3103,7 @@ def WEB_XAI_result():
             third_fv_result = '정상 인식'
             third_statement = '%s 가 %s 하였습니다.' %(third_feature, third_fv_result)
     elif third_feature == web_attack_and_conti_feature or third_feature == web_attack_semico_conti_feature:
-        if 'and' in third_feature.lower():
+        if 'ampersand' in third_feature.lower():
             third_statement = '& 특수문자가 총 %d건 입니다.' %(third_fv)
         else:
             third_statement = '; 특수문자가 총 %d건 입니다.' %(third_fv)
