@@ -2969,47 +2969,47 @@ def WEB_XAI_result():
     ai_pattern_list = []
 
     for x in ai_detect_list:
-        for y in web_sql_1:
+        for y in web_sql_1_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(web_feature_list[0])
                 ai_pattern_list.append(y)
-        for y in web_sql_2:
+        for y in web_sql_2_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(web_feature_list[1])
                 ai_pattern_list.append(y)
-        for y in web_sql_3:
+        for y in web_sql_3_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(web_feature_list[2])
                 ai_pattern_list.append(y)
-        for y in web_sql_4:
+        for y in web_sql_4_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(web_feature_list[3])
                 ai_pattern_list.append(y)
-        for y in web_sql_5:
+        for y in web_sql_5_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(web_feature_list[4])
                 ai_pattern_list.append(y)
-        for y in web_xss:
+        for y in web_xss_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(web_feature_list[5])
                 ai_pattern_list.append(y)
-        for y in web_cmd_1:
+        for y in web_cmd_1_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(web_feature_list[6])
                 ai_pattern_list.append(y)
-        for y in web_cmd_2:
+        for y in web_cmd_2_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(web_feature_list[7])
                 ai_pattern_list.append(y)
-        for y in web_cmd_3:
+        for y in web_cmd_3_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(web_feature_list[8])
                 ai_pattern_list.append(y)
-        for y in web_dir_access_1:
+        for y in web_dir_1_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(web_feature_list[9])
                 ai_pattern_list.append(y)
-        for y in web_dir_access_2:
+        for y in web_dir_count_field
             if re.findall(y, x.lower()):
                 ai_feature_list.append(web_feature_list[10])
                 ai_pattern_list.append(y)
