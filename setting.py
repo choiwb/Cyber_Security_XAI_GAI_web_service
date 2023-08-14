@@ -18,17 +18,24 @@ PORT = 17171
 
 
 # 2023/08/17 IPS 모델 - Light GBM
-IPS_model_path = '/home/xai/xai_flask/save_model/IPS_ML_20230817.pkl'
+IPS_model_path = 'save_model/IPS_ML_20230817.pkl'
 # 위 모델을, SHAP의 TreeExplainer 연산 및 저장
-IPS_explainer_path = '/home/xai/xai_flask/save_model/IPS_ML_XAI_20230817.pkl'
+IPS_explainer_path = 'save_model/IPS_ML_XAI_20230817.pkl'
 
 IPS_model = pickle.load(open(IPS_model_path, 'rb'))
 
 
 # 2023/08/17 WAF 모델 - Light GBM
-WAF_model_path = '/home/xai/xai_flask/save_model/WAF_ML_20230817.pkl'
+WAF_model_path = 'save_model/WAF_ML_20230817.pkl'
+# 2023/06/22 WAF 모델 - Light GBM (Spark SQL 피처 & TF-IDF 피처)
+# new_WAF_model_path = 'save_model/DSS_WAF_sql_tfidf_LGB_20230622.pkl'
+# 위 모델의 TF-IDF 단어 호출
+# WAF_tfidf_word_path = 'save_model/waf_tfidf_word.csv'
+
+
 # 위 모델을, SHAP의 TreeExplainer 연산 및 저장
-WAF_explainer_path = '/home/xai/xai_flask/save_model/WAF_ML_XAI_20230817.pkl'
+WAF_explainer_path = 'save_model/WAF_ML_XAI_20230817.pkl'
+# WAF_explainer_path = 'save_model/DSS_WAF_sql_tfidf_LGB_explainer_20230622.pkl'
 
 WAF_model = pickle.load(open(WAF_model_path, 'rb'))
 
@@ -176,9 +183,9 @@ web_masker = shap.maskers.Text(tokenizer = r"(\s|%20|\+|\/|%2f|HTTP/1.1|\?|\n|\r
 
 
 # 2023/08/17 WEB 모델 - Light GBM
-WEB_model_path = '/home/xai/xai_flask/save_model/WEB_ML_20230817.pkl'
+WEB_model_path = 'save_model/WEB_ML_20230817.pkl'
 # 위 모델을, SHAP의 TreeExplainer 연산 및 저장
-WEB_explainer_path = '/home/xai/xai_flask/save_model/WEB_ML_XAI_20230817.pkl'
+WEB_explainer_path = 'save_model/WEB_ML_XAI_20230817.pkl'
 
 WEB_model = pickle.load(open(WEB_model_path, 'rb'))
 
