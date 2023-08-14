@@ -1577,7 +1577,7 @@ def IPS_XAI_result():
 
 
    
-    if first_feature != ips_whitelist_feature and first_feature != ips_attack_conti_feature:
+    if first_feature != ips_whitelist_feature and first_feature != ips_attack_dir_conti_feature and first_feature != ips_attack_and_conti_feature and first_feature != ips_attack_semico_conti_feature:
         if first_fv == 1:
             first_fv_result = '공격 탐지'
             first_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(first_feature, first_fv_result, first_word)
@@ -1589,10 +1589,15 @@ def IPS_XAI_result():
             first_statement = '로그 전송이 1건 이하 임에 따라 공격일 가능성이 있습니다.'     
         else:
             first_statement = '로그 전송이 2건 이상 임에 따라 정상 입니다.'
+    elif first_feature == ips_attack_and_conti_feature or first_feature == ips_attack_semico_conti_feature:
+        if 'and' in first_feature.lower():
+            first_statement = '& 특수문자가 총 %d건 입니다.' %(first_fv)
+        else:
+            first_statement = '; 특수문자가 총 %d건 입니다.' %(first_fv)
     else:
         first_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % first_fv       
 
-    if second_feature != ips_whitelist_feature and second_feature != ips_attack_conti_feature:
+    if second_feature != ips_whitelist_feature and second_feature != ips_attack_dir_conti_feature and second_feature != ips_attack_and_conti_feature and second_feature != ips_attack_semico_conti_feature:
         if second_fv == 1:
             second_fv_result = '공격 탐지'
             second_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(second_feature, second_fv_result, second_word)
@@ -1604,10 +1609,15 @@ def IPS_XAI_result():
             second_statement = '로그 전송이 1건 이하 임에 따라 공격일 가능성이 있습니다.'     
         else:
             second_statement = '로그 전송이 2건 이상 임에 따라 정상 입니다.'
+    elif second_feature == ips_attack_and_conti_feature or second_feature == ips_attack_semico_conti_feature:
+        if 'and' in second_feature.lower():
+            second_statement = '& 특수문자가 총 %d건 입니다.' %(second_fv)
+        else:
+            second_statement = '; 특수문자가 총 %d건 입니다.' %(second_fv)
     else:
         second_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % second_fv      
 
-    if third_feature != ips_whitelist_feature and third_feature != ips_attack_conti_feature:
+    if third_feature != ips_whitelist_feature and third_feature != ips_attack_dir_conti_feature and third_feature != ips_attack_and_conti_feature and third_feature != ips_attack_semico_conti_feature:
         if third_fv == 1:
             third_fv_result = '공격 탐지'
             third_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(third_feature, third_fv_result, third_word)
@@ -1619,9 +1629,13 @@ def IPS_XAI_result():
             third_statement = '로그 전송이 1건 이하 임에 따라 공격일 가능성이 있습니다.'     
         else:
             third_statement = '로그 전송이 2건 이상 임에 따라 정상 입니다.'
+    elif third_feature == ips_attack_and_conti_feature or third_feature == ips_attack_semico_conti_feature:
+        if 'and' in third_feature.lower():
+            third_statement = '& 특수문자가 총 %d건 입니다.' %(third_fv)
+        else:
+            third_statement = '; 특수문자가 총 %d건 입니다.' %(third_fv)
     else:
         third_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % third_fv
-
 
     # top10_shap_values to html
     top10_shap_values_html = top10_shap_values.to_html(index=False, justify='center')
@@ -2318,69 +2332,61 @@ def WAF_XAI_result():
     # 학습 데이터 기반 피처 중요도 요약 (상위 3개 피처)
     ##################################################
 
-    first_feature = top10_shap_values['피처 명'][0]
-    first_fv = top10_shap_values['피처 값'][0]
-    first_word = top10_shap_values['AI 탐지 키워드'][0]
-    first_tfidf_count = top10_shap_values['TF-IDF 피처 등장 횟수'][0]
-    second_feature = top10_shap_values['피처 명'][1]
-    second_fv = top10_shap_values['피처 값'][1]
-    second_word = top10_shap_values['AI 탐지 키워드'][1]
-    second_tfidf_count = top10_shap_values['TF-IDF 피처 등장 횟수'][1]
-    third_feature = top10_shap_values['피처 명'][2]
-    third_fv = top10_shap_values['피처 값'][2]
-    third_word = top10_shap_values['AI 탐지 키워드'][2]
-    third_tfidf_count = top10_shap_values['TF-IDF 피처 등장 횟수'][2]
+    first_feature = top10_shap_values.iloc[0, 1]
+    first_fv = top10_shap_values.iloc[0, 3]
+    first_word = top10_shap_values.iloc[0,-1]
+    second_feature = top10_shap_values.iloc[1, 1]
+    second_fv = top10_shap_values.iloc[1, 3]
+    second_word = top10_shap_values.iloc[1,-1]
+    third_feature = top10_shap_values.iloc[2, 1]
+    third_fv = top10_shap_values.iloc[2, 3]
+    third_word = top10_shap_values.iloc[2,-1]
 
 
-    if first_feature.startswith("payload_"):
-        if first_feature != waf_attack_conti_feature:
-            if first_fv == 1:
-                first_fv_result = '공격 탐지'
-                first_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(first_feature, first_fv_result, first_word)
-            else:
-                first_fv_result = '정상 인식'
-                first_statement = '%s 가 %s 하였습니다.' %(first_feature, first_fv_result)
+    if first_feature != waf_attack_dir_conti_feature and first_feature != waf_attack_and_conti_feature and first_feature != waf_attack_semico_conti_feature:
+        if first_fv == 1:
+            first_fv_result = '공격 탐지'
+            first_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(first_feature, first_fv_result, first_word)
         else:
-            first_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % first_fv       
+            first_fv_result = '정상 인식'
+            first_statement = '%s 가 %s 하였습니다.' %(first_feature, first_fv_result)  
+    elif first_feature == waf_attack_and_conti_feature or first_feature == waf_attack_semico_conti_feature:
+        if 'and' in first_feature.lower():
+            first_statement = '& 특수문자가 총 %d건 입니다.' %(first_fv)
+        else:
+            first_statement = '; 특수문자가 총 %d건 입니다.' %(first_fv)
     else:
-        if first_fv > 0:
-            first_statement = 'AI 자동 생성 피처의 AI 탐지 키워드는 %s 이며 %d번 등장 하였습니다.'  %(first_word, first_tfidf_count)
-        else:
-            first_statement = 'AI 자동 생성 피처의 AI 탐지 키워드는 %s 이며 등장하지 않았습니다.'  %(first_word)
+        first_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % first_fv       
 
-
-    if second_feature.startswith("payload_"):
-        if second_feature != waf_attack_conti_feature:
-            if second_fv == 1:
-                second_fv_result = '공격 탐지'
-                second_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(second_feature, second_fv_result, second_word)
-            else:
-                second_fv_result = '정상 인식'
-                second_statement = '%s 가 %s 하였습니다.' %(second_feature, second_fv_result)
+    if second_feature != waf_attack_dir_conti_feature and second_feature != waf_attack_and_conti_feature and second_feature != waf_attack_semico_conti_feature:
+        if second_fv == 1:
+            second_fv_result = '공격 탐지'
+            second_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(second_feature, second_fv_result, second_word)
         else:
-            second_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % second_fv      
+            second_fv_result = '정상 인식'
+            second_statement = '%s 가 %s 하였습니다.' %(second_feature, second_fv_result)
+    elif second_feature == waf_attack_and_conti_feature or second_feature == waf_attack_semico_conti_feature:
+        if 'and' in second_feature.lower():
+            second_statement = '& 특수문자가 총 %d건 입니다.' %(second_fv)
+        else:
+            second_statement = '; 특수문자가 총 %d건 입니다.' %(second_fv)
     else:
-        if second_fv > 0:
-            second_statement = 'AI 자동 생성 피처의 AI 탐지 키워드는 %s 이며 %d번 등장 하였습니다.'  %(second_word, second_tfidf_count)
-        else:
-            second_statement = 'AI 자동 생성 피처의 AI 탐지 키워드는 %s 이며 등장하지 않았습니다.'  %(second_word)
+        second_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % second_fv      
 
-
-    if third_feature.startswith("payload_"):
-        if third_feature != waf_attack_conti_feature:
-            if third_fv == 1:
-                third_fv_result = '공격 탐지'
-                third_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(third_feature, third_fv_result, third_word)
-            else:
-                third_fv_result = '정상 인식'
-                third_statement = '%s 가 %s 하였습니다.' %(third_feature, third_fv_result)
+    if third_feature != waf_attack_dir_conti_feature and third_feature != waf_attack_and_conti_feature and third_feature != waf_attack_semico_conti_feature:
+        if third_fv == 1:
+            third_fv_result = '공격 탐지'
+            third_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(third_feature, third_fv_result, third_word)
         else:
-            third_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % third_fv
+            third_fv_result = '정상 인식'
+            third_statement = '%s 가 %s 하였습니다.' %(third_feature, third_fv_result)
+    elif third_feature == waf_attack_and_conti_feature or third_feature == waf_attack_semico_conti_feature:
+        if 'and' in third_feature.lower():
+            third_statement = '& 특수문자가 총 %d건 입니다.' %(third_fv)
+        else:
+            third_statement = '; 특수문자가 총 %d건 입니다.' %(third_fv)
     else:
-        if third_fv > 0:
-            third_statement = 'AI 자동 생성 피처의 AI 탐지 키워드는 %s 이며 %d번 등장 하였습니다.'  %(third_word, third_tfidf_count)
-        else:
-            third_statement = 'AI 자동 생성 피처의 AI 탐지 키워드는 %s 이며 등장하지 않았습니다.'  %(third_word)
+        third_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % third_fv
 
 
     # top10_shap_values to html
@@ -3059,36 +3065,50 @@ def WEB_XAI_result():
     third_word = top10_shap_values.iloc[2,-1]
 
 
-    if first_feature != web_attack_conti_feature:
+    if first_feature != web_attack_dir_conti_feature and first_feature != web_attack_and_conti_feature and first_feature != web_attack_semico_conti_feature:
         if first_fv == 1:
             first_fv_result = '공격 탐지'
             first_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(first_feature, first_fv_result, first_word)
         else:
             first_fv_result = '정상 인식'
-            first_statement = '%s 가 %s 하였습니다.' %(first_feature, first_fv_result)
+            first_statement = '%s 가 %s 하였습니다.' %(first_feature, first_fv_result)  
+    elif first_feature == web_attack_and_conti_feature or first_feature == web_attack_semico_conti_feature:
+        if 'and' in first_feature.lower():
+            first_statement = '& 특수문자가 총 %d건 입니다.' %(first_fv)
+        else:
+            first_statement = '; 특수문자가 총 %d건 입니다.' %(first_fv)
     else:
         first_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % first_fv       
 
-
-    if second_feature != web_attack_conti_feature:
+    if second_feature != web_attack_dir_conti_feature and second_feature != web_attack_and_conti_feature and second_feature != web_attack_semico_conti_feature:
         if second_fv == 1:
             second_fv_result = '공격 탐지'
             second_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(second_feature, second_fv_result, second_word)
         else:
             second_fv_result = '정상 인식'
             second_statement = '%s 가 %s 하였습니다.' %(second_feature, second_fv_result)
+    elif second_feature == web_attack_and_conti_feature or second_feature == web_attack_semico_conti_feature:
+        if 'and' in second_feature.lower():
+            second_statement = '& 특수문자가 총 %d건 입니다.' %(second_fv)
+        else:
+            second_statement = '; 특수문자가 총 %d건 입니다.' %(second_fv)
     else:
-        second_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % second_fv       
+        second_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % second_fv      
 
-    if third_feature != web_attack_conti_feature:
+    if third_feature != web_attack_dir_conti_feature and third_feature != web_attack_and_conti_feature and third_feature != web_attack_semico_conti_feature:
         if third_fv == 1:
             third_fv_result = '공격 탐지'
             third_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(third_feature, third_fv_result, third_word)
         else:
             third_fv_result = '정상 인식'
             third_statement = '%s 가 %s 하였습니다.' %(third_feature, third_fv_result)
+    elif third_feature == web_attack_and_conti_feature or third_feature == web_attack_semico_conti_feature:
+        if 'and' in third_feature.lower():
+            third_statement = '& 특수문자가 총 %d건 입니다.' %(third_fv)
+        else:
+            third_statement = '; 특수문자가 총 %d건 입니다.' %(third_fv)
     else:
-        third_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % third_fv       
+        third_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % third_fv
 
 
     # top10_shap_values to html
