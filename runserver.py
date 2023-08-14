@@ -742,35 +742,29 @@ def highlight_text(text, signature, ai_field):
     # background yellow - 시그니처 패턴
     replacement = "\033[103m" + "\\1" + "\033[49m"
     # foreground red - AI 생성 필드
-    replacement_2 = "\033[91m" + "\\1" + "\033[39m"
-
+    replacement_2 = "\033[91m" + "\\1" + "\033[39m"       
+    
     # 시그니처 패턴 또는 AI 생성 필드 인 경우, highlight 처리
     # re.escape() : 특수문자를 이스케이프 처리
-    text = re.sub("(" + "|".join(map(re.escape, signature)) + ")", replacement, text, flags=re.I)
+    text = re.sub("(" + "|".join(map(re.escape, signature)) + ")", replacement, text, flags=re.I)      
+    
+    # ai_field에서 useragent 제외 (IPS, WAF 만 해당, WEB 전체)
+    ips_waf_web_not_useragent_field = [i for i in ai_field if i not in ips_useragent_field and i not in waf_useragent_field]
+    # ai_field에서 useragent 포함 (IPS, WAF 만 해당, WEB 전체)
+    ips_waf_useragent_field = [i for i in ai_field if i in ips_useragent_field or i in waf_useragent_field]
 
-    '''
-    # ai_field에서 cmd, sql, user_agent 제외
-    not_cmd_sql_user_agent_field = [i for i in ai_field if i not in cmd_1_field and i not in sql_1_field and i not in sql_2_field and i not in useragent_field]
-    # ai_field에서 cmd, sql 인 경우
-    cmd_sql = [i for i in ai_field if i in cmd_1_field or i in sql_1_field or i in sql_2_field or i in useragent_field]
+    text = re.sub("(" + "|".join(ips_waf_web_not_useragent_field) + ")", replacement_2, text, flags=re.I)
 
-    text = re.sub("(" + "|".join(not_cmd_sql_user_agent_field) + ")", replacement_2, text, flags=re.I)
-
-    # test.split('HTTP/1.[01]')[0]에 cmd, sql가 있는 경우, highlight 처리
     # text.spliyt('HTTP/1.[01]')[1]에 user-agent가 있는 경우, highlight 처리
     if 'HTTP/1.1' in text and text.count('HTTP/1.1') == 1:
-        text = re.sub("(" + "|".join(cmd_sql) + ")", replacement_2, text.split('HTTP/1.1')[0], flags=re.I) + 'HTTP/1.1' + text.split('HTTP/1.1')[1]
-        text = text.split('HTTP/1.1')[0] + 'HTTP/1.1' + re.sub("(" + "|".join(useragent_field) + ")", replacement_2, text.split('HTTP/1.1')[1], flags=re.I)
+        text = text.split('HTTP/1.1')[0] + 'HTTP/1.1' + re.sub("(" + "|".join(ips_waf_useragent_field) + ")", replacement_2, text.split('HTTP/1.1')[1], flags=re.I)
     elif 'HTTP/1.0' in text and text.count('HTTP/1.0') == 1:
-        text = re.sub("(" + "|".join(cmd_sql) + ")", replacement_2, text.split('HTTP/1.0')[0], flags=re.I) + 'HTTP/1.0' + text.split('HTTP/1.0')[1]
-        text = text.split('HTTP/1.0')[0] + 'HTTP/1.0' + re.sub("(" + "|".join(useragent_field) + ")", replacement_2, text.split('HTTP/1.0')[1], flags=re.I)
-    '''
-
+        text = text.split('HTTP/1.0')[0] + 'HTTP/1.0' + re.sub("(" + "|".join(ips_waf_useragent_field) + ")", replacement_2, text.split('HTTP/1.0')[1], flags=re.I)
     
     # 39m 91m이 붙어 있는 경우 제거 !!!!!!!! 왜냐하면 단일처리를 위해, 빨간색 폰트 끝과 시작이 붙어 있으면 연속 키워드로 인식하기 위함.
-    # text = re.sub(r'\x1b\[39m\x1b\[91m', '', text)
+    # text = re.sub(r'\x1b\[39m\x1b\[91m', '', text)    
 
-    text = re.sub("(" + "|".join(ai_field) + ")", replacement_2, text, flags=re.I)
+    # text = re.sub("(" + "|".join(ai_field) + ")", replacement_2, text, flags=re.I)
 
     regex = re.compile('\x1b\[103m(.*?)\x1b\[49m')
 
@@ -793,7 +787,7 @@ def highlight_text(text, signature, ai_field):
             one_row_df = pd.DataFrame([[count, vendor_list[j], equip_list[j], method_list[j], descrip_list[j], response_list[j]]], 
                                 columns = ['탐지 순서', '제조사', '장비 명', '탐지 명', '설명', '대응 방안'])
             sig_pattern_df = pd.concat([sig_pattern_df, one_row_df], axis = 0)
-
+        
     return text, sig_pattern_df
 
 '''
