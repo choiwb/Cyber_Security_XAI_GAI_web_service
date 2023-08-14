@@ -42,7 +42,7 @@ WAF_model = pickle.load(open(WAF_model_path, 'rb'))
 
 ####################################################################################
 # IPS 딥러닝 모델 호출
-IPS_DL_path = 'save_model/IPS_DistilBERT_20230627'
+IPS_DL_path = 'save_model/IPS_DL_20230817'
 
 IPS_DL_model = AutoModelForSequenceClassification.from_pretrained(IPS_DL_path)
 IPS_DL_tokenizer = AutoTokenizer.from_pretrained(IPS_DL_path)
@@ -85,7 +85,7 @@ IPS_DL_XAI = shap.Explainer(ips_bert_predict, ips_masker)
 
 ####################################################################################
 # WAF 딥러닝 모델 호출
-WAF_DL_path = 'save_model/WAF_DistilBERT_20230626'
+WAF_DL_path = 'save_model/WAF_DL_20230817'
 
 WAF_DL_model = AutoModelForSequenceClassification.from_pretrained(WAF_DL_path)
 WAF_DL_tokenizer = AutoTokenizer.from_pretrained(WAF_DL_path)
@@ -127,7 +127,7 @@ WAF_DL_XAI = shap.Explainer(waf_bert_predict, waf_masker)
 
 ####################################################################################
 # WEB 딥러닝 모델 호출
-WEB_DL_path = 'save_model/WEB_DistilBERT_20230713'
+WEB_DL_path = 'save_model/WEB_DL_20230817'
 
 WEB_DL_model = AutoModelForSequenceClassification.from_pretrained(WEB_DL_path)
 WEB_DL_tokenizer = AutoTokenizer.from_pretrained(WEB_DL_path)
