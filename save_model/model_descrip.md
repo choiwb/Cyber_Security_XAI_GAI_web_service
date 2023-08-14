@@ -1,5 +1,5 @@
 - IPS model: IPS_ML_20230817.pkl
-- IPS XAI: IPS_ML__XAI_20230817.pkl
+- IPS XAI: IPS_ML_XAI_20230817.pkl
 - IPS Deep Learning: IPS_DL_20230817
 - IPS 피처 정의서: IPS_피처생성정의서_v202308.xlsx
 ----
