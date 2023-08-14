@@ -17,27 +17,20 @@ SERVER_IP = '0.0.0.0'
 PORT = 17171
 
 
-# 2023/06/15 IPS 모델 - Light GBM
-new_IPS_model_path = 'save_model/DSS_IPS_LGB_20230615.pkl'
+# 2023/08/17 IPS 모델 - Light GBM
+IPS_model_path = '/home/xai/xai_flask/save_model/IPS_ML_20230817.pkl'
 # 위 모델을, SHAP의 TreeExplainer 연산 및 저장
-IPS_explainer_path = 'save_model/DSS_IPS_LGB_explainer_20230615.pkl'
+IPS_explainer_path = '/home/xai/xai_flask/save_model/IPS_ML_XAI_20230817.pkl'
 
-IPS_model = pickle.load(open(new_IPS_model_path, 'rb'))
-
-
-# 2023/06/15 WAF 모델 - Light GBM
-# new_WAF_model_path = 'save_model/DSS_WAF_LGB_20230615.pkl'
-# 2023/06/22 WAF 모델 - Light GBM (Spark SQL 피처 & TF-IDF 피처)
-new_WAF_model_path = 'save_model/DSS_WAF_sql_tfidf_LGB_20230622.pkl'
-# 위 모델의 TF-IDF 단어 호출
-WAF_tfidf_word_path = 'save_model/waf_tfidf_word.csv'
+IPS_model = pickle.load(open(IPS_model_path, 'rb'))
 
 
+# 2023/08/17 WAF 모델 - Light GBM
+WAF_model_path = '/home/xai/xai_flask/save_model/WAF_ML_20230817.pkl'
 # 위 모델을, SHAP의 TreeExplainer 연산 및 저장
-# WAF_explainer_path = 'save_model/DSS_WAF_LGB_explainer_20230615.pkl'
-WAF_explainer_path = 'save_model/DSS_WAF_sql_tfidf_LGB_explainer_20230622.pkl'
+WAF_explainer_path = '/home/xai/xai_flask/save_model/WAF_ML_XAI_20230817.pkl'
 
-WAF_model = pickle.load(open(new_WAF_model_path, 'rb'))
+WAF_model = pickle.load(open(WAF_model_path, 'rb'))
 
 
 ####################################################################################
@@ -182,10 +175,10 @@ web_masker = shap.maskers.Text(tokenizer = r"(\s|%20|\+|\/|%2f|HTTP/1.1|\?|\n|\r
 ####################################################################################
 
 
-# 2023/07/13 WEB 모델 - Light GBM
-WEB_model_path = 'save_model/DSS_WEB_LGB_20230713.pkl'
+# 2023/08/17 WEB 모델 - Light GBM
+WEB_model_path = '/home/xai/xai_flask/save_model/WEB_ML_20230817.pkl'
 # 위 모델을, SHAP의 TreeExplainer 연산 및 저장
-WEB_explainer_path = 'save_model/DSS_WEB_LGB_explainer_20230713.pkl'
+WEB_explainer_path = '/home/xai/xai_flask/save_model/WEB_ML_XAI_20230817.pkl'
 
 WEB_model = pickle.load(open(WEB_model_path, 'rb'))
 
@@ -249,10 +242,25 @@ ips_query = """
             OR INT(RLIKE(LOWER(payload), 'cacacacaca') )>0
             , 1, 0) AS ips_payload_bof_comb,
 
-        IF((INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'wget(.*?)ttp') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'chmod(.*?)777') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'rm(.*?)[\\-]rf') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'cd(.*?)tmp') )>0)
+        IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'wget[\\+](.*?)ttp') )>0
+			OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'wget[\\-]c(.*?)ttp') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'wget[\\%]20(.*?)ttp') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'wget (.*?)ttp') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'wget[\\$][\\{](.*?)ttp') )>0
+			OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'wget[\\%](.*?)ttp') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'wget[\\$](.*?)ttp') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'rm(.*?)[\\-]rf') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cd (.*?)tmp') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cd[\\%]20(.*?)tmp') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cd[\\+](.*?)tmp') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cd[\\$][\\{](.*?)tmp') )>0
+			OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'cd(.*?)[\\/]tmp') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'chmod[\\+](.*?)777') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'chmod[\\%](.*?)777') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'chmod[\\$](.*?)777') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'chmod[\\(][\\$](.*?)777') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'chmod[\\+](.*?)777') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'chmod (.*?)777') )>0
             , 1, 0) AS ips_payload_cmd_01_comb,
 
         IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cmd(.*?)open') )>0
@@ -263,7 +271,12 @@ ips_query = """
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'get(.*?)ping') )>0
             , 1, 0) AS ips_payload_cmd_02_comb,
 
-        IF(INT(RLIKE(LOWER(payload), 'eval') )>0
+        IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'eval[\\(]') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'eval[\\/][\\*]') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'eval[\\%]') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'eval[\\|]') )>0
+			OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'eval[\\-]') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'php[\\/]eval') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'getruntime(.*?)exec') )>0
             , 1, 0) AS ips_payload_code_comb,
 
@@ -284,8 +297,8 @@ ips_query = """
             , 1, 0) AS ips_payload_dir_02_comb,
 
         (SIZE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), '[\\.][\\.][\\/]')) -1)
-            + (SIZE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), '[\\.][\\.][%%]2f')) -1)
-            + (SIZE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), '[%%]2e[%%]2e[%%]2f')) -1)
+            + (SIZE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), '[\\.][\\.][\\%]2f')) -1)
+            + (SIZE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), '[\\%]2e[\\%]2e[\\%]2f')) -1)
             AS ips_payload_dir_count,
 
         IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cgi(.*?)bin') )>0
@@ -320,7 +333,7 @@ ips_query = """
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'upload(.*?)asp') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'fckeditor(.*?)filemanager') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'manager(.*?)html') )>0
-            OR INT(RLIKE(LOWER(payload), 'mdb') )>0
+            OR INT(RLIKE(LOWER(payload), '[\\.]mdb') )>0
             , 1, 0) AS ips_payload_file_comb,
 
         IF(INT(RLIKE(LOWER(payload), 'delete [\\/]') )>0
@@ -336,27 +349,33 @@ ips_query = """
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),'jndi(.*?)dns') )>0
             , 1, 0) AS ips_payload_rce_comb,
 
-        IF((INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'select(.*?)from') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'select(.*?)count') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'select(.*?)distinct') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'union(.*?)select') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'select(.*?)extractvalue(.*?)xmltype') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'and(.*?)select') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'from(.*?)generate(.*?)series') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'from(.*?)group(.*?)by') )>0)
+        IF( INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'select(.*?)from') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'select(.*?)count') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'select(.*?)distinct') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'union(.*?)select') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'select(.*?)extractvalue(.*?)xmltype') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'and(.*?)select') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'from(.*?)generate(.*?)series') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'from(.*?)group(.*?)by') )>0
             , 1, 0) AS ips_payload_sql_01_comb,
 
-        IF((INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'case(.*?)when') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'then(.*?)else') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'like') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'sleep') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'delete') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'drop') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'waitfor(.*?)delay') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'db(.*?)sql(.*?)server') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'cast(.*?)chr') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'upper(.*?)xmltype') )>0)
-            , 1, 0) AS ips_payload_sql_02_comb,
+        IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'case(.*?)when') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'then(.*?)else') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'like[\\%]') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'sleep[\\%]') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'sleep[\\(]') )>0
+			OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'sleep[\\+]') )>0
+			OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'drop[\\%]') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'drop[\\+]table') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'waitfor(.*?)delay') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'db(.*?)sql(.*?)server') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'cast(.*?)chr') )>0
+			OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cast(.*?)chr[\\%]') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cast(.*?)chr[\\(]') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cast(.*?)char[\\%]') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cast(.*?)char[\\(]') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'upper(.*?)xmltype') )>0
+                , 1, 0) AS ips_payload_sql_02_comb,
 
         IF((INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[1],  'bingbot') )>0)
             OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[1],  'user(.*?)agent(.*?)zgrab') )>0)
@@ -381,7 +400,11 @@ ips_query = """
             OR INT(RLIKE(LOWER(payload), 'phpmyadmin') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'php(.*?)create(.*?)function') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'php(.?)content(.*?)type') )>0
-            OR INT(RLIKE(LOWER(payload), 'md5') )>0
+            OR INT(RLIKE(LOWER(payload), 'md5[\\(]') )>0
+            OR INT(RLIKE(LOWER(payload), 'md5[\\%]') )>0
+            OR INT(RLIKE(LOWER(payload),'md5[\\"]') )>0
+            OR INT(RLIKE(LOWER(payload), '[\\"]md5') )>0
+            OR INT(RLIKE(LOWER(payload), '[\\']md5') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'upload(.*?)php') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'sqlexec(.*?)php') )>0
             , 1, 0) AS ips_payload_php_comb,
@@ -392,7 +415,11 @@ ips_query = """
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'document(.*?)forms') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'document(.*?)location') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'document(.*?)open') )>0
-            , 1, 0) AS ips_payload_xss_comb
+            , 1, 0) AS ips_payload_xss_comb,
+
+        SIZE(SPLIT(IF(ISNULL(payload), '', payload), '[\\&]'))-1 AS ips_payload_ampersand_count,
+
+        SIZE(SPLIT(IF(ISNULL(payload), '', payload), '[\\;]'))-1 AS ips_payload_semicolon_count
 
 
     FROM table
@@ -412,10 +439,25 @@ waf_query = """
             OR INT(RLIKE(LOWER(payload), 'cacacacaca') )>0
             , 1, 0) AS waf_payload_bof_comb,
 
-        IF((INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'wget(.*?)ttp') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'chmod(.*?)777') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'rm(.*?)[\\-]rf') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'cd(.*?)tmp') )>0)
+        IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'wget[\\+](.*?)ttp') )>0
+			OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'wget[\\-]c(.*?)ttp') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'wget[\\%]20(.*?)ttp') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'wget (.*?)ttp') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'wget[\\$][\\{](.*?)ttp') )>0
+			OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'wget[\\%](.*?)ttp') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'wget[\\$](.*?)ttp') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'rm(.*?)[\\-]rf') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cd (.*?)tmp') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cd[\\%]20(.*?)tmp') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cd[\\+](.*?)tmp') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cd[\\$][\\{](.*?)tmp') )>0
+			OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'cd(.*?)[\\/]tmp') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'chmod[\\+](.*?)777') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'chmod[\\%](.*?)777') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'chmod[\\$](.*?)777') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'chmod[\\(][\\$](.*?)777') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'chmod[\\+](.*?)777') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'chmod (.*?)777') )>0
             , 1, 0) AS waf_payload_cmd_01_comb,
 
         IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cmd(.*?)open') )>0
@@ -426,7 +468,12 @@ waf_query = """
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'get(.*?)ping') )>0
             , 1, 0) AS waf_payload_cmd_02_comb,
 
-        IF(INT(RLIKE(LOWER(payload), 'eval') )>0
+        IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'eval[\\(]') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'eval[\\/][\\*]') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'eval[\\%]') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'eval[\\|]') )>0
+			OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'eval[\\-]') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'php[\\/]eval') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'getruntime(.*?)exec') )>0
             , 1, 0) AS waf_payload_code_comb,
 
@@ -447,8 +494,8 @@ waf_query = """
             , 1, 0) AS waf_payload_dir_02_comb,
 
         (SIZE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), '[\\.][\\.][\\/]')) -1)
-            + (SIZE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), '[\\.][\\.][%%]2f')) -1)
-            + (SIZE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), '[%%]2e[%%]2e[%%]2f')) -1)
+            + (SIZE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), '[\\.][\\.][\\%]2f')) -1)
+            + (SIZE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), '[\\%]2e[\\%]2e[\\%]2f')) -1)
             AS waf_payload_dir_count,
 
         IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cgi(.*?)bin') )>0
@@ -483,7 +530,7 @@ waf_query = """
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'upload(.*?)asp') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'fckeditor(.*?)filemanager') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'manager(.*?)html') )>0
-            OR INT(RLIKE(LOWER(payload), 'mdb') )>0
+            OR INT(RLIKE(LOWER(payload), '[\\.]mdb') )>0
             , 1, 0) AS waf_payload_file_comb,
 
         IF(INT(RLIKE(LOWER(payload), 'delete [\\/]') )>0
@@ -499,26 +546,32 @@ waf_query = """
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),'jndi(.*?)dns') )>0
             , 1, 0) AS waf_payload_rce_comb,
 
-        IF((INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'select(.*?)from') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'select(.*?)count') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'select(.*?)distinct') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'union(.*?)select') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'select(.*?)extractvalue(.*?)xmltype') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'and(.*?)select') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'from(.*?)generate(.*?)series') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'from(.*?)group(.*?)by') )>0)
+        IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'select(.*?)from') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'select(.*?)count') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'select(.*?)distinct') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'union(.*?)select') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'select(.*?)extractvalue(.*?)xmltype') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'and(.*?)select') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'from(.*?)generate(.*?)series') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'from(.*?)group(.*?)by') )>0
             , 1, 0) AS waf_payload_sql_01_comb,
 
-        IF((INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'case(.*?)when') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'then(.*?)else') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'like') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'sleep') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'delete') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'drop') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'waitfor(.*?)delay') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'db(.*?)sql(.*?)server') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'cast(.*?)chr') )>0)
-            OR (INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'upper(.*?)xmltype') )>0)
+        IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'case(.*?)when') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'then(.*?)else') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'like[\\%]') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'sleep[\\%]') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'sleep[\\(]') )>0
+			OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'sleep[\\+]') )>0
+			OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'drop[\\%]') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'drop[\\+]table') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'waitfor(.*?)delay') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'db(.*?)sql(.*?)server') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'cast(.*?)chr') )>0
+			OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cast(.*?)chr[\\%]') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cast(.*?)chr[\\(]') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cast(.*?)char[\\%]') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cast(.*?)char[\\(]') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'upper(.*?)xmltype') )>0
             , 1, 0) AS waf_payload_sql_02_comb,
 
         IF((INSTR(LOWER(payload),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'http/1.', 2)[1],  'bingbot') )>0)
@@ -544,7 +597,11 @@ waf_query = """
             OR INT(RLIKE(LOWER(payload), 'phpmyadmin') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'php(.*?)create(.*?)function') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'php(.?)content(.*?)type') )>0
-            OR INT(RLIKE(LOWER(payload), 'md5') )>0
+            OR INT(RLIKE(LOWER(payload), 'md5[\\(]') )>0
+            OR INT(RLIKE(LOWER(payload), 'md5[\\%]') )>0
+            OR INT(RLIKE(LOWER(payload),'md5[\\"]') )>0
+            OR INT(RLIKE(LOWER(payload), '[\\"]md5') )>0
+            OR INT(RLIKE(LOWER(payload), '[\\']md5') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'upload(.*?)php') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'sqlexec(.*?)php') )>0
             , 1, 0) AS waf_payload_php_comb,
@@ -555,7 +612,11 @@ waf_query = """
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'document(.*?)forms') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'document(.*?)location') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'document(.*?)open') )>0
-            , 1, 0) AS waf_payload_xss_comb
+            , 1, 0) AS waf_payload_xss_comb,
+
+        SIZE(SPLIT(IF(ISNULL(payload), '', payload), '[\\&]'))-1 AS waf_payload_ampersand_count,
+
+        SIZE(SPLIT(IF(ISNULL(payload), '', payload), '[\\;]'))-1 AS waf_payload_semicolon_count
         
     FROM table
     """
@@ -567,86 +628,123 @@ web_query = """
 
 SELECT 
 
-        IF((INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'select(.*?)from') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'select(.*?)count') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'select(.*?)concat') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'select(.*?)distinct') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'union(.*?)select') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'select(.*?)extractvalue(.*?)xmltype') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'from(.*?)generate(.*?)series') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'from(.*?)group(.*?)by') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'and(.*?)select') )>0)
+        IF(INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'select(.*?)from') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'select(.*?)count') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'select(.*?)concat') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'select(.*?)distinct') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'union(.*?)select') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'select(.*?)extractvalue(.*?)xmltype') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'from(.*?)generate(.*?)series') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'from(.*?)group(.*?)by') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'and(.*?)select') )>0
         ,1, 0) AS weblog_sql_01_comb,
 
-        IF((INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'case(.*?)when') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'then(.*?)else') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'like') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'sleep') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'delete(.*?)from') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'drop') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'waitfor(.*?)delay') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'db(.*?)sql(.*?)server') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'cast(.*?)chr') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'upper(.*?)xmltype') )>0)
+        IF(INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'case(.*?)when') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'then(.*?)else') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'like[\\%]') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'sleep[\\%]') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'sleep[\\(]') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'sleep[\\+]') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'delete(.*?)from') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'drop[\\%]') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'drop[\\+]table') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'cast(.*?)chr') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'cast(.*?)chr[\\%]') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'cast(.*?)chr[\\(]') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'cast(.*?)char[\\%]') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'cast(.*?)char[\\(]') )>0
         ,1, 0) AS weblog_sql_02_comb,
 
-        IF((INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'where[\\_]framework') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'sql[\\_]server') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'order[\\=]1') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'id[\\=]0') )>0)
+        IF(INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'where[\\_]framework') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'sql[\\_]server') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'order[\\=]1') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'id[\\=]0') )>0
         ,1, 0) AS weblog_sql_03_comb,
 
-        IF((INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'waitfor(.*?)delay') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'db(.*?)sql(.*?)server') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'cast(.*?)chr') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'upper(.*?)xmltype') )>0)
+        IF(INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'waitfor(.*?)delay') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'db(.*?)sql(.*?)server') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'cast(.*?)chr') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'cast(.*?)chr[\\%]') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'cast(.*?)chr[\\(]') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'cast(.*?)char[\\%]') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'cast(.*?)char[\\(]') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'upper(.*?)xmltype') )>0
         ,1, 0) AS weblog_sql_04_comb,
 
-        IF((INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'sql(.*?)select') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'query(.*?)select') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  '[\\=]yes') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  '[\\=]true') )>0)
+        IF(INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'sql(.*?)select') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'query(.*?)select') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), '[\\=]yes') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), '[\\=]true') )>0
         ,1, 0) AS weblog_sql_05_comb,
 
         IF(INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'script(.*?)alert') )>0
         OR INT(RLIKE(LOWER(web_log), 'onmouseover') )>0
-        OR INT(RLIKE(LOWER(web_log), 'eval') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'eval[\\/][\\*]') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'eval[\\%]') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'eval[\\|]') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'eval[\\-]') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'eval[\\(]') )>0
         OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'onerror(.*?)alert') )>0
         OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'document(.*?)open') )>0
         ,1, 0) AS weblog_xss_01_comb,
 
-        IF((INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'wget(.*?)ttp') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'chmod(.*?)777') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'rm(.*?)[\\-]rf') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'cd(.*?)[\\/]tmp') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'cd(.*?)[%%]2ftmp') )>0)
+        IF(INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'wget[\\+](.*?)ttp') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'wget[\\-]c(.*?)ttp') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'wget[\\%]20(.*?)ttp') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'wget (.*?)ttp') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'wget[\\$][\\{](.*?)ttp') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'wget[\\%](.*?)ttp') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'wget[\\$](.*?)ttp') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'rm(.*?)[\\-]rf') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'cd (.*?)tmp') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'cd[\\%]20(.*?)tmp') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'cd[\\+](.*?)tmp') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'cd[\\$][\\{](.*?)tmp') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'cd(.*?)[\\/]tmp') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'chmod[\\+](.*?)777') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'chmod[\\%](.*?)777') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'chmod[\\$](.*?)777') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'chmod[\\(][\\$](.*?)777') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'chmod[\\+](.*?)777') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'chmod (.*?)777') )>0
         ,1, 0) AS weblog_cmd_01_comb,
 
-        IF((INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'syscmd(.*?)cmd') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'exec(.*?)cmd(.*?)dir') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'exec(.*?)cmd(.*?)ls') )>0)
+        IF(INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'syscmd(.*?)cmd') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'exec(.*?)cmd(.*?)dir') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'exec(.*?)cmd(.*?)ls') )>0
         OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'cmd(.*?)open') )>0
-        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'get(.*?)[%%]20ping') )>0
-        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'get(.*?)[%%]27ping') )>0
-        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'get(.*?)[\\=]ping') )>0 
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'get(.*?)[\\%]20ping') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'get(.*?)[\\%]27ping') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'get(.*?)[\\=]ping') )>0
         ,1, 0) AS weblog_cmd_02_comb,
 
-        IF((INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'command') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'ping[%%]20') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'ping[\\+]') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'echo[%%]20') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'echo[\\+]') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'cat[%%]20') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'cat[\\+]') )>0)
-        OR (INSTR(LOWER(web_log),'http/1.') > 0 AND INT(RLIKE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'http/1.', 2)[0],  'shell[\\_]exe') )>0)
+        IF(INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'command') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'ping[\\%]20') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'ping[\\+]') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'echo[\\%]20') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'echo[\\+]') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'cat[\\%]20') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),   'cat[\\+]') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'shell[\\_]exe') )>0
         ,1, 0) AS weblog_cmd_03_comb,
 
-        IF(INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'etc(.*?)passwd') )>0
+        IF(INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'current[\\_]config(.*?)passwd') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'well(.*?)known') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'backup(.*?)sql') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'robots(.*?)txt') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'etc(.*?)passwd') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'etc(.*?)shadow') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'bash(.*?)history') )>0
         ,1, 0) AS weblog_dir_01_comb,
 
         (SIZE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), '[\\.][\\.][\\/]')) -1)
-        + (SIZE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), '[\\.][\\.][%%]2f')) -1)
-                AS weblog_dir_count
+        + (SIZE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), '[\\.][\\.][\\%]2f')) -1)
+        + (SIZE(SPLIT(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), '[\\%]2e[\\%]2e[\\%]2f')) -1)
+                AS weblog_dir_count,
+
+        SIZE(SPLIT(IF(ISNULL(web_log), '', web_log), '[\\&]'))-1 AS weblog_ampersand_count,
+
+        SIZE(SPLIT(IF(ISNULL(web_log), '', web_log), '[\\;]'))-1 AS weblog_semicolon_count
 
     FROM table
     """
@@ -680,6 +778,7 @@ web_attack_conti_feature_list = [x for x in web_feature_list if 'count' in x]
 web_attack_dir_conti_feature, web_attack_and_conti_feature, web_attack_semico_conti_feature = web_attack_conti_feature_list[:3]
 
 
+
 # ips_query '\\n|\\r|\\t', 'http/1.' 는 제거, 단 regex = False
 ips_attack_query = ips_query.replace('\\n|\\r|\\t', '').replace('http/1.', '')
 # ips_attack_query 에서 ips_payload_whitelist  이후 추출
@@ -693,12 +792,12 @@ ips_ai_field = [x for x in ips_ai_field if x != '' and x != ' ']
 
 # ips_attack_new_sql_query 에서 'AS' 를 기준으로 분할
 ips_attack_new_sql_query_split = ips_attack_query.split('AS')
-ips_auth_field, ips_bof_field, ips_cmd_1_field ,ips_cmd_2_field, ips_code_field, ips_dir_1_field, ips_dir_2_field, ips_dir_count_field, ips_cgi_field, ips_wp_field, ips_error_field, ips_file_field, ips_http_method_field, ips_malware_field, ips_rce_field, ips_sql_1_field, ips_sql_2_field, ips_useragent_field, ips_php_field, ips_xss_field = ips_attack_new_sql_query_split[:20]
+ips_auth_field, ips_bof_field, ips_cmd_1_field ,ips_cmd_2_field, ips_code_field, ips_dir_1_field, ips_dir_2_field, ips_dir_count_field, ips_cgi_field, ips_wp_field, ips_error_field, ips_file_field, ips_http_method_field, ips_malware_field, ips_rce_field, ips_sql_1_field, ips_sql_2_field, ips_useragent_field, ips_php_field, ips_xss_field, ips_and_count_field, ips_semico_field = ips_attack_new_sql_query_split[:22]
 
-ips_auth_field, ips_bof_field, ips_cmd_1_field ,ips_cmd_2_field, ips_code_field, ips_dir_1_field, ips_dir_2_field, ips_dir_count_field, ips_cgi_field, ips_wp_field, ips_error_field, ips_file_field, ips_http_method_field, ips_malware_field, ips_rce_field, ips_sql_1_field, ips_sql_2_field, ips_useragent_field, ips_php_field, ips_xss_field = list(map(lambda x: re.findall(r'\'(.*?)\'', x), 
-                                                                        [ips_auth_field, ips_bof_field, ips_cmd_1_field ,ips_cmd_2_field, ips_code_field, ips_dir_1_field, ips_dir_2_field, ips_dir_count_field, ips_cgi_field, ips_wp_field, ips_error_field, ips_file_field, ips_http_method_field, ips_malware_field, ips_rce_field, ips_sql_1_field, ips_sql_2_field, ips_useragent_field, ips_php_field, ips_xss_field]))
-ips_auth_field, ips_bof_field, ips_cmd_1_field ,ips_cmd_2_field, ips_code_field, ips_dir_1_field, ips_dir_2_field, ips_dir_count_field, ips_cgi_field, ips_wp_field, ips_error_field, ips_file_field, ips_http_method_field, ips_malware_field, ips_rce_field, ips_sql_1_field, ips_sql_2_field, ips_useragent_field, ips_php_field, ips_xss_field = list(map(lambda x: [y for y in x if y != '' and y != ' '],
-                                                                        [ips_auth_field, ips_bof_field, ips_cmd_1_field ,ips_cmd_2_field, ips_code_field, ips_dir_1_field, ips_dir_2_field, ips_dir_count_field, ips_cgi_field, ips_wp_field, ips_error_field, ips_file_field, ips_http_method_field, ips_malware_field, ips_rce_field, ips_sql_1_field, ips_sql_2_field, ips_useragent_field, ips_php_field, ips_xss_field])) 
+ips_auth_field, ips_bof_field, ips_cmd_1_field ,ips_cmd_2_field, ips_code_field, ips_dir_1_field, ips_dir_2_field, ips_dir_count_field, ips_cgi_field, ips_wp_field, ips_error_field, ips_file_field, ips_http_method_field, ips_malware_field, ips_rce_field, ips_sql_1_field, ips_sql_2_field, ips_useragent_field, ips_php_field, ips_xss_field, ips_and_count_field, ips_semico_field = list(map(lambda x: re.findall(r'\'(.*?)\'', x), 
+                                                                        [ips_auth_field, ips_bof_field, ips_cmd_1_field ,ips_cmd_2_field, ips_code_field, ips_dir_1_field, ips_dir_2_field, ips_dir_count_field, ips_cgi_field, ips_wp_field, ips_error_field, ips_file_field, ips_http_method_field, ips_malware_field, ips_rce_field, ips_sql_1_field, ips_sql_2_field, ips_useragent_field, ips_php_field, ips_xss_field, ips_and_count_field, ips_semico_field]))
+ips_auth_field, ips_bof_field, ips_cmd_1_field ,ips_cmd_2_field, ips_code_field, ips_dir_1_field, ips_dir_2_field, ips_dir_count_field, ips_cgi_field, ips_wp_field, ips_error_field, ips_file_field, ips_http_method_field, ips_malware_field, ips_rce_field, ips_sql_1_field, ips_sql_2_field, ips_useragent_field, ips_php_field, ips_xss_field, ips_and_count_field, ips_semico_field = list(map(lambda x: [y for y in x if y != '' and y != ' '],
+                                                                        [ips_auth_field, ips_bof_field, ips_cmd_1_field ,ips_cmd_2_field, ips_code_field, ips_dir_1_field, ips_dir_2_field, ips_dir_count_field, ips_cgi_field, ips_wp_field, ips_error_field, ips_file_field, ips_http_method_field, ips_malware_field, ips_rce_field, ips_sql_1_field, ips_sql_2_field, ips_useragent_field, ips_php_field, ips_xss_field, ips_and_count_field, ips_semico_field])) 
 
 
 
@@ -713,12 +812,12 @@ waf_ai_field = [x for x in waf_ai_field if x != '' and x != ' ']
 
 # waf_attack_new_sql_query 에서 'AS' 를 기준으로 분할
 waf_attack_new_sql_query_split = waf_attack_query.split('AS')
-waf_auth_field, waf_bof_field, waf_cmd_1_field ,waf_cmd_2_field, waf_code_field, waf_dir_1_field, waf_dir_2_field, waf_dir_count_field, waf_cgi_field, waf_wp_field, waf_error_field, waf_file_field, waf_http_method_field, waf_malware_field, waf_rce_field, waf_sql_1_field, waf_sql_2_field, waf_useragent_field, waf_php_field, waf_xss_field = waf_attack_new_sql_query_split[:20]
+waf_auth_field, waf_bof_field, waf_cmd_1_field ,waf_cmd_2_field, waf_code_field, waf_dir_1_field, waf_dir_2_field, waf_dir_count_field, waf_cgi_field, waf_wp_field, waf_error_field, waf_file_field, waf_http_method_field, waf_malware_field, waf_rce_field, waf_sql_1_field, waf_sql_2_field, waf_useragent_field, waf_php_field, waf_xss_field, waf_and_count_field, waf_semico_field = waf_attack_new_sql_query_split[:22]
 
-waf_auth_field, waf_bof_field, waf_cmd_1_field ,waf_cmd_2_field, waf_code_field, waf_dir_1_field, waf_dir_2_field, waf_dir_count_field, waf_cgi_field, waf_wp_field, waf_error_field, waf_file_field, waf_http_method_field, waf_malware_field, waf_rce_field, waf_sql_1_field, waf_sql_2_field, waf_useragent_field, waf_php_field, waf_xss_field = list(map(lambda x: re.findall(r'\'(.*?)\'', x), 
-                                                                        [waf_auth_field, waf_bof_field, waf_cmd_1_field ,waf_cmd_2_field, waf_code_field, waf_dir_1_field, waf_dir_2_field, waf_dir_count_field, waf_cgi_field, waf_wp_field, waf_error_field, waf_file_field, waf_http_method_field, waf_malware_field, waf_rce_field, waf_sql_1_field, waf_sql_2_field, waf_useragent_field, waf_php_field, waf_xss_field]))
-waf_auth_field, waf_bof_field, waf_cmd_1_field ,waf_cmd_2_field, waf_code_field, waf_dir_1_field, waf_dir_2_field, waf_dir_count_field, waf_cgi_field, waf_wp_field, waf_error_field, waf_file_field, waf_http_method_field, waf_malware_field, waf_rce_field, waf_sql_1_field, waf_sql_2_field, waf_useragent_field, waf_php_field, waf_xss_field = list(map(lambda x: [y for y in x if y != '' and y != ' '],
-                                                                        [waf_auth_field, waf_bof_field, waf_cmd_1_field ,waf_cmd_2_field, waf_code_field, waf_dir_1_field, waf_dir_2_field, waf_dir_count_field, waf_cgi_field, waf_wp_field, waf_error_field, waf_file_field, waf_http_method_field, waf_malware_field, waf_rce_field, waf_sql_1_field, waf_sql_2_field, waf_useragent_field, waf_php_field, waf_xss_field])) 
+waf_auth_field, waf_bof_field, waf_cmd_1_field ,waf_cmd_2_field, waf_code_field, waf_dir_1_field, waf_dir_2_field, waf_dir_count_field, waf_cgi_field, waf_wp_field, waf_error_field, waf_file_field, waf_http_method_field, waf_malware_field, waf_rce_field, waf_sql_1_field, waf_sql_2_field, waf_useragent_field, waf_php_field, waf_xss_field, waf_and_count_field, waf_semico_field = list(map(lambda x: re.findall(r'\'(.*?)\'', x), 
+                                                                        [waf_auth_field, waf_bof_field, waf_cmd_1_field ,waf_cmd_2_field, waf_code_field, waf_dir_1_field, waf_dir_2_field, waf_dir_count_field, waf_cgi_field, waf_wp_field, waf_error_field, waf_file_field, waf_http_method_field, waf_malware_field, waf_rce_field, waf_sql_1_field, waf_sql_2_field, waf_useragent_field, waf_php_field, waf_xss_field, waf_and_count_field, waf_semico_field]))
+waf_auth_field, waf_bof_field, waf_cmd_1_field ,waf_cmd_2_field, waf_code_field, waf_dir_1_field, waf_dir_2_field, waf_dir_count_field, waf_cgi_field, waf_wp_field, waf_error_field, waf_file_field, waf_http_method_field, waf_malware_field, waf_rce_field, waf_sql_1_field, waf_sql_2_field, waf_useragent_field, waf_php_field, waf_xss_field, waf_and_count_field, waf_semico_field = list(map(lambda x: [y for y in x if y != '' and y != ' '],
+                                                                        [waf_auth_field, waf_bof_field, waf_cmd_1_field ,waf_cmd_2_field, waf_code_field, waf_dir_1_field, waf_dir_2_field, waf_dir_count_field, waf_cgi_field, waf_wp_field, waf_error_field, waf_file_field, waf_http_method_field, waf_malware_field, waf_rce_field, waf_sql_1_field, waf_sql_2_field, waf_useragent_field, waf_php_field, waf_xss_field, waf_and_count_field, waf_semico_field])) 
 
 
 
@@ -732,11 +831,11 @@ web_ai_field = [x for x in web_ai_field if x != '' and x != ' ']
 # web_attack_new_sql_query_split 에서 'AS' 를 기준으로 분할
 web_attack_new_sql_query_split = web_attack_query.split('AS')
 
-web_sql_1, web_sql_2, web_sql_3, web_sql_4, web_sql_5, web_xss, web_cmd_1, web_cmd_2, web_cmd_3, web_dir_access_1, web_dir_access_2 = web_attack_new_sql_query_split[:11]
-web_sql_1, web_sql_2, web_sql_3, web_sql_4, web_sql_5, web_xss, web_cmd_1, web_cmd_2, web_cmd_3, web_dir_access_1, web_dir_access_2 = list(map(lambda x: re.findall(r'\'(.*?)\'', x), 
-                                                                        [web_sql_1, web_sql_2, web_sql_3, web_sql_4, web_sql_5, web_xss, web_cmd_1, web_cmd_2, web_cmd_3, web_dir_access_1, web_dir_access_2]))
-web_sql_1, web_sql_2, web_sql_3, web_sql_4, web_sql_5, web_xss, web_cmd_1, web_cmd_2, web_cmd_3, web_dir_access_1, web_dir_access_2 = list(map(lambda x: [y for y in x if y != '' and y != ' '],
-                                                                        [web_sql_1, web_sql_2, web_sql_3, web_sql_4, web_sql_5, web_xss, web_cmd_1, web_cmd_2, web_cmd_3, web_dir_access_1, web_dir_access_2])) 
+web_sql_1, web_sql_2, web_sql_3, web_sql_4, web_sql_5, web_xss, web_cmd_1, web_cmd_2, web_cmd_3, web_dir_access_1, web_dir_access_2, web_and_count_field, web_semico_field = web_attack_new_sql_query_split[:13]
+web_sql_1, web_sql_2, web_sql_3, web_sql_4, web_sql_5, web_xss, web_cmd_1, web_cmd_2, web_cmd_3, web_dir_access_1, web_dir_access_2, web_and_count_field, web_semico_field = list(map(lambda x: re.findall(r'\'(.*?)\'', x), 
+                                                                        [web_sql_1, web_sql_2, web_sql_3, web_sql_4, web_sql_5, web_xss, web_cmd_1, web_cmd_2, web_cmd_3, web_dir_access_1, web_dir_access_2, web_and_count_field, web_semico_field]))
+web_sql_1, web_sql_2, web_sql_3, web_sql_4, web_sql_5, web_xss, web_cmd_1, web_cmd_2, web_cmd_3, web_dir_access_1, web_dir_access_2, web_and_count_field, web_semico_field = list(map(lambda x: [y for y in x if y != '' and y != ' '],
+                                                                        [web_sql_1, web_sql_2, web_sql_3, web_sql_4, web_sql_5, web_xss, web_cmd_1, web_cmd_2, web_cmd_3, web_dir_access_1, web_dir_access_2, web_and_count_field, web_semico_field])) 
 
 
 
