@@ -1526,6 +1526,14 @@ def IPS_XAI_result():
             if re.findall(y, x.lower()):
                 ai_feature_list.append(ips_attack_feature_list[19])
                 ai_pattern_list.append(y)
+        for y in ips_and_count_field:
+            if re.findall(y, x.lower()):
+                ai_feature_list.append(ips_attack_feature_list[20])
+                ai_pattern_list.append(y)
+        for y in ips_semico_count_field:
+            if re.findall(y, x.lower()):
+                ai_feature_list.append(ips_attack_feature_list[21])
+                ai_pattern_list.append(y)
 
 
     # ai_feature_list = list(itertools.chain(*ai_feature_list))
@@ -2281,6 +2289,14 @@ def WAF_XAI_result():
             if re.findall(y, x.lower()):
                 ai_feature_list.append(waf_feature_list[19])
                 ai_pattern_list.append(y)
+        for y in waf_and_count_field:
+            if re.findall(y, x.lower()):
+                ai_feature_list.append(waf_feature_list[20])
+                ai_pattern_list.append(y)
+        for y in waf_semico_count_field:
+            if re.findall(y, x.lower()):
+                ai_feature_list.append(waf_feature_list[21])
+                ai_pattern_list.append(y)
 
 
     # ai_feature_list = list(itertools.chain(*ai_feature_list))
@@ -3012,6 +3028,14 @@ def WEB_XAI_result():
         for y in web_dir_count_field
             if re.findall(y, x.lower()):
                 ai_feature_list.append(web_feature_list[10])
+                ai_pattern_list.append(y)
+        for y in web_and_count_field:
+            if re.findall(y, x.lower()):
+                ai_feature_list.append(web_feature_list[11])
+                ai_pattern_list.append(y)
+        for y in web_semico_count_field:
+            if re.findall(y, x.lower()):
+                ai_feature_list.append(web_feature_list[12])
                 ai_pattern_list.append(y)
 
 
