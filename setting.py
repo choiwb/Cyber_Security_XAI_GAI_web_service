@@ -838,12 +838,11 @@ web_ai_field = [x for x in web_ai_field if x != '' and x != ' ']
 # web_attack_new_sql_query_split 에서 'AS' 를 기준으로 분할
 web_attack_new_sql_query_split = web_attack_query.split('AS')
 
-web_sql_1, web_sql_2, web_sql_3, web_sql_4, web_sql_5, web_xss, web_cmd_1, web_cmd_2, web_cmd_3, web_dir_access_1, web_dir_access_2, web_and_count_field, web_semico_field = web_attack_new_sql_query_split[:13]
-web_sql_1, web_sql_2, web_sql_3, web_sql_4, web_sql_5, web_xss, web_cmd_1, web_cmd_2, web_cmd_3, web_dir_access_1, web_dir_access_2, web_and_count_field, web_semico_field = list(map(lambda x: re.findall(r'\'(.*?)\'', x), 
-                                                                        [web_sql_1, web_sql_2, web_sql_3, web_sql_4, web_sql_5, web_xss, web_cmd_1, web_cmd_2, web_cmd_3, web_dir_access_1, web_dir_access_2, web_and_count_field, web_semico_field]))
-web_sql_1, web_sql_2, web_sql_3, web_sql_4, web_sql_5, web_xss, web_cmd_1, web_cmd_2, web_cmd_3, web_dir_access_1, web_dir_access_2, web_and_count_field, web_semico_field = list(map(lambda x: [y for y in x if y != '' and y != ' '],
-                                                                        [web_sql_1, web_sql_2, web_sql_3, web_sql_4, web_sql_5, web_xss, web_cmd_1, web_cmd_2, web_cmd_3, web_dir_access_1, web_dir_access_2, web_and_count_field, web_semico_field])) 
-
+web_sql_1_field, web_sql_2_field, web_sql_3_field, web_sql_4_field, web_sql_5_field, web_xss_field, web_cmd_1_field, web_cmd_2_field, web_cmd_3_field, web_dir_1_field, web_dir_count_field, web_and_count_field, web_semico_field = web_attack_new_sql_query_split[:13]
+web_sql_1_field, web_sql_2_field, web_sql_3_field, web_sql_4_field, web_sql_5_field, web_xss_field, web_cmd_1_field, web_cmd_2_field, web_cmd_3_field, web_dir_1_field, web_dir_count_field, web_and_count_field, web_semico_field = list(map(lambda x: re.findall(r'\'(.*?)\'', x), 
+                                                                        [web_sql_1_field, web_sql_2_field, web_sql_3_field, web_sql_4_field, web_sql_5_field, web_xss_field, web_cmd_1_field, web_cmd_2_field, web_cmd_3_field, web_dir_1_field, web_dir_count_field, web_and_count_field, web_semico_field]))
+web_sql_1_field, web_sql_2_field, web_sql_3_field, web_sql_4_field, web_sql_5_field, web_xss_field, web_cmd_1_field, web_cmd_2_field, web_cmd_3_field, web_dir_1_field, web_dir_count_field, web_and_count_field, web_semico_field = list(map(lambda x: [y for y in x if y != '' and y != ' '],
+                                                                        [web_sql_1_field, web_sql_2_field, web_sql_3_field, web_sql_4_field, web_sql_5_field, web_xss_field, web_cmd_1_field, web_cmd_2_field, web_cmd_3_field, web_dir_1_field, web_dir_count_field, web_and_count_field, web_semico_field])) 
 
 
 
