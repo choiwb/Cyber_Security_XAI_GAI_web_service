@@ -1439,6 +1439,7 @@ def IPS_XAI_result():
     ai_feature_list = []
     ai_pattern_list = []
 
+    '''
     for x in ai_detect_list:
         for y in ips_auth_field: 
             if re.findall(y, x.lower()):
@@ -1528,7 +1529,15 @@ def IPS_XAI_result():
             if re.findall(y, x.lower()):
                 ai_feature_list.append(ips_attack_feature_list[21])
                 ai_pattern_list.append(y)
+    '''
 
+    for x in ai_detect_list:
+        x_lower = x.lower()
+        for y_list, feature in ips_field_feature_dict.items():
+            for y in y_list:
+                if re.findall(y, x_lower):
+                    ai_feature_list.append(feature)
+                    ai_pattern_list.append(y)
 
     # ai_feature_list = list(itertools.chain(*ai_feature_list))
     # ai_pattern_list = list(itertools.chain(*ai_pattern_list))
@@ -2202,6 +2211,7 @@ def WAF_XAI_result():
     ai_feature_list = []
     ai_pattern_list = []
 
+    '''
     for x in ai_detect_list:
         for y in waf_auth_field: 
             if re.findall(y, x.lower()):
@@ -2291,7 +2301,15 @@ def WAF_XAI_result():
             if re.findall(y, x.lower()):
                 ai_feature_list.append(waf_feature_list[21])
                 ai_pattern_list.append(y)
+    '''
 
+    for x in ai_detect_list:
+        x_lower = x.lower()
+        for y_list, feature in waf_field_feature_dict.items():
+            for y in y_list:
+                if re.findall(y, x_lower):
+                    ai_feature_list.append(feature)
+                    ai_pattern_list.append(y)
 
     # ai_feature_list = list(itertools.chain(*ai_feature_list))
     # ai_pattern_list = list(itertools.chain(*ai_pattern_list))
@@ -2978,6 +2996,7 @@ def WEB_XAI_result():
     ai_feature_list = []
     ai_pattern_list = []
 
+    '''
     for x in ai_detect_list:
         for y in web_sql_1_field:
             if re.findall(y, x.lower()):
@@ -3031,7 +3050,15 @@ def WEB_XAI_result():
             if re.findall(y, x.lower()):
                 ai_feature_list.append(web_feature_list[12])
                 ai_pattern_list.append(y)
+    '''
 
+    for x in ai_detect_list:
+        x_lower = x.lower()
+        for y_list, feature in web_field_feature_dict.items():
+            for y in y_list:
+                if re.findall(y, x_lower):
+                    ai_feature_list.append(feature)
+                    ai_pattern_list.append(y)
 
 
     # ai_feature_list = list(itertools.chain(*ai_feature_list))
