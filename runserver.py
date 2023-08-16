@@ -1308,8 +1308,8 @@ def IPS_XAI_result():
 
     ##########################################################
     # raw_data_str 변수에 XSS 관련 문구가 있어서 창이 나오는 이슈 해결 
-    raw_data_str = re.sub(r'[\<]' , '&lt;', raw_data_str)
-    raw_data_str = re.sub(r'[\>]' , '&gt;', raw_data_str)
+    raw_data_str = re.sub(r'[\<]' , '%26lt%3B', raw_data_str)
+    raw_data_str = re.sub(r'[\>]' , '%26gt%3B', raw_data_str)
     ##########################################################
     
     # encode to decode
@@ -1432,8 +1432,8 @@ def IPS_XAI_result():
 
     ###################################################################
     # raw_adta_str 변수에 XSS 관련 문구 떼문에 변경한 부분 원복
-    ai_detect_list = [re.sub('&lt;', '<', x) for x in ai_detect_list]
-    ai_detect_list = [re.sub('&gt;', '>', x) for x in ai_detect_list]
+    ai_detect_list = [re.sub('%26lt%3B', '<', x) for x in ai_detect_list]
+    ai_detect_list = [re.sub('%26gt%3B', '>', x) for x in ai_detect_list]
     ###################################################################
 
     ai_feature_list = []
@@ -1755,8 +1755,8 @@ def IPS_XAI_result():
     force_html = f"<head>{shap.getjs()}</head><body>{force_plot.html()}</body>"
 
     # HTML 형태 payload 의 경우, 소괄호 치환 필요
-    sig_ai_pattern = re.sub(r'[\\<]', r'&lt;', sig_ai_pattern)
-    sig_ai_pattern = re.sub(r'[\\>]', r'&gt;', sig_ai_pattern)
+    sig_ai_pattern = re.sub(r'[\\<]', r'%26lt%3B', sig_ai_pattern)
+    sig_ai_pattern = re.sub(r'[\\>]', r'%26gt%3B', sig_ai_pattern)
 
     foreground_regex = r'\x1b\[91m(.*?)\x1b\[39m'
     background_regex = r'\x1b\[103m(.*?)\x1b\[49m'
@@ -1888,8 +1888,8 @@ def IPS_XAI_result():
     print(dl_sig_ai_pattern)
 
     # HTML 형태 payload 의 경우, 소괄호 치환 필요
-    dl_sig_ai_pattern = re.sub(r'[\\<]', r'&lt;', dl_sig_ai_pattern)
-    dl_sig_ai_pattern = re.sub(r'[\\>]', r'&gt;', dl_sig_ai_pattern)
+    dl_sig_ai_pattern = re.sub(r'[\\<]', r'%26lt%3B', dl_sig_ai_pattern)
+    dl_sig_ai_pattern = re.sub(r'[\\>]', r'%26gt%3B', dl_sig_ai_pattern)
 
     foreground_regex = r'\x1b\[91m(.*?)\x1b\[39m'
     background_regex = r'\x1b\[103m(.*?)\x1b\[49m'
@@ -2077,8 +2077,8 @@ def WAF_XAI_result():
 
     ##########################################################
     # raw_data_str 변수에 XSS 관련 문구가 있어서 창이 나오는 이슈 해결 
-    raw_data_str = re.sub(r'[\<]' , '&lt;', raw_data_str)
-    raw_data_str = re.sub(r'[\>]' , '&gt;', raw_data_str)
+    raw_data_str = re.sub(r'[\<]' , '%26lt%3B', raw_data_str)
+    raw_data_str = re.sub(r'[\>]' , '%26gt%3B', raw_data_str)
     ##########################################################
     
     # encode to decode
@@ -2204,8 +2204,8 @@ def WAF_XAI_result():
 
     ###################################################################
     # raw_adta_str 변수에 XSS 관련 문구 떼문에 변경한 부분 원복
-    ai_detect_list = [re.sub('&lt;', '<', x) for x in ai_detect_list]
-    ai_detect_list = [re.sub('&gt;', '>', x) for x in ai_detect_list]
+    ai_detect_list = [re.sub('%26lt%3B', '<', x) for x in ai_detect_list]
+    ai_detect_list = [re.sub('%26gt%3B', '>', x) for x in ai_detect_list]
     ###################################################################
 
     ai_feature_list = []
@@ -2526,8 +2526,8 @@ def WAF_XAI_result():
     force_html = f"<head>{shap.getjs()}</head><body>{force_plot.html()}</body>"
     
     # HTML 형태 payload 의 경우, 소괄호 치환 필요
-    sig_ai_pattern = re.sub(r'[\\<]', r'&lt;', sig_ai_pattern)
-    sig_ai_pattern = re.sub(r'[\\>]', r'&gt;', sig_ai_pattern)
+    sig_ai_pattern = re.sub(r'[\\<]', r'%26lt%3B', sig_ai_pattern)
+    sig_ai_pattern = re.sub(r'[\\>]', r'%26gt%3B', sig_ai_pattern)
 
     foreground_regex = r'\x1b\[91m(.*?)\x1b\[39m'
     background_regex = r'\x1b\[103m(.*?)\x1b\[49m'
@@ -2661,8 +2661,8 @@ def WAF_XAI_result():
     print(dl_sig_ai_pattern)
 
     # HTML 형태 payload 의 경우, 소괄호 치환 필요
-    dl_sig_ai_pattern = re.sub(r'[\\<]', r'&lt;', dl_sig_ai_pattern)
-    dl_sig_ai_pattern = re.sub(r'[\\>]', r'&gt;', dl_sig_ai_pattern)
+    dl_sig_ai_pattern = re.sub(r'[\\<]', r'%26lt%3B', dl_sig_ai_pattern)
+    dl_sig_ai_pattern = re.sub(r'[\\>]', r'%26gt%3B', dl_sig_ai_pattern)
 
     foreground_regex = r'\x1b\[91m(.*?)\x1b\[39m'
     background_regex = r'\x1b\[103m(.*?)\x1b\[49m'
@@ -2862,8 +2862,8 @@ def WEB_XAI_result():
 
     ##########################################################
     # raw_data_str 변수에 XSS 관련 문구가 있어서 창이 나오는 이슈 해결 
-    raw_data_str = re.sub(r'[\<]' , '&lt;', raw_data_str)
-    raw_data_str = re.sub(r'[\>]' , '&gt;', raw_data_str)
+    raw_data_str = re.sub(r'[\<]' , '%26lt%3B', raw_data_str)
+    raw_data_str = re.sub(r'[\>]' , '%26gt%3B', raw_data_str)
     ##########################################################
     
     # 출발지 IP 의 경우, nginx: 다음 IP 부터 시작
@@ -2988,8 +2988,8 @@ def WEB_XAI_result():
 
     ###################################################################
     # raw_adta_str 변수에 XSS 관련 문구 떼문에 변경한 부분 원복
-    ai_detect_list = [re.sub('&lt;', '<', x) for x in ai_detect_list]
-    ai_detect_list = [re.sub('&gt;', '>', x) for x in ai_detect_list]
+    ai_detect_list = [re.sub('%26lt%3B', '<', x) for x in ai_detect_list]
+    ai_detect_list = [re.sub('%26gt%3B', '>', x) for x in ai_detect_list]
     ###################################################################
 
 
@@ -3227,8 +3227,8 @@ def WEB_XAI_result():
     '''
 
     # HTML 형태 payload 의 경우, 소괄호 치환 필요
-    sig_ai_pattern = re.sub(r'[\\<]', r'&lt;', sig_ai_pattern)
-    sig_ai_pattern = re.sub(r'[\\>]', r'&gt;', sig_ai_pattern)
+    sig_ai_pattern = re.sub(r'[\\<]', r'%26lt%3B', sig_ai_pattern)
+    sig_ai_pattern = re.sub(r'[\\>]', r'%26gt%3B', sig_ai_pattern)
 
     foreground_regex = r'\x1b\[91m(.*?)\x1b\[39m'
     background_regex = r'\x1b\[103m(.*?)\x1b\[49m'
@@ -3450,8 +3450,8 @@ def WEB_XAI_result():
 
 
     # HTML 형태 payload 의 경우, 소괄호 치환 필요
-    dl_sig_ai_pattern = re.sub(r'[\\<]', r'&lt;', dl_sig_ai_pattern)
-    dl_sig_ai_pattern = re.sub(r'[\\>]', r'&gt;', dl_sig_ai_pattern)
+    dl_sig_ai_pattern = re.sub(r'[\\<]', r'%26lt%3B', dl_sig_ai_pattern)
+    dl_sig_ai_pattern = re.sub(r'[\\>]', r'%26gt%3B', dl_sig_ai_pattern)
 
     foreground_regex = r'\x1b\[91m(.*?)\x1b\[39m'
     background_regex = r'\x1b\[103m(.*?)\x1b\[49m'
