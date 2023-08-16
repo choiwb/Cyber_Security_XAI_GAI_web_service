@@ -2306,7 +2306,7 @@ def WAF_XAI_result():
         for i, attack_field in enumerate(waf_feature_value_list):
             for y in attack_field:
                 if re.findall(y, x.lower()):
-                    ai_feature_list.append(waf_feature_value_list[i])
+                    ai_feature_list.append(waf_feature_list[i])
                     ai_pattern_list.append(y)
 
     # ai_feature_list = list(itertools.chain(*ai_feature_list))
@@ -3054,7 +3054,7 @@ def WEB_XAI_result():
         for i, attack_field in enumerate(web_feature_value_list):
             for y in attack_field:
                 if re.findall(y, x.lower()):
-                    ai_feature_list.append(web_feature_value_list[i])
+                    ai_feature_list.append(web_feature_list[i])
                     ai_pattern_list.append(y)
 
 
