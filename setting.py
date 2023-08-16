@@ -806,6 +806,14 @@ ips_auth_field, ips_bof_field, ips_cmd_1_field ,ips_cmd_2_field, ips_code_field,
 ips_auth_field, ips_bof_field, ips_cmd_1_field ,ips_cmd_2_field, ips_code_field, ips_dir_1_field, ips_dir_2_field, ips_dir_count_field, ips_cgi_field, ips_wp_field, ips_error_field, ips_file_field, ips_http_method_field, ips_malware_field, ips_rce_field, ips_sql_1_field, ips_sql_2_field, ips_useragent_field, ips_php_field, ips_xss_field, ips_and_count_field, ips_semico_count_field = list(map(lambda x: [y for y in x if y != '' and y != ' '],
                                                                         [ips_auth_field, ips_bof_field, ips_cmd_1_field ,ips_cmd_2_field, ips_code_field, ips_dir_1_field, ips_dir_2_field, ips_dir_count_field, ips_cgi_field, ips_wp_field, ips_error_field, ips_file_field, ips_http_method_field, ips_malware_field, ips_rce_field, ips_sql_1_field, ips_sql_2_field, ips_useragent_field, ips_php_field, ips_xss_field, ips_and_count_field, ips_semico_count_field])) 
 
+ips_attack_feature_value_list = [
+    ips_auth_field, ips_bof_field, ips_cmd_1_field, ips_cmd_2_field,
+    ips_code_field, ips_dir_1_field, ips_dir_2_field, ips_dir_count_field,
+    ips_cgi_field, ips_wp_field, ips_error_field, ips_file_field,
+    ips_http_method_field, ips_malware_field, ips_rce_field, ips_sql_1_field,
+    ips_sql_2_field, ips_useragent_field, ips_php_field, ips_xss_field,
+    ips_and_count_field, ips_semico_count_field
+]
 
 
 # waf_query '\\n|\\r|\\t', 'http/1.' 는 제거, 단 regex = False
@@ -826,7 +834,12 @@ waf_auth_field, waf_bof_field, waf_cmd_1_field ,waf_cmd_2_field, waf_code_field,
 waf_auth_field, waf_bof_field, waf_cmd_1_field ,waf_cmd_2_field, waf_code_field, waf_dir_1_field, waf_dir_2_field, waf_dir_count_field, waf_cgi_field, waf_wp_field, waf_error_field, waf_file_field, waf_http_method_field, waf_malware_field, waf_rce_field, waf_sql_1_field, waf_sql_2_field, waf_useragent_field, waf_php_field, waf_xss_field, waf_and_count_field, waf_semico_count_field = list(map(lambda x: [y for y in x if y != '' and y != ' '],
                                                                         [waf_auth_field, waf_bof_field, waf_cmd_1_field ,waf_cmd_2_field, waf_code_field, waf_dir_1_field, waf_dir_2_field, waf_dir_count_field, waf_cgi_field, waf_wp_field, waf_error_field, waf_file_field, waf_http_method_field, waf_malware_field, waf_rce_field, waf_sql_1_field, waf_sql_2_field, waf_useragent_field, waf_php_field, waf_xss_field, waf_and_count_field, waf_semico_count_field]))  
 
-
+waf_feature_value_list = [waf_auth_field, waf_bof_field, waf_cmd_1_field ,waf_cmd_2_field, 
+                          waf_code_field, waf_dir_1_field, waf_dir_2_field, waf_dir_count_field, 
+                          waf_cgi_field, waf_wp_field, waf_error_field, waf_file_field, 
+                          waf_http_method_field, waf_malware_field, waf_rce_field, waf_sql_1_field, 
+                          waf_sql_2_field, waf_useragent_field, waf_php_field, waf_xss_field, 
+                          waf_and_count_field, waf_semico_count_field]
 
 # web_query '\\n|\\r|\\t', 'http/1.' 는 제거, 단 regex = False
 web_attack_query = web_query.replace('\\n|\\r|\\t', '').replace('http/1.', '')
@@ -843,6 +856,11 @@ web_sql_1_field, web_sql_2_field, web_sql_3_field, web_sql_4_field, web_sql_5_fi
 web_sql_1_field, web_sql_2_field, web_sql_3_field, web_sql_4_field, web_sql_5_field, web_xss_field, web_cmd_1_field, web_cmd_2_field, web_cmd_3_field, web_dir_1_field, web_dir_count_field, web_and_count_field, web_semico_count_field = list(map(lambda x: [y for y in x if y != '' and y != ' '],
                                                                         [web_sql_1_field, web_sql_2_field, web_sql_3_field, web_sql_4_field, web_sql_5_field, web_xss_field, web_cmd_1_field, web_cmd_2_field, web_cmd_3_field, web_dir_1_field, web_dir_count_field, web_and_count_field, web_semico_count_field])) 
 
+web_feature_value_list = [web_sql_1_field, web_sql_2_field, web_sql_3_field, 
+                          web_sql_4_field, web_sql_5_field, web_xss_field, 
+                          web_cmd_1_field, web_cmd_2_field, web_cmd_3_field, 
+                          web_dir_1_field, web_dir_count_field, web_and_count_field, 
+                          web_semico_count_field]
 
 
 
