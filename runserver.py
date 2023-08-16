@@ -3038,7 +3038,7 @@ def WEB_XAI_result():
             if re.findall(y, x.lower()):
                 ai_feature_list.append(web_feature_list[9])
                 ai_pattern_list.append(y)
-        for y in web_dir_count_field
+        for y in web_dir_count_field:
             if re.findall(y, x.lower()):
                 ai_feature_list.append(web_feature_list[10])
                 ai_pattern_list.append(y)
