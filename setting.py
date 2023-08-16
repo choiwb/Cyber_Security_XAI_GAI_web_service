@@ -411,7 +411,7 @@ ips_query = """
             OR INT(RLIKE(LOWER(payload), 'md5[\\%]') )>0
             OR INT(RLIKE(LOWER(payload),'md5[\\"]') )>0
             OR INT(RLIKE(LOWER(payload), '[\\"]md5') )>0
-            OR INT(RLIKE(LOWER(payload), '[\\']md5') )>0
+            OR INT(RLIKE(LOWER(payload), '[\\$](.*?)md5(.*?)hash(.*?)password') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'upload(.*?)php') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'sqlexec(.*?)php') )>0
             , 1, 0) AS ips_payload_php_comb,
@@ -608,7 +608,7 @@ waf_query = """
             OR INT(RLIKE(LOWER(payload), 'md5[\\%]') )>0
             OR INT(RLIKE(LOWER(payload),'md5[\\"]') )>0
             OR INT(RLIKE(LOWER(payload), '[\\"]md5') )>0
-            OR INT(RLIKE(LOWER(payload), '[\\']md5') )>0
+            OR INT(RLIKE(LOWER(payload), '[\\$](.*?)md5(.*?)hash(.*?)password') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'upload(.*?)php') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'sqlexec(.*?)php') )>0
             , 1, 0) AS waf_payload_php_comb,
