@@ -807,7 +807,7 @@ ips_auth_field, ips_bof_field, ips_cmd_1_field ,ips_cmd_2_field, ips_code_field,
                                                                         [ips_auth_field, ips_bof_field, ips_cmd_1_field ,ips_cmd_2_field, ips_code_field, ips_dir_1_field, ips_dir_2_field, ips_dir_count_field, ips_cgi_field, ips_wp_field, ips_error_field, ips_file_field, ips_http_method_field, ips_malware_field, ips_rce_field, ips_sql_1_field, ips_sql_2_field, ips_useragent_field, ips_php_field, ips_xss_field, ips_and_count_field, ips_semico_count_field])) 
 
 ips_field_names = [x for x in ips_attack_feature_list]
-ips_field_feature_dict = {field: feature for field, feature in zip(ips_field_names, ips_feature_list)}
+ips_field_feature_dict = {field: feature for field, feature in zip(ips_field_names, ips_attack_feature_list)}
 
 
 # waf_query '\\n|\\r|\\t', 'http/1.' 는 제거, 단 regex = False
@@ -830,6 +830,7 @@ waf_auth_field, waf_bof_field, waf_cmd_1_field ,waf_cmd_2_field, waf_code_field,
 
 waf_field_names = [x for x in waf_feature_list]
 waf_field_feature_dict = {field: feature for field, feature in zip(waf_field_names, waf_feature_list)}
+
 
 
 # web_query '\\n|\\r|\\t', 'http/1.' 는 제거, 단 regex = False
