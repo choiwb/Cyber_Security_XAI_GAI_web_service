@@ -703,8 +703,8 @@ signature_list = df['탐지 패턴'].tolist()
 # 전체 시그니처 패턴 리스트 소문자화
 signature_list = [x.lower() for x in signature_list]
 # 시그니처 패턴 리스트에서 XSS 창 실행 예외 처리를 위해 소문자 이스케이프 처리
-signature_list = [re.sub(r'[\<]' , '&lt;', x) for x in signature_list] 
-signature_list = [re.sub(r'[\>]' , '&gt;', x) for x in signature_list]
+signature_list = [re.sub(r'[\<]' , '%26lt%3B', x) for x in signature_list] 
+signature_list = [re.sub(r'[\>]' , '%26gt%3B', x) for x in signature_list]
 
 df['제조사'] = df.apply(lambda x: 'W사' if x['제조사'] == 'SPECIFIC VENDOR !!!!!!!' 
                                     else 'S사' if x['제조사'] == 'SPECIFIC VENDOR !!!!!!!'
