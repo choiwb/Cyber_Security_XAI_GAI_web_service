@@ -751,11 +751,9 @@ def highlight_text(text, signature, ai_field):
     # IPS
     if ai_field == ips_ai_field:
         # ai_field에서 useragent 제외
-        ips_not_useragent_field = [i for i in ai_field if i not in ips_useragent_field]
-        # ai_field에서 useragent 포함
-        ips_useragent_field = [i for i in ai_field if i in ips_useragent_field]
+        not_ips_useragent_field = [i for i in ai_field if i not in ips_useragent_field]
 
-        text = re.sub("(" + "|".join(ips_not_useragent_field) + ")", replacement_2, text, flags=re.I)
+        text = re.sub("(" + "|".join(not_ips_useragent_field) + ")", replacement_2, text, flags=re.I)
 
         # text.spliyt('HTTP/1.[01]')[1]에 user-agent가 있는 경우, highlight 처리
         if 'HTTP/1.1' in text and text.count('HTTP/1.1') == 1:
@@ -766,11 +764,9 @@ def highlight_text(text, signature, ai_field):
     # WAF
     elif ai_field == waf_ai_field:
         # ai_field에서 useragent 제외
-        waf_not_useragent_field = [i for i in ai_field if i not in waf_useragent_field]
-        # ai_field에서 useragent 포함
-        waf_useragent_field = [i for i in ai_field if i in waf_useragent_field]
+        not_waf_useragent_field = [i for i in ai_field if i not in waf_useragent_field]
 
-        text = re.sub("(" + "|".join(waf_not_useragent_field) + ")", replacement_2, text, flags=re.I)
+        text = re.sub("(" + "|".join(not_waf_useragent_field) + ")", replacement_2, text, flags=re.I)
 
         # text.spliyt('HTTP/1.[01]')[1]에 user-agent가 있는 경우, highlight 처리
         if 'HTTP/1.1' in text and text.count('HTTP/1.1') == 1:
