@@ -85,8 +85,8 @@ def chatbot_interface(user_message):
 
 
 def generate_text(history):
-    # generated_history = history.copy()
-    generated_history = chatbot_interface(history)
+    generated_history = history.copy()
+    # generated_history = chatbot_interface(history)
 
     def callback_func(reply):
         nonlocal generated_history
