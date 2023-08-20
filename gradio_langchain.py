@@ -10,9 +10,9 @@ import os
 import re
 
 
-os.environ["OPENAI_API_KEY"] = "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"
+os.environ["OPENAI_API_KEY"] = "YOUR OPENAI API KEY !!!!!!!"
     
-doc_reader = PdfReader('/Users/choiwb/Python_projects/이글루코퍼레이션_연구개발/Cyber_Security_XAI_GAI_web_service/chatgpt-retrieval-plugin/data/command_injection.pdf')
+doc_reader = PdfReader('SAMPLE PDF PATH !!!!!!!')
 
 
 def query_chain(question):
