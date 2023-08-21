@@ -14,84 +14,94 @@ os.environ["OPENAI_API_KEY"] = "YOUR OPENAI API KEY !!!!!!!"
     
 doc_reader = PdfReader('SAMPLE PDF PATH !!!!!!!')
 
+template = """You are a cyber security analyst. about user question, answering specifically in korean.
+            Use the following pieces of context to answer the question at the end. 
+            If you don't know the answer, just say that you don't know, don't try to make up an answer. 
+            Use three sentences maximum and keep the answer as concise as possible. 
+            {context}
+            question: {question}
+            answer: """
+QA_CHAIN_PROMPT = PromptTemplate(input_variables=["context", "question"],template=template)
 
-def query_chain(question):
-    template = """You are a cyber security analyst. about user question, answering specifically in korean.
-                Use the following pieces of context to answer the question at the end. 
-                If you don't know the answer, just say that you don't know, don't try to make up an answer. 
-                Use three sentences maximum and keep the answer as concise as possible. 
-                {context}
-                질문: {question}
-                답변: """
-    QA_CHAIN_PROMPT = PromptTemplate(input_variables=["context", "question"],template=template)
+#PDF에서 텍스트를 읽어서 raw_text변수에 저장
+raw_text = ''
 
-    #PDF에서 텍스트를 읽어서 raw_text변수에 저장
-    raw_text = ''
-
-    for i, page in enumerate(doc_reader.pages):
-        text = page.extract_text()
-        if text:
-            raw_text += text
+for i, page in enumerate(doc_reader.pages):
+    text = page.extract_text()
+    if text:
+        raw_text += text
 
 
-    #임베딩을 위해 문서를 작은 chunk로 분리해서 texts라는 변수에 나누어서 저장, chunk_overlap은 앞 chunk의 뒤에서 200까지 내용을 다시 읽어와서 저장, 즉 새 text는 800이고 200은 앞의 내용이 들어가게 됨, 숫자 바꿔서 문서에 따라 변경
-    text_splitter = CharacterTextSplitter(        
-        separator = "\n",
-        chunk_size = 1000,
-        chunk_overlap  = 200,
-        length_function = len,
-    )
+#임베딩을 위해 문서를 작은 chunk로 분리해서 texts라는 변수에 나누어서 저장, chunk_overlap은 앞 chunk의 뒤에서 200까지 내용을 다시 읽어와서 저장, 즉 새 text는 800이고 200은 앞의 내용이 들어가게 됨, 숫자 바꿔서 문서에 따라 변경
+text_splitter = CharacterTextSplitter(        
+    separator = "\n",
+    chunk_size = 1000,
+    chunk_overlap  = 200,
+    length_function = len,
+)
 
-    texts = text_splitter.split_text(raw_text)
+texts = text_splitter.split_text(raw_text)
 
-    embeddings = OpenAIEmbeddings()
-    docsearch = FAISS.from_texts(texts, embeddings)
-    docsearch.embedding_function
-    
-    retriever = docsearch.as_retriever(search_type="similarity", search_kwargs={"k":4})
+embeddings = OpenAIEmbeddings()
 
-    llm = ChatOpenAI(model_name='gpt-3.5-turbo', temperature=0.7, max_tokens=512)
-    
-    qa_chain = RetrievalQA.from_chain_type(llm,
-                                            retriever=retriever, 
-                                            return_source_documents=True,
-                                           chain_type_kwargs={"prompt": QA_CHAIN_PROMPT}
-                                           )
+################################################################################
+# 임베딩 벡터 DB 저장 & 호출
+db_save_path = "DB SAVE PATH !!!!!!!"
 
-    result = qa_chain({"query": question})
-    return result["result"]
+# docsearch = FAISS.from_texts(texts, embeddings)
+# docsearch.embedding_function
+# docsearch.save_local(os.path.join(db_save_path, "cmd_injection_index"))
 
-
+new_docsearch = FAISS.load_local(os.path.join(db_save_path, 'cmd_injection_index'), embeddings)
+retriever = new_docsearch.as_retriever(search_type="similarity", search_kwargs={"k":4})
+################################################################################
 
 conversation_history = []
+llm = ChatOpenAI(model_name='gpt-3.5-turbo', temperature=0.7, max_tokens=512)
 
-def chatbot_interface(user_message):
-    global conversation_history
+def query_chain(question):
     
-    # Record the user message in the conversation history
-    conversation_history.append(("질문: ", user_message))
+    # 질문을 대화 기록에 추가
+    conversation_history.append(("latest question: ", question))
 
-    # Implement your query_chain function or any other logic to generate the bot response
-    bot_response = query_chain(user_message)
+    # 대화 맥락 형식화: 가장 최근의 대화만 latest question, latest answer로 나머지는 priorr question, prior answer로 표시
+    if len(conversation_history) == 1:
+        print('대화 시작 !!!!!!!')
+        formatted_conversation_history = f"latest question: {question}"
+    else:
+        formatted_conversation_history = "\n".join([f"prior answer: {text}" if sender == "latest answer: " else f"prior question: {text}" for sender, text in conversation_history])
+        
+        # formatted_conversation_history의 마지막 prior question은 아래 코드 에서 정의한 latest question과 동일하므로 일단 제거 필요
+        lines = formatted_conversation_history.split('\n')
+        if lines[-1].startswith("prior question:"):
+            lines.pop()
+        formatted_conversation_history = '\n'.join(lines)
+        
+        formatted_conversation_history += f"\nlatest question: {question}"
+    print('전체 대화 맥락 기반 질문: ', formatted_conversation_history)
 
-    # Record the bot response in the conversation history
-    conversation_history.append(("답변: ", bot_response))
+    qa_chain = RetrievalQA.from_chain_type(llm,
+                                          retriever=retriever, 
+                                          return_source_documents=True,
+                                          chain_type_kwargs={"prompt": QA_CHAIN_PROMPT}
+                                           )
 
-    # Construct the conversation history text
-    conversation_text = "\n".join([f"{sender}: {text}" for sender, text in conversation_history])
+    result = qa_chain({"query": formatted_conversation_history})
+    
+    # 답변을 대화 기록에 추가
+    conversation_history.append(("latest answer: ", result["result"]))
 
-    return conversation_text
+    return result["result"]
 
 
 
 def generate_text(history):
     generated_history = history.copy()
-    # generated_history = chatbot_interface(history)
 
     def callback_func(reply):
         nonlocal generated_history
         
-        stop_re = re.compile(r'^(질문|답변):', re.MULTILINE)
+        stop_re = re.compile(r'^(latest question|latest answer|prior question|prior answer):', re.MULTILINE)
         
         if re.search(stop_re, reply):
             reply = ''.join(reply.split('\n')[:-1])
@@ -111,11 +121,11 @@ def generate_text(history):
 
 
             
-with gr.Blocks(css="#chatbot .overflow-y-auto{height:2000px} footer {visibility: hidden;}") as gradio_interface:
+with gr.Blocks(css="#chatbot .overflow-y-auto{height:5000px} footer {visibility: hidden;}") as gradio_interface:
 
     with gr.Row():
         gr.HTML(
-        """<div style="text-align: center; max-width: 2000px; margin: 0 auto; max-height: 2000px; overflow-y: hidden;">
+        """<div style="text-align: center; max-width: 2000px; margin: 0 auto; max-height: 5000px; overflow-y: hidden;">
             <div>
                 <h1>IGLOO AiR ChatBot</h1>
             </div>
@@ -156,6 +166,7 @@ with gr.Blocks(css="#chatbot .overflow-y-auto{height:2000px} footer {visibility:
     ).then(fix_history, chatbot)
 
     clear.click(lambda: None, None, chatbot, queue=False)
+
 
 
 # gradio_interface.launch()
