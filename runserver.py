@@ -748,6 +748,9 @@ def highlight_text(text, signature, ai_field):
     
     # IPS
     if ai_field == ips_ai_field:
+        # ai_field에서 'ips' element 제외
+        ai_field = [i for i in ai_field if i != 'ips']
+        
         # ai_field에서 useragent 제외
         not_ips_useragent_field = [i for i in ai_field if i not in ips_useragent_field]
 
@@ -761,6 +764,9 @@ def highlight_text(text, signature, ai_field):
     
     # WAF
     elif ai_field == waf_ai_field:
+        # ai_field에서 'waf' element 제외
+        ai_field = [i for i in ai_field if i != 'waf']
+        
         # ai_field에서 useragent 제외
         not_waf_useragent_field = [i for i in ai_field if i not in waf_useragent_field]
 
@@ -774,6 +780,9 @@ def highlight_text(text, signature, ai_field):
 
     # WEB
     else:
+        # ai_field에서 'web' element 제외
+        ai_field = [i for i in ai_field if i != 'web']
+        
         text = re.sub("(" + "|".join(ai_field) + ")", replacement_2, text, flags=re.I)
         
     # 39m 91m이 붙어 있는 경우 제거 !!!!!!!! 왜냐하면 단일처리를 위해, 빨간색 폰트 끝과 시작이 붙어 있으면 연속 키워드로 인식하기 위함.
