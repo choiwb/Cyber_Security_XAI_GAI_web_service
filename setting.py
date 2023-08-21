@@ -862,6 +862,16 @@ web_feature_value_list = [web_sql_1_field, web_sql_2_field, web_sql_3_field,
                           web_dir_1_field, web_dir_count_field, web_and_count_field, 
                           web_semico_count_field]
 
+##################################################
+# AIR 운영 시, IPS/WAF 는 달라질 것이므로, 해당 코드 제거 해도 됨.
+# ips_ai_field에 'ips' append
+ips_ai_field = ['ips'] + ips_ai_field
+# waf_ai_field에 'waf' append
+waf_ai_field = ['waf'] + waf_ai_field
+# web_ai_field에 'web' append
+web_ai_field = ['web'] + web_ai_field
+##################################################
+
 
 
 
