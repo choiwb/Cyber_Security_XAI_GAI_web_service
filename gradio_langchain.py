@@ -17,6 +17,7 @@ doc_reader = PdfReader('SAMPLE PDF PATH !!!!!!!')
 template = """You are a cyber security analyst. about user question, answering specifically in korean.
             Use the following pieces of context to answer the question at the end. 
             If you don't know the answer, just say that you don't know, don't try to make up an answer. 
+            Respond don't know to questions not related to cyber security.
             Use three sentences maximum and keep the answer as concise as possible. 
             {context}
             question: {question}
