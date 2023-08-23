@@ -12,7 +12,9 @@ import re
 
 os.environ["OPENAI_API_KEY"] = "YOUR OPENAI API KEY !!!!!!!"
     
-doc_reader = PdfReader('SAMPLE PDF PATH !!!!!!!')
+# doc_reader = PdfReader('SAMPLE PDF PATH !!!!!!!')
+with open('SAMPLE TXT PATH !!!!!!!', 'r', encoding='utf-8') as file:
+    raw_text = file.read()
 
 template = """You are a cyber security analyst. about user question, answering specifically in korean.
             Use the following pieces of context to answer the question at the end. 
@@ -25,23 +27,25 @@ template = """You are a cyber security analyst. about user question, answering s
 QA_CHAIN_PROMPT = PromptTemplate(input_variables=["context", "question"],template=template)
 
 #PDF에서 텍스트를 읽어서 raw_text변수에 저장
+'''
 raw_text = ''
 
 for i, page in enumerate(doc_reader.pages):
     text = page.extract_text()
     if text:
         raw_text += text
+'''
 
-
-#임베딩을 위해 문서를 작은 chunk로 분리해서 texts라는 변수에 나누어서 저장, chunk_overlap은 앞 chunk의 뒤에서 200까지 내용을 다시 읽어와서 저장, 즉 새 text는 800이고 200은 앞의 내용이 들어가게 됨, 숫자 바꿔서 문서에 따라 변경
 text_splitter = CharacterTextSplitter(        
-    separator = "\n",
+#    # pdf 전처리가 \n\n 으로 구성됨
+    separator = "\n\n",
     chunk_size = 1000,
     chunk_overlap  = 200,
     length_function = len,
 )
 
 texts = text_splitter.split_text(raw_text)
+
 
 embeddings = OpenAIEmbeddings()
 
@@ -53,8 +57,8 @@ db_save_path = "DB SAVE PATH !!!!!!!"
 # docsearch.embedding_function
 # docsearch.save_local(os.path.join(db_save_path, "cmd_injection_index"))
 
-new_docsearch = FAISS.load_local(os.path.join(db_save_path, 'cmd_injection_index'), embeddings)
-retriever = new_docsearch.as_retriever(search_type="similarity", search_kwargs={"k":4})
+new_docsearch = FAISS.load_local(os.path.join(db_save_path, 'mitre_attack_20230823_index'), embeddings)
+retriever = new_docsearch.as_retriever(search_type="similarity", search_kwargs={"k":5})
 ################################################################################
 
 conversation_history = []
