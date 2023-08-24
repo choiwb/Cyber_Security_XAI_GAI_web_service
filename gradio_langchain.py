@@ -16,6 +16,30 @@ os.environ["OPENAI_API_KEY"] = "YOUR OPENAI API KEY !!!!!!!"
 with open('SAMPLE TXT PATH !!!!!!!', 'r', encoding='utf-8') as file:
     raw_text = file.read()
 
+# raw_text = ''
+
+# for i, page in enumerate(doc_reader.pages):
+#     text = page.extract_text()
+#     if text:
+#         raw_text += text
+
+
+text_splitter = CharacterTextSplitter(        
+     # pdf 전처리가 \n\n 으로 구성됨
+     separator = "\n\n",
+     chunk_size = 3200,
+     chunk_overlap  = 0,
+     length_function = len,
+)
+
+texts = text_splitter.split_text(raw_text)
+
+
+embeddings = OpenAIEmbeddings()
+
+# llm = ChatOpenAI(model_name='gpt-3.5-turbo', temperature=0.7, max_tokens=512)
+llm = ChatOpenAI(model_name='gpt-3.5-turbo-16k', temperature=0, max_tokens=512)
+
 template = """You are a cyber security analyst. about user question, answering specifically in korean.
             Use the following pieces of context to answer the question at the end. 
             If you don't know the answer, just say that you don't know, don't try to make up an answer. 
@@ -26,43 +50,22 @@ template = """You are a cyber security analyst. about user question, answering s
             answer: """
 QA_CHAIN_PROMPT = PromptTemplate(input_variables=["context", "question"],template=template)
 
-#PDF에서 텍스트를 읽어서 raw_text변수에 저장
-'''
-raw_text = ''
-
-for i, page in enumerate(doc_reader.pages):
-    text = page.extract_text()
-    if text:
-        raw_text += text
-'''
-
-text_splitter = CharacterTextSplitter(        
-#    # pdf 전처리가 \n\n 으로 구성됨
-    separator = "\n\n",
-    chunk_size = 1000,
-    chunk_overlap  = 200,
-    length_function = len,
-)
-
-texts = text_splitter.split_text(raw_text)
-
-
-embeddings = OpenAIEmbeddings()
 
 ################################################################################
 # 임베딩 벡터 DB 저장 & 호출
 db_save_path = "DB SAVE PATH !!!!!!!"
 
-# docsearch = FAISS.from_texts(texts, embeddings)
-# docsearch.embedding_function
-# docsearch.save_local(os.path.join(db_save_path, "cmd_injection_index"))
+docsearch = FAISS.from_texts(texts, embeddings)
+docsearch.embedding_function
+docsearch.save_local(os.path.join(db_save_path, "cmd_injection_index"))
 
 new_docsearch = FAISS.load_local(os.path.join(db_save_path, 'mitre_attack_20230823_index'), embeddings)
 retriever = new_docsearch.as_retriever(search_type="similarity", search_kwargs={"k":5})
 ################################################################################
 
+
+
 conversation_history = []
-llm = ChatOpenAI(model_name='gpt-3.5-turbo', temperature=0.7, max_tokens=512)
 
 def query_chain(question):
     
@@ -141,7 +144,8 @@ with gr.Blocks(css="#chatbot .overflow-y-auto{height:5000px} footer {visibility:
     with gr.Row():
         with gr.Column():
             chatbot = gr.Chatbot()
-            msg = gr.Textbox(value="SQL Injection 공격에 대응하는 방법을 알려주세요.", placeholder="질문을 입력해주세요.")
+            # msg = gr.Textbox(value="SQL Injection 공격에 대응하는 방법을 알려주세요.", placeholder="질문을 입력해주세요.")
+            msg = gr.Textbox(value="Mitre Att&ck 에 대해서 설명해주세요.", placeholder="질문을 입력해주세요.")
 
             with gr.Row():
                 clear = gr.Button("Clear")
