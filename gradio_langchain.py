@@ -43,11 +43,21 @@ llm = ChatOpenAI(model_name='gpt-3.5-turbo-16k', temperature=0, max_tokens=512)
 template = """You are a cyber security analyst. about user question, answering specifically in korean.
             Use the following pieces of context to answer the question at the end. 
             If you don't know the answer, just say that you don't know, don't try to make up an answer. 
+            For questions, related to Mitre Att&ck, in the case of the relationship between Tactics ID and T-ID (Techniques ID), please find T-ID (Techniques ID) based on Tactics ID.
+            Tactics ID's like start 'TA' before 4 number.
+            T-ID (Techniques ID) like start 'T' before 4 number.
+            Tactics ID is a major category of T-ID (Techniques ID), and has an n to n relationship.
+            In particular Enterprise Tactics ID consist of 1TA0001 (Initial Access), TA0002 (Execution), TA0003 (Persistence), 
+            TA0004 (Privilege Escalation), TA0005 (Defense Evasion), TA0006 (Credential Access), TA0007 (Discovery), 
+            TA0008 (Lateral Movement), TA0009 (Collection), TA0010 (Exfiltration), TA0011 (Command and Control),
+            TA0040 (Impact), TA0042 (Resource Development), TA0043 (Reconnaissance).
             Respond don't know to questions not related to cyber security.
             Use three sentences maximum and keep the answer as concise as possible. 
             {context}
             question: {question}
             answer: """
+
+
 QA_CHAIN_PROMPT = PromptTemplate(input_variables=["context", "question"],template=template)
 
 
@@ -57,10 +67,17 @@ db_save_path = "DB SAVE PATH !!!!!!!"
 
 docsearch = FAISS.from_texts(texts, embeddings)
 docsearch.embedding_function
-docsearch.save_local(os.path.join(db_save_path, "cmd_injection_index"))
+docsearch.save_local(os.path.join(db_save_path, "mitre_attack_20230823_index"))
 
 new_docsearch = FAISS.load_local(os.path.join(db_save_path, 'mitre_attack_20230823_index'), embeddings)
-retriever = new_docsearch.as_retriever(search_type="similarity", search_kwargs={"k":5})
+retriever = new_docsearch.as_retriever(search_type="similarity", search_kwargs={"k":1})
+
+# 유사도 0.7 이상만 추출
+embeddings_filter = EmbeddingsFilter(embeddings = embeddings, similarity_threshold = 0.7)
+
+# 압축 검색기 생성
+compression_retriever = ContextualCompressionRetriever(base_compressor = embeddings_filter,
+                                                       base_retriever = retriever)
 ################################################################################
 
 
@@ -89,9 +106,12 @@ def query_chain(question):
     print('전체 대화 맥락 기반 질문: ', formatted_conversation_history)
 
     qa_chain = RetrievalQA.from_chain_type(llm,
-                                          retriever=retriever, 
+                                          # retriever=retriever, 
+                                          retriever=compression_retriever, 
+
                                           return_source_documents=True,
-                                          chain_type_kwargs={"prompt": QA_CHAIN_PROMPT}
+                                          chain_type_kwargs={"prompt": QA_CHAIN_PROMPT},
+                                          chain_type='stuff'
                                            )
 
     result = qa_chain({"query": formatted_conversation_history})
