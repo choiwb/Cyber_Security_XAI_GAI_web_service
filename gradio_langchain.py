@@ -4,10 +4,17 @@ from langchain.text_splitter import CharacterTextSplitter
 from langchain.vectorstores import FAISS
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.chat_models import ChatOpenAI
-from langchain.chains import RetrievalQA
+from langchain.chains import RetrievalQA, ConversationalRetrievalChain
 from langchain.prompts import PromptTemplate
+from langchain.memory import ConversationSummaryMemory
+from langchain.retrievers.document_compressors.embeddings_filter import EmbeddingsFilter
+from langchain.retrievers import ContextualCompressionRetriever
 import os
 import re
+import faiss
+import numpy as np
+import time
+import openai
 
 
 os.environ["OPENAI_API_KEY"] = "YOUR OPENAI API KEY !!!!!!!"
