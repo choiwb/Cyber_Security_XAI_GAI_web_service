@@ -30,15 +30,15 @@ llm = ChatOpenAI(model_name='gpt-4', temperature=0, max_tokens=512)
 # Evaluate Engagingness in the Dialogue Generation Task - Prompt
 template = """You will be given a conversation between two cyber security analyst. You will then be given one potential
             answer for the next turn in the conversation. The answer concerns an relating cyber security fact, 
-            but there are cases where it is not, which will be provided pieces of context.
+            but there are cases where it is not.
             Your task is to rate the answer on one metric.
             Please make sure you read and understand these instructions carefully. Please keep this
             conversation open while reviewing, and refer to it as needed.
             Evaluation Crieteria:
             Engagingness (1-3) Is the answer as a cyber security analyst, unprofessional/somewhat professional/very professional?
-            - A score of 1 (as a cyber security analyst, unprofessional) means that the answer comparing will be provided pieces of context is generic and unprofessional (e.g., NOT related cyber security field).
-            - A score of 2 (as a cyber security analyst, somewhat professional) means the answer comparing will be provided pieces of context is somewhat precisely and could engage you in the conversation (e.g., an opinion, thought, NOT specific number related cyber security field).
-            - A score of 3 (as a cyber security analyst, very professional) means the answer comparing will be provided pieces of context is very precisely or presents an cyber security fact and could engage you in the conversation ONLY specific number related cyber security field.
+            - A score of 1 (as a cyber security analyst, unprofessional) means that the answer is generic and unprofessional (e.g., NOT related cyber security field).
+            - A score of 2 (as a cyber security analyst, somewhat professional) means the answer is somewhat precisely and could engage you in the conversation (e.g., an opinion, thought, NOT specific number related cyber security field).
+            - A score of 3 (as a cyber security analyst, very professional) means the answer is very precisely or presents an cyber security fact and could engage you in the conversation ONLY specific number related cyber security field.
             Evaluation Steps:
             1. Read the conversation, the corresponding question and the answer carefully.
             2. Rate the answer on a scale of 1-3 for engagingness, according to the criteria above.
@@ -47,20 +47,20 @@ template = """You will be given a conversation between two cyber security analys
             question: 유튜브란 무엇이니?
             answer: 유튜브는 구글이 운영하는 동영상 공유 플랫폼입니다.
             - Engagingness: 1
-            - Explanation: 답변을 주어진 context와 비교하였을 때, 우사한 context가 없었고, 사이버 보안 분야와 관련이 없는 답변입니다.
+            - Explanation: 사이버 보안 분야와 관련이 없는 답변입니다.
             
             question: Mitre Att&ck 에 대해서 설명해주세요.
             answer: Mitre Att&ck는 공격자의 행동 기술과 기술적인 방어 기술을 분석하는 프레임 워크입니다.
             - Engagingness: 2
-            - Explanation: 답변을 주어진 context와 비교하였을 때, 우사한 context가 있었으며, 사이버 보안 분야와 관련이 있는 답변이면서, 구체적인 숫자보단, 의견, 생각을 담고 있습니다.
+            - Explanation: 사이버 보안 분야와 관련이 있는 답변이면서, 구체적인 숫자보단, 의견, 생각을 담고 있습니다.
             
             question: Enterprise tactics id는 모두 몇 개야?
             answer: 유튜브는 구글이 운영하는 동영상 공유 플랫폼입니다.
             - Engagingness: 3
-            - Explanation: 답변을 주어진 context와 비교하였을 때, 우사한 context가 있었으며, 사이버 보안 분야와 관련이 있는 답변이면서, 구체적인 숫자를 포함하고 있습니다.
+            - Explanation: 사이버 보안 분야와 관련이 있는 답변이면서, 구체적인 숫자를 포함하고 있습니다.
             
             above 3 q&a based evaluation are just examples.
-            Please compare answer to the question using the following pieces of context {context}.
+            Please evaluate following Q&A.
             question: {question}
             answer: {answer}
             Evaluation Form (scores ONLY)
@@ -69,11 +69,11 @@ template = """You will be given a conversation between two cyber security analys
             - Explanation: """
 
 
-# QA_CHAIN_PROMPT = PromptTemplate(input_variables=["context", "question", "answer"],template=template)
+# QA_CHAIN_PROMPT = PromptTemplate(input_variables=["context"],template=template)
 human_message_prompt = HumanMessagePromptTemplate(
         prompt=PromptTemplate(
             template=template,
-            input_variables=["context", "question", "answer"]
+            input_variables=["question", "answer"]
         )
     )
 chat_prompt_template = ChatPromptTemplate.from_messages([human_message_prompt])
@@ -147,32 +147,39 @@ for i in each_conversation:
     formatted_conversation.append('question: ' + i[0] + '\nanswer: ' + i[1])
 
 
-def query_chain(conversation):
+def query_chain(question, answer):
+    # conversation = f"question: {question}\nanswer: {answer}"
 
-    qa_chain = RetrievalQA.from_chain_type(llm,
-                                          retriever=compression_retriever, 
-                                          return_source_documents=True,
-                                          # chain_type_kwargs={"prompt": QA_CHAIN_PROMPT},
-                                          chain_type_kwargs={"prompt": chat_prompt_template},
+    # qa_chain = RetrievalQA.from_chain_type(llm,
+    #                                       retriever=compression_retriever, 
+    #                                       return_source_documents=True,
+    #                                       chain_type_kwargs={"prompt": QA_CHAIN_PROMPT},
+    #                                       # chain_type_kwargs={"prompt": chat_prompt_template},
 
-                                          chain_type='stuff'
-                                           )
+    #                                       chain_type='stuff'
+    #                                        )
+    # result = qa_chain({"query": conversation})
     
-    # qa_chain = LLMChain(llm=llm, prompt=chat_prompt_template)
-
-    result = qa_chain({"query": conversation})
+    qa_chain = LLMChain(llm=llm, prompt=chat_prompt_template)
+    result = qa_chain.run({"question": question, "answer": answer})
     
-    return result["result"]
+    # return result["result"]
+    return result
 
 
 eval_result = []
-for i in formatted_conversation:
-    print('!!!!!!!!!!!!!!!!!!!!!!!!!!')
-    print(i)
-    each_result = query_chain(i)
+# for i in formatted_conversation:
+for i in range(eval_df.shape[0]):
+
+    # print('!!!!!!!!!!!!!!!!!!!!!!!!!!')
+    # print(i)
+    # each_result = query_chain(i)
+    each_result = query_chain(eval_df['질문'][i], eval_df['답변'][i])
+
     print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
     print(each_result)
     eval_result.append(each_result)
 
 eval_df['대화 참여도 지표 및 근거'] = eval_result
 eval_df.to_excel('mitre_attack_qa_eval.xlsx', index=False)
+
