@@ -84,17 +84,17 @@ chat_prompt_template = ChatPromptTemplate.from_messages([human_message_prompt])
 
 ################################################################################
 # 임베딩 벡터 DB 저장 & 호출
-db_save_path = "DB SAVE PATH !!!!!!!"
+# db_save_path = "DB SAVE PATH !!!!!!!"
 
-new_docsearch = FAISS.load_local(os.path.join(db_save_path, 'mitre_attack_20230823_index'), embeddings)
-retriever = new_docsearch.as_retriever(search_type="similarity", search_kwargs={"k":1})
+# new_docsearch = FAISS.load_local(os.path.join(db_save_path, 'mitre_attack_20230823_index'), embeddings)
+# retriever = new_docsearch.as_retriever(search_type="similarity", search_kwargs={"k":1})
 
 # 유사도 0.7 이상만 추출
-embeddings_filter = EmbeddingsFilter(embeddings = embeddings, similarity_threshold = 0.7)
+# embeddings_filter = EmbeddingsFilter(embeddings = embeddings, similarity_threshold = 0.7)
 
 # 압축 검색기 생성
-compression_retriever = ContextualCompressionRetriever(base_compressor = embeddings_filter,
-                                                       base_retriever = retriever)
+# compression_retriever = ContextualCompressionRetriever(base_compressor = embeddings_filter,
+#                                                       base_retriever = retriever)
 ################################################################################
 
 # 완료된 conversation 정의 (성능 평가)
