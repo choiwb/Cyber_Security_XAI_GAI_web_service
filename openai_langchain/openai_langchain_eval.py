@@ -142,7 +142,7 @@ conversation = re.sub(r'\n(?!(question|answer))', ' ', conversation)
 eval_df = pd.DataFrame(columns = ['질문', '답변'])
 
 '''conversation의 question: ~ answer: ~ 1 쌍 씩 추출'''
-each_conversation = re.findall(r'question: (.*?)\nanswer: (.*?)\n', conversation)
+each_conversation = re.findall(r'question: (.*?)\nanswer: (.*?)', conversation)
 
 formatted_conversation = []
 for i in each_conversation:
