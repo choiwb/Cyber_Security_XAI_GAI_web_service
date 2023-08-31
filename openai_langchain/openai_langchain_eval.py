@@ -58,7 +58,7 @@ template = """You will be given a conversation between two cyber security analys
             - Explanation: 사이버 보안 분야와 관련이 있는 답변이면서, 구체적인 숫자보단, 의견, 생각을 담고 있습니다.
             
             question: Enterprise tactics id는 모두 몇 개야?
-            answer: 유튜브는 구글이 운영하는 동영상 공유 플랫폼입니다.
+            answer: 기업용 tactics id는 총 14개입니다.
             - Engagingness: 3
             - Explanation: 사이버 보안 분야와 관련이 있는 답변이면서, 구체적인 숫자를 포함하고 있습니다.
             
