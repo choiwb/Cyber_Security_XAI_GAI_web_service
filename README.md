@@ -21,5 +21,5 @@ WEB Log Detection - SQL Injection, Command Injection, XSS, normal
 -----
 - Mitre Att&ck recommandation chatbot using OpenAI based LangChain
 -----
-- TO DO: sLLM (LLaMA 2 based Vicuna 7B) based Mitre Att&ck recommandation chatbot application of llama.cpp (GGML format)
+- TO DO: sLLM (LLaMA 2 based Vicuna 7B) based Mitre Att&ck recommandation chatbot application of llama.cpp (GGML format) & Vector DB based LangChain
 
