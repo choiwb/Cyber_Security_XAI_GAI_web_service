@@ -14,10 +14,6 @@ import re
 import faiss
 import numpy as np
 import time
-import transformers
-import traceback
-from queue import Queue
-from threading import Thread
 
 
 
@@ -39,15 +35,12 @@ from threading import Thread
 
 embeddings = HuggingFaceEmbeddings()
 
-# Callbacks support token-wise streaming
-callback_manager = CallbackManager([StreamingStdOutCallbackHandler()])
-
-# Make sure the model path is correct for your system!
-
 ########################
 # apple silicon
 n_gpu_layers = 1  # Metal set to 1 is enough.
 n_batch = 8192  # Should be between 1 and n_ctx, consider the amount of RAM of your Apple Silicon Chip.
+
+callback_manager = CallbackManager([StreamingStdOutCallbackHandler()])
 
 # model_path = "models/vicuna-13b-v1.5-16k.Q4_K_M.gguf"
 model_path = "models/vicuna-7b-v1.5-16k.Q4_K_M.gguf"
@@ -60,13 +53,11 @@ llm = LlamaCpp(model_path=model_path, temperature=0, max_tokens=512,
     callback_manager=callback_manager, 
     # n_gqa=8,
     verbose=True, # Verbose is required to pass to the callback manager
-    
     # apple silicon
     f16_kv=True,  # MUST set to True, otherwise you will run into problem after a couple of calls
       n_gpu_layers=n_gpu_layers,
-    n_batch=n_batch)
-
-'''실시간 출력 !!!!!!!!!!!!!!!!!!!!!!!!'''
+    n_batch=n_batch,
+    use_mlock=True)
 
 template = """You are a cyber security analyst. about user question, answering specifically in korean.
             Use the following pieces of context to answer the question at the end. 
@@ -113,6 +104,13 @@ compression_retriever = ContextualCompressionRetriever(base_compressor = embeddi
 
 conversation_history = []
 
+qa_chain = RetrievalQA.from_chain_type(llm,
+                                        retriever=compression_retriever, 
+                                        return_source_documents=True,
+                                        chain_type_kwargs={"prompt": QA_CHAIN_PROMPT},
+                                        chain_type='stuff'
+                                        )
+    
 def query_chain(question):
     
     # 질문을 대화 기록에 추가
@@ -134,13 +132,7 @@ def query_chain(question):
         formatted_conversation_history += f"\nlatest question: {question}"
     # print('전체 대화 맥락 기반 질문: ', formatted_conversation_history)
 
-    qa_chain = RetrievalQA.from_chain_type(llm,
-                                          retriever=compression_retriever, 
-                                          return_source_documents=True,
-                                          chain_type_kwargs={"prompt": QA_CHAIN_PROMPT},
-                                          chain_type='stuff'
-                                           )
-
+    # 실시간 출력 위해 코드 수정 !!!!!!!!!!!!!!!!!!!!!
     result = qa_chain({"query": formatted_conversation_history})
     
     # 답변을 대화 기록에 추가 => 추 후, AIR 적용 시, DB 화 필요 함!!!!!
@@ -148,33 +140,6 @@ def query_chain(question):
 
     return result["result"]
     
-
-
-
-# def generate_text(history):
-#     generated_history = history.copy()
-
-#     def callback_func(reply):
-#         nonlocal generated_history
-        
-#         stop_re = re.compile(r'^(latest question|latest answer|prior question|prior answer):', re.MULTILINE)
-        
-#         if re.search(stop_re, reply):
-#             reply = ''.join(reply.split('\n')[:-1])
-#             generated_history[-1][1] = reply.strip()
-#             return generated_history
-        
-#         generated_history[-1][1] = reply.strip()
-#         return generated_history
- 
-#     # respomse는 최신 답변만 해당 !!!!!!!!!
-#     response = query_chain(generated_history[-1][0])  # Assuming the user message is the last one in history    
-    
-#     # Call the callback function with the bot response
-#     generated_history = callback_func(response)
-
-#     return generated_history
-
 
 
 def generate_text(history):
@@ -193,12 +158,14 @@ def generate_text(history):
         generated_history[-1][1] = reply.strip()
         return generated_history
  
-    def text_generator():
-        while True:
-            response = query_chain(generated_history[-1][0])  # Assuming the user message is the last one in history
-            yield callback_func(response)
-
-    return text_generator()
+    # respomse는 최신 답변만 해당 !!!!!!!!!
+    response = query_chain(generated_history[-1][0])  # Assuming the user message is the last one in history    
+        
+    history[-1][1] = ""
+    for character in response:
+        generated_history[-1][1] += str(character)
+        time.sleep(0.03)
+        yield generated_history
 
          
          
