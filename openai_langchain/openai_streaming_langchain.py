@@ -11,7 +11,6 @@ from langchain.chat_models import ChatOpenAI
 os.environ['OPENAI_API_KEY'] = "YOUR OPENAI API KEY !!!!!!!!!!!!!!!!!!!!!!!!!"
 
 data_path = 'YOUR DATA PATH !!!!!!!!!!!!!'
-tactics_path = os.path.join(data_path, 'chat_gpt_context/tactics.txt')
 sigmarule_yaml_sample_path = os.path.join(data_path, 'chat_gpt_context/sample_sigma_rule_yaml.txt')
 snortrule_sample_path = os.path.join(data_path, 'chat_gpt_context/sample_snort_rule.txt')
 
