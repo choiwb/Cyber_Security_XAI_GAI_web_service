@@ -463,7 +463,7 @@ import openai
 import multiprocessing
 
 # (개인) 유료 API 키!!!!!!!!
-openai.api_key = "YOUR OPEN AI API KEY !!!!!!!"
+os.environ['OPENAI_API_KEY'] = "YOUR OPEN AI API KEY !!!!!!!"
 
 tactics_path = 'chat_gpt_context/tactics.txt'
 waf_parsing_path = 'chat_gpt_context/waf_parsing_desc.txt'
@@ -478,132 +478,93 @@ def load_context(file_path):
 
     return context
 
-def chatgpt_init(ques_init):
-    raw_data_str, ques = ques_init
-    completion = openai.ChatCompletion.create(
-    model="gpt-3.5-turbo",
-    max_tokens=128,
-    messages=[
-        {"role": "system", "content": 'You are a security analyst.'},
-        {"role": "user", "content": raw_data_str + '. ' + ques}
-    ]
-    )
-    return completion
-
-def chatgpt_init_waf_parsing_desc(ques_init):
-    parsing_df ,ques = ques_init
-    waf_parsing_file = load_context(waf_parsing_path)
-
-    completion = openai.ChatCompletion.create(
-    model="gpt-3.5-turbo",
-    max_tokens=512,
-    messages=[
-        {"role": "system", "content": 'You are a security analyst.'},
-        {"role": "assistant", "content": waf_parsing_file},
-        {"role": "user", "content": parsing_df + '. ' + ques}
-    ]
-    )
-    return completion
-
-
-def chatgpt_init_web_parsing_desc(ques_init):
-    parsing_df ,ques = ques_init
-    web_parsing_file = load_context(web_parsing_path)
-
-    completion = openai.ChatCompletion.create(
-    model="gpt-3.5-turbo",
-    max_tokens=512,
-    messages=[
-        {"role": "system", "content": 'You are a security analyst.'},
-        {"role": "assistant", "content": web_parsing_file},
-        {"role": "user", "content": parsing_df + '. ' + ques}
-    ]
-    )
-    return completion
-
-def chatgpt_tactics(ques_init):
-    raw_data_str, ques = ques_init
-    tactics_file = load_context(tactics_path)
-    completion = openai.ChatCompletion.create(
-    model="gpt-3.5-turbo",
-    max_tokens=256,
-    messages=[
-        {"role": "system", "content": 'You are a security analyst.'},
-        {"role": "assistant", "content": tactics_file},
-        {"role": "user", "content": raw_data_str + '. ' + ques}
-    ]
-    )
-    return completion
-
-def chatgpt_continue(ques_init):
-    raw_data_str, prev_ans, ques = ques_init
-    completion = openai.ChatCompletion.create(
-    model="gpt-3.5-turbo",
-    max_tokens=256,
-    messages=[
-        {"role": "system", "content": 'You are a security analyst.'},
-        {"role": "assistant", "content": prev_ans},
-        {"role": "user", "content": raw_data_str + '. ' + ques}
-    ]
-    )
-    return completion
-
-def chatgpt_continue_snort(ques_init):
-    raw_data_str, prev_ans, ques = ques_init
-    snortrule_file = load_context(snortrule_sample_path)
-
-    completion = openai.ChatCompletion.create(
-    model="gpt-3.5-turbo",
-    max_tokens=256,
-    messages=[
-        {"role": "system", "content": 'You are a security analyst.'},
-        {"role": "assistant", "content": snortrule_file},
-        {"role": "assistant", "content": prev_ans},
-        {"role": "user", "content": raw_data_str + '. ' + ques}
-    ]
-    )
-    return completion
+base_template = """You are a cyber security analyst. about user question, answering specifically in korean.
+            Use the following pieces of payload to answer the question at the end. 
+            If you don't know the answer, just say that you don't know, don't try to make up an answer. 
+            For questions, related to Mitre Att&ck, Enterprise Tactics ID consist of 1TA0001 (Initial Access), TA0002 (Execution), TA0003 (Persistence), 
+            TA0004 (Privilege Escalation), TA0005 (Defense Evasion), TA0006 (Credential Access), TA0007 (Discovery), 
+            TA0008 (Lateral Movement), TA0009 (Collection), TA0010 (Exfiltration), TA0011 (Command and Control),
+            TA0040 (Impact), TA0042 (Resource Development), TA0043 (Reconnaissance).
+            For questions, related to CVE (Common Vulnerabilities and Exposures), Please only search for CVEs released in 2015.
+            For questions, related to Cyber Kill Chain Model, Please write only the names in order of all steps.
+            For question, related to Attack type associated with payload, there are SQL Injection, Command Injection, XSS (Cross Site Scripting), Attempt access admin page, RCE (Remote Code Execution), WordPress vulnerability, malicious bot.
+            Respond don't know to questions not related to cyber security.
+            Use three sentences maximum and keep the answer as concise as possible. 
+            payload: {payload}
+            question: {question}
+            answer: """
+            
+            
+continue_template = """You are a cyber security analyst. about user question, answering specifically in korean.
+            Use the following pieces of payload to answer the question at the end. 
+            If you don't know the answer, just say that you don't know, don't try to make up an answer. 
+            For questions, related to Mitre Att&ck, Enterprise Tactics ID consist of 1TA0001 (Initial Access), TA0002 (Execution), TA0003 (Persistence), 
+            TA0004 (Privilege Escalation), TA0005 (Defense Evasion), TA0006 (Credential Access), TA0007 (Discovery), 
+            TA0008 (Lateral Movement), TA0009 (Collection), TA0010 (Exfiltration), TA0011 (Command and Control),
+            TA0040 (Impact), TA0042 (Resource Development), TA0043 (Reconnaissance).
+            For questions, related to CVE (Common Vulnerabilities and Exposures), Please only search for CVEs released in 2015.
+            For questions, related to Cyber Kill Chain Model, Please write only the names in order of all steps.
+            For question, related to Attack type associated with payload, there are SQL Injection, Command Injection, XSS (Cross Site Scripting), Attempt access admin page, RCE (Remote Code Execution), WordPress vulnerability, malicious bot.
+            Respond don't know to questions not related to cyber security.
+            Use three sentences maximum and keep the answer as concise as possible. 
+            context: {context}
+            payload: {payload}
+            question: {question}
+            answer: """
+            
+snort_sigma_template = """You are a cyber security analyst. about user question, answering specifically in english.
+            Use the following pieces of payload to answer the question at the end. 
+            If you don't know the answer, just say that you don't know, don't try to make up an answer. 
+            For questions, related to Snort Rule or Sigma Rule, Just write rule related to Attack type associated with payload, there are SQL Injection, Command Injection, XSS (Cross Site Scripting), Attempt access admin page, RCE (Remote Code Execution), WordPress vulnerability, malicious bot, following sample Snort rule or Sigma Rule.
+            Respond don't know to questions not related to cyber security.
+            Keep the answer as concise as possible. 
+            context: {context}
+            sample snort rule or sigma rule: {sample_rule}
+            payload: {payload}
+            question: {question}
+            answer: """
+            
+xai_template = """You are a cyber security analyst. about user question, answering specifically in korean.
+            Use the following pieces of XAI feature importance to answer the question at the end. 
+            If you don't know the answer, just say that you don't know, don't try to make up an answer. 
+            For questions, related to feature importance explanation of xai, Just write based on AI detection keywords, it is associated with major attack types such as SQL Injection, Command Injection, XSS (Cross Site Scripting), Attempt access admin page, RCE (Remote Code Execution), WordPress vulnerability, malicious bot following xai feature importance.
+            Respond don't know to questions not related to cyber security.
+            Use three sentences maximum and keep the answer as concise as possible. 
+            xai feature importance: {xai_result}
+            question: {question}
+            answer: """
 
 
-def chatgpt_continue_sigma(ques_init):
-    raw_data_str, prev_ans, ques = ques_init
-    sigmarule_file = load_context(sigmarule_yaml_sample_path)
-
-    completion = openai.ChatCompletion.create(
-    model="gpt-4",
-    max_tokens=512,
-
-    messages=[
-        {"role": "system", "content": 'You are a security analyst.'},
-        {"role": "assistant", "content": sigmarule_file},
-        {"role": "assistant", "content": prev_ans},
-        {"role": "user", "content": raw_data_str + '. ' + ques}
-    ]
-    )
-    return completion
-
-################################################
-# 공격 판단 근거 기반 질의를 작성 하는 경우, 처음에 호출 후, 그 다음 질의 진행 프로세스 적용 필요 !!!!!!!
-
-# UI 상에서 공격 판단 근거 호출 되는 동안엔 더 자세히 물어보기 클릭 시, disable 시키면 됨
-# 그러나 현재 솔루션과 연계 시키는 API 호출 시, 7개 개별 API 가 사용되므로 추가 개발이 들어 가야 할 것으로 보임. 
-################################################
+BASE_CHAIN_PROMPT = PromptTemplate(input_variables=["payload", "question"],template=base_template)
+CONTINUE_CHAIN_PROMPT = PromptTemplate(input_variables=["context", "payload", "question"],template=continue_template)
+SNORT_SIGMA_CHAIN_PROMPT = PromptTemplate(input_variables=["context", "sample_rule", "payload", "question"],template=snort_sigma_template)
+XAI_CHAIN_PROMPT = PromptTemplate(input_variables=["xai_result", "question"],template=xai_template)
 
 
-def chatgpt_xai_explain(xai_result):
-    ques = '입력된 AI 예측 결과 상위 10개 피처 중요도에 대한 설명을 AI 공격 탐지 키워드 기반으로 SQL Injection, Command Injection, XSS (Cross Site Scripting), Attempt access admin page (관리자 페이지 접근 시도), RCE (Remote Code Execution), WordPress 취약점, malicious bot 총 7가지 공격 유형 중에 연관된 공격 유형 1개와 함께 보안 전문가들이 쉽게 이해할만한 설명으로 in 3 sentences 한글로 작성해주세요.'
-    completion = openai.ChatCompletion.create(
-    model="gpt-4",
-    max_tokens=512,
-    messages=[
-        {"role": "system", "content": 'You are a security analyst.'},
-        {"role": "assistant", "content": xai_result},
-        {"role": "user", "content": ques}
-    ]
-    )
-    xai_explain = completion['choices'][0]['message']['content']
 
-    return xai_explain
+callbacks = [StreamingStdOutCallbackHandler()]
+gpt35_llm = ChatOpenAI(model_name='gpt-3.5-turbo-16k', temperature=0.7, max_tokens=512, 
+                  callbacks=callbacks, streaming=True)
+gpt40_llm = ChatOpenAI(model_name='gpt-4', temperature=0.7, max_tokens=512, 
+                  callbacks=callbacks, streaming=True)
+
+
+base_llmchain = LLMChain(llm=gpt35_llm, prompt=BASE_CHAIN_PROMPT)
+continue_llmchain = LLMChain(llm=gpt35_llm, prompt=CONTINUE_CHAIN_PROMPT)
+snort_sigma_llmchain = LLMChain(llm=gpt40_llm, prompt=SNORT_SIGMA_CHAIN_PROMPT)
+xai_llmchain = LLMChain(llm=gpt40_llm, prompt=XAI_CHAIN_PROMPT)
+
+sigmarule_file = load_context(sigmarule_yaml_sample_path)
+snortrule_file = load_context(snortrule_sample_path)
+
+default_ques1 = '입력된 payload완 연관된 공격 명 1개와 판단 근거를 작성해주세요.'
+default_ques2 = '피처 중요도의 AI 탐지 키워드 기반으로 설명을 작성해주세요.'
+ques1 = '입력된 payload와 연관된 CVE 1개와 판단 근거를 작성해주세요.'
+ques2 = '입력된 payload와 연관된 Tactics ID 1개와 판단 근거를 작성해주세요.'
+ques3_0 = '입력된 payload의 Cyber Kill Chain Model을 작성해주세요.'
+ques3 = '입력된 payload와 연관된 Cyber Kill Chain 대응 단계 1개 및 대응 방안을 작성해주세요.'
+ques4 = '입력된 payload의 Snort Rule을 작성해주세요.'
+ques5 = '입력된 payload의 Sigma Rule을 작성해주세요.'
 
 
 '''
@@ -1925,116 +1886,53 @@ def IPS_XAI_result():
     try:
         # IGLOO XAI 리포트 작성
         start = time.time()
-        xai_report_html = chatgpt_xai_explain(top10_shap_values_html)
+        xai_report_html = xai_llmchain.run({'xai_result': top10_shap_values_html, 'question': default_ques2})
         end = time.time()
         print('IGLOO XAI 리포트 작성: %.2f (초)' %(end - start))
 
         # 질의 1단계
         # 공격 판단 근거, Tactics ID, 사이버 킬 체인 모델
-        def chatgpt_init_1(raw_data_str):
-            ques_init = (raw_data_str, 'SQL Injection, Command Injection, XSS (Cross Site Scripting), Attempt access admin page (관리자 페이지 접근 시도), RCE (Remote Code Execution), WordPress 취약점, malicious bot 총 7가지 공격 유형 중에 입력된 payload의 경우, 어떤 공격 유형에 해당하는지 판단 근거를 in 2 sentences 한글로 작성해주세요.')
-
-            completions_init = chatgpt_init(ques_init)
-            init_answer_string_1 = completions_init['choices'][0]['message']['content']
-            init_answer_string_1 = init_answer_string_1.lower().replace('\n', ' ')
-
-            return init_answer_string_1
-        
         start = time.time()
-        init_answer_string_1 = chatgpt_init_1(raw_data_str)
+        init_answer_string_1 = base_llmchain.run({'payload': raw_data_str, 'question': default_ques1})
         end = time.time()
         print('공격 판단 근거: %.2f (초)' % (end - start))
-
-
-        def chatgpt_init_2(raw_data_str):
-            ques_init = (raw_data_str, '2021년 4월 발표된 Mitre Att&ck v9에서 전체 14개 Enterprise Tactics ID 중 입력된 payload의 경우, TA로 시작하는 적합한 Tactics ID 1개와 설명을, in 2 sentences 한글로 작성해주세요.')
-
-            completions_init = chatgpt_tactics(ques_init)
-            init_answer_string_2 = completions_init['choices'][0]['message']['content']
-            init_answer_string_2 = init_answer_string_2.lower().replace('\n', ' ')
-
-            return init_answer_string_2
         
         start = time.time()
-        init_answer_string_2 = chatgpt_init_2(raw_data_str)
+        init_answer_string_2 = base_llmchain.run({'payload': raw_data_str, 'question': ques2})
         end = time.time()
         print('Tactics 추천: %.2f (초)' % (end - start))
-
-        def chatgpt_init_3(raw_data_str):
-            ques_init = (raw_data_str, '입력된 payload의 경우, Cyber Kill Chain Model 전체 단계의 순서대로 명칭만 작성해주세요.')
-
-            completions_init = chatgpt_init(ques_init)
-            init_answer_string_3 = completions_init['choices'][0]['message']['content']
-            init_answer_string_3 = init_answer_string_3.lower().replace('\n', ' ')
-            return init_answer_string_3
         
         start = time.time()
-        init_answer_string_3 = chatgpt_init_3(raw_data_str)
+        init_answer_string_3 = base_llmchain.run({'payload': raw_data_str, 'question': ques3_0})
         end = time.time()
         print('사이버 킬 체인 모델: %.2f (초)' % (end - start))
 
-
         # 질의 2단계
-        # Sigma Rule 추천, 사이버 킬 체인 대응 단계 추천
-        def chatgpt_continue_1(raw_data_str):
-            ques_init = (raw_data_str, init_answer_string_1, '입력된 payload의 경우, 탐지할만한, Sigma Rule 1개에 대해서 YAML format으로 작성해주세요.')
-
-            completions_continue = chatgpt_continue_sigma(ques_init)
-            continue_answer_string_1 = completions_continue['choices'][0]['message']['content']
-            continue_answer_string_1 = continue_answer_string_1.lower().replace('\n', ' ')
-            return continue_answer_string_1
-        
+        # Sigma Rule 추천, 사이버 킬 체인 대응 단계 추천        
         start = time.time()
-        continue_answer_string_1 = chatgpt_continue_1(raw_data_str)
+        continue_answer_string_1 = snort_sigma_llmchain.run({'context': init_answer_string_1, 'sample_rule': sigmarule_file, 'payload': raw_data_str, 'question': ques5})
         end = time.time()
         print('Sigma Rule 추천: %.2f (초)' % (end - start))
 
-        def chatgpt_continue_2(raw_data_str):
-            ques_init = (raw_data_str, init_answer_string_3, '입력된 payload의 경우, Cyber Kill Chain Model의 몇 번째 단계에 해당하는지, 그리고 간략한 설명을 in 2 sentences 한글로 작성해주세요.')
-
-            completions_continue = chatgpt_continue(ques_init)
-            continue_answer_string_2 = completions_continue['choices'][0]['message']['content']
-            continue_answer_string_2 = continue_answer_string_2.lower().replace('\n', ' ')
-
-            return continue_answer_string_2
-
         start = time.time()
-        continue_answer_string_2 = chatgpt_continue_2(raw_data_str)
+        continue_answer_string_2 = continue_llmchain.run({'context': init_answer_string_3, 'payload': raw_data_str, 'question': ques3})
         end = time.time()
         print('사이버 킬 체인 대응 단계 추천: %.2f (초)' % (end - start))
 
         # Snort Rule 추천, CVE 추천
-        def chatgpt_continue_3(raw_data_str):
-            ques_init = (raw_data_str, init_answer_string_1, '입력된 payload의 경우, 탐지할만한, Snort Rule을 1개 만 alert로 시작하고, rev:1;)로 끝나는 곳까지만 작성해주세요.')
-
-            completions_continue = chatgpt_continue_snort(ques_init)
-            continue_answer_string_3 = completions_continue['choices'][0]['message']['content']
-            continue_answer_string_3 = continue_answer_string_3.lower().replace('\n', ' ')
-            return continue_answer_string_3
-
         start = time.time()
-        continue_answer_string_3 = chatgpt_continue_3(raw_data_str)
+        continue_answer_string_3 = snort_sigma_llmchain.run({'context': init_answer_string_1, 'sample_rule': snortrule_file, 'payload': raw_data_str, 'question': ques4})
         end = time.time()
         print('Snort Rule 추천: %.2f (초)' % (end - start))
-
-        def chatgpt_continue_4(raw_data_str):
-            ques_init = (raw_data_str, init_answer_string_1, '입력된 payload의 경우, 2015년 이후 발표된 연관될만한 CVE (Common Vulnerabilities and Exposures) 가 있으면 해당 CVE 1개와 판단 근거를 in 2 sentences 한글로 작성해주세요.')
-
-            completions_continue = chatgpt_continue(ques_init)
-            continue_answer_string_4 = completions_continue['choices'][0]['message']['content']
-            continue_answer_string_4 = continue_answer_string_4.lower().replace('\n', ' ')
-            
-            return continue_answer_string_4
         
         start = time.time()
-        continue_answer_string_4 = chatgpt_continue_4(raw_data_str)
+        continue_answer_string_4 = continue_llmchain.run({'context': init_answer_string_1, 'payload': raw_data_str, 'question': ques1})
         end = time.time()
         print('CVE 추천: %.2f (초)' % (end - start))
-
+        
         # IGLOO XAI 딥러닝 리포트 작성
         start = time.time()
-        dl_xai_report_html = chatgpt_xai_explain(top10_dl_xai_html)
-
+        dl_xai_report_html = xai_llmchain.run({'xai_result': top10_dl_xai_html, 'question': default_ques2})
         end = time.time()
         print('IGLOO XAI 딥러닝 리포트 작성: %.2f (초)' %(end - start))
 
@@ -2697,130 +2595,64 @@ def WAF_XAI_result():
     try:
         # IGLOO XAI 리포트 작성
         start = time.time()
-        xai_report_html = chatgpt_xai_explain(top10_shap_values_html)
+        xai_report_html = xai_llmchain.run({'xai_result': top10_shap_values_html, 'question': default_ques2})
         end = time.time()
         print('IGLOO XAI 리포트 작성: %.2f (초)' %(end - start))
 
         # 질의 1단계
         # 공격 판단 근거, Tactics ID, 사이버 킬 체인 모델
-        def chatgpt_init_1(raw_data_str):
-            ques_init = (raw_data_str, 'SQL Injection, Command Injection, XSS (Cross Site Scripting), Attempt access admin page (관리자 페이지 접근 시도), RCE (Remote Code Execution), WordPress 취약점, malicious bot 총 7가지 공격 유형 중에 입력된 payload의 경우, 어떤 공격 유형에 해당하는지 판단 근거를 in 2 sentences 한글로 작성해주세요.')
-            completions_init = chatgpt_init(ques_init)
-            init_answer_string_1 = completions_init['choices'][0]['message']['content']
-            init_answer_string_1 = init_answer_string_1.lower().replace('\n', ' ')
-            return init_answer_string_1
-        
         start = time.time()
-        init_answer_string_1 = chatgpt_init_1(raw_data_str)
+        init_answer_string_1 = base_llmchain.run({'payload': raw_data_str, 'question': default_ques1})
         end = time.time()
         print('공격 판단 근거: %.2f (초)' % (end - start))
-
-
-        def chatgpt_init_2(raw_data_str):
-            ques_init = (raw_data_str, '2021년 4월 발표된 Mitre Att&ck v9에서 전체 14개 Enterprise Tactics ID 중 입력된 payload의 경우, TA로 시작하는 적합한 Tactics ID 1개와 설명을, in 2 sentences 한글로 작성해주세요.')
-            completions_init = chatgpt_tactics(ques_init)
-            init_answer_string_2 = completions_init['choices'][0]['message']['content']
-            init_answer_string_2 = init_answer_string_2.lower().replace('\n', ' ')
-            return init_answer_string_2
         
         start = time.time()
-        init_answer_string_2 = chatgpt_init_2(raw_data_str)
+        init_answer_string_2 = base_llmchain.run({'payload': raw_data_str, 'question': ques2})
         end = time.time()
         print('Tactics 추천: %.2f (초)' % (end - start))
-
-        def chatgpt_init_3(raw_data_str):
-            ques_init = (raw_data_str, '입력된 payload의 경우, Cyber Kill Chain Model 전체 단계의 순서대로 명칭만 작성해주세요.')
-            completions_init = chatgpt_init(ques_init)
-            init_answer_string_3 = completions_init['choices'][0]['message']['content']
-            init_answer_string_3 = init_answer_string_3.lower().replace('\n', ' ')
-            return init_answer_string_3
         
         start = time.time()
-        init_answer_string_3 = chatgpt_init_3(raw_data_str)
+        init_answer_string_3 = base_llmchain.run({'payload': raw_data_str, 'question': ques3_0})
         end = time.time()
         print('사이버 킬 체인 모델: %.2f (초)' % (end - start))
 
-        def chatgpt_init_4(payload_parsing_result_html):
-            ques_init = (payload_parsing_result_html, '파싱된 payload의 경우, http_method, http_url, http_query, http_version, http_body 순으로 어떤 특징이 있는지 in 3 sentences 한글로 작성해주세요.')
-            completions_init = chatgpt_init_waf_parsing_desc(ques_init)
-            init_answer_string_4 = completions_init['choices'][0]['message']['content']
-            init_answer_string_4 = init_answer_string_4.lower().replace('\n', ' ')
-            return init_answer_string_4
-        
-        start = time.time()
-        init_answer_string_4 = chatgpt_init_4(payload_parsing_result_html)
-        end = time.time()
-        print('WAF 구문 분석: %.2f (초)' % (end - start))
-
-
         # 질의 2단계
-        # Sigma Rule 추천, 사이버 킬 체인 대응 단계 추천
-        def chatgpt_continue_1(raw_data_str):
-            ques_init = (raw_data_str, init_answer_string_1, '입력된 payload의 경우, 탐지할만한, Sigma Rule 1개에 대해서 YAML format으로 작성해주세요.')
-
-            completions_continue = chatgpt_continue_sigma(ques_init)
-            continue_answer_string_1 = completions_continue['choices'][0]['message']['content']
-            continue_answer_string_1 = continue_answer_string_1.lower().replace('\n', ' ')
-            return continue_answer_string_1
-        
+        # Sigma Rule 추천, 사이버 킬 체인 대응 단계 추천        
         start = time.time()
-        continue_answer_string_1 = chatgpt_continue_1(raw_data_str)
+        continue_answer_string_1 = snort_sigma_llmchain.run({'context': init_answer_string_1, 'sample_rule': sigmarule_file, 'payload': raw_data_str, 'question': ques5})
         end = time.time()
         print('Sigma Rule 추천: %.2f (초)' % (end - start))
 
-        def chatgpt_continue_2(raw_data_str):
-            ques_init = (raw_data_str, init_answer_string_3, '입력된 payload의 경우, Cyber Kill Chain Model의 몇 번째 단계에 해당하는지, 그리고 간략한 설명을 in 2 sentences 한글로 작성해주세요.')
-            completions_continue = chatgpt_continue(ques_init)
-            continue_answer_string_2 = completions_continue['choices'][0]['message']['content']
-            continue_answer_string_2 = continue_answer_string_2.lower().replace('\n', ' ')
-            return continue_answer_string_2
-
         start = time.time()
-        continue_answer_string_2 = chatgpt_continue_2(raw_data_str)
+        continue_answer_string_2 = continue_llmchain.run({'context': init_answer_string_3, 'payload': raw_data_str, 'question': ques3})
         end = time.time()
         print('사이버 킬 체인 대응 단계 추천: %.2f (초)' % (end - start))
 
         # Snort Rule 추천, CVE 추천
-        def chatgpt_continue_3(raw_data_str):
-            ques_init = (raw_data_str, init_answer_string_1, '입력된 payload의 경우, 탐지할만한, Snort Rule을 1개 만 alert로 시작하고, rev:1;)로 끝나는 곳까지만 작성해주세요.')
-            completions_continue = chatgpt_continue_snort(ques_init)
-            continue_answer_string_3 = completions_continue['choices'][0]['message']['content']
-            continue_answer_string_3 = continue_answer_string_3.lower().replace('\n', ' ')
-            return continue_answer_string_3
-
         start = time.time()
-        continue_answer_string_3 = chatgpt_continue_3(raw_data_str)
+        continue_answer_string_3 = snort_sigma_llmchain.run({'context': init_answer_string_1, 'sample_rule': snortrule_file, 'payload': raw_data_str, 'question': ques4})
         end = time.time()
         print('Snort Rule 추천: %.2f (초)' % (end - start))
-
-        def chatgpt_continue_4(raw_data_str):
-            ques_init = (raw_data_str, init_answer_string_1, '입력된 payload의 경우, 2015년 이후 발표된 연관될만한 CVE (Common Vulnerabilities and Exposures) 가 있으면 해당 CVE 1개와 판단 근거를 in 2 sentences 한글로 작성해주세요.')
-            completions_continue = chatgpt_continue(ques_init)
-            continue_answer_string_4 = completions_continue['choices'][0]['message']['content']
-            continue_answer_string_4 = continue_answer_string_4.lower().replace('\n', ' ')
-            return continue_answer_string_4
-
-            
+        
         start = time.time()
-        continue_answer_string_4 = chatgpt_continue_4(raw_data_str)
+        continue_answer_string_4 = continue_llmchain.run({'context': init_answer_string_1, 'payload': raw_data_str, 'question': ques1})
         end = time.time()
         print('CVE 추천: %.2f (초)' % (end - start))
-
+        
         # IGLOO XAI 딥러닝 리포트 작성
         start = time.time()
-        dl_xai_report_html = chatgpt_xai_explain(top10_dl_xai_html)
+        dl_xai_report_html = xai_llmchain.run({'xai_result': top10_dl_xai_html, 'question': default_ques2})
         end = time.time()
         print('IGLOO XAI 딥러닝 리포트 작성: %.2f (초)' %(end - start))
-
 
         
         q_and_a_1_df = pd.DataFrame([
                 ['공격 판단 근거', init_answer_string_1],
             ], columns=['Question', 'Answer'])
         
-        q_and_a_2_df = pd.DataFrame([
-                ['WAF 구문 분석', init_answer_string_4],
-            ], columns=['Question', 'Answer'])
+        # q_and_a_2_df = pd.DataFrame([
+        #        ['WAF 구문 분석', init_answer_string_4],
+        #    ], columns=['Question', 'Answer'])
         
         q_and_a_3_df = pd.DataFrame([
                 ['Tactics 추천', init_answer_string_2],
@@ -2831,13 +2663,13 @@ def WAF_XAI_result():
             ], columns=['Question', 'Answer'])
         
         q_and_a_1_html = q_and_a_1_df.to_html(index=False, justify='center')
-        q_and_a_2_html = q_and_a_2_df.to_html(index=False, justify='center')
+        # q_and_a_2_html = q_and_a_2_df.to_html(index=False, justify='center')
         q_and_a_3_html = q_and_a_3_df.to_html(index=False, justify='center')
         q_and_a_3_html = q_and_a_3_html.replace('description:', '<br>description:').replace('logsource:', '<br>logsource:').replace('detection:', '<br>detection:').replace('falsepositives:', '<br>falsepositives:').replace('level:', '<br>level:')
     except:
         xai_report_html = '질의 응답 과정에서 오류가 발생했습니다.'
         q_and_a_1_html = '질의에 대한 답변을 생성하는데 실패했습니다.'
-        q_and_a_2_html = '질의에 대한 답변을 생성하는데 실패했습니다.'
+        # q_and_a_2_html = '질의에 대한 답변을 생성하는데 실패했습니다.'
         q_and_a_3_html = '질의에 대한 답변을 생성하는데 실패했습니다.'
         dl_xai_report_html = '질의에 대한 답변을 생성하는데 실패했습니다.'
 
@@ -2859,7 +2691,7 @@ def WAF_XAI_result():
                                 sig_df_html = sig_df_html,
                                 xai_report_html = xai_report_html,
                                 q_and_a_1_html = q_and_a_1_html,
-                                q_and_a_2_html = q_and_a_2_html,
+                                # q_and_a_2_html = q_and_a_2_html,
                                 q_and_a_3_html = q_and_a_3_html,                                
                                 payload_parsing_result_html = payload_parsing_result_html,
                                 payload_parsing_comment = payload_parsing_comment,
@@ -3486,120 +3318,53 @@ def WEB_XAI_result():
     try:
         # IGLOO XAI 리포트 작성
         start = time.time()
-        xai_report_html = chatgpt_xai_explain(top10_shap_values_html)
+        xai_report_html = xai_llmchain.run({'xai_result': top10_shap_values_html, 'question': default_ques2})
         end = time.time()
         print('IGLOO XAI 리포트 작성: %.2f (초)' %(end - start))
 
         # 질의 1단계
         # 공격 판단 근거, Tactics ID, 사이버 킬 체인 모델
-        def chatgpt_init_1(raw_data_str):
-            ques_init = (raw_data_str, 'SQL Injection, Command Injection, XSS (Cross Site Scripting), Attempt access admin page (관리자 페이지 접근 시도), RCE (Remote Code Execution), WordPress 취약점, malicious bot 총 7가지 공격 유형 중에 입력된 payload의 경우, 어떤 공격 유형에 해당하는지 판단 근거를 in 2 sentences 한글로 작성해주세요.')
-            completions_init = chatgpt_init(ques_init)
-            init_answer_string_1 = completions_init['choices'][0]['message']['content']
-            init_answer_string_1 = init_answer_string_1.lower().replace('\n', ' ')
-            return init_answer_string_1
-        
         start = time.time()
-        init_answer_string_1 = chatgpt_init_1(raw_data_str)
+        init_answer_string_1 = base_llmchain.run({'payload': raw_data_str, 'question': default_ques1})
         end = time.time()
         print('공격 판단 근거: %.2f (초)' % (end - start))
-
-
-        def chatgpt_init_2(raw_data_str):
-            ques_init = (raw_data_str, '2021년 4월 발표된 Mitre Att&ck v9에서 전체 14개 Enterprise Tactics ID 중 입력된 payload의 경우, TA로 시작하는 적합한 Tactics ID 1개와 설명을, in 2 sentences 한글로 작성해주세요.')
-            completions_init = chatgpt_tactics(ques_init)
-            init_answer_string_2 = completions_init['choices'][0]['message']['content']
-            init_answer_string_2 = init_answer_string_2.lower().replace('\n', ' ')
-            return init_answer_string_2
         
         start = time.time()
-        init_answer_string_2 = chatgpt_init_2(raw_data_str)
+        init_answer_string_2 = base_llmchain.run({'payload': raw_data_str, 'question': ques2})
         end = time.time()
         print('Tactics 추천: %.2f (초)' % (end - start))
-
-        def chatgpt_init_3(raw_data_str):
-            ques_init = (raw_data_str, '입력된 payload의 경우, Cyber Kill Chain Model 전체 단계의 순서대로 명칭만 작성해주세요.')
-            completions_init = chatgpt_init(ques_init)
-            init_answer_string_3 = completions_init['choices'][0]['message']['content']
-            init_answer_string_3 = init_answer_string_3.lower().replace('\n', ' ')
-            return init_answer_string_3
         
         start = time.time()
-        init_answer_string_3 = chatgpt_init_3(raw_data_str)
+        init_answer_string_3 = base_llmchain.run({'payload': raw_data_str, 'question': ques3_0})
         end = time.time()
         print('사이버 킬 체인 모델: %.2f (초)' % (end - start))
 
-        
-        def chatgpt_init_4(web_parsing_result_html):
-            ques_init = (web_parsing_result_html, '파싱된 web log의 경우, http_method, http_url, http_query, http_version, user_agent 순으로 어떤 특징이 있는지 in 3 sentences 한글로 작성해주세요.')
-            completions_init = chatgpt_init_web_parsing_desc(ques_init)
-            init_answer_string_4 = completions_init['choices'][0]['message']['content']
-            init_answer_string_4 = init_answer_string_4.lower().replace('\n', ' ')
-            return init_answer_string_4
-        
-        start = time.time()
-        init_answer_string_4 = chatgpt_init_4(web_parsing_result_html)
-        end = time.time()
-        print('WEB 구문 분석: %.2f (초)' % (end - start))
-
-
-
         # 질의 2단계
-        # Sigma Rule 추천, 사이버 킬 체인 대응 단계 추천
-        def chatgpt_continue_1(raw_data_str):
-            ques_init = (raw_data_str, init_answer_string_1, '입력된 payload의 경우, 탐지할만한, Sigma Rule 1개에 대해서 YAML format으로 작성해주세요.')
-
-            completions_continue = chatgpt_continue_sigma(ques_init)
-            continue_answer_string_1 = completions_continue['choices'][0]['message']['content']
-            continue_answer_string_1 = continue_answer_string_1.lower().replace('\n', ' ')
-            return continue_answer_string_1
-        
+        # Sigma Rule 추천, 사이버 킬 체인 대응 단계 추천        
         start = time.time()
-        continue_answer_string_1 = chatgpt_continue_1(raw_data_str)
+        continue_answer_string_1 = snort_sigma_llmchain.run({'context': init_answer_string_1, 'sample_rule': sigmarule_file, 'payload': raw_data_str, 'question': ques5})
         end = time.time()
         print('Sigma Rule 추천: %.2f (초)' % (end - start))
 
-        def chatgpt_continue_2(raw_data_str):
-            ques_init = (raw_data_str, init_answer_string_3, '입력된 payload의 경우, Cyber Kill Chain Model의 몇 번째 단계에 해당하는지, 그리고 간략한 설명을 in 2 sentences 한글로 작성해주세요.')
-            completions_continue = chatgpt_continue(ques_init)
-            continue_answer_string_2 = completions_continue['choices'][0]['message']['content']
-            continue_answer_string_2 = continue_answer_string_2.lower().replace('\n', ' ')
-            return continue_answer_string_2
-
         start = time.time()
-        continue_answer_string_2 = chatgpt_continue_2(raw_data_str)
+        continue_answer_string_2 = continue_llmchain.run({'context': init_answer_string_3, 'payload': raw_data_str, 'question': ques3})
         end = time.time()
         print('사이버 킬 체인 대응 단계 추천: %.2f (초)' % (end - start))
 
         # Snort Rule 추천, CVE 추천
-        def chatgpt_continue_3(raw_data_str):
-            ques_init = (raw_data_str, init_answer_string_1, '입력된 payload의 경우, 탐지할만한, Snort Rule을 1개 만 alert로 시작하고, rev:1;)로 끝나는 곳까지만 작성해주세요.')
-            completions_continue = chatgpt_continue_snort(ques_init)
-            continue_answer_string_3 = completions_continue['choices'][0]['message']['content']
-            continue_answer_string_3 = continue_answer_string_3.lower().replace('\n', ' ')
-            return continue_answer_string_3
-
         start = time.time()
-        continue_answer_string_3 = chatgpt_continue_3(raw_data_str)
+        continue_answer_string_3 = snort_sigma_llmchain.run({'context': init_answer_string_1, 'sample_rule': snortrule_file, 'payload': raw_data_str, 'question': ques4})
         end = time.time()
         print('Snort Rule 추천: %.2f (초)' % (end - start))
-
-        def chatgpt_continue_4(raw_data_str):
-            ques_init = (raw_data_str, init_answer_string_1, '입력된 payload의 경우, 2015년 이후 발표된 연관될만한 CVE (Common Vulnerabilities and Exposures) 가 있으면 해당 CVE 1개와 판단 근거를 in 2 sentences 한글로 작성해주세요.')
-            completions_continue = chatgpt_continue(ques_init)
-            continue_answer_string_4 = completions_continue['choices'][0]['message']['content']
-            continue_answer_string_4 = continue_answer_string_4.lower().replace('\n', ' ')
-            return continue_answer_string_4
         
         start = time.time()
-        continue_answer_string_4 = chatgpt_continue_4(raw_data_str)
+        continue_answer_string_4 = continue_llmchain.run({'context': init_answer_string_1, 'payload': raw_data_str, 'question': ques1})
         end = time.time()
         print('CVE 추천: %.2f (초)' % (end - start))
-
+        
         # IGLOO XAI 딥러닝 리포트 작성
         start = time.time()
-        dl_xai_report_html = chatgpt_xai_explain(top10_dl_xai_html)
-
+        dl_xai_report_html = xai_llmchain.run({'xai_result': top10_dl_xai_html, 'question': default_ques2})
         end = time.time()
         print('IGLOO XAI 딥러닝 리포트 작성: %.2f (초)' %(end - start))
 
@@ -3608,9 +3373,9 @@ def WEB_XAI_result():
                 ['공격 판단 근거', init_answer_string_1],
             ], columns=['Question', 'Answer'])
 
-        q_and_a_2_df = pd.DataFrame([
-                ['WEB 구문 분석', init_answer_string_4],
-            ], columns=['Question', 'Answer'])
+        # q_and_a_2_df = pd.DataFrame([
+        #        ['WEB 구문 분석', init_answer_string_4],
+        #    ], columns=['Question', 'Answer'])
         
         q_and_a_3_df = pd.DataFrame([
                 ['Tactics 추천', init_answer_string_2],
@@ -3622,14 +3387,14 @@ def WEB_XAI_result():
 
         
         q_and_a_1_html = q_and_a_1_df.to_html(index=False, justify='center')
-        q_and_a_2_html = q_and_a_2_df.to_html(index=False, justify='center')
+        # q_and_a_2_html = q_and_a_2_df.to_html(index=False, justify='center')
         q_and_a_3_html = q_and_a_3_df.to_html(index=False, justify='center')
         q_and_a_3_html = q_and_a_3_html.replace('description:', '<br>description:').replace('logsource:', '<br>logsource:').replace('detection:', '<br>detection:').replace('falsepositives:', '<br>falsepositives:').replace('level:', '<br>level:')
             
     except:
         xai_report_html = '질의 응답 과정에서 오류가 발생했습니다.'
         q_and_a_1_html = '질의 응답 과정에서 오류가 발생했습니다.'
-        q_and_a_2_html = '질의 응답 과정에서 오류가 발생했습니다.'
+        # q_and_a_2_html = '질의 응답 과정에서 오류가 발생했습니다.'
         q_and_a_3_html = '질의 응답 과정에서 오류가 발생했습니다.'
         dl_xai_report_html = '질의에 대한 답변을 생성하는데 실패했습니다.'
 
@@ -3649,7 +3414,7 @@ def WEB_XAI_result():
                                 sig_df_html = sig_df_html,
                                 xai_report_html = xai_report_html,
                                 q_and_a_1_html = q_and_a_1_html,
-                                q_and_a_2_html = q_and_a_2_html,
+                                # q_and_a_2_html = q_and_a_2_html,
                                 q_and_a_3_html = q_and_a_3_html,                                
                                 web_parsing_result_html = web_parsing_result_html,
                                 weblog_type_comment = weblog_type_comment,
