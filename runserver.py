@@ -92,7 +92,7 @@ def payload_anonymize(raw_data_str):
 
     # HOST
     # host: 또는 :// 또는 %3a%2f%2f 또는 www.  ~ .go.kr 또는 .or.kr 또는 .com 또는 .co.kr
-    host_pattern = r"(?:(?<=:\/\/)|(?<=%3a%2f%2f)|(?<=www\.)|(?<=host: ))((?!10\.10\.123\.123).*?)(?=\.go\.kr|\.or\.kr|\.com|\.co\.kr)"
+    host_pattern = r"(?i)(?:(?<=:\/\/)|(?<=%3a%2f%2f)|(?<=www\.)|(?<=host: ))((?!10\.10\.123\.123).*?)(?=\.go\.kr|\.or\.kr|\.com|\.co\.kr)"
     # host 비식별 대상
     host_anony = re.findall(host_pattern, output_str, flags = re.I)
     host_anony_str = ', '.join(host_anony)
