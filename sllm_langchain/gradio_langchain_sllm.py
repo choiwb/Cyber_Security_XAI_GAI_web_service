@@ -208,13 +208,13 @@ with gr.Blocks(title= 'IGLOO AiR ChatBot', css="#chatbot .overflow-y-auto{height
         if update_history:
             chatbot.update(history) 
 
-    msg.submit(user, [msg, chatbot], [msg, chatbot], queue=False).then(
+    msg.submit(user, [msg, chatbot], [msg, chatbot], queue=True).then(
         # generate_text 함수의 경우, 대화의 history 를 나타냄.
         generate_text, inputs=[
             chatbot
         ], outputs=[chatbot],
     ).then(fix_history, chatbot)
 
-    clear.click(lambda: None, None, chatbot, queue=False)
+    clear.click(lambda: None, None, chatbot, queue=True)
 
-gradio_interface.queue().launch(debug=True, server_name="127.0.0.1", share=True, enable_queue=True)
+gradio_interface.queue().launch(debug=True, server_name="127.0.0.1", share=True)
