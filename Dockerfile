@@ -1,7 +1,7 @@
 
 # Use python as base image
-FROM ubuntu:20.04
-FROM python:3.8.12
+FROM ubuntu:22.04.3
+FROM python:3.11.5
 
 
 # Use working directory 
@@ -9,7 +9,7 @@ WORKDIR /app
 
 # openjdk-11 설치
 RUN apt-get clean && apt-get -y update && apt-get -y upgrade
-RUN apt-get -y install openjdk-11-jdk
+RUN apt-get -y install openjdk-17-jdk
 
 COPY requirements.txt /app
 
