@@ -1,19 +1,19 @@
 - IPS model: IPS_ML_20230817.pkl
 - IPS XAI: IPS_ML_XAI_20230817.pkl
 - IPS Deep Learning: IPS_DL_20230817
-- IPS 피처 정의서: IPS_피처생성정의서_v202308.xlsx
+- IPS 피처 정의서: IPS_feature_def_v202308.xlsx
 ----
 - WAF model: WAF_ML_20230817.pkl
 - WAF XAI: WAF_ML_XAI_20230817.pkl
 - WAF model (Spark SQL + TF-IDF): DSS_WAF_sql_tfidf_LGB_20230622.pkl
 - WAF XAI (Spark SQL + TF-IDF): DSS_WAF_sql_tfidf_LGB_explainer_20230622.pkl
 - WAF Deep Learning: WAF_DL_20230817
-- WAF 피처 정의서: WAF_피처생성정의서_v202308.xlsx
+- WAF 피처 정의서: WAF_feature_def_v202308.xlsx
 ----
 - WEB model: WEB_ML_20230817.pkl
 - WEB XAI: WEB_ML_XAI_20230817.pkl
 - WEB Deep Learning: WEB_DL_20230817
-- WEB 피처 정의서: WEB_피처생성정의서_v202308.xlsx
+- WEB 피처 정의서: WEB_feature_def_v202308.xlsx
 ----
 - WEB useragent modek: DSS_WEB_useragent_LGB_20230413.pkl
 - WEB useragent TF-IDF word: useragent_tfidf_word.csv
