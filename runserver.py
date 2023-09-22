@@ -693,15 +693,15 @@ response_list = df['대응 방안'].tolist()
 
 
 # IPS & WAF & WEB 피처 설명 테이블 생성
-ips_feature_file = 'save_model/IPS_피처생성정의서_v202308.xlsx'
+ips_feature_file = 'save_model/IPS_feature_def_v202308.xlsx'
 ips_feature_df = pd.read_excel(ips_feature_file)
 ips_feature_df = ips_feature_df[['피처 명', '피처 설명']]
 
-waf_feature_file = 'save_model/WAF_피처생성정의서_v202308.xlsx'
+waf_feature_file = 'save_model/WAF_feature_def_v202308.xlsx'
 waf_feature_df = pd.read_excel(waf_feature_file)
 waf_feature_df = waf_feature_df[['피처 명', '피처 설명']]
 
-web_feature_file = 'save_model/WEB_피처생성정의서_v202308.xlsx'
+web_feature_file = 'save_model/WEB_feature_def_v202308.xlsx'
 web_feature_df = pd.read_excel(web_feature_file)
 web_feature_df = web_feature_df[['피처 명', '피처 설명']]
 
