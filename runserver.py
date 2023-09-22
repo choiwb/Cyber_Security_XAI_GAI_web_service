@@ -552,8 +552,8 @@ callbacks = [StreamingStdOutCallbackHandler()]
 #                   callbacks=callbacks, streaming=True)
 
 # gpt-3.5-turbo & gpt-4 => gpt-3.5-turbo-instruct 변경 !!!!!!!!!!!!!!!
-gpt35_instruct_llm = OpenAI(model_name='gpt-3.5-turbo-instruct', temperature=0, max_tokens=512)
-
+gpt35_instruct_llm = OpenAI(model_name='gpt-3.5-turbo-instruct', temperature=0, max_tokens=512,
+                            callbacks=callbacks, streaming=True)
 
 # base_llmchain = LLMChain(llm=gpt35_llm, prompt=BASE_CHAIN_PROMPT)
 # continue_llmchain = LLMChain(llm=gpt35_llm, prompt=CONTINUE_CHAIN_PROMPT)
