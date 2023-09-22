@@ -563,6 +563,7 @@ base_llmchain = LLMChain(llm=gpt35_instruct_llm, prompt=BASE_CHAIN_PROMPT)
 continue_llmchain = LLMChain(llm=gpt35_instruct_llm, prompt=CONTINUE_CHAIN_PROMPT)
 snort_sigma_llmchain = LLMChain(llm=gpt35_instruct_llm, prompt=SNORT_SIGMA_CHAIN_PROMPT)
 xai_llmchain = LLMChain(llm=gpt35_instruct_llm, prompt=XAI_CHAIN_PROMPT)
+
 sigmarule_file = load_context(sigmarule_yaml_sample_path)
 snortrule_file = load_context(snortrule_sample_path)
 
