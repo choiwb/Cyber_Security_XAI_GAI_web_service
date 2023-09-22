@@ -546,17 +546,23 @@ XAI_CHAIN_PROMPT = PromptTemplate(input_variables=["xai_result", "question"],tem
 
 
 callbacks = [StreamingStdOutCallbackHandler()]
-gpt35_llm = ChatOpenAI(model_name='gpt-3.5-turbo-16k', temperature=0.7, max_tokens=512, 
-                  callbacks=callbacks, streaming=True)
-gpt40_llm = ChatOpenAI(model_name='gpt-4', temperature=0.7, max_tokens=512, 
-                  callbacks=callbacks, streaming=True)
+# gpt35_llm = ChatOpenAI(model_name='gpt-3.5-turbo-16k', temperature=0.7, max_tokens=512, 
+#                   callbacks=callbacks, streaming=True)
+# gpt40_llm = ChatOpenAI(model_name='gpt-4', temperature=0.7, max_tokens=512, 
+#                   callbacks=callbacks, streaming=True)
+
+# gpt-3.5-turbo & gpt-4 => gpt-3.5-turbo-instruct 변경 !!!!!!!!!!!!!!!
+gpt35_instruct_llm = OpenAI(model_name='gpt-3.5-turbo-instruct', temperature=0, max_tokens=512,)
 
 
-base_llmchain = LLMChain(llm=gpt35_llm, prompt=BASE_CHAIN_PROMPT)
-continue_llmchain = LLMChain(llm=gpt35_llm, prompt=CONTINUE_CHAIN_PROMPT)
-snort_sigma_llmchain = LLMChain(llm=gpt40_llm, prompt=SNORT_SIGMA_CHAIN_PROMPT)
-xai_llmchain = LLMChain(llm=gpt40_llm, prompt=XAI_CHAIN_PROMPT)
-
+# base_llmchain = LLMChain(llm=gpt35_llm, prompt=BASE_CHAIN_PROMPT)
+# continue_llmchain = LLMChain(llm=gpt35_llm, prompt=CONTINUE_CHAIN_PROMPT)
+# snort_sigma_llmchain = LLMChain(llm=gpt40_llm, prompt=SNORT_SIGMA_CHAIN_PROMPT)
+# xai_llmchain = LLMChain(llm=gpt40_llm, prompt=XAI_CHAIN_PROMPT)
+base_llmchain = LLMChain(llm=gpt35_instruct_llm, prompt=BASE_CHAIN_PROMPT)
+continue_llmchain = LLMChain(llm=gpt35_instruct_llm, prompt=CONTINUE_CHAIN_PROMPT)
+snort_sigma_llmchain = LLMChain(llm=gpt35_instruct_llm, prompt=SNORT_SIGMA_CHAIN_PROMPT)
+xai_llmchain = LLMChain(llm=gpt35_instruct_llm, prompt=XAI_CHAIN_PROMPT)
 sigmarule_file = load_context(sigmarule_yaml_sample_path)
 snortrule_file = load_context(snortrule_sample_path)
 
