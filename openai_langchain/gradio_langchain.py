@@ -158,7 +158,7 @@ def generate_text(history):
     response = query_chain(generated_history[-1][0])  # Assuming the user message is the last one in history    
     
     if re.findall(stop_re, response):
-        response = ' '.join(response.split('\n')[0])
+        response = ''.join(response.split('\n')[0])
 
     history[-1][1] = ""
     for character in response:
