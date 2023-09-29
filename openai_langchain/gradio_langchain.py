@@ -152,21 +152,13 @@ def query_chain(question):
 def generate_text(history):
     generated_history = history.copy()
 
-    def callback_func(reply):
-        nonlocal generated_history
-        
-        stop_re = re.compile(r'^(latest question|latest answer|prior question|prior answer):', re.MULTILINE)
-        
-        if re.search(stop_re, reply):
-            reply = ''.join(reply.split('\n')[:-1])
-            generated_history[-1][1] = reply.strip()
-            return generated_history
-        
-        generated_history[-1][1] = reply.strip()
-        return generated_history
+    stop_re = re.compile(r'(question:)', re.MULTILINE)
  
     # respomse는 최신 답변만 해당 !!!!!!!!!
     response = query_chain(generated_history[-1][0])  # Assuming the user message is the last one in history    
+    
+    if re.findall(stop_re, response):
+        response = ' '.join(response.split('\n')[0])
 
     history[-1][1] = ""
     for character in response:
