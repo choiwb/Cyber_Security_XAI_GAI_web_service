@@ -90,6 +90,7 @@ def extract(content: str, schema: dict):
 # )
 
 # 임베딩 벡터 DB 저장 & 호출
+db_save_path = "DB SAVE PATH !!!!!!!"
 
 html2text = Html2TextTransformer()
 
