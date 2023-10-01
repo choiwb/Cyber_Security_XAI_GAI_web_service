@@ -38,6 +38,7 @@ QA_CHAIN_PROMPT = PromptTemplate(input_variables=["context", "question"],templat
 
 # (회사) 유료 API 키!!!!!!!!
 # 20230904_AIR	
+os.environ['OPENAI_API_KEY'] = "YOUR OPENAI API KEY !!!!!!!"
 
 callbacks = [StreamingStdOutCallbackHandler()]
 
