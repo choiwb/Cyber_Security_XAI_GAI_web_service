@@ -191,9 +191,21 @@ def query_chain(question):
     
     print('답변에 대한 참조 문서')
     # print(source_documents)
-    for i in range(len(result['source_documents'])):
-        print('!!!!!!!!!!!!!!!!!!!!!!')
-        print(result['source_documents'][i].page_content)
+    # for i in range(len(result['source_documents'])):
+    #     print('!!!!!!!!!!!!!!!!!!!!!!')
+    #     print(result['source_documents'][i].page_content)
+    #     docs_and_scores = new_docsearch.similarity_search_with_score(formatted_conversation_history)
+    #     '''
+    #     IndexError: list index out of range
+    #     '''
+    #     print('유사도 점수: ', docs_and_scores[i][1])
+    
+    ###############################################################################################################
+    
+    docs_and_scores = new_docsearch.similarity_search_with_score(formatted_conversation_history, k=1, fetch_k=5)
+    for doc, score in docs_and_scores:
+        print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        print(f"Content: {doc.page_content}, Metadata: {doc.metadata}, Score: {score}")
     
 
     # result = qa_llmchain({"context": source_documents, "question": formatted_conversation_history})
