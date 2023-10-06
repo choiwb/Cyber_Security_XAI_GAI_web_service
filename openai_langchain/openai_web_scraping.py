@@ -51,9 +51,20 @@ chat_llm = OpenAI(model_name='gpt-3.5-turbo-instruct', temperature=0, max_tokens
                   callbacks=callbacks, streaming=True)
 
 tactics_url = "https://attack.mitre.org/tactics/enterprise/"
+
 ta0001_url = "https://attack.mitre.org/tactics/TA0001/"
+ta0002_url = "https://attack.mitre.org/tactics/TA0002/"
+ta0003_url = "https://attack.mitre.org/tactics/TA0003/"
+ta0004_url = "https://attack.mitre.org/tactics/TA0004/"
+ta0005_url = "https://attack.mitre.org/tactics/TA0005/"
 ta0006_url = "https://attack.mitre.org/tactics/TA0006/"
+ta0007_url = "https://attack.mitre.org/tactics/TA0007/"
+ta0008_url = "https://attack.mitre.org/tactics/TA0008/"
+ta0009_url = "https://attack.mitre.org/tactics/TA0009/"
+ta0010_url = "https://attack.mitre.org/tactics/TA0010/"
 ta0011_url = "https://attack.mitre.org/tactics/TA0011/"
+ta0040_url = "https://attack.mitre.org/tactics/TA0040/"
+ta0042_url = "https://attack.mitre.org/tactics/TA0042/"
 ta0043_url = "https://attack.mitre.org/tactics/TA0043/"
 
 # Function Calling
@@ -78,16 +89,20 @@ specific_tactics_schema = {
 }
 
 def extract(content: str, schema: dict):
-    return create_extraction_chain(schema=schema, llm=scraping_llm).run(content)
+    extracted_content = create_extraction_chain(schema=schema, llm=scraping_llm).run(content)
+    return extracted_content
 
 
-# text_splitter = CharacterTextSplitter(        
-#     # { ~ } 으로 split
-#     separator = "},",
-#     chunk_size = 1000,
-#     chunk_overlap  = 200,
-#     length_function = len,
-# )
+text_splitter = CharacterTextSplitter(        
+    # 표기준의 경우 '|' 기준 split, 그대신 tactics id가 제대로 분할 안됨 !!!!!!!!
+    separator = "\|\n",
+    chunk_size = 30000, 
+    chunk_overlap  = 0,
+    length_function = len,
+    is_separator_regex=True
+)
+'''현재 지속적인 api 요청이 아닌 1번만 취합 후 요청하는 형태라 잘려서 DB에 저장됨 !!!!!!!!!!!
+예) TA0005의 경우, T-ID가 42개라 특정 T-ID만 호출되어 저장 됨.'''
 
 # 임베딩 벡터 DB 저장 & 호출
 db_save_path = "DB SAVE PATH !!!!!!!"
@@ -99,52 +114,50 @@ embeddings = OpenAIEmbeddings()
 
 def web_scraping_faiss_save(url0, *urls):
     
-    doc_count = 1
     loader = AsyncHtmlLoader(url0)
     docs = loader.load()
-    docs = html2text.transform_documents(docs)  
-    extracted_content = extract(
-        schema=tactics_schema, content=docs[0].page_content
-    )
-    total_content = extracted_content
-    print('1 번째 문서 수: %d' %(len(total_content)))
 
+    docs = html2text.transform_documents(docs)  
+    docs = text_splitter.split_documents(docs)
+
+    extracted_content = extract(
+            schema=tactics_schema, content=docs[0].page_content
+        )
+    
+    total_content = extracted_content
     
     for url in urls:
+        print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
         loader = AsyncHtmlLoader(url)
         docs = loader.load()
         docs = html2text.transform_documents(docs)  
+        docs = text_splitter.split_documents(docs)
+
         extracted_content = extract(
             schema=specific_tactics_schema, content=docs[0].page_content
         )
-        doc_count += 1  
-        print('%d 번째 문서 수: %d' %(doc_count, len(extracted_content)))
+        print(extracted_content)
         total_content += extracted_content
     
-    # Convert list of dictionaries to strings
+    # # Convert list of dictionaries to strings
     total_content = [str(item) for item in total_content]
-    
-    # for i in range(len(total_content)):
-        # print('!!!!!!!!!!!!!!!!!!!!!!')
-        # print(total_content[i])
-    print('총 문서 수' , len(total_content))
-                
+                    
     # docsearch = FAISS.from_documents(total_content, embeddings)
     docsearch = FAISS.from_texts(total_content, embeddings)
 
     docsearch.embedding_function
-    docsearch.save_local(os.path.join(db_save_path, "mitre_attack_20230930_index"))
+    docsearch.save_local(os.path.join(db_save_path, "mitre_attack_20231005_index"))
 
-    # total_content = extracted_content1 + extracted_content2
-    # return total_content
 
 # start = time.time()
-# total_content = web_scraping_faiss_save(tactics_url, ta0001_url, ta0006_url, ta0011_url, ta0043_url)
+# total_content = web_scraping_faiss_save(tactics_url, ta0001_url, ta0002_url, ta0003_url, ta0004_url, ta0005_url, ta0006_url,
+#                                         ta0007_url, ta0008_url, ta0009_url, ta0010_url, ta0011_url, ta0040_url, ta0042_url, ta0043_url
+#                                         )
 # end = time.time()
 # print('임베딩 완료 시간: %.2f (초)' %(end-start))
 
 
-new_docsearch = FAISS.load_local(os.path.join(db_save_path, 'mitre_attack_20230930_index'), embeddings)
+new_docsearch = FAISS.load_local(os.path.join(db_save_path, 'mitre_attack_20231005_index'), embeddings)
 
 retriever = new_docsearch.as_retriever(search_type="similarity", search_kwargs={"k":5})
 
