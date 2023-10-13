@@ -80,12 +80,13 @@ tactics_schema = {
 
 specific_tactics_schema = {
     "properties": {
-        "tactics_name": {"type": "string"},
-        "techniques_id": {"type": "string"},
-        "techniques_name": {"type": "string"},
-        "techniques_description": {"type": "string"}
+        "Tactics ID": {"type": "string"},
+        "Tactics name": {"type": "string"},
+        "T-ID (Techniques ID)": {"type": "string"},\
+        "Techniques Name": {"type": "string"},
+        "Techniques Description": {"type": "string"}
     },
-    "required": ["tactics_name", "techniques_id", "techniques_name", "techniques_description"],
+    "required": ["Tactics ID", "Tactics name", "T-ID (Techniques ID)",  "Techniques Name", "Techniques Description"],
 }
 
 def extract(content: str, schema: dict):
@@ -96,10 +97,14 @@ def extract(content: str, schema: dict):
 text_splitter = CharacterTextSplitter(        
     # 표기준의 경우 '|' 기준 split, 그대신 tactics id가 제대로 분할 안됨 !!!!!!!!
     separator = "\|\n",
-    chunk_size = 30000, 
+
+    # chunk_size = 30000, 
+    chunk_size = 1000, 
+
     chunk_overlap  = 0,
     length_function = len,
-    is_separator_regex=True
+    is_separator_regex=True,
+    keep_separator=True
 )
 '''현재 지속적인 api 요청이 아닌 1번만 취합 후 요청하는 형태라 잘려서 DB에 저장됨 !!!!!!!!!!!
 예) TA0005의 경우, T-ID가 42개라 특정 T-ID만 호출되어 저장 됨.'''
@@ -116,7 +121,6 @@ def web_scraping_faiss_save(url0, *urls):
     
     loader = AsyncHtmlLoader(url0)
     docs = loader.load()
-
     docs = html2text.transform_documents(docs)  
     docs = text_splitter.split_documents(docs)
 
@@ -127,21 +131,32 @@ def web_scraping_faiss_save(url0, *urls):
     total_content = extracted_content
     
     for url in urls:
-        print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
         loader = AsyncHtmlLoader(url)
         docs = loader.load()
         docs = html2text.transform_documents(docs)  
         docs = text_splitter.split_documents(docs)
 
-        extracted_content = extract(
-            schema=specific_tactics_schema, content=docs[0].page_content
-        )
-        print(extracted_content)
-        total_content += extracted_content
-    
+        for i in range(len(docs)):
+            try:
+                extracted_content = extract(
+                    schema=specific_tactics_schema, content=docs[i].page_content
+                )
+
+                total_content += extracted_content
+
+            except:
+                # try 문의 extracted_content 변수가 max token 초과 오류가 날 경우, 남겨진 token을 이어서 openai api 호출
+                remain_doc_content_len = 16384 - len(docs[i].page_content)
+                
+                extracted_content = extract(
+                    schema=specific_tactics_schema, content=docs[i].page_content[remain_doc_content_len:]
+                )
+
+                total_content += extracted_content
+
     # # Convert list of dictionaries to strings
     total_content = [str(item) for item in total_content]
-                    
+
     # docsearch = FAISS.from_documents(total_content, embeddings)
     docsearch = FAISS.from_texts(total_content, embeddings)
 
@@ -159,7 +174,7 @@ def web_scraping_faiss_save(url0, *urls):
 
 new_docsearch = FAISS.load_local(os.path.join(db_save_path, 'mitre_attack_20231005_index'), embeddings)
 
-retriever = new_docsearch.as_retriever(search_type="similarity", search_kwargs={"k":5})
+retriever = new_docsearch.as_retriever(search_type="similarity", search_kwargs={"k":3})
 
 # 유사도 0.7 이상만 추출
 embeddings_filter = EmbeddingsFilter(embeddings = embeddings, similarity_threshold = 0.7)
@@ -201,25 +216,20 @@ def query_chain(question):
     # print('전체 대화 맥락 기반 질문: ', formatted_conversation_history)
 
     result = retrieval_qa_chain({"query": formatted_conversation_history}) 
-    
-    print('답변에 대한 참조 문서')
-    # print(source_documents)
-    # for i in range(len(result['source_documents'])):
-    #     print('!!!!!!!!!!!!!!!!!!!!!!')
-    #     print(result['source_documents'][i].page_content)
-    #     docs_and_scores = new_docsearch.similarity_search_with_score(formatted_conversation_history)
-    #     '''
-    #     IndexError: list index out of range
-    #     '''
-    #     print('유사도 점수: ', docs_and_scores[i][1])
-    
+
+    for i in range(len(result['source_documents'])):
+        context = result['source_documents'][i].page_content
+        print('==================================================')
+        print('\n%d번 째 참조 문서: %s' %(i+1, context))
+        
     ###############################################################################################################
     
-    docs_and_scores = new_docsearch.similarity_search_with_score(formatted_conversation_history, k=1, fetch_k=5)
-    for doc, score in docs_and_scores:
-        print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-        print(f"Content: {doc.page_content}, Metadata: {doc.metadata}, Score: {score}")
-    
+    # docs_and_scores = new_docsearch.similarity_search_with_score(formatted_conversation_history, k=1)
+    # for doc, score in docs_and_scores:
+    #     print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+    #     # print(f"Content: {doc.page_content}, Metadata: {doc.metadata}, Score: {score}")
+    #     print("Content:", doc.page_content)
+
 
     # result = qa_llmchain({"context": source_documents, "question": formatted_conversation_history})
     # 답변을 대화 기록에 추가 => 추 후, AIR 적용 시, DB 화 필요 함!!!!!
