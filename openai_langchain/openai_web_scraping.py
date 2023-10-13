@@ -148,11 +148,16 @@ def web_scraping_faiss_save(url0, *urls):
                 # try 문의 extracted_content 변수가 max token 초과 오류가 날 경우, 남겨진 token을 이어서 openai api 호출
                 remain_doc_content_len = 16384 - len(docs[i].page_content)
                 
-                extracted_content = extract(
+                first_extracted_content = extract(
+                    schema=specific_tactics_schema, content=docs[i].page_content[:remain_doc_content_len]
+                )
+
+                second_extracted_content = extract(
                     schema=specific_tactics_schema, content=docs[i].page_content[remain_doc_content_len:]
                 )
 
-                total_content += extracted_content
+                total_content += first_extracted_content
+                total_content += second_extracted_content
 
     # # Convert list of dictionaries to strings
     total_content = [str(item) for item in total_content]
