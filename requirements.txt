@@ -1,4 +1,4 @@
-flask==2.2.2
+flask==2.3.3
 pyspark==3.4.1
 pandas==2.1.0
 openpyxl==3.0.10
