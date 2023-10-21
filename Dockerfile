@@ -25,7 +25,7 @@ COPY static /app/static
 COPY save_model /app/save_model
 COPY save_model/IPS_DL_20230817 /app/save_model/IPS_DL_20230817
 COPY save_model/WAF_DL_20230817 /app/save_model/WAF_DL_20230817
-COPY save_model/WEB_DL_20230817 /app/save_modelWEB_DL_20230817
+COPY save_model/WEB_DL_20230817 /app/save_model/WEB_DL_20230817
 COPY chat_gpt_context /app/chat_gpt_context
 
 # Install dependencies
