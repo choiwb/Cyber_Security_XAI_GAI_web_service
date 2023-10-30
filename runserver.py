@@ -18,6 +18,8 @@ from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.chat_models import ChatOpenAI
+from langchain.llms import OpenAI
+
 
 
 java_location = '/usr/lib/jvm/java-11-openjdk-amd64'
