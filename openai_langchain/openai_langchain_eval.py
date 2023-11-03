@@ -6,7 +6,8 @@ from langchain.prompts import PromptTemplate
 from langchain.retrievers.document_compressors.embeddings_filter import EmbeddingsFilter
 from langchain.retrievers import ContextualCompressionRetriever
 from langchain.prompts.chat import ChatPromptTemplate, HumanMessagePromptTemplate
-from langchain.prompts import SemanticSimilarityExampleSelector
+from langchain.memory import ConversationBufferMemory
+from langchain.llms import OpenAI
 import os
 import re
 import pandas as pd
@@ -14,32 +15,32 @@ import time
 
 
 
-os.environ["OPENAI_API_KEY"] = "YOUR OPENAI API KEY !!!!!!!"
+os.environ['OPENAI_API_KEY'] = "YOUR OPENAI API KEY !!!!!!!"
 
 embeddings = OpenAIEmbeddings()
 
 # chat 용 LLM
-chat_llm = ChatOpenAI(model_name='gpt-3.5-turbo-16k', temperature=0, max_tokens=512)
+chat_llm = OpenAI(model_name='gpt-3.5-turbo-instruct', temperature=0, max_tokens=512)
 # eval 용 LLM
 eval_llm = ChatOpenAI(model_name='gpt-4', temperature=0, max_tokens=512)
 
 # Evaluate Engagingness in the Dialogue Generation Task - Prompt
 chat_template = """You are a cyber security analyst. about user question, answering specifically in korean.
             Use the following pieces of context to answer the question at the end. 
+            You mast answer after understanding previous conversation.
             If you don't know the answer, just say that you don't know, don't try to make up an answer. 
             For questions, related to Mitre Att&ck, in the case of the relationship between Tactics ID and T-ID (Techniques ID), please find T-ID (Techniques ID) based on Tactics ID.
             Tactics ID's like start 'TA' before 4 number.
             T-ID (Techniques ID) like start 'T' before 4 number.
             Tactics ID is a major category of T-ID (Techniques ID), and has an n to n relationship.
-            In particular Enterprise Tactics ID consist of 1TA0001 (Initial Access), TA0002 (Execution), TA0003 (Persistence), 
-            TA0004 (Privilege Escalation), TA0005 (Defense Evasion), TA0006 (Credential Access), TA0007 (Discovery), 
-            TA0008 (Lateral Movement), TA0009 (Collection), TA0010 (Exfiltration), TA0011 (Command and Control),
-            TA0040 (Impact), TA0042 (Resource Development), TA0043 (Reconnaissance).
             Respond don't know to questions not related to cyber security.
             Use three sentences maximum and keep the answer as concise as possible. 
-            {context}
-            question: {question}
-            answer: """
+            context for latest answer: {context}
+            Previous conversation: 
+            {history}
+            latest question: {question}
+            latest answer: """
+
 
 eval_template = """You will be given a conversation between two cyber security analyst. You will then be given one potential
             answer for the next turn in the conversation. The answer concerns an relating cyber security fact, 
@@ -94,13 +95,11 @@ eval_template = """You will be given a conversation between two cyber security a
 
 
 
-QA_CHAIN_PROMPT_CHAT = PromptTemplate(input_variables=["context", "question"],template=chat_template)
+QA_CHAIN_PROMPT_CHAT = PromptTemplate(input_variables=["context", "history", "question"],template=chat_template)
 human_message_prompt = HumanMessagePromptTemplate(
         prompt=PromptTemplate(
             template=eval_template,
-            # input_variables=["question", "answer"]
             input_variables=["context", "question", "answer"]
-
         )
     )
 eval_prompt_template = ChatPromptTemplate.from_messages([human_message_prompt])
@@ -109,11 +108,11 @@ eval_prompt_template = ChatPromptTemplate.from_messages([human_message_prompt])
 
 ################################################################################
 # 임베딩 벡터 DB 저장 & 호출
-# db_save_path = "DB SAVE PATH !!!!!!!"
+db_save_path = "DB SAVE PATH !!!!!!!"
 
-new_docsearch = FAISS.load_local(os.path.join(db_save_path, 'mitre_attack_20230823_index'), embeddings)
-retriever = new_docsearch.as_retriever(search_type="similarity", search_kwargs={"k":1})
-
+new_docsearch = FAISS.load_local(os.path.join(db_save_path, 'mitre_attack_20231005_index'), embeddings)
+retriever = new_docsearch.as_retriever(search_type="similarity", search_kwargs={"k":3})
+            
 # 유사도 0.7 이상만 추출
 embeddings_filter = EmbeddingsFilter(embeddings = embeddings, similarity_threshold = 0.7)
 
@@ -178,40 +177,33 @@ for i in each_conversation:
     formatted_conversation.append('question: ' + i[0] + '\nanswer: ' + i[1])
 
 
-conversation_history = []
+retrieval_qa_chain = RetrievalQA.from_chain_type(chat_llm,
+                                        retriever=compression_retriever, 
+                                        return_source_documents=True,
+                                        chain_type_kwargs={
+                                            "verbose": True,
+                                            "prompt": QA_CHAIN_PROMPT_CHAT,
+                                            "memory": ConversationBufferMemory(
+                                                        memory_key="history",
+                                                        input_key="question"
+                                                        ),
+                                            },
+                                        chain_type='stuff'
+                                        )
+
 
 def query_chain_chat(question):
-    # 질문을 대화 기록에 추가
-    conversation_history.append(("latest question: ", question))
-
-    # 대화 맥락 형식화: 가장 최근의 대화만 latest question, latest answer로 나머지는 priorr question, prior answer로 표시
-    if len(conversation_history) == 1:
-        # print('대화 시작 !!!!!!!')
-        formatted_conversation_history = f"latest question: {question}"
-    else:
-        formatted_conversation_history = "\n".join([f"prior answer: {text}" if sender == "latest answer: " else f"prior question: {text}" for sender, text in conversation_history])
-        
-        # formatted_conversation_history의 마지막 prior question은 아래 코드 에서 정의한 latest question과 동일하므로 일단 제거 필요
-        lines = formatted_conversation_history.split('\n')
-        if lines[-1].startswith("prior question:"):
-            lines.pop()
-        formatted_conversation_history = '\n'.join(lines)
-        
-        formatted_conversation_history += f"\nlatest question: {question}"
-    # print('전체 대화 맥락 기반 질문: ', formatted_conversation_history)
-
-    qa_chain_chat = RetrievalQA.from_chain_type(chat_llm,
-                                          retriever=compression_retriever, 
-                                          return_source_documents=True,
-                                          chain_type_kwargs={"prompt": QA_CHAIN_PROMPT_CHAT},
-                                          chain_type='stuff'
-                                           )
-
-    result = qa_chain_chat({"query": formatted_conversation_history})
-
-    # 답변을 대화 기록에 추가 => 추 후, AIR 적용 시, DB 화 필요 함!!!!!
-    conversation_history.append(("latest answer: ", result["result"]))
     
+    result = retrieval_qa_chain({"query": question}) 
+
+    # print('대화 목록')
+    # print(retrieval_qa_chain.combine_documents_chain.memory)
+    
+    for i in range(len(result['source_documents'])):
+        context = result['source_documents'][i].page_content
+        print('==================================================')
+        print('\n%d번 째 참조 문서: %s' %(i+1, context))
+                
     return result['result']
 
 
