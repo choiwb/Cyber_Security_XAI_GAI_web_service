@@ -44,13 +44,13 @@ template = """You are a cyber security analyst. about user question, answering s
             Use three sentences maximum and keep the answer as concise as possible. 
             context for latest answer: {context}
             Previous conversation: 
-            {history}
+            {chat_history}
             latest question: {question}
             latest answer: """
 
 
 # QA_CHAIN_PROMPT = PromptTemplate(input_variables=["context", "question"],template=template)
-QA_CHAIN_PROMPT = PromptTemplate(input_variables=["context", "history", "question"],template=template)
+QA_CHAIN_PROMPT = PromptTemplate(input_variables=["context", "chat_history", "question"],template=template)
 
 
 # (회사) 유료 API 키!!!!!!!!
@@ -206,19 +206,29 @@ compression_retriever = ContextualCompressionRetriever(base_compressor = embeddi
                                                         base_retriever = retriever)
 
 
-retrieval_qa_chain = RetrievalQA.from_chain_type(chat_llm,
-                                        retriever=compression_retriever, 
-                                        return_source_documents=True,
-                                        chain_type_kwargs={
-                                            "verbose": True,
-                                            "prompt": QA_CHAIN_PROMPT,
-                                            "memory": ConversationBufferMemory(
-                                                        memory_key="history",
-                                                        input_key="question"
-                                                        ),
-                                            },
-                                        chain_type='stuff'
+# retrieval_qa_chain = RetrievalQA.from_chain_type(chat_llm,
+#                                         retriever=compression_retriever, 
+#                                         return_source_documents=True,
+#                                         chain_type_kwargs={
+#                                             "verbose": True,
+#                                             "prompt": QA_CHAIN_PROMPT,
+#                                             "memory": ConversationBufferMemory(
+#                                                         memory_key="history",
+#                                                         input_key="question"
+#                                                         ),
+#                                             },
+#                                         chain_type='stuff'
+#                                         )
+memory = ConversationBufferMemory(memory_key='chat_history', return_messages=True, input_key = "question", output_key='answer')
+retrieval_qa_chain = ConversationalRetrievalChain.from_llm(llm = chat_llm,
+                                        retriever = compression_retriever,
+                                        memory = memory,
+                                        return_source_documents = True,
+                                        combine_docs_chain_kwargs={"prompt": QA_CHAIN_PROMPT}
                                         )
+
+
+
 # qa_llmchain = LLMChain(llm=chat_llm, prompt=QA_CHAIN_PROMPT)
 
 # retrieval_qa_chain = ConversationalRetrievalChain.from_llm(chat_llm,
@@ -230,7 +240,8 @@ retrieval_qa_chain = RetrievalQA.from_chain_type(chat_llm,
 
 def query_chain(question):
 
-    result = retrieval_qa_chain({"query": question}) 
+    # result = retrieval_qa_chain({"query": question}) 
+    result = retrieval_qa_chain({"question": question}) 
 
     # print('대화 목록')
     # print(retrieval_qa_chain.combine_documents_chain.memory)
@@ -240,8 +251,8 @@ def query_chain(question):
         print('==================================================')
         print('\n%d번 째 참조 문서: %s' %(i+1, context))
 
-    return result["result"]
-
+    # return result["result"]
+    return result["answer"]
 
 
 def generate_text(history):
