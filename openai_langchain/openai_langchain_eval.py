@@ -1,7 +1,7 @@
 from langchain.vectorstores import FAISS
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.chat_models import ChatOpenAI
-from langchain.chains import RetrievalQA, LLMChain
+from langchain.chains import RetrievalQA, LLMChain, ConversationalRetrievalChain
 from langchain.prompts import PromptTemplate
 from langchain.retrievers.document_compressors.embeddings_filter import EmbeddingsFilter
 from langchain.retrievers import ContextualCompressionRetriever
@@ -39,7 +39,7 @@ chat_template = """You are a cyber security analyst. about user question, answer
             Use three sentences maximum and keep the answer as concise as possible. 
             context for latest answer: {context}
             Previous conversation: 
-            {history}
+            {chat_history}
             latest question: {question}
             latest answer: """
 
@@ -97,7 +97,7 @@ eval_template = """You will be given a conversation between two cyber security a
 
 
 
-QA_CHAIN_PROMPT_CHAT = PromptTemplate(input_variables=["context", "history", "question"],template=chat_template)
+QA_CHAIN_PROMPT_CHAT = PromptTemplate(input_variables=["context", "chat_history", "question"],template=chat_template)
 human_message_prompt = HumanMessagePromptTemplate(
         prompt=PromptTemplate(
             template=eval_template,
@@ -155,24 +155,33 @@ for i in each_conversation:
     formatted_conversation.append('question: ' + i[0] + '\nanswer: ' + i[1])
 
 
-retrieval_qa_chain = RetrievalQA.from_chain_type(chat_llm,
-                                        retriever=compression_retriever, 
-                                        return_source_documents=True,
-                                        chain_type_kwargs={
-                                            "verbose": True,
-                                            "prompt": QA_CHAIN_PROMPT_CHAT,
-                                            "memory": ConversationBufferMemory(
-                                                        memory_key="history",
-                                                        input_key="question"
-                                                        ),
-                                            },
-                                        chain_type='stuff'
+# retrieval_qa_chain = RetrievalQA.from_chain_type(chat_llm,
+#                                         retriever=compression_retriever, 
+#                                         return_source_documents=True,
+#                                         chain_type_kwargs={
+#                                             "verbose": True,
+#                                             "prompt": QA_CHAIN_PROMPT_CHAT,
+#                                             "memory": ConversationBufferMemory(
+#                                                         memory_key="history",
+#                                                         input_key="question"
+#                                                         ),
+#                                             },
+#                                         chain_type='stuff'
+#                                         )
+
+memory = ConversationBufferMemory(memory_key='chat_history', return_messages=True, input_key = "question", output_key='answer')
+retrieval_qa_chain = ConversationalRetrievalChain.from_llm(llm = chat_llm,
+                                        retriever = compression_retriever,
+                                        memory = memory,
+                                        return_source_documents = True,
+                                        combine_docs_chain_kwargs={"prompt": QA_CHAIN_PROMPT_CHAT}
                                         )
 
 
 def query_chain_chat(question):
     
-    result = retrieval_qa_chain({"query": question}) 
+    # result = retrieval_qa_chain({"query": question}) 
+    result = retrieval_qa_chain({"question": question}) 
 
     # print('대화 목록')
     # print(retrieval_qa_chain.combine_documents_chain.memory)
@@ -181,8 +190,9 @@ def query_chain_chat(question):
         context = result['source_documents'][i].page_content
         print('==================================================')
         print('\n%d번 째 참조 문서: %s' %(i+1, context))
-                
-    return result['result']
+    
+    # return result['result']
+    return result["answer"]
 
 
 def query_chain_eval(question, answer):
