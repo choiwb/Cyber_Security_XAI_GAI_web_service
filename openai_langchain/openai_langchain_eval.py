@@ -21,6 +21,8 @@ embeddings = OpenAIEmbeddings()
 
 # chat 용 LLM
 chat_llm = OpenAI(model_name='gpt-3.5-turbo-instruct', temperature=0, max_tokens=512)
+# chat_llm = ChatOpenAI(model_name='gpt-3.5-turbo-16k', temperature=0, max_tokens=512)
+
 # eval 용 LLM
 eval_llm = ChatOpenAI(model_name='gpt-4', temperature=0, max_tokens=512)
 
@@ -122,19 +124,17 @@ compression_retriever = ContextualCompressionRetriever(base_compressor = embeddi
 ################################################################################
 
 # 완료된 conversation 정의 (성능 평가)
-conversation = '''question: 피지컬갤러리 라는 유튜버는 누구야?
-answer: 운동, 헬스를 전문적으로 알려주는 유튜버 입니다.
-question: Mitre Att&ck에 대해서 설명해주세요.
+conversation = '''question: Mitre Att&ck에 대해서 설명해주세요.
 answer: Mitre Att&ck는 공격자의 행동 기술과 기술적인 방어 기술을 분석하는 프레임 워크입니다. 이 프레임 워크는 공격자가 공격을 수행하는 과정을 12가지 전략으로 분류하고, 각 전략에 대한 기술적인 기법을 제공합니다. 이를 통해 조직은 자신의 보안 상태를 평가하고, 적절한 방어 전략을 수립할 수 있습니다.
-question: Command and Control의 Tactics id를 알려줘
+question: Command and Control의 Tactics ID를 알려줘
 answer: Command and Control의 Tactics ID는 TA0011입니다.
-question: 위에서 내가 물어본 Tactics ID의 해당 T-ID (Techniques ID) 3개만 알려줘
+question: 앞서 물어본 Tactics ID에 속한 T-ID (Techniques ID) 3개만 알려줘
 answer: Tactics ID인 TA0011 (Command and Control) 에 해당하는 T-ID는 T1071 (Application Layer Protocol), T1092 (Communication Through Removable Media), T1659 (Content Injection) 입니다.
 question: 그러면 t1071 (Application Layer Protocol) 에 대해서 설명해줘
 answer: T1071은 Mitre Att&ck matrix에서 사용되는 Techniques ID로, 애플리케이션 레이어 프로토콜을 이용한 공격을 나타냅니다. 이 기법은 웹 프로토콜, 표준 애플리케이션 레이어 프로토콜, 비표준 포트, 표준 암호화 프로토콜 등을 통해 공격자가 목표 시스템에 대한 제어를 획득하는 방법을 의미합니다.
 question: 위 t-id (Techniques ID) 의 탐지 방안은?
 answer: T1071 (Application Layer Protocol)의 탐지 방안은 네트워크 트래픽 분석을 통해 애플리케이션 레이어 프로토콜을 모니터링하고, 이상한 동작이나 악성 활동을 탐지하는 것입니다. T1071.001 (Web Protocols)의 탐지 방안은 웹 프로토콜을 모니터링하고, 악성 웹 트래픽이나 악성 웹사이트 접근을 탐지하는 것입니다. T1071.002 (Standard Application Layer Protocol)의 탐지 방안은 표준 애플리케이션 레이어 프로토콜을 모니터링하고, 악성 활동이나 이상한 동작을 탐지하는 것입니다.
-question: 대응방안도 알려줘
+question: 대응 방안도 알려줘
 answer: T1071 (Application Layer Protocol)의 대응 방안은 네트워크 트래픽 분석을 통해 애플리케이션 레이어 프로토콜을 모니터링하고, 이상한 동작이나 악성 활동을 탐지하여 차단하는 것입니다. T1071.001 (Web Protocols)의 대응 방안은 웹 프로토콜을 모니터링하고, 악성 웹 트래픽이나 악성 웹사이트 접근을 차단하는 것입니다. T1071.002 (Standard Application Layer Protocol)의 대응 방안은 표준 애플리케이션 레이어 프로토콜을 모니터링하고, 악성 활동이나 이상한 동작을 탐지하여 차단하는 것입니다.
 question: garbage
 answer: garbage
