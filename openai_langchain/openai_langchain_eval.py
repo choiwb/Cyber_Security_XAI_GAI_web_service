@@ -126,35 +126,13 @@ conversation = '''question: 피지컬갤러리 라는 유튜버는 누구야?
 answer: 운동, 헬스를 전문적으로 알려주는 유튜버 입니다.
 question: Mitre Att&ck에 대해서 설명해주세요.
 answer: Mitre Att&ck는 공격자의 행동 기술과 기술적인 방어 기술을 분석하는 프레임 워크입니다. 이 프레임 워크는 공격자가 공격을 수행하는 과정을 12가지 전략으로 분류하고, 각 전략에 대한 기술적인 기법을 제공합니다. 이를 통해 조직은 자신의 보안 상태를 평가하고, 적절한 방어 전략을 수립할 수 있습니다.
-question: Enterprise tactics id는 모두 몇 개야?
-answer: Enterprise tactics id는 총 4개입니다.
-question: 뭐 뭐 있어?
-answer: Mitre Att&ck matrix의 Enterprise Tactics ID에는 다음과 같은 전략이 있습니다:
-1. TA0001 (Initial Access)
-2. TA0002 (Execution)
-3. TA0003 (Persistence)
-4. TA0004 (Privilege Escalation)
-5. TA0005 (Defense Evasion)
-6. TA0006 (Credential Access)
-7. TA0007 (Discovery)
-8. TA0008 (Lateral Movement)
-9. TA0009 (Collection)
-10. TA0010 (Exfiltration)
-11. TA0011 (Command and Control)
-12. TA0040 (Impact)
-13. TA0042 (Resource Development)
-14. TA0043 (Reconnaissance)
 question: Command and Control의 Tactics id를 알려줘
 answer: Command and Control의 Tactics ID는 TA0011입니다.
-question: 위에서 내가 물어본 Tactics ID의 해당 T-ID 3개만 알려줘
-answer: Tactics ID인 TA0007(Discovery)에 해당하는 T-ID는 T1016 (System Network Configuration Discovery), T1018 (Remote System Discovery), T1046 (Network Service Scanning)입니다.
-question: command and control의 t-id 3개만 알려줘
-answer: Command and Control의 Tactics ID인 TA0011에 해당하는 T-ID는 T1071 (Application Layer Protocol), T1071.001 (Web Protocols), T1071.002 (Standard Application Layer Protocol)입니다.
-question: T1071 이건 t-id가 맞는데, t1071.001, t1071.002는 t-id의 하위 t-id 야, t-id 2개만 다른걸로 더 추천해줘
-answer: T1071의 T-ID는 T1071.001 (Web Protocols)과 T1071.002 (Standard Application Layer Protocol)입니다. 다른 T-ID로는 T1071.003 (Non-Standard Port)과 T1071.004 (Standard Cryptographic Protocol)를 추천합니다.
-question: 그러면 t1071에 대해서 설명해줘
+question: 위에서 내가 물어본 Tactics ID의 해당 T-ID (Techniques ID) 3개만 알려줘
+answer: Tactics ID인 TA0011 (Command and Control) 에 해당하는 T-ID는 T1071 (Application Layer Protocol), T1092 (Communication Through Removable Media), T1659 (Content Injection) 입니다.
+question: 그러면 t1071 (Application Layer Protocol) 에 대해서 설명해줘
 answer: T1071은 Mitre Att&ck matrix에서 사용되는 Techniques ID로, 애플리케이션 레이어 프로토콜을 이용한 공격을 나타냅니다. 이 기법은 웹 프로토콜, 표준 애플리케이션 레이어 프로토콜, 비표준 포트, 표준 암호화 프로토콜 등을 통해 공격자가 목표 시스템에 대한 제어를 획득하는 방법을 의미합니다.
-question: 위 t-id의 탐지 방안은?
+question: 위 t-id (Techniques ID) 의 탐지 방안은?
 answer: T1071 (Application Layer Protocol)의 탐지 방안은 네트워크 트래픽 분석을 통해 애플리케이션 레이어 프로토콜을 모니터링하고, 이상한 동작이나 악성 활동을 탐지하는 것입니다. T1071.001 (Web Protocols)의 탐지 방안은 웹 프로토콜을 모니터링하고, 악성 웹 트래픽이나 악성 웹사이트 접근을 탐지하는 것입니다. T1071.002 (Standard Application Layer Protocol)의 탐지 방안은 표준 애플리케이션 레이어 프로토콜을 모니터링하고, 악성 활동이나 이상한 동작을 탐지하는 것입니다.
 question: 대응방안도 알려줘
 answer: T1071 (Application Layer Protocol)의 대응 방안은 네트워크 트래픽 분석을 통해 애플리케이션 레이어 프로토콜을 모니터링하고, 이상한 동작이나 악성 활동을 탐지하여 차단하는 것입니다. T1071.001 (Web Protocols)의 대응 방안은 웹 프로토콜을 모니터링하고, 악성 웹 트래픽이나 악성 웹사이트 접근을 차단하는 것입니다. T1071.002 (Standard Application Layer Protocol)의 대응 방안은 표준 애플리케이션 레이어 프로토콜을 모니터링하고, 악성 활동이나 이상한 동작을 탐지하여 차단하는 것입니다.
