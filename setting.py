@@ -17,7 +17,7 @@ SERVER_IP = '0.0.0.0'
 PORT = 17171
 
 
-# 2023/08/17 IPS 모델 - Light GBM
+# 2023/11 IPS 모델 - Light GBM
 IPS_model_path = 'save_model/IPS_KISA_ML_202311.pkl'
 # 위 모델을, SHAP의 TreeExplainer 연산 및 저장
 IPS_explainer_path = 'save_model/IPS_KISA_ML_XAI_202311.pkl'
@@ -25,7 +25,7 @@ IPS_explainer_path = 'save_model/IPS_KISA_ML_XAI_202311.pkl'
 IPS_model = pickle.load(open(IPS_model_path, 'rb'))
 
 
-# 2023/08/17 WAF 모델 - Light GBM
+# 2023/11 WAF 모델 - Light GBM
 WAF_model_path = 'save_model/WAF_KISA_ML_202311.pkl'
 # 2023/06/22 WAF 모델 - Light GBM (Spark SQL 피처 & TF-IDF 피처)
 # new_WAF_model_path = 'save_model/DSS_WAF_sql_tfidf_LGB_20230622.pkl'
@@ -182,7 +182,7 @@ web_masker = shap.maskers.Text(tokenizer = r"(\s|%20|\+|\/|%2f|HTTP/1.1|\?|\n|\r
 ####################################################################################
 
 
-# 2023/08/17 WEB 모델 - Light GBM
+# 2023/11 WEB 모델 - Light GBM
 WEB_model_path = 'save_model/WEB_KISA_ML_202311.pkl'
 # 위 모델을, SHAP의 TreeExplainer 연산 및 저장
 WEB_explainer_path = 'save_model/WEB_KISA_ML_XAI_202311.pkl'
