@@ -23,9 +23,9 @@ COPY shap_explainer_save.py /app
 COPY templates /app/templates
 COPY static /app/static
 COPY save_model /app/save_model
-COPY save_model/IPS_DL_20230817 /app/save_model/IPS_KISA_DL_202311
-COPY save_model/WAF_DL_20230817 /app/save_model/WAF_KISA_DL_202311
-COPY save_model/WEB_DL_20230817 /app/save_model/WEB_KISA_DL_202311
+COPY save_model/IPS_KISA_DL_202311 /app/save_model/IPS_KISA_DL_202311
+COPY save_model/WAF_KISA_DL_202311 /app/save_model/WAF_KISA_DL_202311
+COPY save_model/WEB_KISA_DL_202311 /app/save_model/WEB_KISA_DL_202311
 COPY chat_gpt_context /app/chat_gpt_context
 
 # Install dependencies
