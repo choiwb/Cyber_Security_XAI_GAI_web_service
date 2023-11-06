@@ -9,8 +9,8 @@ waf_explainer = shap.TreeExplainer(WAF_model)
 web_explainer = shap.TreeExplainer(WEB_model)
 
 
-pickle.dump(ips_explainer, open(os.path.join(explainer_save_path, 'IPS_ML_XAI_20230817.pkl'), 'wb'))
-pickle.dump(waf_explainer, open(os.path.join(explainer_save_path, 'WAF_ML_XAI_20230817.pkl'), 'wb'))
+pickle.dump(ips_explainer, open(os.path.join(explainer_save_path, 'IPS_KISA_ML_XAI_202311.pkl'), 'wb'))
+pickle.dump(waf_explainer, open(os.path.join(explainer_save_path, 'WAF_KISA_ML_XAI_202311.pkl'), 'wb'))
 # pickle.dump(waf_explainer, open(os.path.join(explainer_save_path, 'DSS_WAF_sql_tfidf_LGB_explainer_20230622.pkl'), 'wb'))
 
-pickle.dump(web_explainer, open(os.path.join(explainer_save_path, 'WEB_ML_XAI_20230817.pkl'), 'wb'))
+pickle.dump(web_explainer, open(os.path.join(explainer_save_path, 'WEB_KISA_ML_XAI_202311.pkl'), 'wb'))
