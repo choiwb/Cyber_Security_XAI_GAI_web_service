@@ -695,15 +695,15 @@ response_list = df['대응 방안'].tolist()
 
 
 # IPS & WAF & WEB 피처 설명 테이블 생성
-ips_feature_file = 'save_model/IPS_feature_def_v202308.xlsx'
+ips_feature_file = 'save_model/IPS_KISA_feature_def_202311.xlsx'
 ips_feature_df = pd.read_excel(ips_feature_file)
 ips_feature_df = ips_feature_df[['피처 명', '피처 설명']]
 
-waf_feature_file = 'save_model/WAF_feature_def_v202308.xlsx'
+waf_feature_file = 'save_model/WAF_KISA_feature_def_202311.xlsx'
 waf_feature_df = pd.read_excel(waf_feature_file)
 waf_feature_df = waf_feature_df[['피처 명', '피처 설명']]
 
-web_feature_file = 'save_model/WEB_feature_def_v202308.xlsx'
+web_feature_file = 'save_model/WEB_KISA_feature_def_202311.xlsx'
 web_feature_df = pd.read_excel(web_feature_file)
 web_feature_df = web_feature_df[['피처 명', '피처 설명']]
 
@@ -1530,7 +1530,7 @@ def IPS_XAI_result():
         for i, attack_field in enumerate(ips_attack_feature_value_list):
             for y in attack_field:
                 if re.findall(y, x.lower()):
-                    ai_feature_list.append(ips_attack_feature_list[i])
+                    ai_feature_list.append(ips_feature_list[i])
                     ai_pattern_list.append(y)
 
     # ai_feature_list = list(itertools.chain(*ai_feature_list))
@@ -1589,11 +1589,11 @@ def IPS_XAI_result():
         else:
             first_fv_result = '정상 인식'
             first_statement = '%s 가 %s 하였습니다.' %(first_feature, first_fv_result)
-    elif first_feature == ips_whitelist_feature:
-        if first_fv == 1:
-            first_statement = '로그 전송이 1건 이하 임에 따라 공격일 가능성이 있습니다.'     
-        else:
-            first_statement = '로그 전송이 2건 이상 임에 따라 정상 입니다.'
+    # elif first_feature == ips_whitelist_feature:
+    #     if first_fv == 1:
+    #         first_statement = '로그 전송이 1건 이하 임에 따라 공격일 가능성이 있습니다.'     
+    #     else:
+    #         first_statement = '로그 전송이 2건 이상 임에 따라 정상 입니다.'
     elif first_feature == ips_attack_and_conti_feature or first_feature == ips_attack_semico_conti_feature:
         if 'ampersand' in first_feature.lower():
             first_statement = '& 특수문자가 총 %d건 입니다.' %(first_fv)
@@ -1609,11 +1609,11 @@ def IPS_XAI_result():
         else:
             second_fv_result = '정상 인식'
             second_statement = '%s 가 %s 하였습니다.' %(second_feature, second_fv_result)
-    elif second_feature == ips_whitelist_feature:
-        if second_fv == 1:
-            second_statement = '로그 전송이 1건 이하 임에 따라 공격일 가능성이 있습니다.'     
-        else:
-            second_statement = '로그 전송이 2건 이상 임에 따라 정상 입니다.'
+    # elif second_feature == ips_whitelist_feature:
+    #     if second_fv == 1:
+    #         second_statement = '로그 전송이 1건 이하 임에 따라 공격일 가능성이 있습니다.'     
+    #     else:
+    #         second_statement = '로그 전송이 2건 이상 임에 따라 정상 입니다.'
     elif second_feature == ips_attack_and_conti_feature or second_feature == ips_attack_semico_conti_feature:
         if 'ampersand' in second_feature.lower():
             second_statement = '& 특수문자가 총 %d건 입니다.' %(second_fv)
@@ -1629,11 +1629,11 @@ def IPS_XAI_result():
         else:
             third_fv_result = '정상 인식'
             third_statement = '%s 가 %s 하였습니다.' %(third_feature, third_fv_result)
-    elif third_feature == ips_whitelist_feature:
-        if third_fv == 1:
-            third_statement = '로그 전송이 1건 이하 임에 따라 공격일 가능성이 있습니다.'     
-        else:
-            third_statement = '로그 전송이 2건 이상 임에 따라 정상 입니다.'
+    # elif third_feature == ips_whitelist_feature:
+    #     if third_fv == 1:
+    #         third_statement = '로그 전송이 1건 이하 임에 따라 공격일 가능성이 있습니다.'     
+    #     else:
+    #         third_statement = '로그 전송이 2건 이상 임에 따라 정상 입니다.'
     elif third_feature == ips_attack_and_conti_feature or third_feature == ips_attack_semico_conti_feature:
         if 'ampersand' in third_feature.lower():
             third_statement = '& 특수문자가 총 %d건 입니다.' %(third_fv)
