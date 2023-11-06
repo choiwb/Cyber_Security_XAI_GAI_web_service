@@ -225,16 +225,8 @@ retrieval_qa_chain = ConversationalRetrievalChain.from_llm(llm = chat_llm,
                                         combine_docs_chain_kwargs={"prompt": QA_CHAIN_PROMPT}
                                         )
 
-
-
 # qa_llmchain = LLMChain(llm=chat_llm, prompt=QA_CHAIN_PROMPT)
 
-# retrieval_qa_chain = ConversationalRetrievalChain.from_llm(chat_llm,
-#                                         retriever=compression_retriever, 
-#                                         return_source_documents=True,
-#                                         chain_type_kwargs={"prompt": QA_CHAIN_PROMPT},
-#                                         chain_type='stuff'
-#                                         )
 
 def query_chain(question):
 
