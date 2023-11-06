@@ -1582,7 +1582,7 @@ def IPS_XAI_result():
 
 
    
-    if first_feature != ips_whitelist_feature and first_feature != ips_attack_dir_conti_feature and first_feature != ips_attack_and_conti_feature and first_feature != ips_attack_semico_conti_feature:
+    if first_feature != ips_attack_dir_conti_feature and first_feature != ips_attack_and_conti_feature and first_feature != ips_attack_semico_conti_feature:
         if first_fv == 1:
             first_fv_result = '공격 탐지'
             first_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(first_feature, first_fv_result, first_word)
@@ -1602,7 +1602,7 @@ def IPS_XAI_result():
     else:
         first_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % first_fv       
 
-    if second_feature != ips_whitelist_feature and second_feature != ips_attack_dir_conti_feature and second_feature != ips_attack_and_conti_feature and second_feature != ips_attack_semico_conti_feature:
+    if second_feature != ips_attack_dir_conti_feature and second_feature != ips_attack_and_conti_feature and second_feature != ips_attack_semico_conti_feature:
         if second_fv == 1:
             second_fv_result = '공격 탐지'
             second_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(second_feature, second_fv_result, second_word)
@@ -1622,7 +1622,7 @@ def IPS_XAI_result():
     else:
         second_statement = '상위 디렉토리 접근이 총 %s건 입니다.' % second_fv      
 
-    if third_feature != ips_whitelist_feature and third_feature != ips_attack_dir_conti_feature and third_feature != ips_attack_and_conti_feature and third_feature != ips_attack_semico_conti_feature:
+    if third_feature != ips_attack_dir_conti_feature and third_feature != ips_attack_and_conti_feature and third_feature != ips_attack_semico_conti_feature:
         if third_fv == 1:
             third_fv_result = '공격 탐지'
             third_statement = '%s 가 %s 하였고 AI 탐지 키워드는 %s 입니다.'  %(third_feature, third_fv_result, third_word)
