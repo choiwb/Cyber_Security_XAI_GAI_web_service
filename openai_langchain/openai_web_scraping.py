@@ -123,8 +123,6 @@ text_splitter = CharacterTextSplitter(
     is_separator_regex=True,
     keep_separator=True
 )
-'''현재 지속적인 api 요청이 아닌 1번만 취합 후 요청하는 형태라 잘려서 DB에 저장됨 !!!!!!!!!!!
-예) TA0005의 경우, T-ID가 42개라 특정 T-ID만 호출되어 저장 됨.'''
 
 # 임베딩 벡터 DB 저장 & 호출
 db_save_path = "DB SAVE PATH !!!!!!!"
