@@ -265,7 +265,6 @@ ips_query = """
             , 1, 0) AS ips_payload_bof_comb,
 
         IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cgi(.*?)bin') )>0
-            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cgi(.*?)cgi') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'count(.*?)cgi(.*?)http') )>0
             OR INT(RLIKE(LOWER(payload), '[\\.]cgi') )>0
             OR INT(RLIKE(LOWER(payload), 'search(.*?)cgi') )>0
@@ -273,9 +272,7 @@ ips_query = """
             OR INT(RLIKE(LOWER(payload), 'web(.*?)store(.*?)cgi') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'count(.*?)cgi(.*?)http') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'msadc(.*?)dll(.*?)http') )>0
-            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cgi(.*?)cgi(.*?)cgimail(.*?)exe') )>0
-            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cgi(.*?)cgi(.*?)fpcount(.*?)exe') )>0
-            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cgi(.*?)cgi(.*?)rguest(.*?)exe') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cgi(.*?)cgi(.*?)exe') )>0
             , 1, 0) AS ips_payload_cgi_comb,
 
         IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'designart[\\_]site[\\=][^a-zA-Z0-9가-힣]') )>0
@@ -322,8 +319,7 @@ ips_query = """
             AS ips_payload_dir_count,
 
             IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'this(.*?)program(.*?)can') )>0
-            OR INT(RLIKE(LOWER(payload), '80040e07(.*?)font') )>0
-            OR INT(RLIKE(LOWER(payload), '80040e14(.*?)font') )>0
+            OR INT(RLIKE(LOWER(payload), '80040e(.*?)font') )>0
             , 1, 0) AS ips_payload_error_comb,
 
            IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'filename(.*?)asp') )>0
@@ -399,8 +395,7 @@ ips_query = """
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'then(.*?)else') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'like[^a-zA-Z0-9가-힣]') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'sleep[^a-zA-Z0-9가-힣]') )>0
-            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'drop[^a-zA-Z0-9가-힣]') )>0
-            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'drop[^a-zA-Z0-9가-힣]table') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'drop(.*?)table') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'waitfor(.*?)delay') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'db(.*?)sql(.*?)server') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cast(.*?)chr[^a-zA-Z0-9가-힣]') )>0
@@ -536,7 +531,6 @@ waf_query = """
             , 1, 0) AS waf_payload_bof_comb,
 
         IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cgi(.*?)bin') )>0
-            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cgi(.*?)cgi') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'count(.*?)cgi(.*?)http') )>0
             OR INT(RLIKE(LOWER(payload), '[\\.]cgi') )>0
             OR INT(RLIKE(LOWER(payload), 'search(.*?)cgi') )>0
@@ -544,9 +538,7 @@ waf_query = """
             OR INT(RLIKE(LOWER(payload), 'web(.*?)store(.*?)cgi') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'count(.*?)cgi(.*?)http') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'msadc(.*?)dll(.*?)http') )>0
-            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cgi(.*?)cgi(.*?)cgimail(.*?)exe') )>0
-            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cgi(.*?)cgi(.*?)fpcount(.*?)exe') )>0
-            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cgi(.*?)cgi(.*?)rguest(.*?)exe') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cgi(.*?)cgi(.*?)exe') )>0
             , 1, 0) AS waf_payload_cgi_comb,
 
         IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'designart[\\_]site[\\=][^a-zA-Z0-9가-힣]') )>0
@@ -593,8 +585,7 @@ waf_query = """
             AS waf_payload_dir_count,
 
             IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'this(.*?)program(.*?)can') )>0
-            OR INT(RLIKE(LOWER(payload), '80040e07(.*?)font') )>0
-            OR INT(RLIKE(LOWER(payload), '80040e14(.*?)font') )>0
+            OR INT(RLIKE(LOWER(payload), '80040e(.*?)font') )>0
             , 1, 0) AS waf_payload_error_comb,
 
            IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'filename(.*?)asp') )>0
@@ -670,8 +661,7 @@ waf_query = """
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'then(.*?)else') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'like[^a-zA-Z0-9가-힣]') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'sleep[^a-zA-Z0-9가-힣]') )>0
-            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'drop[^a-zA-Z0-9가-힣]') )>0
-            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'drop[^a-zA-Z0-9가-힣]table') )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'drop(.*?)table') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'waitfor(.*?)delay') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'db(.*?)sql(.*?)server') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '), 'cast(.*?)chr[^a-zA-Z0-9가-힣]') )>0
@@ -769,7 +759,6 @@ waf_query = """
 
     FROM table
     """
-
 
 
 
