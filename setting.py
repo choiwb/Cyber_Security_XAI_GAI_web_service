@@ -782,7 +782,7 @@ SELECT
         OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'like[^a-zA-Z0-9가-힣]') )>0
         OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'sleep[^a-zA-Z0-9가-힣]') )>0
         OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'delete(.*?)from') )>0
-        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'drop[^a-zA-Z0-9가-힣]table') )>0
+        OR INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '),  'drop(.*?)table') )>0
         ,1, 0) AS weblog_sql_02_comb,
 
         IF(INT(RLIKE(REGEXP_REPLACE(LOWER(web_log), '\\n|\\r|\\t', ' '), 'where[\\_]framework') )>0
