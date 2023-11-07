@@ -1539,6 +1539,7 @@ def IPS_XAI_result():
     ai_pattern_list = [x.replace('(.*?)', '[~]').replace('[%%]', '%') for x in ai_pattern_list]
     # [\\특수문자] => 특수문자 로 변경
     ai_pattern_list = [re.sub(r'(\[\\)(.*?)(\])', r'\2', x, flags = re.I) for x in ai_pattern_list]
+    ai_pattern_list = [x.replace('[^a-zA-Z0-9가-힣]', '') for x in ai_pattern_list]
 
     # ai_feature_list, ai_detect_list 를 이용하여 2개 컬럼 기반 data frame 생성
     print(ai_detect_list)
@@ -2247,6 +2248,7 @@ def WAF_XAI_result():
     ai_pattern_list = [x.replace('(.*?)', '[~]').replace('[%%]', '%') for x in ai_pattern_list]
     # [\\특수문자] => 특수문자 로 변경
     ai_pattern_list = [re.sub(r'(\[\\)(.*?)(\])', r'\2', x, flags = re.I) for x in ai_pattern_list]
+    ai_pattern_list = [x.replace('[^a-zA-Z0-9가-힣]', '') for x in ai_pattern_list]
 
     # ai_feature_list, ai_detect_list 를 이용하여 2개 컬럼 기반 data frame 생성
     print(ai_detect_list)
@@ -2930,6 +2932,7 @@ def WEB_XAI_result():
     ai_pattern_list = [x.replace('(.*?)', '[~]').replace('[%%]', '%') for x in ai_pattern_list]
     # [\\특수문자] => 특수문자 로 변경
     ai_pattern_list = [re.sub(r'(\[\\)(.*?)(\])', r'\2', x, flags = re.I) for x in ai_pattern_list]
+    ai_pattern_list = [x.replace('[^a-zA-Z0-9가-힣]', '') for x in ai_pattern_list]
 
     # ai_feature_list, ai_detect_list 를 이용하여 2개 컬럼 기반 data frame 생성
     print(ai_detect_list)
