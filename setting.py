@@ -405,7 +405,7 @@ ips_query = """
 
             IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  '[\\%]201[\\=]1[\\%]') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  '1[\\%]20[\\=][\\=][\\%]201') )>0
-            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  "password[\\=]1") )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  "password[\\=]1[^a-zA-Z0-9가-힣]") )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  '[\\%]20or1[\\=]1') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  "or1[\\=]1") )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  ' having ') )>0
@@ -671,7 +671,7 @@ waf_query = """
 
             IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  '[\\%]201[\\=]1[\\%]') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  '1[\\%]20[\\=][\\=][\\%]201') )>0
-            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  "password[\\=]1") )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  "password[\\=]1[^a-zA-Z0-9가-힣]") )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  '[\\%]20or1[\\=]1') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  "or1[\\=]1") )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  ' having ') )>0
