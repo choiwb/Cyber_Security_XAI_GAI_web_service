@@ -64,8 +64,11 @@ scraping_llm = ChatOpenAI(model_name='gpt-3.5-turbo-16k', temperature=0, max_tok
 
 # chat_llm = ChatOpenAI(model_name='gpt-3.5-turbo-16k', temperature=0, max_tokens=512,
 #                   callbacks=callbacks, streaming=True)
-chat_llm = OpenAI(model_name='gpt-3.5-turbo-instruct', temperature=0, max_tokens=512,
+# chat_llm = OpenAI(model_name='gpt-3.5-turbo-instruct', temperature=0, max_tokens=512,
+#                   callbacks=callbacks, streaming=True)
+chat_llm = OpenAI(model_name='gpt-4-1106-preview', temperature=0, max_tokens=512,
                   callbacks=callbacks, streaming=True)
+
 
 tactics_url = "https://attack.mitre.org/tactics/enterprise/"
 
