@@ -416,7 +416,7 @@ ips_query = """
 
            IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'benchmark[\\(]') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'alert[\\(]') )>0
-            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'chr[^a-zA-Z0-9가-힣]) )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'chr[^a-zA-Z0-9가-힣]') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'select[\\%]20') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'exec[\\+]cmd') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  '1(.*?)[\\+][\\%]3d[\\+](.*?)1') )>0
@@ -682,7 +682,7 @@ waf_query = """
 
            IF(INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'benchmark[\\(]') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'alert[\\(]') )>0
-            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'chr[^a-zA-Z0-9가-힣]) )>0
+            OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'chr[^a-zA-Z0-9가-힣]') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'select[\\%]20') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  'exec[\\+]cmd') )>0
             OR INT(RLIKE(REGEXP_REPLACE(LOWER(payload), '\\n|\\r|\\t', ' '),  '1(.*?)[\\+][\\%]3d[\\+](.*?)1') )>0
