@@ -59,7 +59,9 @@ os.environ['OPENAI_API_KEY'] = "YOUR OPENAI API KEY !!!!!!!"
 
 callbacks = [StreamingStdOutCallbackHandler()]
 
-scraping_llm = ChatOpenAI(model_name='gpt-3.5-turbo-16k', temperature=0, max_tokens=8192,
+# scraping_llm = ChatOpenAI(model_name='gpt-3.5-turbo-16k', temperature=0, max_tokens=8192,
+#                   callbacks=callbacks, streaming=True)
+scraping_llm = ChatOpenAI(model_name='gpt-4-1106-preview', temperature=0, max_tokens=2048,
                   callbacks=callbacks, streaming=True)
 
 # chat_llm = ChatOpenAI(model_name='gpt-3.5-turbo-16k', temperature=0, max_tokens=512,
@@ -135,6 +137,21 @@ html2text = Html2TextTransformer()
 # OpenAI VS HuggingFace
 embeddings = OpenAIEmbeddings()
 
+
+
+def extract_content(schema, content, total_content=''):
+    # 토큰의 길이를 확인하고, 4096을 초과하지 않으면 내용 추출
+    if len(content) <= 4096:
+        return extract(schema=schema, content=content)
+    
+    # 토큰의 길이가 4096을 초과하면, 내용을 절반으로 나누고 각 부분에 대해 재귀적으로 처리
+    half = len(content) // 2
+    first_half_content = extract_content(schema, content[:half])
+    second_half_content = extract_content(schema, content[half:])
+    
+    return first_half_content + second_half_content
+
+
 def web_scraping_faiss_save(url0, *urls):
     
     loader = AsyncHtmlLoader(url0)
@@ -156,27 +173,13 @@ def web_scraping_faiss_save(url0, *urls):
 
         for i in range(len(docs)):
             try:
-                extracted_content = extract(
-                    schema=specific_tactics_schema, content=docs[i].page_content
-                )
-
+                extracted_content = extract_content(specific_tactics_schema, docs[i].page_content)
                 total_content += extracted_content
 
-            except:
-                # try 문의 extracted_content 변수가 max token 초과 오류가 날 경우, 남겨진 token을 이어서 openai api 호출
-                remain_doc_content_len = 16384 - len(docs[i].page_content)
-                
-                first_extracted_content = extract(
-                    schema=specific_tactics_schema, content=docs[i].page_content[:remain_doc_content_len]
-                )
-
-                second_extracted_content = extract(
-                    schema=specific_tactics_schema, content=docs[i].page_content[remain_doc_content_len:]
-                )
-
-                total_content += first_extracted_content
-                total_content += second_extracted_content
-
+            except Exception as e:
+                # 에러 로깅 혹은 추가적인 예외 처리
+                print("An error occurred:", e)
+        
     # # Convert list of dictionaries to strings
     total_content = [str(item) for item in total_content]
 
@@ -184,7 +187,7 @@ def web_scraping_faiss_save(url0, *urls):
     docsearch = FAISS.from_texts(total_content, embeddings)
 
     docsearch.embedding_function
-    docsearch.save_local(os.path.join(db_save_path, "mitre_attack_20231005_index"))
+    docsearch.save_local(os.path.join(db_save_path, "mitre_attack_20231109_index"))
 
 
 # start = time.time()
@@ -195,7 +198,7 @@ def web_scraping_faiss_save(url0, *urls):
 # print('임베딩 완료 시간: %.2f (초)' %(end-start))
 
 
-new_docsearch = FAISS.load_local(os.path.join(db_save_path, 'mitre_attack_20231005_index'), embeddings)
+new_docsearch = FAISS.load_local(os.path.join(db_save_path, 'mitre_attack_20231109_index'), embeddings)
 
 retriever = new_docsearch.as_retriever(search_type="similarity", search_kwargs={"k":3})
 
