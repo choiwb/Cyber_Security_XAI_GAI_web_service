@@ -144,20 +144,6 @@ def extract(content: str, schema: dict):
     return extracted_content
 
 
-text_splitter = CharacterTextSplitter(        
-    # 표기준의 경우 '|' 기준 split, 그대신 tactics id가 제대로 분할 안됨 !!!!!!!!
-    separator = "\|\n",
-
-    # chunk_size = 30000, 
-    chunk_size = 1000, 
-
-    chunk_overlap  = 0,
-    length_function = len,
-    is_separator_regex=True,
-    keep_separator=True
-)
-
-
 
 # 임베딩 벡터 DB 저장 & 호출
 db_save_path = "/Users/choiwb/Python_projects/이글루코퍼레이션_연구개발/Cyber_Security_XAI_GAI_web_service/openai_langchain"
