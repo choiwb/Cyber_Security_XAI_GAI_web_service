@@ -146,7 +146,7 @@ def extract(content: str, schema: dict):
 
 
 # 임베딩 벡터 DB 저장 & 호출
-db_save_path = "/Users/choiwb/Python_projects/이글루코퍼레이션_연구개발/Cyber_Security_XAI_GAI_web_service/openai_langchain"
+db_save_path = "DB SAVE PATH !!!!!!!"
 
 html2text = Html2TextTransformer()
 
