@@ -20,6 +20,159 @@ from langchain.retrievers import ContextualCompressionRetriever
 from langchain.memory import ConversationBufferMemory
 
 
+
+###############################################################################################################################
+'''20231110 TO DO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'''
+# loader = TextLoader('context/sample_mitre_scenario_20231109.csv')
+# documents = loader.load()
+scenario_1 =  TextLoader('context/scenario_1_sample_20231110.csv')
+s1_documents = scenario_1.load()
+scenario_2 = TextLoader('context/scenario_2_sample_20231110.csv')
+s2_documents = scenario_2.load()
+scenario_3 = TextLoader('context/scenario_3_sample_20231110.csv')
+s3_documents = scenario_3.load()
+scenario_4 = TextLoader('context/scenario_4_sample_20231110.csv')
+s4_documents = scenario_4.load()
+
+text_splitter = CharacterTextSplitter(        
+    separator = "\n",
+    chunk_size = 2000,
+    chunk_overlap  = 0,
+    length_function = len,
+)
+
+
+scenario_1_schema = {
+    "properties": {        
+        "취약점 명": {"type": "string"},
+        "취약점 설명": {"type": "string"},
+        "취약점 대응방안": {"type": "string"},
+        "공격분류 명": {"type": "string"},
+        "공격분류 설명": {"type": "string"},
+        "공격분류 대응방안": {"type": "string"},
+        "공격행위 명": {"type": "string"},
+        "공격행위 설명": {"type": "string"},
+        "공격행위 대응방안": {"type": "string"},
+
+    },
+    "required": ["취약점 명", "취약점 설명", "취약점 대응방안", 
+                 "공격분류 명", '공격분류 설명', "공격분류 대응방안", 
+                 "공격행위 명", "공격행위 설명", "공격행위 대응방안",
+                 ],
+}
+
+scenario_2_schema = {
+    "properties": {
+        "취약점 명": {"type": "string"},
+        "공격행위 명": {"type": "string"},
+        "Tactics ID": {"type": "string"},
+        "Tactics Name": {"type": "string"},
+        "Tactics Description": {"type": "string"},
+        "T-ID (Techniques ID)": {"type": "string"},\
+        "Techniques Name": {"type": "string"},
+        "Techniques Description": {"type": "string"}
+
+    },
+    "required": ["취약점 명", "공격행위 명",
+                "Tactics ID", "Tactics Name", "Tactics Description", 
+                 "T-ID (Techniques ID)",  "Techniques Name", "Techniques Description"],
+}
+
+scenario_3_schema = {
+    "properties": {
+        "공격행위 명": {"type": "string"},
+        "취약점 명": {"type": "string"},
+        "T-ID (Techniques ID)": {"type": "string"},\
+        "Techniques Name": {"type": "string"},
+        "Techniques Detection": {"type": "string"}
+
+    },
+    "required": ["공격행위 명", "취약점 명",
+                 "T-ID (Techniques ID)",  "Techniques Name", "Techniques Detection"],
+}
+
+scenario_4_schema = {
+    "properties": {
+        "공격행위 명": {"type": "string"},
+        "취약점 명": {"type": "string"},
+        "T-ID (Techniques ID)": {"type": "string"},\
+        "Techniques Name": {"type": "string"},
+        "Techniques Mitigation": {"type": "string"}
+
+    },
+    "required": ["공격행위 명", "취약점 명",
+                 "T-ID (Techniques ID)",  "Techniques Name", "Techniques Mitigation"],
+}
+
+def offline_faiss_save(s1_documents, s2_documents, s3_documents, s4_documents):
+
+    total_content = []
+
+    s1_docs = text_splitter.split_documents(s1_documents)
+    s2_docs = text_splitter.split_documents(s2_documents)
+    s3_docs = text_splitter.split_documents(s3_documents)
+    s4_docs = text_splitter.split_documents(s4_documents)
+
+    for i in range(len(s1_docs)):
+        try:
+            extracted_content = extract_content(scenario_1_schema, s1_docs[i].page_content)
+            print('시나리오 1')
+            print(extracted_content)
+            total_content += extracted_content
+
+        except Exception as e:
+            # 에러 로깅 혹은 추가적인 예외 처리
+            print("An error occurred:", e)
+
+    for i in range(len(s2_docs)):
+        try:
+            extracted_content = extract_content(scenario_2_schema, s2_docs[i].page_content)
+            print('시나리오 2')
+            print(extracted_content)
+            total_content += extracted_content
+
+        except Exception as e:
+            # 에러 로깅 혹은 추가적인 예외 처리
+            print("An error occurred:", e)
+
+    for i in range(len(s3_docs)):
+        try:
+            extracted_content = extract_content(scenario_3_schema, s3_docs[i].page_content)
+            print('시나리오 3')
+            print(extracted_content)
+            total_content += extracted_content
+
+        except Exception as e:
+            # 에러 로깅 혹은 추가적인 예외 처리
+            print("An error occurred:", e)
+
+    for i in range(len(s4_docs)):
+        try:
+            extracted_content = extract_content(scenario_4_schema, s4_docs[i].page_content)
+            print('시나리오 4')
+            print(extracted_content)
+            total_content += extracted_content
+
+        except Exception as e:
+            # 에러 로깅 혹은 추가적인 예외 처리
+            print("An error occurred:", e)
+        
+
+    # # Convert list of dictionaries to strings
+    total_content = [str(item) for item in total_content]
+
+    # docsearch = FAISS.from_documents(total_content, embeddings)
+    docsearch = FAISS.from_texts(total_content, embeddings)
+
+    docsearch.embedding_function
+    docsearch.save_local(os.path.join(db_save_path, "mitre_attack_20231110_index"))
+            
+###############################################################################################################################
+
+
+
+
+
 # template = """You are a cyber security analyst. about user question, answering specifically in korean.
 #             Use the following pieces of context to answer the question at the end. 
 #             If you don't know the answer, just say that you don't know, don't try to make up an answer. 
@@ -93,22 +246,22 @@ ta0043_url = "https://attack.mitre.org/tactics/TA0043/"
 # web scraping 진행 시, 결과에 대한 검증 방법 연구 필요해 보임 !!!!!!!!!!!!!!
 tactics_schema = {
     "properties": {
-        "tactics_id": {"type": "string"},
-        "tactics_name": {"type": "string"},
-        "tactics_description": {"type": "string"}
+        "Tactics ID": {"type": "string"},
+        "Tactics Name": {"type": "string"},
+        "Tactics Description": {"type": "string"}
     },
-    "required": ["tactics_id", "tactics_name", "tactics_description"],
+    "required": ["Tactics ID", "Tactics Name", "Tactics Description"],
 }
 
 specific_tactics_schema = {
     "properties": {
         "Tactics ID": {"type": "string"},
-        "Tactics name": {"type": "string"},
+        "Tactics Name": {"type": "string"},
         "T-ID (Techniques ID)": {"type": "string"},\
         "Techniques Name": {"type": "string"},
         "Techniques Description": {"type": "string"}
     },
-    "required": ["Tactics ID", "Tactics name", "T-ID (Techniques ID)",  "Techniques Name", "Techniques Description"],
+    "required": ["Tactics ID", "Tactics Name", "T-ID (Techniques ID)",  "Techniques Name", "Techniques Description"],
 }
 
 def extract(content: str, schema: dict):
@@ -194,6 +347,8 @@ def web_scraping_faiss_save(url0, *urls):
 # total_content = web_scraping_faiss_save(tactics_url, ta0001_url, ta0002_url, ta0003_url, ta0004_url, ta0005_url, ta0006_url,
 #                                         ta0007_url, ta0008_url, ta0009_url, ta0010_url, ta0011_url, ta0040_url, ta0042_url, ta0043_url
 #                                         )
+# total_content = offline_faiss_save(s1_documents, s2_documents, s3_documents, s4_documents)
+
 # end = time.time()
 # print('임베딩 완료 시간: %.2f (초)' %(end-start))
 
