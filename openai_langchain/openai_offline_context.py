@@ -90,7 +90,7 @@ scenario_1_schema = {
     "required": ["취약점 명", "취약점 설명", "취약점 대응방안", 
                  "공격분류 명", '공격분류 설명', "공격분류 대응방안", 
                  "공격행위 명", "공격행위 설명", "공격행위 대응방안",
-                 ],
+                 ]
 }
 
 scenario_2_schema = {
@@ -107,33 +107,32 @@ scenario_2_schema = {
     },
     "required": ["취약점 명", "공격행위 명",
                 "Tactics ID", "Tactics Name", "Tactics Description", 
-                 "T-ID (Techniques ID)",  "Techniques Name", "Techniques Description"],
+                 "T-ID (Techniques ID)",  "Techniques Name", "Techniques Description"]
 }
 
 scenario_3_schema = {
     "properties": {
+        "T-ID (Techniques ID)": {"type": "string"},
+        "Techniques Name": {"type": "string"},
+        "Techniques Detection": {"type": "string"},
         "공격행위 명": {"type": "string"},
         "취약점 명": {"type": "string"},
-        "T-ID (Techniques ID)": {"type": "string"},\
-        "Techniques Name": {"type": "string"},
-        "Techniques Detection": {"type": "string"}
-
     },
-    "required": ["공격행위 명", "취약점 명",
-                 "T-ID (Techniques ID)",  "Techniques Name", "Techniques Detection"],
+    "required": ["T-ID (Techniques ID)",  "Techniques Name", "Techniques Detection",
+                "공격행위 명", "취약점 명"]
 }
 
 scenario_4_schema = {
     "properties": {
+        "T-ID (Techniques ID)": {"type": "string"},
+        "Techniques Name": {"type": "string"},
+        "Techniques Mitigation": {"type": "string"},
         "공격행위 명": {"type": "string"},
         "취약점 명": {"type": "string"},
-        "T-ID (Techniques ID)": {"type": "string"},\
-        "Techniques Name": {"type": "string"},
-        "Techniques Mitigation": {"type": "string"}
 
     },
-    "required": ["공격행위 명", "취약점 명",
-                 "T-ID (Techniques ID)",  "Techniques Name", "Techniques Mitigation"],
+    "required": ["T-ID (Techniques ID)",  "Techniques Name", "Techniques Mitigation",
+                 "공격행위 명", "취약점 명"]
 }
 
 
