@@ -1,5 +1,4 @@
 import os
-from typing import List
 from langchain.llms import OpenAI
 from langchain.chat_models import ChatOpenAI
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
@@ -11,8 +10,9 @@ from langchain.retrievers.document_compressors import EmbeddingsFilter
 from langchain.retrievers import ContextualCompressionRetriever
 from langchain.memory import ConversationBufferMemory
 from fastapi import FastAPI
-from langchain.schema import BaseOutputParser
+from langchain.output_parsers.json import SimpleJsonOutputParser
 from langserve import add_routes
+from langchain.schema.output_parser import StrOutputParser
 
 
 
@@ -42,14 +42,14 @@ db_save_path = "YOUR DB SAVE PATH !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 
 embeddings = OpenAIEmbeddings()
 
-callbacks = [StreamingStdOutCallbackHandler()]
-# chat_llm = ChatOpenAI(model_name='gpt-4-1106-preview', temperature=0, max_tokens=512,
-#                   callbacks=callbacks, 
+# callbacks = [StreamingStdOutCallbackHandler()]
+# chat_llm = OpenAI(model_name='gpt-3.5-turbo-instruct', temperature=0, max_tokens=512,
+#                   # callbacks=callbacks, 
 #                   # doc 이 100개가 넘는 경우 OpenAI API 호출이 안되므로 false 처리 !!!!!!!!!!!!!
 #                   # streaming=True
 #                   )
-chat_llm = OpenAI(model_name='gpt-3.5-turbo-instruct', temperature=0, max_tokens=512,
-                  callbacks=callbacks, 
+chat_llm = ChatOpenAI(model_name='gpt-3.5-turbo-16k', temperature=0, max_tokens=512,
+                  # callbacks=callbacks, 
                   # doc 이 100개가 넘는 경우 OpenAI API 호출이 안되므로 false 처리 !!!!!!!!!!!!!
                   # streaming=True
                   )
@@ -59,34 +59,31 @@ new_docsearch = FAISS.load_local(os.path.join(db_save_path, 'mitre_attack_202311
 retriever = new_docsearch.as_retriever(search_type="similarity", search_kwargs={"k":3})
 
 # 유사도 0.7 이상만 추출
-embeddings_filter = EmbeddingsFilter(embeddings = embeddings, similarity_threshold = 0.7)
+# embeddings_filter = EmbeddingsFilter(embeddings = embeddings, similarity_threshold = 0.7)
 
-# 압축 검색기 생성
-compression_retriever = ContextualCompressionRetriever(base_compressor = embeddings_filter,
-                                                        base_retriever = retriever)
+# # 압축 검색기 생성
+# compression_retriever = ContextualCompressionRetriever(base_compressor = embeddings_filter,
+#                                                         base_retriever = retriever)
 
-
-############################################################
-class CommaSeparatedListOutputParser(BaseOutputParser[List[str]]):
-    """Parse the output of an LLM call to a comma-separated list."""
-
-
-    def parse(self, text: str) -> List[str]:
-        """Parse the output of an LLM call."""
-        return text.strip().split(", ")
-        # return text["answer"]
-############################################################
 
 memory = ConversationBufferMemory(memory_key='chat_history', return_messages=True, input_key = "question", output_key='answer')
 retrieval_qa_chain = ConversationalRetrievalChain.from_llm(llm = chat_llm,
-                                        retriever = compression_retriever,
+                                        # retriever = compression_retriever,
+                                        retriever = retriever,
+
                                         memory = memory,
                                         return_source_documents = True,
                                         combine_docs_chain_kwargs={"prompt": QA_CHAIN_PROMPT}
                                         )
 
-retrieval_qa_chain = QA_CHAIN_PROMPT | chat_llm | CommaSeparatedListOutputParser()
+# AttributeError: 'function' object has no attribute 'get_input_schema' 에러 발생 !!!!!!!!!!
+# def retrieval_qa_chain_pipe() -> Runnable:
+#     question = input()
+#     result = retrieval_qa_chain({"question": question})
+#     return result["answer"]
 
+# langserve UI에서 SimpleJsonOutputParser 부분이 null 이라고 나옴 !!!!!!!!!!!!!!!!!
+retrieval_qa_chain = retrieval_qa_chain | SimpleJsonOutputParser()
 
 app = FastAPI(title="Mitre Att&ck App",
                 version="1.0",
@@ -97,8 +94,11 @@ app = FastAPI(title="Mitre Att&ck App",
 add_routes(
     app,
     retrieval_qa_chain,
+    # retrieval_qa_chain_pipe(),
+
     path="/retrieval_qa_chain",
 )
+
 
 if __name__ == "__main__":
     import uvicorn
