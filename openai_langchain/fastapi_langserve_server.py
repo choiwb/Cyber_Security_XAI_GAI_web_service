@@ -10,9 +10,7 @@ from langchain.retrievers.document_compressors import EmbeddingsFilter
 from langchain.retrievers import ContextualCompressionRetriever
 from langchain.memory import ConversationBufferMemory
 from fastapi import FastAPI
-from langchain.output_parsers.json import SimpleJsonOutputParser
 from langserve import add_routes
-from langchain.schema.output_parser import StrOutputParser
 
 
 
@@ -56,8 +54,9 @@ chat_llm = ChatOpenAI(model_name='gpt-3.5-turbo-16k', temperature=0, max_tokens=
 
 new_docsearch = FAISS.load_local(os.path.join(db_save_path, 'mitre_attack_20231129_index'), embeddings)
 
-retriever = new_docsearch.as_retriever(search_type="similarity", search_kwargs={"k":3})
-
+retriever = new_docsearch.as_retriever(search_type="similarity", search_kwargs={"k":3,
+                                                                                "score_threshold": 0.7}
+                                                                                )
 # 유사도 0.7 이상만 추출
 # embeddings_filter = EmbeddingsFilter(embeddings = embeddings, similarity_threshold = 0.7)
 
@@ -76,14 +75,11 @@ retrieval_qa_chain = ConversationalRetrievalChain.from_llm(llm = chat_llm,
                                         combine_docs_chain_kwargs={"prompt": QA_CHAIN_PROMPT}
                                         )
 
-# AttributeError: 'function' object has no attribute 'get_input_schema' 에러 발생 !!!!!!!!!!
-# def retrieval_qa_chain_pipe() -> Runnable:
-#     question = input()
-#     result = retrieval_qa_chain({"question": question})
-#     return result["answer"]
+class SimpleJsonOutputParser:
+    def __call__(self, result):
+        return result["answer"]
 
-# langserve UI에서 SimpleJsonOutputParser 부분이 null 이라고 나옴 !!!!!!!!!!!!!!!!!
-retrieval_qa_chain = retrieval_qa_chain | SimpleJsonOutputParser()
+retrieval_qa_chain_pipe = retrieval_qa_chain | SimpleJsonOutputParser()
 
 app = FastAPI(title="Mitre Att&ck App",
                 version="1.0",
@@ -93,8 +89,8 @@ app = FastAPI(title="Mitre Att&ck App",
 # 3. Adding chain route
 add_routes(
     app,
-    retrieval_qa_chain,
-    # retrieval_qa_chain_pipe(),
+    # retrieval_qa_chain,
+    retrieval_qa_chain_pipe,
 
     path="/retrieval_qa_chain",
 )
