@@ -46,7 +46,7 @@ embeddings = OpenAIEmbeddings()
 #                   # doc 이 100개가 넘는 경우 OpenAI API 호출이 안되므로 false 처리 !!!!!!!!!!!!!
 #                   # streaming=True
 #                   )
-chat_llm = ChatOpenAI(model_name='gpt-3.5-turbo-16k', temperature=0, max_tokens=512,
+chat_llm = ChatOpenAI(model_name='gpt-4-1106-preview', temperature=0, max_tokens=512,
                   # callbacks=callbacks, 
                   # doc 이 100개가 넘는 경우 OpenAI API 호출이 안되므로 false 처리 !!!!!!!!!!!!!
                   # streaming=True
@@ -54,7 +54,7 @@ chat_llm = ChatOpenAI(model_name='gpt-3.5-turbo-16k', temperature=0, max_tokens=
 
 new_docsearch = FAISS.load_local(os.path.join(db_save_path, 'mitre_attack_20231129_index'), embeddings)
 
-retriever = new_docsearch.as_retriever(search_type="similarity", search_kwargs={"k":3,
+retriever = new_docsearch.as_retriever(search_type="similarity", search_kwargs={"k":2,
                                                                                 "score_threshold": 0.7}
                                                                                 )
 # 유사도 0.7 이상만 추출
