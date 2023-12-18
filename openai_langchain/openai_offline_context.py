@@ -256,12 +256,12 @@ def offline_faiss_save_2(json_doc):
 
 
 
-start = time.time()
-total_content = offline_faiss_save(s1_documents, s2_documents, s3_documents, s4_documents)
-total_content = offline_faiss_save_2(json_sample)
-end = time.time()
+# start = time.time()
+# total_content = offline_faiss_save(s1_documents, s2_documents, s3_documents, s4_documents)
+# total_content = offline_faiss_save_2(json_sample)
+# end = time.time()
 # '''임베딩 완료 시간: 18.33 (초)'''
-print('임베딩 완료 시간: %.2f (초)' %(end-start))
+# print('임베딩 완료 시간: %.2f (초)' %(end-start))
 
 
 new_docsearch = FAISS.load_local(os.path.join(db_save_path, 'mitre_attack_20231129_index'), embeddings)
