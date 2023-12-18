@@ -65,10 +65,20 @@ s3_documents = scenario_3.load()
 scenario_4 = TextLoader('context/scenario_4_sample_20231110.csv')
 s4_documents = scenario_4.load()
 
+with open('context/sample_mitre_table_20231128_tree.json', 'r') as f:
+
+    json_text = TextLoader('context/sample_mitre_table_20231128_tree.json')
+    json_sample = json_text.load()
+'''csv 형태 데이터의 경우 별도로 openai api 통한 function calling 안해도 됨.!!!
+    단 online 기반 호출의 경우, function calling 필요함.!!!!!!!!!!!!!!'''
+
+
 text_splitter = CharacterTextSplitter(        
-    separator = "\n",
-    chunk_size = 2000,
-    chunk_overlap  = 0,
+    # separator = "\n",
+    separator = '":{"',
+    
+    chunk_size = 1000,
+    chunk_overlap  = 200,
     length_function = len,
 )
 
@@ -229,17 +239,32 @@ def offline_faiss_save(s1_documents, s2_documents, s3_documents, s4_documents):
     docsearch.embedding_function
     docsearch.save_local(os.path.join(db_save_path, "mitre_attack_20231110_index"))
     
+
+def offline_faiss_save_2(json_doc):
+
+    docs = text_splitter.split_documents(json_doc)
     
+    # Convert list of dictionaries to strings
+    total_content = [str(item) for item in docs]
+    # print(len(total_content))
+
+    # docsearch = FAISS.from_documents(total_content, embeddings)
+    docsearch = FAISS.from_texts(total_content, embeddings)
+
+    docsearch.embedding_function
+    docsearch.save_local(os.path.join(db_save_path, "mitre_attack_20231129_index"))
+
+
 
 start = time.time()
 total_content = offline_faiss_save(s1_documents, s2_documents, s3_documents, s4_documents)
-
+total_content = offline_faiss_save_2(json_sample)
 end = time.time()
-'''임베딩 완료 시간: 1996.79 (초)'''
+# '''임베딩 완료 시간: 18.33 (초)'''
 print('임베딩 완료 시간: %.2f (초)' %(end-start))
 
 
-new_docsearch = FAISS.load_local(os.path.join(db_save_path, 'mitre_attack_20231110_index'), embeddings)
+new_docsearch = FAISS.load_local(os.path.join(db_save_path, 'mitre_attack_20231129_index'), embeddings)
 
 retriever = new_docsearch.as_retriever(search_type="similarity", search_kwargs={"k":3})
 
@@ -250,7 +275,7 @@ embeddings_filter = EmbeddingsFilter(embeddings = embeddings, similarity_thresho
 compression_retriever = ContextualCompressionRetriever(base_compressor = embeddings_filter,
                                                         base_retriever = retriever)
 
-\
+
 
 memory = ConversationBufferMemory(memory_key='chat_history', return_messages=True, input_key = "question", output_key='answer')
 retrieval_qa_chain = ConversationalRetrievalChain.from_llm(llm = chat_llm,
